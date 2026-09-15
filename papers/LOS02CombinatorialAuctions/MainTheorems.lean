@@ -1,4 +1,5 @@
 import AppliedModelingLib.Algorithms.Complexity.Classes
+import AppliedModelingLib.Algorithms.Complexity.FiniteEncoding
 import AppliedModelingLib.MechanismDesign.Auctions.Combinatorial
 
 /-!
@@ -11,6 +12,8 @@ citation-specific namespace.
 -/
 
 namespace LOS02CombinatorialAuctions
+
+universe u
 
 /--
 The reject-all direct combinatorial auction is dominant-strategy truthful.
@@ -475,9 +478,238 @@ noncomputable abbrev paper_graph_incident_sets
     Vertex → Finset (Sym2 Vertex) :=
   AppliedModelingLib.Auction.graphIncidentSets G
 
+@[simp] theorem paper_graph_incident_set_contains_edge_iff
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    (G : SimpleGraph Vertex) [DecidableRel G.Adj] (v w : Vertex) :
+    s(v, w) ∈ paper_graph_incident_sets G v ↔ G.Adj v w := by
+  change s(v, w) ∈ G.incidenceFinset v ↔ G.Adj v w
+  rw [SimpleGraph.mem_incidenceFinset]
+  exact G.mk'_mem_incidenceSet_left_iff
+
+@[simp] theorem paper_graph_clique_incident_set_contains_edge_iff
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    (G : SimpleGraph Vertex) [DecidableRel G.Adj] (v w : Vertex) :
+    s(v, w) ∈ paper_graph_incident_sets (Gᶜ) v ↔
+      v ≠ w ∧ ¬ G.Adj v w := by
+  rw [paper_graph_incident_set_contains_edge_iff]
+  exact SimpleGraph.compl_adj G v w
+
+theorem paper_graph_incident_sets_injective
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    {G H : SimpleGraph Vertex} [DecidableRel G.Adj] [DecidableRel H.Adj]
+    (hsets : paper_graph_incident_sets G = paper_graph_incident_sets H) :
+    G = H := by
+  ext v w
+  have hmem :
+      s(v, w) ∈ paper_graph_incident_sets G v ↔
+        s(v, w) ∈ paper_graph_incident_sets H v := by
+    rw [hsets]
+  rw [paper_graph_incident_set_contains_edge_iff,
+    paper_graph_incident_set_contains_edge_iff] at hmem
+  exact hmem
+
+/-! The source graph itself can be represented by its Boolean adjacency table.
+The table is indexed through the canonical finite index of `Vertex × Vertex`,
+so its length is independent of the particular graph. -/
+noncomputable def paper_graph_adjacency_row
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    (G : SimpleGraph Vertex) [DecidableRel G.Adj] :
+    Fin (Fintype.card (Vertex × Vertex)) → Bool :=
+  fun i =>
+    let pair := (Fintype.equivFin (Vertex × Vertex)).symm i
+    decide (G.Adj pair.1 pair.2)
+
+noncomputable def paper_graph_adjacency_code
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    (G : SimpleGraph Vertex) [DecidableRel G.Adj] : List Bool :=
+  (AppliedModelingLib.Complexity.boolTableEncoding
+      (Fintype.card (Vertex × Vertex))).encode
+    (paper_graph_adjacency_row G)
+
+@[simp] theorem paper_graph_adjacency_code_size
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    (G : SimpleGraph Vertex) [DecidableRel G.Adj] :
+    (paper_graph_adjacency_code G).length =
+      Fintype.card Vertex * Fintype.card Vertex := by
+  change (AppliedModelingLib.Complexity.boolTableEncoding
+      (Fintype.card (Vertex × Vertex))).size
+      (paper_graph_adjacency_row G) = _
+  rw [AppliedModelingLib.Complexity.boolTableEncoding_size]
+  simp [Fintype.card_prod]
+
+theorem paper_graph_adjacency_code_injective
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    {G H : SimpleGraph Vertex} [DecidableRel G.Adj] [DecidableRel H.Adj]
+    (hcode : paper_graph_adjacency_code G = paper_graph_adjacency_code H) :
+    G = H := by
+  classical
+  have hrow : paper_graph_adjacency_row G = paper_graph_adjacency_row H := by
+    exact AppliedModelingLib.Complexity.BinaryEncoding.encode_injective
+      (AppliedModelingLib.Complexity.boolTableEncoding
+        (Fintype.card (Vertex × Vertex))) hcode
+  ext v w
+  have hbool := congrFun hrow
+    ((Fintype.equivFin (Vertex × Vertex)) (v, w))
+  simpa [paper_graph_adjacency_row] using hbool
+
+/-! A source-facing binary representation of each graph bidder's requested
+edge set.  This records the finite incidence encoding needed by a machine-level
+complexity development without claiming a running-time bound for the map. -/
+noncomputable def paper_graph_incident_set_code
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    (G : SimpleGraph Vertex) [DecidableRel G.Adj] (v : Vertex) : List Bool :=
+  (AppliedModelingLib.Complexity.finiteSetEncoding (Sym2 Vertex)).encode
+    (paper_graph_incident_sets G v)
+
+@[simp] theorem paper_graph_incident_set_code_size
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    (G : SimpleGraph Vertex) [DecidableRel G.Adj] (v : Vertex) :
+    (paper_graph_incident_set_code G v).length = Fintype.card (Sym2 Vertex) := by
+  exact AppliedModelingLib.Complexity.finiteSetEncoding_size (Sym2 Vertex)
+    (paper_graph_incident_sets G v)
+
+/-! A flat adjacency/incidence-table code for the whole finite graph.  The
+source reduction creates one requested set per vertex; concatenating the
+verified rows exposes an explicit input-size witness for that finite layer.
+This is an encoding boundary only, not yet a machine-time theorem. -/
+noncomputable def paper_graph_incidence_matrix_code
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    (G : SimpleGraph Vertex) [DecidableRel G.Adj] : List Bool :=
+  (Finset.univ : Finset Vertex).toList.flatMap
+    (fun v => paper_graph_incident_set_code G v)
+
+@[simp] theorem paper_graph_incidence_matrix_code_size
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    (G : SimpleGraph Vertex) [DecidableRel G.Adj] :
+    (paper_graph_incidence_matrix_code G).length =
+      Fintype.card Vertex * Fintype.card (Sym2 Vertex) := by
+  classical
+  simp [paper_graph_incidence_matrix_code,
+    paper_graph_incident_set_code_size, Finset.card_univ]
+
+@[simp] theorem paper_graph_incidence_matrix_code_size_le_cubic
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    (G : SimpleGraph Vertex) [DecidableRel G.Adj] :
+    (paper_graph_incidence_matrix_code G).length ≤
+      Fintype.card Vertex * (Fintype.card Vertex * Fintype.card Vertex) := by
+  classical
+  have hsym :
+      Fintype.card (Sym2 Vertex) ≤ Fintype.card Vertex * Fintype.card Vertex := by
+    let f : Vertex × Vertex → Sym2 Vertex := fun x => s(x.1, x.2)
+    have hf : Function.Surjective f := by
+      intro pair
+      induction pair using Sym2.inductionOn with
+      | hf a b => exact ⟨(a, b), rfl⟩
+    simpa [f, Fintype.card_prod] using Fintype.card_le_of_surjective f hf
+  rw [paper_graph_incidence_matrix_code_size]
+  exact Nat.mul_le_mul_left _ hsym
+
 /-- Unit vertex weights for the independent-set reduction. -/
 abbrev paper_graph_unit_weights (Vertex : Type*) : Vertex → ℝ :=
   AppliedModelingLib.Auction.graphUnitWeights Vertex
+
+/-- The hardness construction uses unit weights; expose their verified unary
+integer code separately from the paper's real-valued type domain. -/
+def paper_graph_unit_weight_code : List Bool :=
+  AppliedModelingLib.Complexity.unaryNatEncoding.encode 1
+
+@[simp] theorem paper_graph_unit_weight_code_size :
+    paper_graph_unit_weight_code.length = 2 := by
+  change AppliedModelingLib.Complexity.unaryNatEncoding.size 1 = 2
+  exact AppliedModelingLib.Complexity.unaryNatEncoding_size 1
+
+/-! The unit-weight vector used by the graph hardness instance. -/
+noncomputable def paper_graph_unit_weight_vector_code (Vertex : Type*) [Fintype Vertex] :
+    List Bool :=
+  (Finset.univ : Finset Vertex).toList.flatMap
+    (fun _ => paper_graph_unit_weight_code)
+
+@[simp] theorem paper_graph_unit_weight_vector_code_size
+    (Vertex : Type*) [Fintype Vertex] :
+    (paper_graph_unit_weight_vector_code Vertex).length =
+      Fintype.card Vertex * 2 := by
+  classical
+  simp [paper_graph_unit_weight_vector_code, paper_graph_unit_weight_code_size,
+    Finset.card_univ]
+
+/-! Combined finite target code for the graph-to-set-packing instance. -/
+noncomputable def paper_graph_reduction_output_code
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    (G : SimpleGraph Vertex) [DecidableRel G.Adj] : List Bool :=
+  paper_graph_incidence_matrix_code G ++
+    paper_graph_unit_weight_vector_code Vertex
+
+@[simp] theorem paper_graph_reduction_output_code_size
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    (G : SimpleGraph Vertex) [DecidableRel G.Adj] :
+    (paper_graph_reduction_output_code G).length =
+      Fintype.card Vertex * Fintype.card (Sym2 Vertex) +
+        Fintype.card Vertex * 2 := by
+  simp [paper_graph_reduction_output_code,
+    paper_graph_incidence_matrix_code_size,
+    paper_graph_unit_weight_vector_code_size]
+
+@[simp] theorem paper_graph_reduction_output_code_size_le_polynomial
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    (G : SimpleGraph Vertex) [DecidableRel G.Adj] :
+    (paper_graph_reduction_output_code G).length ≤
+      Fintype.card Vertex *
+        (Fintype.card Vertex * Fintype.card Vertex + 2) := by
+  classical
+  have hsym :
+      Fintype.card (Sym2 Vertex) ≤ Fintype.card Vertex * Fintype.card Vertex := by
+    let f : Vertex × Vertex → Sym2 Vertex := fun x => s(x.1, x.2)
+    have hf : Function.Surjective f := by
+      intro pair
+      induction pair using Sym2.inductionOn with
+      | hf a b => exact ⟨(a, b), rfl⟩
+    simpa [f, Fintype.card_prod] using Fintype.card_le_of_surjective f hf
+  rw [paper_graph_reduction_output_code_size]
+  calc
+    Fintype.card Vertex * Fintype.card (Sym2 Vertex) +
+        Fintype.card Vertex * 2 ≤
+      Fintype.card Vertex * (Fintype.card Vertex * Fintype.card Vertex) +
+        Fintype.card Vertex * 2 := by
+          exact Nat.add_le_add (Nat.mul_le_mul_left _ hsym) le_rfl
+    _ = Fintype.card Vertex *
+        (Fintype.card Vertex * Fintype.card Vertex + 2) := by ring
+
+@[simp] theorem paper_graph_reduction_output_code_size_le_polynomial_in_input
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    (G : SimpleGraph Vertex) [DecidableRel G.Adj] :
+    (paper_graph_reduction_output_code G).length ≤
+      2 * ((paper_graph_adjacency_code G).length + 1) ^ 2 := by
+  classical
+  let n : Nat := Fintype.card Vertex
+  have hn : n ≤ n * n + 1 := by
+    cases n with
+    | zero => simp
+    | succ k =>
+        nlinarith [Nat.zero_le k]
+  have hfactor : n * n + 2 ≤ 2 * (n * n + 1) := by omega
+  have hprod : n * (n * n + 2) ≤
+      (n * n + 1) * (2 * (n * n + 1)) := by
+    exact Nat.mul_le_mul hn hfactor
+  rw [paper_graph_reduction_output_code_size,
+    paper_graph_adjacency_code_size]
+  calc
+    Fintype.card Vertex * Fintype.card (Sym2 Vertex) +
+        Fintype.card Vertex * 2 ≤
+      n * (n * n + 2) := by
+        have hsym :
+            Fintype.card (Sym2 Vertex) ≤ n * n := by
+          let f : Vertex × Vertex → Sym2 Vertex := fun x => s(x.1, x.2)
+          have hf : Function.Surjective f := by
+            intro pair
+            induction pair using Sym2.inductionOn with
+            | hf a b => exact ⟨(a, b), rfl⟩
+          simpa [f, n, Fintype.card_prod] using
+            Fintype.card_le_of_surjective f hf
+        exact le_trans
+          (Nat.add_le_add (Nat.mul_le_mul_left _ hsym) le_rfl)
+          (by dsimp [n]; apply le_of_eq; ring)
+    _ ≤ (n * n + 1) * (2 * (n * n + 1)) := hprod
+    _ = 2 * (n * n + 1) ^ 2 := by ring
 
 /--
 LOS02 Theorem 6.1 set-packing reduction layer: under the paper's set-to-bid
@@ -1078,6 +1310,81 @@ noncomputable def paper_theorem6_1_clique_decision_single_minded_many_one_reduct
       (paper_single_minded_welfare_decision_problem
         (Bidder := Vertex) (Item := Sym2 Vertex)) :=
   AppliedModelingLib.Auction.graphCliqueDecisionProblem_manyOneReduction_singleMindedWelfareDecisionProblem_complGraphIncident
+
+/-! Theorem 6.1's clique-to-welfare correctness can also be assembled from the
+clique-to-set-packing and set-packing-to-welfare layers. This exposes the
+reusable reduction-chain boundary without asserting a running-time claim for
+either map. -/
+noncomputable def paper_theorem6_1_clique_decision_single_minded_many_one_reduction_via_set_packing
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex] :
+    AppliedModelingLib.Complexity.ManyOneReduction
+      (paper_graph_clique_decision_problem (Vertex := Vertex))
+      (paper_single_minded_welfare_decision_problem
+        (Bidder := Vertex) (Item := Sym2 Vertex)) :=
+  AppliedModelingLib.Complexity.ManyOneReduction.comp
+    (paper_theorem6_1_clique_decision_set_packing_many_one_reduction
+      (Vertex := Vertex))
+    (paper_theorem6_1_decision_problem_reduction
+      (Bidder := Vertex) (Item := Sym2 Vertex))
+
+/-! The machine-level composition is kept explicit: the reusable complexity
+interface supplies only the closure theorem, while the chosen runtime model
+must provide both component certificates and its composition law. -/
+
+noncomputable def paper_theorem6_1_clique_decision_single_minded_polynomial_time_reduction_via_set_packing
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    (FirstPolynomialTime :
+      (paper_graph_clique_decision_instance Vertex →
+        paper_weighted_set_packing_decision_instance Vertex (Sym2 Vertex)) → Prop)
+    (SecondPolynomialTime :
+      (paper_weighted_set_packing_decision_instance Vertex (Sym2 Vertex) →
+        paper_single_minded_welfare_decision_instance Vertex (Sym2 Vertex)) → Prop)
+    (ComposedPolynomialTime :
+      (paper_graph_clique_decision_instance Vertex →
+        paper_single_minded_welfare_decision_instance Vertex (Sym2 Vertex)) → Prop)
+    (hpoly_clique :
+      FirstPolynomialTime
+        (paper_theorem6_1_clique_decision_set_packing_many_one_reduction
+          (Vertex := Vertex)).map)
+    (hpoly_set :
+      SecondPolynomialTime
+        (paper_theorem6_1_decision_problem_reduction
+          (Bidder := Vertex) (Item := Sym2 Vertex)).map)
+    (hcomp : FirstPolynomialTime
+        (paper_theorem6_1_clique_decision_set_packing_many_one_reduction
+          (Vertex := Vertex)).map →
+      SecondPolynomialTime
+        (paper_theorem6_1_decision_problem_reduction
+          (Bidder := Vertex) (Item := Sym2 Vertex)).map →
+      ComposedPolynomialTime (fun x =>
+        (paper_theorem6_1_decision_problem_reduction
+          (Bidder := Vertex) (Item := Sym2 Vertex)).map
+          ((paper_theorem6_1_clique_decision_set_packing_many_one_reduction
+            (Vertex := Vertex)).map x))) :
+    AppliedModelingLib.Complexity.PolynomialTimeReduction
+      (paper_graph_clique_decision_problem (Vertex := Vertex))
+      (paper_single_minded_welfare_decision_problem
+        (Bidder := Vertex) (Item := Sym2 Vertex)) := by
+  let first : AppliedModelingLib.Complexity.PolynomialTimeReduction
+      (paper_graph_clique_decision_problem (Vertex := Vertex))
+      (paper_weighted_set_packing_decision_problem
+        (Bidder := Vertex) (Item := Sym2 Vertex)) :=
+    { reduction := paper_theorem6_1_clique_decision_set_packing_many_one_reduction
+        (Vertex := Vertex)
+      PolynomialTime := FirstPolynomialTime
+      polynomialTime := hpoly_clique }
+  let second : AppliedModelingLib.Complexity.PolynomialTimeReduction
+      (paper_weighted_set_packing_decision_problem
+        (Bidder := Vertex) (Item := Sym2 Vertex))
+      (paper_single_minded_welfare_decision_problem
+        (Bidder := Vertex) (Item := Sym2 Vertex)) :=
+    { reduction := paper_theorem6_1_decision_problem_reduction
+        (Bidder := Vertex) (Item := Sym2 Vertex)
+      PolynomialTime := SecondPolynomialTime
+      polynomialTime := hpoly_set }
+  exact AppliedModelingLib.Complexity.PolynomialTimeReduction.comp_of_closed
+    first second FirstPolynomialTime SecondPolynomialTime ComposedPolynomialTime
+    hpoly_clique hpoly_set hcomp
 
 /--
 Theorem 6.1 clique-to-single-minded welfare as an abstract polynomial-time

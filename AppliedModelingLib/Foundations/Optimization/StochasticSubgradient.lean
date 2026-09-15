@@ -1719,6 +1719,230 @@ theorem exists_tendsto_potential_of_nonnegative_descent
   exact hcorrected_tendsto.add hsum_tendsto
 
 /--
+The pathwise potential half of stochastic descent when the one-step estimate
+also contains an increment whose partial sums converge.  This is the form
+needed when a summable adapted bias and a convergent martingale fluctuation are
+kept as realized pathwise terms, rather than being replaced by a deterministic
+conditional-expectation envelope.
+-/
+theorem exists_tendsto_potential_of_nonnegative_descent_add_increment
+    {potential error loss increment : ℕ → ℝ}
+    (hpotential_nonneg : ∀ n, 0 ≤ potential n)
+    (hloss_nonneg : ∀ n, 0 ≤ loss n)
+    (hstep : ∀ n,
+      potential (n + 1) ≤ potential n + error n - loss n + increment n)
+    (herror : Summable error)
+    (herror_nonneg : ∀ n, 0 ≤ error n)
+    (hincrement : ∃ incrementLimit : ℝ,
+      Tendsto (fun n : ℕ => ∑ i ∈ Finset.range n, increment i) atTop
+        (nhds incrementLimit)) :
+    ∃ limit : ℝ, Tendsto potential Filter.atTop (nhds limit) := by
+  rcases hincrement with ⟨incrementLimit, hincrement⟩
+  let corrected : ℕ → ℝ := fun n =>
+    potential n - ∑ i ∈ Finset.range n, error i - ∑ i ∈ Finset.range n, increment i
+  have hcorrected_anti : Antitone corrected := by
+    apply antitone_nat_of_succ_le
+    intro n
+    dsimp [corrected]
+    rw [Finset.sum_range_succ, Finset.sum_range_succ]
+    have h := hstep n
+    linarith [hloss_nonneg n]
+  have hpartial_le_tsum : ∀ n : ℕ,
+      (∑ i ∈ Finset.range n, error i) ≤ ∑' i, error i := by
+    intro n
+    exact herror.sum_le_tsum (Finset.range n) (fun i _hi => herror_nonneg i)
+  rcases hincrement.bddAbove_range with ⟨incrementUpper, hincrementUpper⟩
+  have hcorrected_bdd : BddBelow (Set.range corrected) := by
+    refine ⟨-(∑' i, error i) - incrementUpper, ?_⟩
+    rintro x ⟨n, rfl⟩
+    dsimp [corrected]
+    have hinc : (∑ i ∈ Finset.range n, increment i) ≤ incrementUpper :=
+      hincrementUpper ⟨n, rfl⟩
+    linarith [hpotential_nonneg n, hpartial_le_tsum n]
+  have hcorrected_tendsto :
+      Tendsto corrected Filter.atTop (nhds (⨅ n, corrected n)) :=
+    tendsto_atTop_ciInf hcorrected_anti hcorrected_bdd
+  have herror_tendsto :
+      Tendsto (fun n : ℕ => ∑ i ∈ Finset.range n, error i)
+        Filter.atTop (nhds (∑' i, error i)) :=
+    herror.hasSum.tendsto_sum_nat
+  refine ⟨(⨅ n, corrected n) + ∑' i, error i + incrementLimit, ?_⟩
+  have hrewrite : potential = fun n => corrected n +
+      (∑ i ∈ Finset.range n, error i) + (∑ i ∈ Finset.range n, increment i) := by
+    funext n
+    dsimp [corrected]
+    ring
+  rw [hrewrite]
+  exact (hcorrected_tendsto.add herror_tendsto).add hincrement
+
+/--
+Almost-sure wrapper for
+`exists_tendsto_potential_of_nonnegative_descent_add_increment`.
+-/
+theorem ae_exists_tendsto_potential_of_nonnegative_descent_add_increment
+    {Omega : Type*} {mOmega : MeasurableSpace Omega} {mu : Measure Omega}
+    {potential loss increment : ℕ → Omega → ℝ} {error : ℕ → ℝ}
+    (hpotential_nonneg : ∀ n, ∀ᵐ omega ∂mu, 0 ≤ potential n omega)
+    (hloss_nonneg : ∀ n, ∀ᵐ omega ∂mu, 0 ≤ loss n omega)
+    (hstep : ∀ n, ∀ᵐ omega ∂mu,
+      potential (n + 1) omega ≤ potential n omega + error n - loss n omega + increment n omega)
+    (herror : Summable error)
+    (herror_nonneg : ∀ n, 0 ≤ error n)
+    (hincrement : ∀ᵐ omega ∂mu, ∃ incrementLimit : ℝ,
+      Tendsto (fun n : ℕ => ∑ i ∈ Finset.range n, increment i omega) atTop
+        (nhds incrementLimit)) :
+    ∀ᵐ omega ∂mu, ∃ limit : ℝ,
+      Tendsto (fun n => potential n omega) atTop (nhds limit) := by
+  filter_upwards [ae_all_iff.2 hpotential_nonneg, ae_all_iff.2 hloss_nonneg,
+    ae_all_iff.2 hstep, hincrement] with omega hpotential hloss hstep_omega hinc
+  exact exists_tendsto_potential_of_nonnegative_descent_add_increment
+    hpotential hloss hstep_omega herror herror_nonneg hinc
+
+/--
+If a nonnegative potential has an almost-sure limit and its nonnegative loss
+is almost-surely summable, the usual loss-separation argument forces that
+limit to be zero.  This separates the deterministic topological conclusion
+from the particular conditional- or pathwise-descent route that supplied the
+two premises.
+-/
+theorem ae_tendsto_potential_zero_of_tendsto_and_summable_of_loss_separation
+    {Omega : Type*} {mOmega : MeasurableSpace Omega} {mu : Measure Omega}
+    {potential loss : ℕ → Omega → ℝ} {radius : ℕ → ℝ}
+    (hpotential_nonneg : ∀ n, ∀ᵐ omega ∂mu, 0 ≤ potential n omega)
+    (hpotential_tendsto : ∀ᵐ omega ∂mu, ∃ limit : ℝ,
+      Tendsto (fun n => potential n omega) atTop (nhds limit))
+    (hloss_summable : ∀ᵐ omega ∂mu, Summable (fun n => loss n omega))
+    (hradius_nonneg : ∀ n, 0 ≤ radius (n + 1))
+    (hradius_diverges : Tendsto
+      (fun n : ℕ => ∑ t ∈ Finset.range n, radius (t + 1)) atTop atTop)
+    (hloss_separation : ∀ epsilon : ℝ, 0 < epsilon →
+      ∃ delta : ℝ, 0 < delta ∧
+        ∀ n omega, epsilon ≤ potential n omega →
+          delta * radius (n + 1) ≤ loss n omega) :
+    ∀ᵐ omega ∂mu, Tendsto (fun n => potential n omega) atTop (nhds 0) := by
+  filter_upwards [hpotential_tendsto, hloss_summable,
+    ae_all_iff.2 hpotential_nonneg] with omega hpotential hsum hnonneg
+  rcases hpotential with ⟨limit, hlimit⟩
+  have hlimit_nonneg : 0 ≤ limit :=
+    ge_of_tendsto hlimit (Filter.Eventually.of_forall hnonneg)
+  have hlimit_zero : limit = 0 := by
+    by_contra hlimit_ne_zero
+    have hlimit_pos : 0 < limit :=
+      lt_of_le_of_ne hlimit_nonneg (Ne.symm hlimit_ne_zero)
+    let epsilon : ℝ := limit / 2
+    have hepsilon_pos : 0 < epsilon := by
+      dsimp [epsilon]
+      linarith
+    rcases hloss_separation epsilon hepsilon_pos with ⟨delta, hdelta_pos, hseparate⟩
+    have heventually_potential : ∀ᶠ n in atTop,
+        epsilon ≤ potential n omega :=
+      (hlimit.eventually (eventually_gt_nhds (by
+        change limit / 2 < limit
+        linarith))).mono fun _ h => h.le
+    have heventually_radius_le_loss : ∀ᶠ n in atTop,
+        radius (n + 1) ≤ (1 / delta) * loss n omega := by
+      filter_upwards [heventually_potential] with n hn
+      have hbound := hseparate n omega hn
+      have hdivision : radius (n + 1) ≤ loss n omega / delta := by
+        rw [le_div_iff₀ hdelta_pos]
+        nlinarith
+      simpa [div_eq_mul_inv, mul_comm] using hdivision
+    have hradius_summable : Summable (fun n => radius (n + 1)) := by
+      apply Summable.of_norm_bounded_eventually (hsum.mul_left (1 / delta))
+      simpa only [Nat.cofinite_eq_atTop] using
+        heventually_radius_le_loss.mono fun n hn => by
+          rw [Real.norm_eq_abs, abs_of_nonneg (hradius_nonneg n)]
+          exact hn
+    have hpartial_le : ∀ n : ℕ,
+        (∑ t ∈ Finset.range n, radius (t + 1)) ≤
+          ∑' t, radius (t + 1) := by
+      intro n
+      exact hradius_summable.sum_le_tsum (Finset.range n)
+        (fun t _ht => hradius_nonneg t)
+    have hlarge := (Filter.tendsto_atTop.mp hradius_diverges)
+      (∑' t, radius (t + 1) + 1)
+    have hfalse_eventually : ∀ᶠ n : ℕ in atTop, False := by
+      filter_upwards [hlarge] with n hn
+      linarith [hpartial_le n]
+    rcases (Filter.eventually_atTop.mp hfalse_eventually :
+      ∃ n : ℕ, ∀ m ≥ n, False) with ⟨n, hn⟩
+    exact (hn n le_rfl).elim
+  simpa [hlimit_zero] using hlimit
+
+/--
+Almost-sure feasible-state variant of
+`ae_tendsto_potential_zero_of_tendsto_and_summable_of_loss_separation`.
+The descent argument only needs loss separation at the states actually visited
+on its common probability-one event; this keeps projected stochastic methods
+from strengthening an a.s. update invariant into a pointwise one.
+-/
+theorem ae_tendsto_potential_zero_of_tendsto_and_summable_of_ae_valid_loss_separation
+    {Omega : Type*} {mOmega : MeasurableSpace Omega} {mu : Measure Omega}
+    {potential loss : ℕ → Omega → ℝ} {radius : ℕ → ℝ}
+    {valid : ℕ → Omega → Prop}
+    (hpotential_nonneg : ∀ n, ∀ᵐ omega ∂mu, 0 ≤ potential n omega)
+    (hpotential_tendsto : ∀ᵐ omega ∂mu, ∃ limit : ℝ,
+      Tendsto (fun n => potential n omega) atTop (nhds limit))
+    (hloss_summable : ∀ᵐ omega ∂mu, Summable (fun n => loss n omega))
+    (hradius_nonneg : ∀ n, 0 ≤ radius (n + 1))
+    (hradius_diverges : Tendsto
+      (fun n : ℕ => ∑ t ∈ Finset.range n, radius (t + 1)) atTop atTop)
+    (hvalid : ∀ᵐ omega ∂mu, ∀ n, valid n omega)
+    (hloss_separation : ∀ epsilon : ℝ, 0 < epsilon →
+      ∃ delta : ℝ, 0 < delta ∧
+        ∀ n omega, valid n omega → epsilon ≤ potential n omega →
+          delta * radius (n + 1) ≤ loss n omega) :
+    ∀ᵐ omega ∂mu, Tendsto (fun n => potential n omega) atTop (nhds 0) := by
+  filter_upwards [hpotential_tendsto, hloss_summable,
+    ae_all_iff.2 hpotential_nonneg, hvalid] with omega hpotential hsum hnonneg hvalidω
+  rcases hpotential with ⟨limit, hlimit⟩
+  have hlimit_nonneg : 0 ≤ limit :=
+    ge_of_tendsto hlimit (Filter.Eventually.of_forall hnonneg)
+  have hlimit_zero : limit = 0 := by
+    by_contra hlimit_ne_zero
+    have hlimit_pos : 0 < limit :=
+      lt_of_le_of_ne hlimit_nonneg (Ne.symm hlimit_ne_zero)
+    let epsilon : ℝ := limit / 2
+    have hepsilon_pos : 0 < epsilon := by
+      dsimp [epsilon]
+      linarith
+    rcases hloss_separation epsilon hepsilon_pos with ⟨delta, hdelta_pos, hseparate⟩
+    have heventually_potential : ∀ᶠ n in atTop,
+        epsilon ≤ potential n omega :=
+      (hlimit.eventually (eventually_gt_nhds (by
+        change limit / 2 < limit
+        linarith))).mono fun _ h => h.le
+    have heventually_radius_le_loss : ∀ᶠ n in atTop,
+        radius (n + 1) ≤ (1 / delta) * loss n omega := by
+      filter_upwards [heventually_potential] with n hn
+      have hbound := hseparate n omega (hvalidω n) hn
+      have hdivision : radius (n + 1) ≤ loss n omega / delta := by
+        rw [le_div_iff₀ hdelta_pos]
+        nlinarith
+      simpa [div_eq_mul_inv, mul_comm] using hdivision
+    have hradius_summable : Summable (fun n => radius (n + 1)) := by
+      apply Summable.of_norm_bounded_eventually (hsum.mul_left (1 / delta))
+      simpa only [Nat.cofinite_eq_atTop] using
+        heventually_radius_le_loss.mono fun n hn => by
+          rw [Real.norm_eq_abs, abs_of_nonneg (hradius_nonneg n)]
+          exact hn
+    have hpartial_le : ∀ n : ℕ,
+        (∑ t ∈ Finset.range n, radius (t + 1)) ≤
+          ∑' t, radius (t + 1) := by
+      intro n
+      exact hradius_summable.sum_le_tsum (Finset.range n)
+        (fun t _ht => hradius_nonneg t)
+    have hlarge := (Filter.tendsto_atTop.mp hradius_diverges)
+      (∑' t, radius (t + 1) + 1)
+    have hfalse_eventually : ∀ᶠ n : ℕ in atTop, False := by
+      filter_upwards [hlarge] with n hn
+      linarith [hpartial_le n]
+    rcases (Filter.eventually_atTop.mp hfalse_eventually :
+      ∃ n : ℕ, ∀ m ≥ n, False) with ⟨n, hn⟩
+    exact (hn n le_rfl).elim
+  simpa [hlimit_zero] using hlimit
+
+/--
 Library-level marker for consequences whose remaining unformalized ingredient
 is stochastic subgradient method convergence.
 

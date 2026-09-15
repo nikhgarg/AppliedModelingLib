@@ -145,6 +145,18 @@
     "PG24NoisyMatchingMarkets": {
       "publication": "ACM EC, 2024",
       "year": 2024
+    },
+    "CGGG20SelectiveInformationAcquisition": {
+      "publication": "AAAI/ACM AIES, 2020",
+      "year": 2020
+    },
+    "GKP26LinearRepresentationHypothesis": {
+      "publication": "arXiv:2602.11246v1, 2026",
+      "year": 2026
+    },
+    "LBG22StrategicRanking": {
+      "publication": "AISTATS / PMLR 151, 2022",
+      "year": 2022
     }
   },
   "source_url_overrides": {
@@ -183,7 +195,10 @@
     "PZMH20PerformativePrediction": "https://proceedings.mlr.press/v119/perdomo20a.html",
     "LG24ServiceLevelAgreements": "https://arxiv.org/abs/2410.14825",
     "Naor1969QueueTolls": "https://www.jstor.org/stable/1909200",
-    "PG24NoisyMatchingMarkets": "https://arxiv.org/abs/2402.16771"
+    "PG24NoisyMatchingMarkets": "https://arxiv.org/abs/2402.16771",
+    "CGGG20SelectiveInformationAcquisition": "https://arxiv.org/abs/1911.02715v3",
+    "GKP26LinearRepresentationHypothesis": "https://arxiv.org/abs/2602.11246v1",
+    "LBG22StrategicRanking": "https://proceedings.mlr.press/v151/liu22b.html"
   },
   "readme_title_overrides": {
     "MSVV07AdWords": "MSVV07 AdWords"
@@ -346,8 +361,9 @@
     }
   ],
   "preserve_partial_status": [
-    "LOS02CombinatorialAuctions",
-    "LMMS04FairDivision"
+    "GKP26LinearRepresentationHypothesis",
+    "LMMS04FairDivision",
+    "LOS02CombinatorialAuctions"
   ],
   "public_summary_overrides": {
     "GS62CollegeAdmissions": "",
@@ -355,11 +371,11 @@
     "Roth82StableMatching": "",
     "MendelsonWhang1990PriorityPricing": "Few lines of code as much of machinery is in the shared library",
     "FreundSchapire1997Hedge": "Few lines of code as much of machinery is in the shared library",
-    "GHW01DigitalGoods": "Formalizes the SODA paper; Theorem 8.2 uses the refined monotone-auction wording from the journal version. Formalization gap: Lemma 8.1 and Theorem 8.2 are proved for finite offer support; continuous-offer cases remain unproved.",
+    "GHW01DigitalGoods": "Formalizes the SODA paper; Theorem 8.2 uses the refined monotone-auction wording from the journal version. The continuous-outcome extension assumes a common monotone coupling and integrable revenue; deriving such a coupling from arbitrary marginal offer laws remains outside the checked result.",
     "MSVV07AdWords": "Formalization gap: Theorem 8's limit is proved when its finite-error term vanishes; deriving that condition from the paper's small-bid regime remains unproved.",
     "EOS07GSP": "Formalization gap: Theorem 8 uniqueness is proved among common symmetric continuation plans; uniqueness among arbitrary bidder-specific plans remains unproved.",
     "FalahatgarEtAl2017MaxingRanking": "",
-    "GJ19OptimalBinaryRatingSystems": "Formalization gap: Theorem 3.1 is proved for optimization of its displayed rate formula for at least three levels; identifying that formula with the actual ranking-quality exponent and proving Lemma C.4's same-objective equivalence remain unproved.",
+    "GJ19OptimalBinaryRatingSystems": "",
     "SeshadriUgander2020IIATesting": "",
     "GKGMM19IterativeLocalVoting": "Theorem 3 is proved as a constrained alternative in general and as the original statement under the explicit full-space condition.",
     "GGSG19TopThree": "",
@@ -384,6 +400,9 @@
     "HT26EFXChores": "",
     "LOS02CombinatorialAuctions": "Formalization gap: twelve selected auction-theoretic results are proved; Theorem 6.1's native NP-hardness and NP = ZPP consequences remain unproved.",
     "LMMS04FairDivision": "Formalization gap: selected components of Theorems 2.1, 2.3, and 4.2 are proved; their remaining complexity and asymptotic clauses and Theorems 3.1-3.3 remain unproved.",
-    "PG24NoisyMatchingMarkets": "Formalization gap: Proposition 1 and Propositions 7(ii)-8 have their qualitative limits proved, while the source polynomial rates remain unproved."
+    "PG24NoisyMatchingMarkets": "Appendix polynomial-rate results use the documented lower-tail correction and finite-second-moment condition.",
+    "CGGG20SelectiveInformationAcquisition": "",
+    "GKP26LinearRepresentationHypothesis": "Theorem 3, Corollary 8, Theorem 12, and Corollary 13 use the cited Alon rank theorem as an external assumption.",
+    "LBG22StrategicRanking": "Proposition 3.1’s cutoff monotonicity and Proposition B.2’s optimum use the additional regularity conditions stated in the report."
   }
 }

@@ -1,6 +1,6 @@
 # Final Validation Report: An Algorithmic Framework for Bias Bounties
 
-Updated: 2026-08-31
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -39,16 +39,16 @@ theory scope.
 
 | Result | Comparison with the paper |
 | --- | --- |
-| [Definitions 1–3](docs/SOURCE_CLARIFICATIONS.md#conditional-group-loss-and-null-groups) | **Statement clarified:** mass-weighted loss is primitive; conditional group loss is zero on null groups. |
-| [Observation 4](docs/SOURCE_CLARIFICATIONS.md#bayes-optimality-and-observation-4) | **Statement corrected:** almost-everywhere replaces pointwise optimality for arbitrary laws. Null-point changes refute the unrestricted pointwise claim; finite positive-mass support retains it. |
+| [Definitions 1–3](docs/SOURCE_CLARIFICATIONS.md#conditional-group-loss-and-null-groups) | **Exact with source clarification:** mass-weighted loss is primitive; conditional group loss is zero on null groups. |
+| [Observation 4](docs/SOURCE_CLARIFICATIONS.md#bayes-optimality-and-observation-4) | **Exact with the almost-everywhere reading:** almost-everywhere replaces pointwise optimality for arbitrary laws. Null-point changes refute the unrestricted pointwise claim; finite positive-mass support retains it. |
 | Definitions 5 and 7; Theorem 8; Algorithm 1; Theorems 9–10; Remark 13 | **Exact.** |
-| [Algorithm 2; Theorem 11](docs/SOURCE_CLARIFICATIONS.md#adaptive-certificate-checking) | **Same claimed sample rate; corrected finite statement:** explicit sparse-transcript failure bound and queried-prefix acceptance count. |
-| [Algorithm 3; Theorem 12](docs/SOURCE_CLARIFICATIONS.md#adaptive-certificate-checking) | **Same claimed sample rate:** uses the corrected finite checker bound. |
-| [Algorithm 4; Theorem 14](docs/SOURCE_CLARIFICATIONS.md#shared-state-in-algorithm-4) | **Algorithm repaired:** shared checker state and a restarted repair scan; the theorem's conclusions are retained. [Checker bound](docs/SOURCE_CLARIFICATIONS.md#adaptive-certificate-checking). |
-| [Lemma 15](docs/SOURCE_CLARIFICATIONS.md#fresh-blocks-integer-rounds-and-the-lemma-15-typo) | **Typo fixed:** undefined `g_p` becomes the quantified group `g`. |
-| [Algorithm 5; Theorem 16](docs/SOURCE_CLARIFICATIONS.md#fresh-blocks-integer-rounds-and-the-lemma-15-typo) | **Typo fixed; same asymptotic oracle/sample rate:** use the fresh block `D_t` and the integer-safe count `ceil(2/epsilon)`. |
+| [Algorithm 2; Theorem 11](docs/SOURCE_CLARIFICATIONS.md#adaptive-certificate-checking) | **Exact sample rate; finite checker statement clarified:** explicit sparse-transcript failure bound and queried-prefix acceptance count. |
+| [Algorithm 3; Theorem 12](docs/SOURCE_CLARIFICATIONS.md#adaptive-certificate-checking) | **Exact sample rate:** uses the corrected finite checker bound. |
+| [Algorithm 4; Theorem 14](docs/SOURCE_CLARIFICATIONS.md#shared-state-in-algorithm-4) | **Exact theorem conclusion after correcting the algorithm’s state handling:** shared checker state and a restarted repair scan; the theorem's conclusions are retained. [Checker bound](docs/SOURCE_CLARIFICATIONS.md#adaptive-certificate-checking). |
+| [Lemma 15](docs/SOURCE_CLARIFICATIONS.md#fresh-blocks-integer-rounds-and-the-lemma-15-typo) | **Exact after correcting the variable typo:** undefined `g_p` becomes the quantified group `g`. |
+| [Algorithm 5; Theorem 16](docs/SOURCE_CLARIFICATIONS.md#fresh-blocks-integer-rounds-and-the-lemma-15-typo) | **Exact asymptotic oracle/sample rate after correcting the block typo:** use the fresh block `D_t` and the integer-safe count `ceil(2/epsilon)`. |
 | Definitions 17–19; Theorem 20; Lemmas 21–22 | **Exact.** |
-| [Algorithm 6; Theorem 23 local-optimality clause](docs/SOURCE_CLARIFICATIONS.md#algorithm-6-and-theorem-23) | **Algorithm repaired:** two coordinate-gap tests replace full-sweep stopping; the theorem's local-optimality conclusion and response bound are retained. |
+| [Algorithm 6; Theorem 23 local-optimality clause](docs/SOURCE_CLARIFICATIONS.md#algorithm-6-and-theorem-23) | **Exact local-optimality conclusion after correcting the stopping rule:** two coordinate-gap tests replace full-sweep stopping; the theorem's local-optimality conclusion and response bound are retained. |
 | [Theorem 23 positive-certificate clause](docs/SOURCE_CLARIFICATIONS.md#algorithm-6-and-theorem-23) | **Sufficient added condition:** positive initialization gives positivity. The zero-objective example refutes arbitrary-start positivity, but does not prove positive initialization necessary. |
 
 ## 5. Remaining Boundaries and Gaps

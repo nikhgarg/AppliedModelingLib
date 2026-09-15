@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "paper": "PG23MonocultureMatching",
+  "prompt_version": "defect-support-v1-exact-source-defect-to-lean-semantic",
+  "audit_kind": "source_defect_to_lean_agent",
+  "source_grounded": true,
+  "validator": "Codex PG23 corrected-target defect-support inventory review",
+  "validator_type": "agent",
+  "validated_at": "2026-08-21T01:07:00Z",
+  "comment": "The reviewed source-proof-fidelity ledger has four corrected-source-statement notes. No source-map item is quarantined and no normal-scope source item uses support_only or covered_by_support credit, so an empty defect-support judgment set is intentional and cannot be read as counterexample or refutation evidence.",
+  "items": {}
+}

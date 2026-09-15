@@ -1,0 +1,186 @@
+{
+  "schema": 2,
+  "paper": "MBJG25ProducerFairness",
+  "report_sha256": "b815c7695d2ccc1074792fe22b4398aea04e7a42bc2d5b131cffd141b4c92917",
+  "source_items_sha256": "33745b48fbe1ed3c8c9fdef32132755fc4b2bbf34b152f14a033a442ab96c8c8",
+  "all_selected_semantic_review_sha256": "ab614e4e10296d4e1441d51c08990a103157ea4b40b7b5d4e7453f8083022a0e",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/MBJG25-THEOREM3-1-STRICT-ENDPOINT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "07542d8438ab71d05653a9e82b694eb756dcf647ad7b8538440a28db9d4ab00a",
+      "source_reading": "Theorem 3.1 says posterior-rating variance is strictly decreasing in prior strength for every source-model quality 0 <= q_v <= 1, but the displayed variance is identically zero at q_v=0 and q_v=1.",
+      "memo_heading": "Theorem 3.1: variance at Bernoulli endpoints",
+      "memo_anchor": "theorem-31-variance-at-bernoulli-endpoints",
+      "report_home": 4
+    },
+    "defect/MBJG25-EQ20-BETA-SHAPE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "07542d8438ab71d05653a9e82b694eb756dcf647ad7b8538440a28db9d4ab00a",
+      "source_reading": "The source says Equation 20 is a prior-weighted binary posterior with baseline prior distribution Beta(C,1), but Beta(C,1) has mean C/(C+1) and does not produce the displayed denominator n+m.",
+      "memo_heading": "Appendix D, Equation (20): Beta prior shape",
+      "memo_anchor": "appendix-d-equation-20-beta-prior-shape",
+      "report_home": 4
+    },
+    "defect/MBJG25-EQ21-PRIOR-OMISSION-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "07542d8438ab71d05653a9e82b694eb756dcf647ad7b8538440a28db9d4ab00a",
+      "source_reading": "The source introduces Dirichlet prior pseudo-counts alphaHat and prior strength eta, but printed Equation 21 sums only observed counts, making the displayed estimate independent of every prior parameter.",
+      "memo_heading": "Appendix E, Equation (21): Dirichlet posterior average",
+      "memo_anchor": "appendix-e-equation-21-dirichlet-posterior-average",
+      "report_home": 4
+    },
+    "convention/MBJG25-DISCRETE-NONDEGENERATE-OBSERVATION-01": {
+      "disposition": "not_material",
+      "reason": "The source fixed binary model has a positive discrete review count; using natural time does not change its domain."
+    },
+    "source/mbjg25_appendix_d_beta_shape/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "07542d8438ab71d05653a9e82b694eb756dcf647ad7b8538440a28db9d4ab00a",
+      "source_reading": "mbjg25_appendix_d_beta_shape",
+      "memo_heading": "Appendix D, Equation (20): Beta prior shape",
+      "memo_anchor": "appendix-d-equation-20-beta-prior-shape",
+      "report_home": 4
+    },
+    "source/mbjg25_appendix_e_ordinal_prior/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "07542d8438ab71d05653a9e82b694eb756dcf647ad7b8538440a28db9d4ab00a",
+      "source_reading": "mbjg25_appendix_e_ordinal_prior",
+      "memo_heading": "Appendix E, Equation (21): Dirichlet posterior average",
+      "memo_anchor": "appendix-e-equation-21-dirichlet-posterior-average",
+      "report_home": 4
+    },
+    "source/mbjg25_theorem3_1/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "07542d8438ab71d05653a9e82b694eb756dcf647ad7b8538440a28db9d4ab00a",
+      "source_reading": "mbjg25_theorem3_1",
+      "memo_heading": "Theorem 3.1: variance at Bernoulli endpoints",
+      "memo_anchor": "theorem-31-variance-at-bernoulli-endpoints",
+      "report_home": 4
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "c5ae8e229ea8033e636af335e5d63f5dd27e098492c9fb013f333e71edd5c1f9",
+      "discovered_named_result_sha256": "7514c8f724d318bbf3c43cd24f8db4f8e6fefa1b039c695e37aa4d4ebf95e787",
+      "source_format": "text",
+      "results": {
+        "mbjg25_theorem3_1": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 334,
+              "line_start": 313,
+              "presentation": "text_heading",
+              "presentation_sha256": "995cba85260a1429ff82e30a758d27a6aeb73f29e7dac057112dc55d4fb21d15",
+              "source_item_id": "mbjg25_theorem3_1",
+              "source_label": "Theorem 3.1"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 1129,
+              "line_start": 1120,
+              "presentation": "text_heading",
+              "presentation_sha256": "885ad240133f350d622ec6e24d5cb86c49f16b73c895e3e2b57ae02d2098e2d2",
+              "source_item_id": "mbjg25_theorem3_1_appendix_presentation",
+              "source_label": "Theorem 3.1"
+            }
+          ],
+          "source_item_ids": [
+            "mbjg25_theorem3_1",
+            "mbjg25_theorem3_1_appendix_presentation"
+          ]
+        },
+        "mbjg25_theorem3_2": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 344,
+              "line_start": 335,
+              "presentation": "text_heading",
+              "presentation_sha256": "7419d4a7170f8f7c662d4fdde2ac7f6f24351e7125b57bd91958653ce9675cd4",
+              "source_item_id": "mbjg25_theorem3_2",
+              "source_label": "Theorem 3.2"
+            },
+            {
+              "kind": "theorem",
+              "line_end": 1145,
+              "line_start": 1137,
+              "presentation": "text_heading",
+              "presentation_sha256": "688d45bdefeb4fb60bbca31aa8aa7117be8929d6cd9b49e810d59d72665726ba",
+              "source_item_id": "mbjg25_theorem3_2_appendix_presentation",
+              "source_label": "Theorem 3.2"
+            }
+          ],
+          "source_item_ids": [
+            "mbjg25_theorem3_2",
+            "mbjg25_theorem3_2_appendix_presentation"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "d7c711778232aa65331ff366bb62a88e10f4661ea4361f39b2b2f3808959c892",
+    "results": {
+      "mbjg25_theorem3_1": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3.1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3.1",
+            "row_sha256": "1a8e69331e7013afd8b40e2e2f03e6ab9b4cfd63b2873c54b239e307c721920b"
+          }
+        ]
+      },
+      "mbjg25_theorem3_2": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3.2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 3.2",
+            "row_sha256": "0adbb3311d607cd36429d770ab1ab31b309acca2b2f4a604f1fa0ad745d7d2d6"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "0adbb3311d607cd36429d770ab1ab31b309acca2b2f4a604f1fa0ad745d7d2d6": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "1a8e69331e7013afd8b40e2e2f03e6ab9b4cfd63b2873c54b239e307c721920b": {
+        "explanation_keys": [
+          "defect/MBJG25-THEOREM3-1-STRICT-ENDPOINT-01",
+          "source/mbjg25_theorem3_1/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "fc59661a8c32a0d9ae405cb61b22976b11ae9e7f4504056faaf2e00fcf60212d": {
+        "explanation_keys": [
+          "defect/MBJG25-EQ20-BETA-SHAPE-01",
+          "source/mbjg25_appendix_d_beta_shape/corrected_target"
+        ],
+        "supplemental_reason": "Equation (20) is selected source formula content, but not a separately selected named theorem-like result."
+      },
+      "43897ea9a364676f84049599521e57f4b2a783c6597d908ea67475f51e7dd901": {
+        "explanation_keys": [
+          "defect/MBJG25-EQ21-PRIOR-OMISSION-01",
+          "source/mbjg25_appendix_e_ordinal_prior/corrected_target"
+        ],
+        "supplemental_reason": "Equation (21) is selected source formula content, but not a separately selected named theorem-like result."
+      }
+    }
+  }
+}

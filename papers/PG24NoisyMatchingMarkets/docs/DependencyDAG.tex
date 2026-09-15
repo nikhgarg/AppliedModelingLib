@@ -41,15 +41,15 @@
 
 \node[dag_result, text width=5.1cm] (AttenuationAppendix) at (0,-9.1) {
   \textbf{Attenuation appendix endpoints}\\
-  corrected `thm1v2'; duck-1; tomato; duck-2; goose-1; logarithmic maximum; beet; goose-2
+  Appendix Propositions 1--8 and Appendix Lemma 6: lower-tail mass, capacity, dense-cluster, high-cutoff, and maximum bounds
 };
-\node[dag_result, text width=5.1cm] (AmplificationAppendix) at (7,-9.1) {
-  \textbf{Amplification appendix endpoints}\\
-  central window; large-firm gap; unbounded cutoffs; apple; large-firm tail; approximation; small firms
-};
-\node[dag_result, text width=5.1cm] (TheoremOne) at (14,-9.1) {
+\node[dag_result, text width=5.1cm] (TheoremOne) at (7,-9.1) {
   \textbf{Theorem 1: attenuation}\\
   match probability tends to $0$ below and $1$ above the efficient threshold
+};
+\node[dag_result, text width=5.1cm] (AmplificationAppendix) at (14,-9.1) {
+  \textbf{Amplification appendix endpoints}\\
+  Appendix Propositions 9--10 and 14--15; Appendix Lemmas 11--13: central-window and firm-block bounds
 };
 \node[dag_result, text width=5.1cm] (TheoremTwo) at (21,-9.1) {
   \textbf{Theorem 2: amplification}\\
@@ -72,7 +72,7 @@
 \draw[dag_arrow] (CoalitionModel) -- (Cutoff);
 \draw[dag_arrow] (Regularity) -- (AttenuationAppendix);
 \draw[dag_arrow] (BetaMax) -- (AttenuationAppendix);
-\draw[dag_arrow] (Cutoff.south west) -- (AttenuationAppendix.north east);
+\draw[dag_arrow] (Cutoff.south west) -- ++(-0.7,-1.3) -| (AttenuationAppendix.north east);
 \draw[dag_arrow] (Regularity.south east) -- (AmplificationAppendix.north west);
 \draw[dag_arrow] (LongTail) -- (AmplificationAppendix);
 \draw[dag_arrow] (Cutoff) -- (AmplificationAppendix);

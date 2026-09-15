@@ -1,0 +1,271 @@
+{
+  "schema": 2,
+  "paper": "GJ18InformativeRatingSystems",
+  "report_sha256": "cd2f835c17b080b7cd7db0128c08c2bd9901561fffab9eb44702924c90c32a20",
+  "source_items_sha256": "ef1e743e60fd9c1d45b793ac9de6aeaf29a3dc41cb96862da7ebe4e0bf96b9fb",
+  "all_selected_semantic_review_sha256": "1d357c8e66e07992beb8295b5776ec2aa7d88ecec5280ea4a0db714e6628ed2c",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/GJ18-AGGREGATE-INDEX-01": {
+      "disposition": "memo",
+      "memo": "docs/GOVERNING_MODEL_CLARIFICATION.md",
+      "memo_sha256": "41d9abf3b3403bcb323be28b72c5b3f19d13b70f0950880e7f0b4ea77d83b533",
+      "source_reading": "The aggregate score is described as the average of n_k(theta) ratings and divided by n_k(theta), but the displayed summation runs from 0 through n_k(theta), hence has n_k(theta)+1 terms.",
+      "memo_heading": "Average scores and the probability calculation",
+      "memo_anchor": "average-scores-and-the-probability-calculation",
+      "report_home": 4
+    },
+    "defect/GJ18-THEOREM1-ADJACENT-INDEX-01": {
+      "disposition": "memo",
+      "memo": "docs/GOVERNING_MODEL_CLARIFICATION.md",
+      "memo_sha256": "41d9abf3b3403bcb323be28b72c5b3f19d13b70f0950880e7f0b4ea77d83b533",
+      "source_reading": "Theorem 1 prints a minimum over 0 <= i < M while using theta_(i+1), even though the source declares types theta_i only for 0 <= i < M; the Appendix also writes comparison indices with an upper endpoint M.",
+      "memo_heading": "Theorem 1 reading",
+      "memo_anchor": "theorem-1-reading",
+      "report_home": 4
+    },
+    "defect/GJ18-PAIR-CARRIER-NORMALIZATION-01": {
+      "disposition": "not_material",
+      "reason": "The source objective already sums over strict ordered type pairs and uses their uniform-average normalization; the formalization proves this normalization."
+    },
+    "defect/GJ18-QUALITY-TAIL-BOTTOM-01": {
+      "disposition": "memo",
+      "memo": "docs/GOVERNING_MODEL_CLARIFICATION.md",
+      "memo_sha256": "41d9abf3b3403bcb323be28b72c5b3f19d13b70f0950880e7f0b4ea77d83b533",
+      "source_reading": "The source says the cumulative upper-tail probability R(theta,y|Y) is strictly increasing in theta for every displayed rating y. At the lowest rating, however, the upper-tail event is the whole finite scale and has probability one for every theta, so literal strictness there is impossible.",
+      "memo_heading": "Theorem 1 reading",
+      "memo_anchor": "theorem-1-reading",
+      "report_home": 4
+    },
+    "defect/GJ18-TERMINAL-SUPPORT-01": {
+      "disposition": "not_material",
+      "reason": "The former extra terminal full-support requirement has been removed. The current result does not add it."
+    },
+    "defect/GJ18-POSITIVE-MATCH-RATE-01": {
+      "disposition": "memo",
+      "memo": "docs/GOVERNING_MODEL_CLARIFICATION.md",
+      "memo_sha256": "41d9abf3b3403bcb323be28b72c5b3f19d13b70f0950880e7f0b4ea77d83b533",
+      "source_reading": "The source archive assumes only that g is nondecreasing while using k g(theta) as a diverging sample size in its convergence and large-deviation claims. A nondecreasing match function may be zero at one or more seller types, in which case the corresponding sample count need not diverge. The author has subsequently confirmed the governing clarification 0<g(theta)<=1, but that clarification is not literal archive text.",
+      "memo_heading": "Model readings",
+      "memo_anchor": "model-readings",
+      "report_home": 10
+    },
+    "defect/GJ18-NONTRIVIAL-RATING-SCALE-01": {
+      "disposition": "not_material",
+      "reason": "The source describes an ordered multiple-choice rating scale with distinct scores. The nontrivial finite carrier makes this source domain explicit."
+    },
+    "defect/GJ18-IID-STATE-COMPLETION-01": {
+      "disposition": "memo",
+      "memo": "docs/GOVERNING_MODEL_CLARIFICATION.md",
+      "memo_sha256": "41d9abf3b3403bcb323be28b72c5b3f19d13b70f0950880e7f0b4ea77d83b533",
+      "source_reading": "The source archive describes a one-rating distribution conditional on seller type and then gives a joint-state recurrence, but it does not prove that the score histories at horizon k have the independent finite product law used by an IID large-deviation calculation. The author has subsequently confirmed conditional IID ratings and cross-seller independence as the governing clarification, but that is not a theorem of the archive recurrence.",
+      "memo_heading": "Model readings",
+      "memo_anchor": "model-readings",
+      "report_home": 10
+    },
+    "defect/GJ18-STATE-RECURRENCE-INDEX-01": {
+      "disposition": "memo",
+      "memo": "docs/GOVERNING_MODEL_CLARIFICATION.md",
+      "memo_sha256": "41d9abf3b3403bcb323be28b72c5b3f19d13b70f0950880e7f0b4ea77d83b533",
+      "source_reading": "The displayed recurrence writes mu_(k+1) while its membership set and score transition use E_k, n_k, and n_(k-1), with no base state or indexing convention that identifies this as a transition from mu_k to mu_(k+1). It also mixes a conditional state description with integrals over theta and score without a typed finite or measure-theoretic state space.",
+      "memo_heading": "From individual ratings to the seller population",
+      "memo_anchor": "from-individual-ratings-to-the-seller-population",
+      "report_home": 4
+    },
+    "defect/GJ18-UNIFORM-TYPE-PRIOR-01": {
+      "disposition": "memo",
+      "memo": "docs/GOVERNING_MODEL_CLARIFICATION.md",
+      "memo_sha256": "41d9abf3b3403bcb323be28b72c5b3f19d13b70f0950880e7f0b4ea77d83b533",
+      "source_reading": "The source says seller types are independently and uniformly drawn, and its mu_k is a joint distribution over type and score. The author-confirmed clarified model now records an explicit uniform type PMF, but the archive itself does not derive its conditional score laws from that population state or connect it to the displayed recurrence.",
+      "memo_heading": "From individual ratings to the seller population",
+      "memo_anchor": "from-individual-ratings-to-the-seller-population",
+      "report_home": 4
+    },
+    "defect/GJ18-APPENDIX-DISCRETE-INTEGRAL-01": {
+      "disposition": "memo",
+      "memo": "docs/GOVERNING_MODEL_CLARIFICATION.md",
+      "memo_sha256": "41d9abf3b3403bcb323be28b72c5b3f19d13b70f0950880e7f0b4ea77d83b533",
+      "source_reading": "The proof rewrites a finite/discrete score-comparison probability as a continuum integral over a in R, substitutes pointwise large-deviation expressions inside that integral, and invokes a Laplace principle without establishing the required discrete-event or uniform asymptotic transfer.",
+      "memo_heading": "Average scores and the probability calculation",
+      "memo_anchor": "average-scores-and-the-probability-calculation",
+      "report_home": 4
+    },
+    "defect/GJ18-PKLD-CONSTANT-SANDWICH-01": {
+      "disposition": "not_material",
+      "reason": "The event algebra and constant sandwich fill in the proof of the same rate conclusion; no result or assumption changes."
+    },
+    "defect/GJ18-EXTENDED-RATE-CODOMAIN-01": {
+      "disposition": "memo",
+      "memo": "docs/GOVERNING_MODEL_CLARIFICATION.md",
+      "memo_sha256": "41d9abf3b3403bcb323be28b72c5b3f19d13b70f0950880e7f0b4ea77d83b533",
+      "source_reading": "The source writes I(a|theta) as a real supremum over all a in R. In the finite [0,1]-score model, evaluating below zero makes the legacy Real.sSup-based one-law functions default to zero; consequently the unrestricted legacy real pairwise infimum is exactly zero, not the intended positive exponent. Out-of-support thresholds instead have infinite large-deviation cost in the correct extended codomain.",
+      "memo_heading": "Theorem 1 reading",
+      "memo_anchor": "theorem-1-reading",
+      "report_home": 4
+    },
+    "source/author_approved_corrected_model_theorem1_finite_real_rate/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/GOVERNING_MODEL_CLARIFICATION.md",
+      "memo_sha256": "41d9abf3b3403bcb323be28b72c5b3f19d13b70f0950880e7f0b4ea77d83b533",
+      "source_reading": "author_approved_corrected_model_theorem1_finite_real_rate",
+      "memo_heading": "Theorem 1 reading",
+      "memo_anchor": "theorem-1-reading",
+      "report_home": 4
+    },
+    "source/source_appendix_pk_ld_complement_rate_iid_completion/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/GOVERNING_MODEL_CLARIFICATION.md",
+      "memo_sha256": "41d9abf3b3403bcb323be28b72c5b3f19d13b70f0950880e7f0b4ea77d83b533",
+      "source_reading": "source_appendix_pk_ld_complement_rate_iid_completion",
+      "memo_heading": "Average scores and the probability calculation",
+      "memo_anchor": "average-scores-and-the-probability-calculation",
+      "report_home": 4
+    },
+    "source/source_appendix_problessthan_score_gap_rate_iid_completion/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/GOVERNING_MODEL_CLARIFICATION.md",
+      "memo_sha256": "41d9abf3b3403bcb323be28b72c5b3f19d13b70f0950880e7f0b4ea77d83b533",
+      "source_reading": "source_appendix_problessthan_score_gap_rate_iid_completion",
+      "memo_heading": "Average scores and the probability calculation",
+      "memo_anchor": "average-scores-and-the-probability-calculation",
+      "report_home": 4
+    },
+    "source/source_definition_aggregate_score_formula/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/GOVERNING_MODEL_CLARIFICATION.md",
+      "memo_sha256": "41d9abf3b3403bcb323be28b72c5b3f19d13b70f0950880e7f0b4ea77d83b533",
+      "source_reading": "source_definition_aggregate_score_formula",
+      "memo_heading": "Average scores and the probability calculation",
+      "memo_anchor": "average-scores-and-the-probability-calculation",
+      "report_home": 4
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "5b813bc9f600735f17fd6061c9d9ce0814b47c07f22f12273e7b21d22d547da5",
+      "discovered_named_result_sha256": "a56d546f6c540508b402b16cc3347dd8a8ce96b4c8d2efaebf6cce926b9d7cf0",
+      "source_format": "tex",
+      "results": {
+        "author_approved_corrected_model_theorem1_finite_real_rate": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 764,
+              "line_start": 754,
+              "presentation": "tex_environment",
+              "presentation_sha256": "c1e4bb936e3c15e1c00a02f7116cf49a4f069b953249001935a8e6ecdc693e2e",
+              "source_item_id": "author_approved_corrected_model_theorem1_finite_real_rate",
+              "source_label": "lem:hatW"
+            }
+          ],
+          "source_item_ids": [
+            "author_approved_corrected_model_theorem1_finite_real_rate"
+          ]
+        },
+        "source_appendix_pk_ld_complement_rate_iid_completion": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1681,
+              "line_start": 1670,
+              "presentation": "tex_environment",
+              "presentation_sha256": "2f2ec8ba7f5f68e8aa89e9c0fca1929a5b0100e9c42eb8a3202b5d82bfcb2cb8",
+              "source_item_id": "source_appendix_pk_ld_complement_rate_iid_completion",
+              "source_label": "lem:Pk_LD"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_pk_ld_complement_rate_iid_completion"
+          ]
+        },
+        "source_appendix_problessthan_score_gap_rate_iid_completion": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1635,
+              "line_start": 1633,
+              "presentation": "tex_environment",
+              "presentation_sha256": "8f1948005a334d473e2d203740e0094bbec891cdbff87e20728e4f2e0fa6d36f",
+              "source_item_id": "source_appendix_problessthan_score_gap_rate_iid_completion",
+              "source_label": "lem:problessthan"
+            }
+          ],
+          "source_item_ids": [
+            "source_appendix_problessthan_score_gap_rate_iid_completion",
+            "source_definition_extended_rate_function_formula",
+            "source_definition_log_mgf_formula",
+            "source_definition_rate_function_formula",
+            "source_fidelity_diagnostic_unrestricted_real_pairwise_rate_mismatch"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "62bb4afd39c749ae8b0588d855f706b295c06dd4e921c79ce4f1da9d7d9ee16d",
+    "results": {
+      "author_approved_corrected_model_theorem1_finite_real_rate": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1",
+            "row_sha256": "bbf6a1cc36c125773dc03d36e25169e3c66c340e1a9173bef81682a28984cac8"
+          }
+        ],
+        "grouping_reason": "The report combines Theorem 1 with its two appendix large-deviation lemmas because the lemmas supply the pairwise rates used in the theorem."
+      },
+      "source_appendix_pk_ld_complement_rate_iid_completion": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemmas 1–2",
+            "row_sha256": "bbf6a1cc36c125773dc03d36e25169e3c66c340e1a9173bef81682a28984cac8"
+          }
+        ],
+        "grouping_reason": "The report combines Theorem 1 with its two appendix large-deviation lemmas because the lemmas supply the pairwise rates used in the theorem."
+      },
+      "source_appendix_problessthan_score_gap_rate_iid_completion": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemmas 1–2",
+            "row_sha256": "bbf6a1cc36c125773dc03d36e25169e3c66c340e1a9173bef81682a28984cac8"
+          }
+        ],
+        "grouping_reason": "The report combines Theorem 1 with its two appendix large-deviation lemmas because the lemmas supply the pairwise rates used in the theorem."
+      }
+    },
+    "rows": {
+      "496274a7b915b0ea05b6336fe8932ed33e67afe8f3f68e2b9eefdf51d1a6888a": {
+        "explanation_keys": [],
+        "supplemental_reason": "The pairwise and uniform-ranking objectives are selected source formulas rather than theorem-like results in the typed named-result inventory."
+      },
+      "bbf6a1cc36c125773dc03d36e25169e3c66c340e1a9173bef81682a28984cac8": {
+        "explanation_keys": [
+          "defect/GJ18-AGGREGATE-INDEX-01",
+          "defect/GJ18-THEOREM1-ADJACENT-INDEX-01",
+          "defect/GJ18-QUALITY-TAIL-BOTTOM-01",
+          "defect/GJ18-STATE-RECURRENCE-INDEX-01",
+          "defect/GJ18-UNIFORM-TYPE-PRIOR-01",
+          "defect/GJ18-APPENDIX-DISCRETE-INTEGRAL-01",
+          "defect/GJ18-EXTENDED-RATE-CODOMAIN-01",
+          "source/author_approved_corrected_model_theorem1_finite_real_rate/corrected_target",
+          "source/source_appendix_pk_ld_complement_rate_iid_completion/corrected_target",
+          "source/source_appendix_problessthan_score_gap_rate_iid_completion/corrected_target",
+          "source/source_definition_aggregate_score_formula/corrected_target"
+        ],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

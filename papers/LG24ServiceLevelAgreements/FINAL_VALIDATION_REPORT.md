@@ -1,5 +1,5 @@
-# Final Validation Report: LG24 Service Level Agreements
-Updated: 2026-09-06
+# Final Validation Report: Redesigning Service Level Agreements: Equity and Efficiency in City Government Operations
+Updated: 2026-09-09
 
 ## 1. Human Verdict
 
@@ -10,16 +10,17 @@ yet been recorded.
 
 ## 2. Closeout Status
 
-- Completion status: `formalized`.
-- Scope: five named propositions, the stationary GPS response-tail display,
-  and the all-request SLA rate-fraction display.
-- Human review: not yet recorded.
+- Completion status: formalized
+- One-sentence recap: The five optimization propositions and the selected
+  stationary queueing and SLA formulas are proved.
 
 ## 3. Source and Scope
 
-The source is the active private manuscript revision. The normal scope
-is its five propositions: reciprocal capacity, extreme efficiency, extreme
-equity, price of equity, and centralization gain. The stationary GPS
+The public source is [arXiv:2410.14825v2](https://arxiv.org/abs/2410.14825v2),
+revised September 7, 2026.
+
+The normal scope is its five propositions: reciprocal capacity, extreme
+efficiency, extreme equity, price of equity, and centralization gain. The stationary GPS
 response-tail and all-request SLA rate-fraction displays are selected
 supplemental targets. Algorithms, simulations, figures, captions, and ordinary
 prose are not part of this formalization.
@@ -33,7 +34,7 @@ prose are not part of this formalization.
 | Proposition 2.4 (price of equity) | **Exact.** |
 | Proposition 2.5 (centralization gain) | **Exact.** |
 | Equation (1) (stationary response-time tail) | **Exact.** |
-| Unnumbered all-request fraction consequence following Equation (2) | **Interpretation clarified:** stationary probability/intensity fraction, without a raw-arrival empirical-frequency limit. [Reading](docs/SOURCE_CLARIFICATIONS.md#meaning-of-the-all-request-fraction). |
+| Unnumbered all-request fraction consequence following Equation (2) | **Exact with source clarification:** stationary probability/intensity fraction, without a raw-arrival empirical-frequency limit. [Reading](docs/SOURCE_CLARIFICATIONS.md#meaning-of-the-all-request-fraction). |
 
 ## 5. Remaining Boundaries and Gaps
 

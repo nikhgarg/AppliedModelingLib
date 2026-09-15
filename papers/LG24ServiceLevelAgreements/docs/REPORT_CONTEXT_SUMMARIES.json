@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "paper": "LG24ServiceLevelAgreements",
+  "summaries": {},
+  "omitted_conventions": [
+    "LG24-POST-THINNING-ADMITTED-POISSON-NORMAL-FORM-01",
+    "LG24-STEADY-SLA-SUBSYSTEM-CONDITION-01"
+  ]
+}

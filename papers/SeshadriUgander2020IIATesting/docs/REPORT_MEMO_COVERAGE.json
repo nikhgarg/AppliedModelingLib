@@ -1,0 +1,454 @@
+{
+  "all_selected_semantic_review_sha256": "d626841160ff2b316ef31c760821e43b58efac3d3638d7f857017a922a96dffd",
+  "items": {
+    "defect/SU20-ALL-EVEN-ENDPOINT-04": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "all-even-subsets-endpoint",
+      "memo_heading": "All-even-subsets endpoint",
+      "memo_sha256": "4a56689283ec413f731126fbcf6ef54113e8d84e1f28f2d0d429d9575d0b5629",
+      "report_home": 4,
+      "source_reading": "The all-even-subsets corollary claims n >= 2, but the n = 2 comparison-incidence graph is not Eulerian."
+    },
+    "defect/SU20-CYCLE-BOUND-DOMAINS-03": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "appendix-comparison-incidence-bound",
+      "memo_heading": "Appendix comparison-incidence bound",
+      "memo_sha256": "4a56689283ec413f731126fbcf6ef54113e8d84e1f28f2d0d429d9575d0b5629",
+      "report_home": 4,
+      "source_reading": "The printed rational mean branch omits positivity of d - 4n + 8 log_2(n), and the final real-log dispersion simplification is used without stating its n >= 4 range."
+    },
+    "defect/SU20-LEMMA2-MIXTURE-NONCONVEX-05": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "lemma-2-mixture-reduction",
+      "memo_heading": "Lemma 2 mixture reduction",
+      "memo_sha256": "4a56689283ec413f731126fbcf6ef54113e8d84e1f28f2d0d429d9575d0b5629",
+      "report_home": 7,
+      "source_reading": "The printed proof says that a mixture of component alternatives remains in the delta-separated class once every component is in that class."
+    },
+    "defect/SU20-THEOREM1-LECAM-COEFFICIENT-02": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "le-cam-coefficient-in-the-proof-of-theorem-1",
+      "memo_heading": "Le Cam coefficient in the proof of Theorem 1",
+      "memo_sha256": "4a56689283ec413f731126fbcf6ef54113e8d84e1f28f2d0d429d9575d0b5629",
+      "report_home": 7,
+      "source_reading": "The first displayed proof line uses coefficient 1/4 before total variation although the preceding Le Cam inequality uses 1/2; the next chi-square line and theorem endpoint correspond to the standard route."
+    },
+    "defect/SU20-THEOREM1-PERTURBATION-RANGE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_sha256": "4a56689283ec413f731126fbcf6ef54113e8d84e1f28f2d0d429d9575d0b5629",
+      "memo_heading": "Theorem 1 perturbation range",
+      "memo_anchor": "theorem-1-perturbation-range",
+      "source_reading": "The source perturbation is defined for epsilon in [0,1], so the proof substitution epsilon = 2 mu(sigma) delta requires 2 mu(sigma) delta <= 1.",
+      "report_home": 4
+    },
+    "source/corollary1_global_lower_bound/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "appendix-comparison-incidence-bound",
+      "memo_heading": "Appendix comparison-incidence bound",
+      "memo_sha256": "4a56689283ec413f731126fbcf6ef54113e8d84e1f28f2d0d429d9575d0b5629",
+      "report_home": 4,
+      "source_reading": "corollary1_global_lower_bound"
+    },
+    "source/corollary_all_even_subsets/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "all-even-subsets-endpoint",
+      "memo_heading": "All-even-subsets endpoint",
+      "memo_sha256": "4a56689283ec413f731126fbcf6ef54113e8d84e1f28f2d0d429d9575d0b5629",
+      "report_home": 4,
+      "source_reading": "corollary_all_even_subsets"
+    },
+    "source/lemma_comparison_incidence_decomposition/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_anchor": "appendix-comparison-incidence-bound",
+      "memo_heading": "Appendix comparison-incidence bound",
+      "memo_sha256": "4a56689283ec413f731126fbcf6ef54113e8d84e1f28f2d0d429d9575d0b5629",
+      "report_home": 4,
+      "source_reading": "lemma_comparison_incidence_decomposition"
+    },
+    "source/theorem1_lower_bound/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md",
+      "memo_sha256": "4a56689283ec413f731126fbcf6ef54113e8d84e1f28f2d0d429d9575d0b5629",
+      "memo_heading": "Theorem 1 perturbation range",
+      "memo_anchor": "theorem-1-perturbation-range",
+      "source_reading": "The source perturbation is defined for epsilon in [0,1], so the proof substitution epsilon = 2 mu(sigma) delta requires 2 mu(sigma) delta <= 1.",
+      "report_home": 4
+    }
+  },
+  "paper": "SeshadriUgander2020IIATesting",
+  "report_inventory_complete": true,
+  "report_sha256": "6e214e3300f122ba0cc9a7064217399d836cf8226da925500765a6a9da1003cf",
+  "result_table": {
+    "complete": true,
+    "results": {
+      "corollary1_global_lower_bound": {
+        "grouping_reason": "Corollary 1 uses the corrected Appendix Lemma 10 decomposition bound, so the report gives their shared domain qualification once.",
+        "numbering": "numbered",
+        "printed_label": "Corollary 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Corollary 1",
+            "row_sha256": "4cb155cb3552164eed99fc2f7cc95f839a301fb5b30047b7f0c5396ec1d26a30"
+          }
+        ]
+      },
+      "corollary_all_even_subsets": {
+        "numbering": "numbered",
+        "printed_label": "Appendix Corollary 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Corollary 2",
+            "row_sha256": "152562f8007ddf7f020bf7e3c25d00bd615aed42eb5c59808ec604aec5c13dac"
+          }
+        ]
+      },
+      "fact_convex_hull_dense": {
+        "grouping_reason": "The report groups Lemmas 3–4 with selected Appendix Facts 5 and 7 and Appendix Lemmas 6 and 9 as one exact support-result block.",
+        "numbering": "numbered",
+        "printed_label": "Appendix Fact 5",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Fact 5",
+            "row_sha256": "5af3e5f08558996a8e1fb785ebac2ed76ee0cb9bba8e99b6ea7d41948973234a"
+          }
+        ]
+      },
+      "fact_max_entropy": {
+        "grouping_reason": "The report groups Lemmas 3–4 with selected Appendix Facts 5 and 7 and Appendix Lemmas 6 and 9 as one exact support-result block.",
+        "numbering": "numbered",
+        "printed_label": "Appendix Fact 7",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Fact 7",
+            "row_sha256": "5af3e5f08558996a8e1fb785ebac2ed76ee0cb9bba8e99b6ea7d41948973234a"
+          }
+        ]
+      },
+      "lemma2_separation": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 2",
+            "row_sha256": "d317f59a532b26557280b5ff7b344c3385075ca0a39bc5fe80d03991746a99c3"
+          }
+        ]
+      },
+      "lemma3_chi_square": {
+        "grouping_reason": "The report groups Lemmas 3–4 with selected Appendix Facts 5 and 7 and Appendix Lemmas 6 and 9 as one exact support-result block.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 3–4",
+            "row_sha256": "5af3e5f08558996a8e1fb785ebac2ed76ee0cb9bba8e99b6ea7d41948973234a"
+          }
+        ]
+      },
+      "lemma4_cycle_chi_square": {
+        "grouping_reason": "The report groups Lemmas 3–4 with selected Appendix Facts 5 and 7 and Appendix Lemmas 6 and 9 as one exact support-result block.",
+        "numbering": "numbered",
+        "printed_label": "Lemma 4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 3–4",
+            "row_sha256": "5af3e5f08558996a8e1fb785ebac2ed76ee0cb9bba8e99b6ea7d41948973234a"
+          }
+        ]
+      },
+      "lemma_bipartite_cycle_decomposition": {
+        "grouping_reason": "The report groups Lemmas 3–4 with selected Appendix Facts 5 and 7 and Appendix Lemmas 6 and 9 as one exact support-result block.",
+        "numbering": "numbered",
+        "printed_label": "Appendix Lemma 9",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemma 9",
+            "row_sha256": "5af3e5f08558996a8e1fb785ebac2ed76ee0cb9bba8e99b6ea7d41948973234a"
+          }
+        ]
+      },
+      "lemma_comparison_incidence_decomposition": {
+        "grouping_reason": "Corollary 1 uses the corrected Appendix Lemma 10 decomposition bound, so the report gives their shared domain qualification once.",
+        "numbering": "numbered",
+        "printed_label": "Appendix Lemma 10",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemma 10",
+            "row_sha256": "4cb155cb3552164eed99fc2f7cc95f839a301fb5b30047b7f0c5396ec1d26a30"
+          }
+        ]
+      },
+      "lemma_iia_invariance": {
+        "grouping_reason": "The report groups Lemmas 3–4 with selected Appendix Facts 5 and 7 and Appendix Lemmas 6 and 9 as one exact support-result block.",
+        "numbering": "numbered",
+        "printed_label": "Appendix Lemma 6",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Appendix Lemma 6",
+            "row_sha256": "5af3e5f08558996a8e1fb785ebac2ed76ee0cb9bba8e99b6ea7d41948973234a"
+          }
+        ]
+      },
+      "theorem1_lower_bound": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1",
+            "row_sha256": "9b33befa37add313834c3efbc9e1aadca93cc2802ab6276605b970fc47e24744"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "152562f8007ddf7f020bf7e3c25d00bd615aed42eb5c59808ec604aec5c13dac": {
+        "explanation_keys": [
+          "defect/SU20-ALL-EVEN-ENDPOINT-04",
+          "source/corollary_all_even_subsets/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "4cb155cb3552164eed99fc2f7cc95f839a301fb5b30047b7f0c5396ec1d26a30": {
+        "explanation_keys": [
+          "defect/SU20-CYCLE-BOUND-DOMAINS-03",
+          "source/corollary1_global_lower_bound/corrected_target",
+          "source/lemma_comparison_incidence_decomposition/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "5af3e5f08558996a8e1fb785ebac2ed76ee0cb9bba8e99b6ea7d41948973234a": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "9b33befa37add313834c3efbc9e1aadca93cc2802ab6276605b970fc47e24744": {
+        "explanation_keys": [
+          "defect/SU20-THEOREM1-PERTURBATION-RANGE-01",
+          "source/theorem1_lower_bound/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "d317f59a532b26557280b5ff7b344c3385075ca0a39bc5fe80d03991746a99c3": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      }
+    },
+    "schema": 1,
+    "source_inventory": {
+      "discovered_named_result_sha256": "ae98da87027e3f918d39257882d369c664f1f715422ea188a7750d0735f8b91e",
+      "results": {
+        "corollary1_global_lower_bound": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 687,
+              "line_start": 680,
+              "presentation": "tex_environment",
+              "presentation_sha256": "e84bd3e5a43127c371c0e34d85b82de912583091c7e1fe29efb22c635560ca59",
+              "source_item_id": "corollary1_global_lower_bound",
+              "source_label": "cor:global_lower_bound"
+            }
+          ],
+          "source_item_ids": [
+            "corollary1_global_lower_bound"
+          ]
+        },
+        "corollary_all_even_subsets": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 925,
+              "line_start": 919,
+              "presentation": "tex_environment",
+              "presentation_sha256": "1e839180ccbf6f5fde86cf1b4e70a014c2189e158b72007eaee91ff2ca29d531",
+              "source_item_id": "corollary_all_even_subsets",
+              "source_label": "cor:all_subsets_cycle_decomposition"
+            }
+          ],
+          "source_item_ids": [
+            "corollary_all_even_subsets"
+          ]
+        },
+        "fact_convex_hull_dense": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 785,
+              "line_start": 783,
+              "presentation": "tex_environment",
+              "presentation_sha256": "64b85a3a7b66171cf156c7821730abb983a6f077088ed330634ffae1c565a802",
+              "source_item_id": "fact_convex_hull_dense",
+              "source_label": "cvx_hull_dense"
+            }
+          ],
+          "source_item_ids": [
+            "fact_convex_hull_dense"
+          ]
+        },
+        "fact_max_entropy": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 848,
+              "line_start": 840,
+              "presentation": "tex_environment",
+              "presentation_sha256": "6dd65c14113285c2dee5fa1b2e66c33216e18fd1f8a5fdd596ce33b6ebb5f763",
+              "source_item_id": "fact_max_entropy",
+              "source_label": "max_entropy"
+            }
+          ],
+          "source_item_ids": [
+            "fact_max_entropy"
+          ]
+        },
+        "lemma2_separation": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 529,
+              "line_start": 527,
+              "presentation": "tex_environment",
+              "presentation_sha256": "3a2eb486517480e206aa09133b10c3e7006096b28a1139b4a23880a8d6e4e130",
+              "source_item_id": "lemma2_separation",
+              "source_label": "lemma:seperation"
+            }
+          ],
+          "source_item_ids": [
+            "lemma2_separation"
+          ]
+        },
+        "lemma3_chi_square": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 604,
+              "line_start": 595,
+              "presentation": "tex_environment",
+              "presentation_sha256": "562f006f55b00c2564702688964547a1d3b528abc6073e8a65796f90f69918c7",
+              "source_item_id": "lemma3_chi_square",
+              "source_label": "lemma:bound1"
+            }
+          ],
+          "source_item_ids": [
+            "lemma3_chi_square"
+          ]
+        },
+        "lemma4_cycle_chi_square": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 638,
+              "line_start": 631,
+              "presentation": "tex_environment",
+              "presentation_sha256": "371f8eb6d9a92e390513f6819e14fce884a0e28dd52a704ab94454d699418bdf",
+              "source_item_id": "lemma4_cycle_chi_square",
+              "source_label": "lemma:bound2"
+            }
+          ],
+          "source_item_ids": [
+            "lemma4_cycle_chi_square"
+          ]
+        },
+        "lemma_bipartite_cycle_decomposition": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 869,
+              "line_start": 867,
+              "presentation": "tex_environment",
+              "presentation_sha256": "f9742f49be6809d100b63851f494fe420b705b802b944971a065c8ba87929201",
+              "source_item_id": "lemma_bipartite_cycle_decomposition",
+              "source_label": "lemma:bipartite_cycle_decomposition"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_bipartite_cycle_decomposition"
+          ]
+        },
+        "lemma_comparison_incidence_decomposition": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 890,
+              "line_start": 884,
+              "presentation": "tex_environment",
+              "presentation_sha256": "b2053155942ce5649449fe82e683b6a8531ebc9d539e6077fb0b63f5822bde94",
+              "source_item_id": "lemma_comparison_incidence_decomposition",
+              "source_label": "lemma:Gc_cycle_decomposition"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_comparison_incidence_decomposition"
+          ]
+        },
+        "lemma_iia_invariance": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 804,
+              "line_start": 790,
+              "presentation": "tex_environment",
+              "presentation_sha256": "3b39e3dc8d874692c8d553074912b22a94ca69144b9c98718e3d9d16657a7b9d",
+              "source_item_id": "lemma_iia_invariance",
+              "source_label": "lemma:iia_invariance"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_iia_invariance"
+          ]
+        },
+        "theorem1_lower_bound": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 335,
+              "line_start": 321,
+              "presentation": "tex_environment",
+              "presentation_sha256": "402e1ee069ddb26e3d2a2e437d129b26d0a5f7416d356fcbcd7029a41837de1d",
+              "source_item_id": "theorem1_lower_bound",
+              "source_label": "thm:lower_bound"
+            }
+          ],
+          "source_item_ids": [
+            "theorem1_lower_bound"
+          ]
+        }
+      },
+      "schema": 1,
+      "source_artifact_sha256": "feb6f5733dff7a07a311d1b27a04ae4c20c682504a4c4ee183ec05b8696cbc32",
+      "source_format": "tex"
+    },
+    "source_inventory_sha256": "579972e613d355961feafdf5de7fd4e31a0d9d5a314d9c520db3fb7ccad91d52"
+  },
+  "schema": 2,
+  "source_items_sha256": "848584727d2553e06803a2b1549725a0df05ff112f4983eed80b63365f8be504"
+}

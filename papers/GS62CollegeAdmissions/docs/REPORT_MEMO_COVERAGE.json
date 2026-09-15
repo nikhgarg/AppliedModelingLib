@@ -1,0 +1,148 @@
+{
+  "all_selected_semantic_review_sha256": "6380befb55ff9f15c9d4a6b43ad0631f1aecd4e6482cda7e02e48db358cd4036",
+  "items": {
+    "convention/GS62-COMPLETED-STABILITY-READING-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_anchor": "reading-used-for-theorem-2",
+      "memo_heading": "Reading used for Theorem 2",
+      "memo_sha256": "706424286219d7fe7f8d5856d94bb9cfdeb953f0e0643be3c106760392d4952c",
+      "report_home": 10
+    },
+    "convention/GS62-MUTUAL-APPLICATION-ELIGIBILITY-01": {
+      "disposition": "not_material",
+      "reason": "Mutual acceptability is the source waiting-list eligibility rule."
+    },
+    "convention/GS62-STRICT-LIST-NUMERIC-EXTENSION-01": {
+      "disposition": "not_material",
+      "reason": "Order-preserving scores encode strict preference lists and acceptability without changing any ordinal comparison."
+    },
+    "report/fixed-quota-domain": {
+      "disposition": "not_material",
+      "reason": "Both candidate and comparison assignments already belong to the source fixed-quota domain; this adds no condition."
+    }
+  },
+  "paper": "GS62CollegeAdmissions",
+  "report_inventory_complete": true,
+  "report_sha256": "2d1bc7ae0076543bcb19d0362a458d6628cf881b2e5fca19ca8830c6c2a20c89",
+  "result_table": {
+    "complete": true,
+    "results": {
+      "section4_waiting_list_terminal_stability": {
+        "grouping_reason": "Section 4 states its waiting-list stability conclusion in unnumbered prose at cited publication:232–249.",
+        "numbering": "unnumbered",
+        "printed_label": "Section 4 stability claim",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Section 4",
+            "row_sha256": "ccd9258fa22ac46c3734eeaea03be5ed60cf3d662a1857d2daa630726d64c3b7"
+          }
+        ]
+      },
+      "theorem1_stable_marriage_exists": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1",
+            "row_sha256": "e9a9f3f4513672c851dc9149c4ea58027b936b10c2106e094669738156be29be"
+          }
+        ]
+      },
+      "theorem2_applicant_optimality": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2",
+        "printed_label_basis": "source_text_heading",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2",
+            "row_sha256": "c871124ea04c2b1fc3a2e5229cc3d80366a3341770288d475fa17662c96a3537"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "c871124ea04c2b1fc3a2e5229cc3d80366a3341770288d475fa17662c96a3537": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "ccd9258fa22ac46c3734eeaea03be5ed60cf3d662a1857d2daa630726d64c3b7": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "e9a9f3f4513672c851dc9149c4ea58027b936b10c2106e094669738156be29be": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "ee7df067bcb9e2c6d79705a19c8cb0112b3d78da801936dd5ad5ba1aff5dc2de": {
+        "explanation_keys": [],
+        "supplemental_reason": "The source preference, fixed-quota optimality, and instability definitions are useful supplemental coverage, not additional named theorems."
+      }
+    },
+    "schema": 1,
+    "source_inventory": {
+      "discovered_named_result_sha256": "0830d03ef13a3d1ddaef17e56c3f746e9258d4dd69e1be59b75ca55a2824bba8",
+      "results": {
+        "section4_waiting_list_terminal_stability": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 249,
+              "line_start": 232,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "2c5d509b0187ee181cbed8fd67ef8856d149caec2fabc571b31bcdf29f8231d9",
+              "source_item_id": "section4_waiting_list_terminal_stability",
+              "source_label": "the stable assignment has been achieved"
+            }
+          ],
+          "source_item_ids": [
+            "section4_waiting_list_terminal_stability"
+          ]
+        },
+        "theorem1_stable_marriage_exists": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 185,
+              "line_start": 185,
+              "presentation": "text_heading",
+              "presentation_sha256": "2026a3d433d77fd7491825686db1e2ae0e5d2675b5e441dcc65cbc257279b52d",
+              "source_item_id": "theorem1_stable_marriage_exists",
+              "source_label": "Theorem 1"
+            }
+          ],
+          "source_item_ids": [
+            "theorem1_stable_marriage_exists"
+          ]
+        },
+        "theorem2_applicant_optimality": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 255,
+              "line_start": 253,
+              "presentation": "text_heading",
+              "presentation_sha256": "36eacec0f8652dcf8efe065d0ef5d3a5c8fbe96e84238440ef11b96ec91e5973",
+              "source_item_id": "theorem2_applicant_optimality",
+              "source_label": "Theorem 2"
+            }
+          ],
+          "source_item_ids": [
+            "theorem2_applicant_optimality"
+          ]
+        }
+      },
+      "schema": 1,
+      "source_artifact_sha256": "159e8d7735c826a6725bcbe41370aa4f87c3d30bf9d55aa87a0a00b23cfd615d",
+      "source_format": "text"
+    },
+    "source_inventory_sha256": "0800c3c937d1e2ac17fbf7477b6147f1737ac1cabe7bf1a15e1105f08bab9c3d"
+  },
+  "schema": 2,
+  "source_items_sha256": "bee51078074178396fb76c8e3c2cb9559bcb709af4a81c3ea45d48ddaba35d4f"
+}

@@ -1,0 +1,444 @@
+{
+  "defects": [
+    {
+      "acceptance_condition": "The v11 Theorem 1 Spec retains the published uniform below/above-threshold endpoint, and its proof endpoint follows the checked literal-market route documented in docs/SOURCE_PROOF_DEFECTS_2026-07-13.md.",
+      "affected_source_locators": [
+        "audit/cited publication:203-408"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "PG24-THEOREM1-PROOF-ROUTE-01",
+      "repair_obligation": "Derive the uniform pointwise attenuation conclusion from literal clearing, capacity, event, and variance facts with correct finite rounding and atom-safe inequalities rather than assuming a tail estimate or a uniform big-O assertion.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "Theorem1LiteralUniformSourceConclusion.lean and PaperInterface.review_theorem1_attenuationSpec_proof prove the source endpoint; docs/SOURCE_PROOF_DEFECTS_2026-07-13.md D01--D13 records the repaired route.",
+      "source_claim": "The printed attenuation appendix has incompatible tail directions, unproved uniformity, endpoint and partition gaps, nonintegral indices, sign errors, non-atom-safe event conversions, and omitted source-model measure bridges.",
+      "source_locator": "audit/cited publication:203-408",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The published attenuation endpoint is unchanged. Lean proves it from literal source-market primitives by a corrected dense-cluster/large-gap route, so the defects are repaired proof steps and not a caveat or unproved theorem condition."
+    },
+    {
+      "acceptance_condition": "The v11 Theorem 2 Spec quantifies over every real target and its proof endpoint uses the checked all-real literal-basic-market route.",
+      "affected_source_locators": [
+        "audit/cited publication:18-18",
+        "audit/cited publication:423-451"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "PG24-THEOREM2-ALL-REAL-ROUTE-01",
+      "repair_obligation": "Prove the result first at an interior anchor and transfer it to each real target by a finite long-tail comparison, rather than inferring all-real coverage from the quantile window.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "Theorem2AllRealLiteralBasic.lean and PaperInterface.review_theorem2_amplificationSpec_proof prove the published all-real endpoint; docs/SOURCE_PROOF_DEFECTS_2026-07-13.md D14 records the replacement route.",
+      "source_claim": "The printed Theorem 2 proof uses a bounded-support quantile window as if it eventually contained every real target, which does not establish its all-real quantifier.",
+      "source_locator": "audit/cited publication:423-451",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The source theorem's all-real endpoint is retained. Lean uses an interior-anchor and finite long-tail shift route to prove it from the literal model, so the defect is a repaired source-proof note rather than an added assumption or status caveat."
+    },
+    {
+      "acceptance_condition": "The direct source route identifies Appendix Proposition 1 as a non-equivalent corrected target, carries the approved finite iid one-draw second-moment condition visibly, and proves the lower-tail C^(-K(beta,gamma)) endpoint without crediting the archival upper-tail display.",
+      "affected_source_locators": [
+        "audit/cited publication:304-322"
+      ],
+      "defect_kind": "inequality_direction",
+      "id": "PG24-APP-PROP1-TAIL-ORIENTATION-01",
+      "repair_obligation": "Preserve the archival upper-tail display and its source anchor, prove the checked upper-tail obstruction, and formalize the lower-tail matched-mass rate under the explicit one-draw moment condition required by the Case-2 route.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "SOURCE_TARGET_STATEMENTS.md records the approved corrected target; source_thm1_printed_upper_tail_obstructionSpec_proof refutes the archival orientation, and source_thm1_corrected_lower_tailSpec_proof proves the lower-tail rate.",
+      "source_claim": "Appendix Proposition 1 displays an O(C^{-K(beta,gamma)}) upper bound for the matched mass integrated from vS to infinity, while the immediately following prose says that the proposition bounds the matched mass below vS.",
+      "source_locator": "audit/cited publication:312-322",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The printed upper-tail display cannot be the intended attenuation rate: its mass tends to the positive total supply under the intended conclusion and hence cannot have a negative-power upper bound. The corrected source target preserves the displayed rate for the lower-tail mass identified by the surrounding prose, with the Case-2 one-draw moment condition exposed separately."
+    },
+    {
+      "acceptance_condition": "The direct source route preserves both polynomial-rate conclusions, visibly conditions Case (ii) on MemLp identity 2 of the iid one-draw noise law, and does not infer that condition from beta-max concentration.",
+      "affected_source_locators": [
+        "audit/cited publication:599-611",
+        "audit/cited publication:641-643"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "PG24-APP-PROP7-ONE-DRAW-MOMENT-01",
+      "repair_obligation": "Keep Appendix Proposition 7(i) at its literal rate, state the finite iid one-draw second-moment condition for Appendix Proposition 7(ii), and prove both endpoints using atom-safe lower-tail complement events.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "SOURCE_TARGET_STATEMENTS.md records the approved condition; source_beetSpec_proof proves the two checked endpoints, and source_clarification_one_draw_finite_second_moment exposes the finite one-draw condition.",
+      "source_claim": "Appendix Proposition 7(ii) states its polynomial near-one rate under beta-max concentration, but its source proof invokes a one-draw Chebyshev calculation using Var[X] as a constant; beta-max concentration controls the variance of iid maxima and does not imply this one-draw second-moment condition.",
+      "source_locator": "audit/cited publication:599-643",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The Case-2 rate has the stated economic content once the finite iid one-draw second moment used by its Chebyshev step is made explicit. Case (i) remains literal; Case (ii) is not attributed to beta-max concentration alone. The formal complement is also stated with the lower-tail event required in the presence of atoms."
+    },
+    {
+      "acceptance_condition": "The direct source route identifies Appendix Proposition 8 as a non-equivalent corrected target, visibly carries the inherited MemLp identity 2 condition, and proves its C^(-K(beta,gamma)) lower-tail integral endpoint.",
+      "affected_source_locators": [
+        "audit/cited publication:647-654",
+        "audit/cited publication:599-643"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "PG24-APP-PROP8-INHERITED-ONE-DRAW-MOMENT-01",
+      "repair_obligation": "State the inherited finite iid one-draw second-moment condition and prove the printed below-threshold integral rate from the checked Appendix Proposition 7(ii) endpoint.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "SOURCE_TARGET_STATEMENTS.md records the approved condition, and source_goose_2Spec_proof proves the corrected source target from the one-draw Case-2 route.",
+      "source_claim": "Appendix Proposition 8 states a C^(-K(beta,gamma)) rate whose Case-2 proof depends on the Appendix Proposition 7(ii) near-one rate, and therefore on the same one-draw Chebyshev condition absent from beta-max concentration alone.",
+      "source_locator": "audit/cited publication:647-654",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The printed below-threshold integral rate is retained once the inherited finite iid one-draw second-moment condition is made explicit; the formalization does not credit beta-max concentration alone with the inherited Case-2 rate."
+    },
+    {
+      "acceptance_condition": "The corrected source targets for the dense-cluster and high-cutoff lower-tail propositions use the explicit closed pivot block, retain their displayed rates, and are bound to the approved correction record.",
+      "affected_source_locators": [
+        "audit/cited publication:371-416",
+        "audit/cited publication:467-473"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "PG24-APP-CASE1-BLOCK-BOUNDARY-01",
+      "repair_obligation": "Keep the archival open-block notation visible, make the source proof's closed high-cutoff block explicit, preserve the strict source value separations, and prove the printed dense-cluster and lower-tail rates for that block.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "SOURCE_TARGET_STATEMENTS.md records the closed-pivot correction; source_tomatoSpec_proof and source_duck_2Spec_proof prove the two resulting endpoints.",
+      "source_claim": "The Case-1 text defines C_2 with an open lower endpoint but the dense-cluster proof and subsequent lower-tail discussion use the block C([P*,infinity)), including colleges with cutoff P*.",
+      "source_locator": "audit/cited publication:371-416,467-473",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "At a cutoff tie at P*, the open and closed blocks differ, and the dense-cluster lower bound need not transfer to the open block. The formal target uses the closed block invoked by the proof; this is a boundary/tie clarification and does not alter the economic model or the claimed rates."
+    },
+    {
+      "acceptance_condition": "The corrected source targets retain the source p_mu quantities and stated conclusions, and their proof endpoints derive them from the explicit local source-proof context rather than from arbitrary scalar or product placeholders.",
+      "affected_source_locators": [
+        "audit/cited publication:744-750",
+        "audit/cited publication:831-867",
+        "audit/cited publication:869-916",
+        "audit/cited publication:918-950"
+      ],
+      "defect_kind": "model_semantics",
+      "id": "PG24-APP-LOCAL-CONTEXT-01",
+      "repair_obligation": "Bind each target to the source iid cutoff-affordance probability and expose only the immediately preceding local endpoint, capacity, or tail-ratio calculation used to derive it.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "SOURCE_TARGET_STATEMENTS.md records the clarification; source_lt_approx_f2Spec_proof, source_lt_large_firmsSpec_proof, and source_lt_small_firmsSpec_proof prove the restored probability-object targets.",
+      "source_claim": "The three amplification appendix propositions state conclusions for the paper's p_mu(v,F_1) or p_mu(v,F_2), while their proofs immediately use previously derived endpoint, capacity, and tail-ratio estimates without restating those local derivation inputs in the displayed proposition text.",
+      "source_locator": "audit/cited publication:744-750,831-867,918-950",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The previous Lean interfaces accidentally replaced the source p_mu objects by arbitrary functions or unlinked products. The corrected interfaces restore the iid cutoff-affordance probability and retain every displayed witness, interval, gap, and eta-selection condition; their local proof-context inputs make the source derivation explicit without adding an economic assumption."
+    }
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "The convention is limited to the exact `PG24LiteralBasicMarket` field paths below and is parented only by `stable_matching_cutoff_definitionSpec_proof`, whose direct input is that record. It supplies source-model provenance for those fields, not any attenuation or amplification conclusion.",
+      "classification": "source_model_convention",
+      "formal_meaning": "The source basic economy and cutoff characterization are represented by one explicit `PG24LiteralBasicMarket` record: its student law and value coordinate, strict preferences and cutoff demand, iid outcome law, capacity vector and total-capacity equality, score representation, and capacity regularity are the primitive data used by the cutoff-based stable-matching definition.",
+      "id": "PG24-BASIC-MARKET-RECORD-01",
+      "recursive_field_source_scope": {
+        "entries": [
+          {
+            "field_chain": [
+              {
+                "field": "studentLaw",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "studentLaw_isProbability",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "value",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "value_measurable",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "value_marginal",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "demand",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              }
+            ],
+            "permitted_classifications": [
+              "container_recursively_audited"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "demand",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              },
+              {
+                "field": "outcomeLaw",
+                "structure": "PG24NoisyMatchingMarkets.PG24FinitePreferredDemand"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "demand",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              },
+              {
+                "field": "preferenceRank",
+                "structure": "PG24NoisyMatchingMarkets.PG24FinitePreferredDemand"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "demand",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              },
+              {
+                "field": "preferenceRank_injective",
+                "structure": "PG24NoisyMatchingMarkets.PG24FinitePreferredDemand"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "demand",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              },
+              {
+                "field": "cutoffCoordinates",
+                "structure": "PG24NoisyMatchingMarkets.PG24FinitePreferredDemand"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "demand",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              },
+              {
+                "field": "globalScore",
+                "structure": "PG24NoisyMatchingMarkets.PG24FinitePreferredDemand"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "demand",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              },
+              {
+                "field": "singletonDemandMeasurable",
+                "structure": "PG24NoisyMatchingMarkets.PG24FinitePreferredDemand"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "demand_outcomeLaw_eq_iid",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "capacity",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "totalCapacity_eq",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "approximateScore",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "demand_globalScore_eq_approximateScore",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "basic_score",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          },
+          {
+            "field_chain": [
+              {
+                "field": "capacity_regular",
+                "structure": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket"
+              }
+            ],
+            "permitted_classifications": [
+              "approved_source_convention"
+            ],
+            "root_record": "PG24NoisyMatchingMarkets.PG24LiteralBasicMarket",
+            "source_item": "stable_matching_cutoff_definition",
+            "source_locator": "audit/cited publication:9-94"
+          }
+        ],
+        "schema": 1
+      },
+      "source_locator": "audit/cited publication:9-94",
+      "why_needed": "The source specifies these economy ingredients across the basic-model and cutoff-characterization passages, whereas the Lean stable-matching Spec receives them as fields of a structured record. Enumerating every field path prevents any record member from acquiring source credit merely by sharing a model-shaped name."
+    }
+  ],
+  "paper": "PG24NoisyMatchingMarkets",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Theorem 1 attenuation proof: tail direction, uniformity, interval and endpoint handling, finite index rounding, cutoff partitions, capacity algebra, and source-model event bridges.",
+      "source_locator": "audit/cited publication:203-408"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Theorem 2 amplification proof and its all-real target coverage through the quantile-window argument.",
+      "source_locator": "audit/cited publication:423-451"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "076257837016bf0c005b16d463f365f84467a84f1fbe0bfad713c63c638ddf3d"
+}

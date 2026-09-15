@@ -1,0 +1,112 @@
+{
+  "checked_proof_steps": [
+    {
+      "checked_conclusion": "Each of the eleven normal paper-facing definitions is exposed as one closed proposition whose transparent expansion preserves the source carrier, quantified alternatives, comparison direction, and complete definitional condition. Individual-quota partner sets are explicitly finite before their finite cardinality is compared with quota, and efficiency ranges only over legal strict reports.",
+      "id": "ROTH82-LITERAL-DEFINITIONS-01",
+      "scope": "Proof-local shorthand such as possible partner, the stable-outcome set, successful misrepresentation, and named algorithm traces remains support material and is not counted as an additional source definition.",
+      "source_locator": "cited publication:130-197; cited publication:300-351; cited publication:463-466; cited publication:522-535",
+      "source_step": "Define the two-sided preference profile, matching procedure, complete marriage outcome, blocking-pair stability, stable and efficient procedures, dominant truthfulness, side-optimal stable outcomes, individual quotas, and the simple report used by Lemma 1."
+    },
+    {
+      "checked_conclusion": "For every finite equal-cardinality complete strict marriage profile, stable outcomes exist and each side has one stable outcome that every member weakly prefers to every other stable outcome.",
+      "id": "ROTH82-THEOREMS1-2-DEFERRED-ACCEPTANCE-01",
+      "scope": "The exact batched waiting-list runner is proved to refine the reusable applicant deferred-acceptance outcome. The shared implementation is not accepted by name as evidence of the source procedure.",
+      "source_locator": "cited publication:227-291",
+      "source_step": "Run men-proposing deferred acceptance to obtain a stable complete outcome, use the rejection invariant to show it is weakly preferred by every man to every stable alternative, and exchange the sides for the women-optimal outcome."
+    },
+    {
+      "checked_conclusion": "No procedure that returns a source-stable complete outcome at every legal complete strict report profile is dominant-strategy truthful for every agent on both sides.",
+      "id": "ROTH82-THEOREM3-LEGAL-REPORT-DOMAIN-01",
+      "scope": "The current proof checks positivity and strictness for the true profile and both altered reports. The contradiction no longer obtains stability by evaluating the mechanism outside the source's legal report domain.",
+      "source_locator": "cited publication:356-430",
+      "source_step": "Use the displayed three-by-three true profile and the two unilateral strict report changes to force one of the two possible stable outcomes and thereby give either one man or one woman a profitable deviation."
+    },
+    {
+      "checked_conclusion": "The exact Theorem 4, Theorem 5, Corollary 5.1, Lemmas 1 and 2, and Theorem 6 conclusions hold on the finite complete strict marriage domain with their source comparison directions unchanged. Corollary 5.1 starts from a legal report and constructs a legal strict positive report preserving the true first choice.",
+      "id": "ROTH82-THEOREMS4-6-INCENTIVES-01",
+      "scope": "The proof decomposition uses reusable matching lemmas, but no side-optimality, no-harm, or Pareto conclusion is accepted from a theorem-facing caller premise. Theorem 5 and Corollary 5.1 derive deferred-acceptance side optimality directly from the checked men- and women-optimality lemmas used in their proofs, and the serial and batched procedure semantics are connected by checked refinement theorems rather than names.",
+      "source_locator": "cited publication:438-648; cited publication:678-698",
+      "source_step": "Construct the serial efficient truthful procedure, reduce arbitrary proposer misreports to simple reports, use proposer-optimality and the no-man-harmed comparison to prove proposing-side truthfulness and first-choice protection, and derive the weak Pareto conclusion."
+    },
+    {
+      "checked_conclusion": "For every natural rank greater than one, a finite complete strict marriage market exists in which every stable procedure gives some agent a profitable misreport involving that rank.",
+      "id": "ROTH82-THEOREM7-POSITIVE-PADDING-01",
+      "scope": "All padding scores are distinct and positive. Dummy self-matches are forced by ordinal preference rather than by negative scores that would place pairs below the unmatched option.",
+      "source_locator": "cited publication:713-719",
+      "source_step": "For every rank beyond first choice, extend the three-by-three manipulation witness with enough dummy participants so the manipulated alternative occupies that rank while the original witness remains isolated."
+    },
+    {
+      "checked_conclusion": "The exact individual-quota outcome definition is formalized, and an exact many-to-one batched waiting-list runner is connected to the reusable applicant procedure. No arbitrary both-sided-quota incentive theorem is claimed by the normal source surface.",
+      "id": "ROTH82-BROAD-QUOTA-SCOPE-01",
+      "scope": "The broad carryover sentence is unnumbered extension prose outside normal named-theory scope. A future deep result would need an explicit preference-over-sets model and a separately proved many-to-many stability and incentive theorem.",
+      "source_locator": "cited publication:167-175; cited publication:210-214; cited publication:266-268",
+      "source_step": "The source defines individual quotas and says in unnumbered prose that the arguments and results carry over to the general quota case, with a brief proposal-procedure adjustment in a footnote."
+    }
+  ],
+  "defects": [],
+  "model_conventions": [
+    {
+      "checked_scope": "Every definition and theorem is compared after expanding score inequalities to ordinal comparisons. No result uses addition, distance, or cardinal significance of preference scores.",
+      "classification": "source_supported_representation_convention",
+      "formal_meaning": "Each source strict preference ordering is represented by an injective real-valued score. Only comparisons of scores carry preference meaning; their magnitudes do not.",
+      "id": "ROTH82-ORDINAL-SCORE-ENCODING-01",
+      "source_locator": "cited publication:130-197",
+      "why_needed": "The source uses abstract complete transitive strict relations, while the reusable assignment and deferred-acceptance library consumes real-valued comparison functions. Injectivity is exactly the no-ties condition on a finite carrier."
+    },
+    {
+      "checked_scope": "All source-facing marriage theorems require the complete strict domain for true and reported profiles. Positivity is not treated as a separate economic assumption, and dummy padding used for the general finite case also stays positive.",
+      "classification": "source_supported_representation_convention",
+      "formal_meaning": "Positive scores place every opposite-side participant above the reusable library's zero-valued unmatched option. This encodes the source marriage model's complete feasible partner lists and its requirement that a marriage outcome leave nobody unmatched.",
+      "id": "ROTH82-COMPLETE-MARRIAGE-OUTSIDE-OPTION-01",
+      "source_locator": "cited publication:140-197",
+      "why_needed": "The reusable assignment carrier permits partial assignments and uses zero when an agent is unmatched, whereas the source marriage model uses an invertible complete match and complete strict rankings over the entire opposite side."
+    },
+    {
+      "checked_scope": "Every named theorem is audited at its finite source instantiation. Stability bridges prove completeness on equal positive strict markets; efficiency and incentive quantifiers range only over legal reports; no conclusion is inferred from the polymorphic type or a selector name.",
+      "classification": "source_supported_representation_convention",
+      "formal_meaning": "The reusable Assignment type is a mutually consistent partial one-to-one carrier and the score-table aliases are polymorphic. The source marriage interpretation is obtained only after imposing finite equal sides, legal strict profiles, and the complete-outcome or source-stability endpoint.",
+      "id": "ROTH82-GENERIC-ASSIGNMENT-CARRIER-01",
+      "source_locator": "cited publication:130-197; cited publication:300-351",
+      "why_needed": "Roth defines a finite balanced marriage problem with invertible outcomes, while reusable library types also support unmatched agents, unequal sides, and generic carriers. The broader carrier is representation infrastructure and cannot by itself receive source credit."
+    },
+    {
+      "checked_scope": "Nonemptiness is visible in the affected PaperInterface theorem binders. It supplies only an inhabited source market and no matching, stability, incentive, or Pareto conclusion.",
+      "classification": "source_supported_representation_convention",
+      "formal_meaning": "Named-agent and first-choice results are instantiated on nonempty participant sides. Equal cardinality then supplies nonemptiness of the opposite side where needed.",
+      "id": "ROTH82-NONEMPTY-PARTICIPANT-SIDES-01",
+      "source_locator": "cited publication:112-145; cited publication:463-466; cited publication:678-698",
+      "why_needed": "Corollary 5.1 selects a true first choice, and Theorem 6's assertion that no outcome is strictly preferred by all men would have a vacuous universal comparison in an empty market. The source presents agents and first choices rather than an empty-market edge case."
+    }
+  ],
+  "paper": "Roth82StableMatching",
+  "review_status": "reviewed_no_defects",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "The finite equal-side marriage model, complete transitive strict preference profiles, complete one-to-one outcomes, blocking-pair stability, and the broad individual-quota outcome definition.",
+      "source_locator": "cited publication:108-197"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Theorems 1 and 2, including stable-outcome existence, the repeated-proposal construction, and the side-optimal comparison with every other stable outcome.",
+      "source_locator": "cited publication:216-291"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "The stable-procedure, dominant-truthfulness, and efficiency definitions; Theorem 3's three-by-three impossibility witness; and Theorem 4's efficient truthful serial procedure.",
+      "source_locator": "cited publication:300-454"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Theorem 5, Corollary 5.1, the simple-misrepresentation reduction in Lemma 1, Lemma 2's no-man-harmed comparison, and the source proof route to proposer-side truthfulness.",
+      "source_locator": "cited publication:468-648"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Theorem 6's weak Pareto conclusion and Theorem 7's arbitrary later-rank manipulation impossibility, including the finite embedding needed for every rank beyond first choice.",
+      "source_locator": "cited publication:659-719"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "55d2c35a8077a74dc9953dcb6f838fcd6e91edc9e77079a2419f185835a79fd4"
+}

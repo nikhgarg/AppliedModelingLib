@@ -1,6 +1,6 @@
-# Final Validation Report: Falahatgar et al. (2017)
+# Final Validation Report: Maxing and Ranking with Few Assumptions
 
-Updated: 2026-09-07
+Updated: 2026-09-08
 
 ## 1. Human Verdict
 
@@ -42,9 +42,9 @@ selected; Algorithms 2 and 3 are included as source-model rows.
 | Result | Comparison with the paper |
 | --- | --- |
 | Finite SST existence; Lemmas 1 and 3; Remark 4; Theorems 2 and 7–9; Supplemental Theorem 22 | **Exact.** |
-| [Main Lemma 5; Supplemental Lemma 15](docs/SOURCE_CLARIFICATIONS.md#prune-output-size) | **Exact; typo fixed:** output size `< 2n'` → `<= 2n'`. |
+| [Main Lemma 5; Supplemental Lemma 15](docs/SOURCE_CLARIFICATIONS.md#prune-output-size) | **Exact after correcting the endpoint typo:** output size `< 2n'` → `<= 2n'`. |
 | Theorem 6; Supplemental Lemma 17 | **Exact.** |
-| [Algorithm 7; Lemmas 19–20](docs/SOURCE_CLARIFICATIONS.md#algorithm-7-complementary-estimates-and-threshold) | **Typos fixed:** complementary reverse estimate and `epsilon/2` threshold; the epsilon-ranking conclusion is unchanged. |
+| [Algorithm 7; Lemmas 19–20](docs/SOURCE_CLARIFICATIONS.md#algorithm-7-complementary-estimates-and-threshold) | **Exact after correcting typos:** complementary reverse estimate and `epsilon/2` threshold; the epsilon-ranking conclusion is unchanged. |
 | Supplemental Lemmas 10–14, 16, 18, and 21 | **Exact.** |
 
 ## 5. Remaining Boundaries and Gaps

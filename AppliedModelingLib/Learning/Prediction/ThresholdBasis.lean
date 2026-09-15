@@ -621,6 +621,42 @@ theorem properDerivative_thresholdBasis_mass_le_two
   · intro level
     exact discreteDerivative_abs_le_two_of_unitBounded hbounded (hvalid level)
 
+/-- Any finite signed-threshold expansion whose coefficients have the
+proper-loss mass bound is controlled by the largest coordinate correlation.
+Unlike `finiteGridValueCorrelation`, the coordinates here are arbitrary real
+numbers; this permits the same basis argument after taking conditional
+population expectations. -/
+theorem abs_thresholdBasisExpansion_le_two_mul
+    {gridSize : ℕ} (values scores : Fin (gridSize + 1) → ℝ)
+    (hantitone : Antitone values) (hbounded : ∀ level, |values level| ≤ 2)
+    (bound : ℝ) (hscores : ∀ level, |scores level| ≤ bound) :
+    |∑ level, finiteThresholdBasisCoefficients values level * scores level| ≤ 2 * bound := by
+  have hboundNonneg : 0 ≤ bound := by
+    exact (abs_nonneg (scores 0)).trans (hscores 0)
+  calc
+    |∑ level, finiteThresholdBasisCoefficients values level * scores level| ≤
+        ∑ level, |finiteThresholdBasisCoefficients values level * scores level| := by
+      simpa using (Finset.abs_sum_le_sum_abs
+        (fun level => finiteThresholdBasisCoefficients values level * scores level) Finset.univ)
+    _ = ∑ level, |finiteThresholdBasisCoefficients values level| * |scores level| := by
+      apply Finset.sum_congr rfl
+      intro level _
+      rw [abs_mul]
+    _ ≤ ∑ level, |finiteThresholdBasisCoefficients values level| * bound := by
+      apply Finset.sum_le_sum
+      intro level _
+      exact mul_le_mul_of_nonneg_left (hscores level) (abs_nonneg _)
+    _ = bound * ∑ level, |finiteThresholdBasisCoefficients values level| := by
+      rw [Finset.mul_sum]
+      apply Finset.sum_congr rfl
+      intro level _
+      ring
+    _ ≤ bound * 2 := by
+      exact mul_le_mul_of_nonneg_left
+        (sum_abs_finiteThresholdBasisCoefficients_le_two values hantitone hbounded)
+        hboundNonneg
+    _ = 2 * bound := by ring
+
 /-- Correlation of a grid-indexed value function with an arbitrary residual
 sequence. -/
 noncomputable def finiteGridValueCorrelation {gridSize horizon : ℕ}

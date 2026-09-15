@@ -1,0 +1,79 @@
+{
+  "checked_proof_steps": [],
+  "defects": [
+    {
+      "acceptance_condition": "The Lean threshold-bracketing construction proves exact cost and utility attainment using an explicit boundary interpolation equation.",
+      "affected_source_locators": [
+        "audit/cited publication:704-732"
+      ],
+      "defect_kind": "algebra_or_sign",
+      "id": "CGGG20-LEMMA2-INTERPOLATION-TYPO-01",
+      "repair_obligation": "Use the boundary-randomization fraction obtained from the strict-above mass and the boundary mass, with the sign chosen so the resulting threshold policy attains the target.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "The finite and finite-measure bracketing and boundary-randomization theorems in MainTheorems.lean construct the target-matching threshold policy directly; the existing final validation report records the same source typo.",
+      "source_claim": "Appendix Lemma 5's proof defines `tau = sum_i c_i * t_i` although `t_i` is undefined, then sets `alpha = delta / (tau * rho)` after defining `delta = Upsilon(t) - upsilon`.",
+      "source_locator": "audit/cited publication:725-730",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The issue is a local interpolation transcription error in the proof, not a change to the Lemma 5 statement or its downstream threshold-replacement conclusions."
+    },
+    {
+      "acceptance_condition": "The formal proof may combine a cost-attaining extended threshold witness with an equal-cost non-domination comparison without assuming that the witness has a positive finite threshold.",
+      "affected_source_locators": [
+        "audit/cited publication:643-650",
+        "audit/cited publication:704-712",
+        "audit/cited publication:735-757"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "CGGG20-THEOREM6-THRESHOLD-DOMAIN-PROOF-GAP-01",
+      "repair_obligation": "Establish the equal-cost utility comparison for every finite cutoff and handle the two infinite threshold endpoints before combining it with Lemma 5's exact-cost attainment witness.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "MainTheorems.lean:3452-3472 proves the equal-cost comparison for every finite cutoff; MainTheorems.lean:5132-5160 covers arbitrary finite cutoffs and both endpoints; MainTheorems.lean:5320-5376 and ProofBridge.lean:1777-1882 combine that strengthened route groupwise for Appendix Theorem 6 and the common-cost specialization feeding Theorem 2.",
+      "source_claim": "Appendix Theorem 6 applies the exact-cost witness supplied by Appendix Lemma 5 and then invokes Appendix Lemma 4 Case 1. Lemma 4 states that Case 1 only for a single finite threshold `t > 0`, whereas Definition 3 and Lemma 5 permit arbitrary real or infinite threshold witnesses.",
+      "source_locator": "audit/cited publication:626-636; 643-650; 704-712; 735-757",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "This is a gap in the displayed route from the Lemma 5 cost witness to the Lemma 4 equal-cost comparison; it does not alter the stated conclusions of Appendix Theorem 6 or main-text Theorem 2."
+    }
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "The cost-aware definition, Appendix Lemmas 1--3, the appendix replacement theorem, and the main-text common-cost specialization use this convention. It is projected into every affected source-to-Spec reviewer bundle rather than being silently added as proof plumbing.",
+      "classification": "maintainer_approved_source_model_clarification",
+      "formal_meaning": "Every allocation cost is strictly positive. In the main-text common-cost specialization this means `0 < c_a`; in the appendix applicant-specific model it means `forall i, 0 < c_i`.",
+      "id": "CGGG20-STRICT-POSITIVE-ALLOCATION-COST-01",
+      "report_summary": "The paper's ratio-based cost-aware model is read with strictly positive allocation costs; this is an approved clarification that makes the displayed score and exchange inequalities well-defined.",
+      "source_locator": "audit/cited publication:619-636; 643-730; 737-777",
+      "why_needed": "The appendix defines the threshold score as `hat U_i / c_i` and its proof multiplies score inequalities by `c_i`. Zero costs leave the displayed ratio undefined and negative costs reverse those inequalities. The maintainer approved the strictly-positive reading on 2026-09-02."
+    },
+    {
+      "checked_scope": "The shared screening-and-allocation model and the source rows for Theorem 1, the appendix threshold-replacement theorem, and Lemma 3 use this convention. It is projected into each affected reviewer bundle rather than added as hidden proof plumbing.",
+      "classification": "maintainer_approved_source_model_clarification",
+      "formal_meaning": "The independently randomized screening indicators are exogenous to the joint potential realized-utility and screened-information vector. The joint law of those potential quantities is fixed before the screening probability vector is chosen and does not change with that vector.",
+      "id": "CGGG20-EXOGENOUS-SCREENING-RANDOMIZATION-01",
+      "report_summary": "The screening coins are read as exogenous randomization over a fixed latent applicant population; changing screening probabilities changes who is observed, not the potential utility or information distribution.",
+      "source_locator": "audit/cited publication:250-290",
+      "why_needed": "The paper introduces the distribution of the latent utility/information model before the lender selects its randomized screening policy. Mutual independence among screening indicators alone would permit the `p`-indexed post-screening law to change the latent population as `p` changes. The maintainer approved the exogenous sequential reading on 2026-09-02."
+    },
+    {
+      "checked_scope": "The shared screening-and-allocation model and the source rows for Theorem 2, Appendix Lemmas 4--5 and 7, and Appendix Theorem 6 use this clarification. It is projected into each affected source-to-Spec reviewer bundle rather than added as hidden proof plumbing.",
+      "classification": "maintainer_approved_source_model_clarification",
+      "formal_meaning": "For every screening policy and applicant, the displayed post-screening estimate hat U_i is a version of E[U_i | sigma(hat U)], where sigma(hat U) is generated by the entire vector of post-screening estimates available to the lender. Allocation remains an arbitrary bounded Borel rule A(hat U) of that full vector.",
+      "id": "CGGG20-FULL-VECTOR-POSTERIOR-SUFFICIENCY-01",
+      "report_summary": "The paper's displayed estimates are read as the lender's posterior utilities given the full post-screening estimate vector used by allocation; thus observing another applicant's estimate supplies no residual information about an applicant's utility.",
+      "source_locator": "audit/cited publication:250-291; 693-697",
+      "why_needed": "The source defines allocation as A(hat U) of the full observed estimate vector and later uses the realized-to-posterior utility identity for every such allocation. The maintainer clarified on 2026-09-09 that this full-vector posterior reading is implied by the paper. It makes the source's conditional-independence proof step precise without restricting its full-vector allocation class."
+    }
+  ],
+  "paper": "CGGG20SelectiveInformationAcquisition",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "The appendix cost-aware threshold definition, its single-threshold exchange argument, its cost-or-utility threshold-attainment step, the groupwise cost-aware replacement theorem, and the equality-diversity extension.",
+      "source_locator": "audit/cited publication:643-777"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "0a870dd32ca03101e1e2f0c141184ea53fa2ac43ad4df4162995e6d3778a9f60"
+}

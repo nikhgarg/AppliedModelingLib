@@ -84,15 +84,15 @@ def source_log_boundSpec : Prop :=
               Real.log (n : ℝ))
           atTop (nhds 0)
 
-/-- Corrected source target for Appendix Proposition `thm1v2`.
+/-- Corrected source target for Appendix Proposition 1 (source locator
+`thm1v2`).
 
 The displayed source integral has the wrong tail orientation: it integrates
-above `vS`, whereas the surrounding prose and the attenuation theorem concern
-students below `vS`.  This target states the latter as the actual matched mass
-in a literal PG24 stable market.  It retains the source model primitives and
-the theorem's uniformity over all admissible selected instances, but records a
-vanishing conclusion rather than a polynomial rate: the source's printed
-proposition does not make its `O` constant uniform over those instances.
+above `vS`, whereas the surrounding prose and attenuation conclusion concern
+students below `vS`.  This target formalizes the corrected lower-value matched
+mass at the printed `C^(-K)` rate, uniformly over admissible selected stable
+instances.  Its Case-2 proof uses the source's one-draw Chebyshev step, so the
+finite one-draw second-moment clarification is explicit.
 -/
 def source_thm1_corrected_lower_tailSpec : Prop :=
   ∀ {Admissible : ℕ → Type w}
@@ -107,23 +107,29 @@ def source_thm1_corrected_lower_tailSpec : Prop :=
         (StudentType C a) (Cutoff C a)),
     betaMaxConcentratingVariance maxVariance beta →
       source_assumption_iid_beta_max_variance_bound noiseLaw maxVariance →
-        0 ≤ alpha →
-          PG24HolderIntervalRegular eta →
-            eta.real (Set.Ioi vS) = totalSupply →
-              ∀ epsilon : ℝ, 0 < epsilon →
-                ∀ᶠ C : ℕ in atTop, ∀ a : Admissible C,
-                  eventMass
-                    ((inst C a).studentLaw.prod
-                      (Measure.pi (fun _ : Fin (C + 1) => noiseLaw)))
-                    (fun outcome : StudentType C a × (Fin (C + 1) → ℝ) =>
-                      (inst C a).value outcome.1 ∈ Set.Iic vS ∧
-                        chosenInActive
-                          ((inst C a).literal.demand.demandAt
-                            (inst C a).literal.selectedCutoff)
-                          (Finset.univ : Finset (Fin (C + 1))) outcome) < epsilon
+        source_clarification_one_draw_finite_second_moment noiseLaw →
+          0 ≤ alpha →
+            PG24HolderIntervalRegular eta →
+              eta.real (Set.Ioi vS) = totalSupply →
+                ∃ holderConstant gamma A : ℝ,
+                  0 < gamma ∧ 0 ≤ holderConstant ∧
+                  (∀ (x delta : ℝ), 0 < delta →
+                    eta.real (Set.Ioo x (x + delta)) ≤
+                      holderConstant * Real.rpow delta gamma) ∧
+                  0 ≤ A ∧ ∀ᶠ C : ℕ in atTop, ∀ a : Admissible C,
+                    eventMass
+                      ((inst C a).studentLaw.prod
+                        (Measure.pi (fun _ : Fin (C + 1) => noiseLaw)))
+                      (fun outcome : StudentType C a × (Fin (C + 1) → ℝ) =>
+                        (inst C a).value outcome.1 ∈ Set.Iic vS ∧
+                          chosenInActive
+                            ((inst C a).literal.demand.demandAt
+                              (inst C a).literal.selectedCutoff)
+                            (Finset.univ : Finset (Fin (C + 1))) outcome) ≤
+                      A * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma))
 
-/-- Analytic obstruction to the printed upper-tail display in Proposition
-`thm1v2`.  A mass converging to a positive supply level cannot be bounded by a
+/-- Analytic obstruction to the printed upper-tail display in Appendix
+Proposition 1.  A mass converging to a positive supply level cannot be bounded by a
 negative power of market size. -/
 def source_thm1_printed_upper_tail_obstructionSpec : Prop :=
   ∀ (mass : ℕ → ℝ) (totalSupply rate : ℝ),
@@ -166,71 +172,128 @@ def source_goose_1Spec : Prop :=
             activeCapacity active capacity <
               alpha * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma))
 
-/-- Transparent source target for Appendix Proposition `lt-large-firms`.
+/-- Corrected source target for the large-firm interval proposition.
 
-The proposition is an eventual statement uniform over the source's open value
-interval.  Its local hypotheses are precisely the monotonicity, two endpoint,
-and strict product-gap estimates established by the preceding appendix steps.
+The proposition's probability is the paper's `p_mu(v,F2)`, represented here
+by the iid cutoff-affordance probability of the selected large-firm block.
+The source derives the three displayed endpoint/product estimates immediately
+before this proposition; they are explicit proof-context inputs here, while
+the conclusion retains the source's positive `sigma` witness and strict open
+interval.
 -/
 def source_lt_large_firmsSpec : Prop :=
-  ∀ {pLarge : ℕ → ℝ → ℝ} {vLow vHigh S alpha epsilon sigma : ℝ},
-    (∀ᶠ C : ℕ in atTop, Monotone (pLarge C)) →
-      (∀ᶠ C : ℕ in atTop, pLarge C vLow ≤ S + epsilon) →
-        (∀ᶠ C : ℕ in atTop,
-          S - (1 + alpha) * epsilon ≤ pLarge C vHigh) →
-          (∀ᶠ C : ℕ in atTop,
-            pLarge C vHigh - pLarge C vLow <
-              1 - Real.exp (-(2 * epsilon * sigma))) →
-            ∀ᶠ C : ℕ in atTop, ∀ v : ℝ, vLow < v → v < vHigh →
-              S - (1 + alpha) * epsilon -
-                  (1 - Real.exp (-(2 * epsilon * sigma))) < pLarge C v ∧
-                pLarge C v < S + epsilon +
-                  (1 - Real.exp (-(2 * epsilon * sigma)))
+  ∀ (noiseLaw : Measure ℝ) [IsProbabilityMeasure noiseLaw]
+    {active : ∀ C : ℕ, Finset (Fin (C + 1))}
+    {cutoff : ∀ C : ℕ, Fin (C + 1) → ℝ}
+    {vLow vHigh totalSupply alpha epsilon : ℝ},
+    0 < epsilon →
+      (∃ sigma : ℝ, 0 < sigma ∧
+      (∀ᶠ C : ℕ in atTop,
+        Monotone (fun v : ℝ =>
+          cutoffAffordanceProbability
+            (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+            (active C) v (cutoff C))) ∧
+      (∀ᶠ C : ℕ in atTop,
+        cutoffAffordanceProbability
+          (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+          (active C) vLow (cutoff C) ≤ totalSupply + epsilon) ∧
+      (∀ᶠ C : ℕ in atTop,
+        totalSupply - (1 + alpha) * epsilon ≤
+          cutoffAffordanceProbability
+            (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+            (active C) vHigh (cutoff C)) ∧
+      (∀ᶠ C : ℕ in atTop,
+        cutoffAffordanceProbability
+            (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+            (active C) vHigh (cutoff C) -
+          cutoffAffordanceProbability
+            (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+            (active C) vLow (cutoff C) <
+          1 - Real.exp (-(2 * epsilon * sigma)))) →
+      ∃ sigma : ℝ, 0 < sigma ∧
+        ∀ᶠ C : ℕ in atTop, ∀ v : ℝ, vLow < v → v < vHigh →
+          totalSupply - (1 + alpha) * epsilon -
+              (1 - Real.exp (-(2 * epsilon * sigma))) <
+            cutoffAffordanceProbability
+              (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+              (active C) v (cutoff C) ∧
+          cutoffAffordanceProbability
+              (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+              (active C) v (cutoff C) <
+            totalSupply + epsilon +
+              (1 - Real.exp (-(2 * epsilon * sigma)))
 
-/-- Transparent source target for Appendix Proposition `lt-small-firms`.
+/-- Corrected source target for the small-firm bound proposition.
 
 The source's capacity/integral calculation is at `v*`; monotonicity then
 makes its displayed bound simultaneous for all values strictly below `v*`.
+The probability in both the premise and conclusion is the source's
+`p_mu(v,F1)`, not an arbitrary scalar function.
 -/
 def source_lt_small_firmsSpec : Prop :=
-  ∀ {pSmall : ℕ → ℝ → ℝ} {vStar totalSupply alpha epsilon sigma : ℝ},
+  ∀ (noiseLaw eta : Measure ℝ)
+    [IsProbabilityMeasure noiseLaw] [IsProbabilityMeasure eta]
+    {active : ∀ C : ℕ, Finset (Fin (C + 1))}
+    {cutoff : ∀ C : ℕ, Fin (C + 1) → ℝ}
+    {vStar vHigh totalSupply alpha epsilon sigma : ℝ},
     0 < epsilon →
+      eta.real (Set.Ioo vStar vHigh) = Real.sqrt epsilon →
       0 <
         1 - totalSupply - epsilon -
           (1 - Real.exp (-(2 * epsilon * sigma))) →
-        (∀ᶠ C : ℕ in atTop, Monotone (pSmall C)) →
+        (∀ᶠ C : ℕ in atTop,
+          Monotone (fun v : ℝ =>
+            cutoffAffordanceProbability
+              (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+              (active C) v (cutoff C))) →
           (∀ᶠ C : ℕ in atTop,
             Real.sqrt epsilon *
                 (1 - totalSupply - epsilon -
                   (1 - Real.exp (-(2 * epsilon * sigma)))) *
-                pSmall C vStar ≤
+                cutoffAffordanceProbability
+                  (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+                  (active C) vStar (cutoff C) ≤
               epsilon * alpha) →
             ∀ᶠ C : ℕ in atTop, ∀ v : ℝ, v < vStar →
-              theorem2_smallFirmSourceBound
-                totalSupply alpha epsilon sigma (pSmall C v)
+              theorem2_smallFirmSourceBound totalSupply alpha epsilon sigma
+                (cutoffAffordanceProbability
+                  (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+                  (active C) v (cutoff C))
 
-/-- Transparent source target for Appendix Proposition `lt-approx-F2`.
+/-- Corrected source target for the large-firm affordance-difference proposition.
 
-The source's strict product estimate requires the large-firm set to be
-nonempty and the per-college failure-ratio comparison to be strict.  Both are
-made explicit instead of being lost when passing to a weak product bound.
+This is exactly the paper's difference `p_mu(v_+,F2)-p_mu(v_-,F2)` under
+iid noise.  The source's preceding tail-ratio and nonempty-block facts are
+explicit proof-context inputs, rather than replacing the probability object
+by arbitrary product coordinates.
 -/
 def source_lt_approx_f2Spec : Prop :=
-  ∀ {active : ∀ n : ℕ, Finset (Fin (n + 1))}
-    {qLow qHigh : ∀ n : ℕ, Fin (n + 1) → ℝ} {epsilon sigma : ℝ},
+  ∀ (noiseLaw : Measure ℝ) [IsProbabilityMeasure noiseLaw]
+    {active : ∀ n : ℕ, Finset (Fin (n + 1))}
+    {cutoff : ∀ n : ℕ, Fin (n + 1) → ℝ}
+    {vLow vHigh epsilon sigma : ℝ},
     0 < epsilon →
       0 < sigma →
         (∀ᶠ n : ℕ in atTop, (active n).Nonempty) →
           (∀ᶠ n : ℕ in atTop, ∀ c ∈ active n,
             Real.exp (-(2 * epsilon * sigma / ((n + 1 : ℕ) : ℝ))) <
-              (1 - qHigh n c) / (1 - qLow n c)) →
+              (1 - AppliedModelingLib.Probability.upperTailMass noiseLaw
+                (cutoff n c - vHigh)) /
+                (1 - AppliedModelingLib.Probability.upperTailMass noiseLaw
+                  (cutoff n c - vLow))) →
             (∀ᶠ n : ℕ in atTop, ∀ c ∈ active n,
-              0 < 1 - qLow n c) →
+              0 < 1 - AppliedModelingLib.Probability.upperTailMass noiseLaw
+                (cutoff n c - vLow)) →
               (∀ᶠ n : ℕ in atTop, ∀ c ∈ active n,
-                1 - qLow n c ≤ 1) →
+                1 - AppliedModelingLib.Probability.upperTailMass noiseLaw
+                  (cutoff n c - vLow) ≤ 1) →
                 ∀ᶠ n : ℕ in atTop,
-                  independentAffordanceProbability (active n) (qHigh n) -
-                      independentAffordanceProbability (active n) (qLow n) <
+                  cutoffAffordanceProbability
+                      (Measure.pi (fun _ : Fin (n + 1) => noiseLaw))
+                      (active n) vHigh (cutoff n) -
+                    cutoffAffordanceProbability
+                      (Measure.pi (fun _ : Fin (n + 1) => noiseLaw))
+                      (active n) vLow (cutoff n) <
                     1 - Real.exp (-(2 * epsilon * sigma))
 
 /-- Transparent source target for Appendix Lemma `unbounded-cutoffs`.
@@ -324,12 +387,15 @@ def source_large_firm_tail_boundSpec : Prop :=
                 ((data C).toExtendedCoalitionSourceStableInstance.localCutoff c - vHigh) ≤
               sigma / (C : ℝ)
 
-/-- Transparent source target for Appendix Proposition `tomato`.
+ /-- Corrected source target for the dense-cluster step-function proposition.
 
-The two branches use the source's same high-cutoff block.  The explicit dense
-subblock and lower-cutoff geometry are the facts supplied by the first cutoff
-case; the low-side conclusion retains the printed Chebyshev exponent rather
-than silently replacing it by its algebraically equal `-K` form.
+The two branches use the source's Case-1 high-cutoff block, represented by the
+closed block at the pivot.  This closed convention resolves the source's
+open/closed `C_2` notation conflict: its proof uses the dense block beginning
+at `P*`.  The explicit dense-subblock and lower-cutoff geometry are the facts
+supplied by that case; the low-side conclusion retains the printed Chebyshev
+exponent rather than silently replacing it by its algebraically equal `-K`
+form.
 -/
 def source_tomatoSpec : Prop :=
   ∀ (noiseLaw : Measure ℝ) [IsProbabilityMeasure noiseLaw]
@@ -340,7 +406,9 @@ def source_tomatoSpec : Prop :=
           (dense upper : ∀ C : ℕ, Finset (Fin C)) →
             (cutoff : ∀ C : ℕ, Fin C → ℝ) →
               (highValue ceiling lowValue pivot : ℕ → ℝ) →
-                (∀ᶠ C : ℕ in atTop, dense C ⊆ upper C) →
+                (∀ᶠ C : ℕ in atTop,
+                  upper C = Finset.univ.filter (fun c => pivot C ≤ cutoff C c)) →
+                  (∀ᶠ C : ℕ in atTop, dense C ⊆ upper C) →
                   (∀ᶠ C : ℕ in atTop,
                     Real.rpow (C : ℝ) (theorem1TailPhi2 beta gamma) ≤
                       (dense C).card) →
@@ -354,7 +422,7 @@ def source_tomatoSpec : Prop :=
                           ∀ c ∈ upper C, pivot C ≤ cutoff C c) →
                           (∀ᶠ C : ℕ in atTop,
                             theorem1DenseGroupCenter noiseLaw C beta gamma +
-                              theorem1DenseDeviationRadius C beta gamma ≤
+                              theorem1DenseDeviationRadius C beta gamma <
                                 pivot C - lowValue C) →
                             (∃ A : ℝ, 0 ≤ A ∧
                               ∀ᶠ C : ℕ in atTop,
@@ -373,45 +441,47 @@ def source_tomatoSpec : Prop :=
                                       (1 - 2 * theorem1TailPhi1 beta gamma -
                                         (1 + beta) * theorem1TailPhi2 beta gamma))
 
-/-- Transparent source target for Appendix Proposition `duck-2`.
+ /-- Corrected source target for the high-cutoff lower-tail integral proposition.
 
 The source proposition occurs inside its first-cutoff case.  Its cutoff lower
-bound and low-value separation are consequently explicit here; the integral
-is the actual iid cutoff-affordance probability integrated against the value
-law, rather than a supplied tail-mass certificate.
+bound and low-value separation are consequently explicit here.  The source's
+`C_2` block is formalized as the closed pivot block used by its dense-cluster
+proof, and the integral endpoint is explicitly the source `vS`.
 -/
 def source_duck_2Spec : Prop :=
   ∀ (noiseLaw valueLaw : Measure ℝ)
     [IsProbabilityMeasure noiseLaw] [IsProbabilityMeasure valueLaw]
-    (maxVariance : ℕ → ℝ) {beta gamma : ℝ},
+    (maxVariance : ℕ → ℝ) {beta gamma vS : ℝ},
     betaMaxConcentratingVariance maxVariance beta →
       0 < gamma →
         source_assumption_iid_beta_max_variance_bound noiseLaw maxVariance →
           (upper : ∀ C : ℕ, Finset (Fin C)) →
             (cutoff : ∀ C : ℕ, Fin C → ℝ) →
-              (lowValue pivot : ℕ → ℝ) →
+              (pivot : ℕ → ℝ) →
                 (∀ᶠ C : ℕ in atTop,
+                  upper C = Finset.univ.filter (fun c => pivot C ≤ cutoff C c)) →
+                  (∀ᶠ C : ℕ in atTop,
                   ∀ c ∈ upper C, pivot C ≤ cutoff C c) →
                   (∀ᶠ C : ℕ in atTop,
                     theorem1DenseGroupCenter noiseLaw C beta gamma +
-                      theorem1DenseDeviationRadius C beta gamma ≤
-                        pivot C - lowValue C) →
+                      theorem1DenseDeviationRadius C beta gamma <
+                        pivot C - vS) →
                     ∃ A : ℝ, 0 ≤ A ∧
                       ∀ᶠ C : ℕ in atTop,
                         (∫ v : ℝ,
-                          (Set.Iic (lowValue C)).indicator
+                          (Set.Iic vS).indicator
                             (fun v => cutoffAffordanceProbability
                               (Measure.pi (fun _ : Fin C => noiseLaw))
                               (upper C) v (cutoff C)) v ∂valueLaw) ≤
                           A * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma))
 
-/-- Source-facing Case-2 target for Appendix Proposition `beet`.
+/-- Corrected source-facing Case-2 target for Appendix Proposition 7.
 
-The low-side maximum estimate has its printed polynomial rate.  Under the
-paper's stated beta-max premise, the high-side conclusion is the valid
-qualitative one: any value sequence strictly above the source threshold has
-full-market affordance converging to one.  Recovering the printed high-side
-polynomial rate additionally requires a one-draw lower-tail moment bound.
+The low-side maximum estimate has its printed polynomial rate.  The high-side
+rate uses the finite one-draw second-moment clarification explicitly invoked
+by the source proof; beta-max concentration alone controls only iid maxima.
+The source label `prop:beet` remains an archival locator, not this result's
+reader-facing name.
 -/
 def source_beetSpec : Prop :=
   ∀ (noiseLaw : Measure ℝ) [IsProbabilityMeasure noiseLaw]
@@ -419,8 +489,9 @@ def source_beetSpec : Prop :=
     betaMaxConcentratingVariance maxVariance beta →
       0 < gamma →
         source_assumption_iid_beta_max_variance_bound noiseLaw maxVariance →
-          (cutoff : ∀ C : ℕ, Fin (C + 1) → ℝ) →
-            (∀ᶠ C : ℕ in atTop,
+          source_clarification_one_draw_finite_second_moment noiseLaw →
+            (cutoff : ∀ C : ℕ, Fin (C + 1) → ℝ) →
+              (∀ᶠ C : ℕ in atTop,
               theorem3RankedCutoffNat C (cutoff C) 0 +
                   (theorem3DenseGapBlockCount C
                     (theorem1TailPhi2 beta gamma)
@@ -447,26 +518,28 @@ def source_beetSpec : Prop :=
                       (cutoff C) ≤
                     A * Real.rpow (C : ℝ)
                       (-beta - 2 * theorem1TailPhi4 beta gamma)) ∧
-                ∀ value : ℕ → ℝ,
-                  (∀ᶠ C : ℕ in atTop,
-                    theorem3RankedCutoffNat C (cutoff C)
-                      (theorem3EarlyPrefixRank C
-                        (theorem1TailPhi3 beta gamma)) -
-                        AppliedModelingLib.Probability.expectedTopOrderStatisticSeq
-                          (fun n : ℕ => Measure.pi (fun _ : Fin (n + 1) => noiseLaw)) C -
-                        Real.rpow (C : ℝ) (theorem1TailPhi4 beta gamma) < value C) →
-                    Tendsto (fun C : ℕ =>
-                      cutoffAffordanceProbability
-                        (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
-                        (Finset.univ : Finset (Fin (C + 1))) (value C) (cutoff C))
-                      atTop (nhds 1)
+                ∃ B : ℝ, 0 ≤ B ∧
+                  ∀ value : ℕ → ℝ,
+                    (∀ᶠ C : ℕ in atTop,
+                      theorem3RankedCutoffNat C (cutoff C)
+                        (theorem3EarlyPrefixRank C
+                          (theorem1TailPhi3 beta gamma)) -
+                          AppliedModelingLib.Probability.expectedTopOrderStatisticSeq
+                            (fun n : ℕ => Measure.pi (fun _ : Fin (n + 1) => noiseLaw)) C -
+                          Real.rpow (C : ℝ) (theorem1TailPhi4 beta gamma) < value C) →
+                      ∀ᶠ C : ℕ in atTop,
+                        1 - cutoffAffordanceProbability
+                          (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+                          (Finset.univ : Finset (Fin (C + 1)))
+                          (value C) (cutoff C) ≤
+                            B * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma))
 
-/-- Source-facing corrected target for Appendix Proposition `goose-2`.
+/-- Corrected source-facing target for Appendix Proposition 8.
 
-The source prints an `O(C^-K)` rate.  With only beta-max concentration, its
-Case-2 high-side input is qualitative, so the source-valid conclusion is that
-the same high-cutoff low-value integral tends to zero.  A one-draw tail moment
-assumption is needed to upgrade this endpoint to the printed rate.
+The printed `O(C^-K)` integral rate follows from Proposition 7(ii) with the
+same finite one-draw second-moment clarification.  The source label
+`prop:goose-2` remains an archival locator, not this result's reader-facing
+name.
 -/
 def source_goose_2Spec : Prop :=
   ∀ (noiseLaw valueLaw : Measure ℝ)
@@ -475,8 +548,9 @@ def source_goose_2Spec : Prop :=
     betaMaxConcentratingVariance maxVariance beta →
       0 < gamma →
         source_assumption_iid_beta_max_variance_bound noiseLaw maxVariance →
-          (cutoff : ∀ C : ℕ, Fin (C + 1) → ℝ) →
-            (∀ C : ℕ,
+          source_clarification_one_draw_finite_second_moment noiseLaw →
+            (cutoff : ∀ C : ℕ, Fin (C + 1) → ℝ) →
+              (∀ C : ℕ,
               (∫ value : ℝ,
                 cutoffAffordanceProbability
                   (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
@@ -490,44 +564,64 @@ def source_goose_2Spec : Prop :=
                         (theorem1TailPhi3 beta gamma) : ℝ) *
                         Real.rpow (C : ℝ) (theorem1TailPhi1 beta gamma) <
                     theorem3RankedCutoffNat C (cutoff C)
-                      (theorem3EarlyPrefixRank C
+                    (theorem3EarlyPrefixRank C
                         (theorem1TailPhi3 beta gamma))) →
-                  Tendsto (fun C : ℕ =>
-                    ∫ value : ℝ,
-                      (Set.Iic vS).indicator
-                        (fun value => cutoffAffordanceProbability
-                          (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
-                          (theorem1CutoffAtOrAboveBlock
-                            (Finset.univ : Finset (Fin (C + 1))) (cutoff C)
-                            (theorem3RankedCutoffNat C (cutoff C)
-                              (theorem3EarlyPrefixRank C
-                                (theorem1TailPhi3 beta gamma))))
-                          value (cutoff C)) value
-                      ∂valueLaw) atTop (nhds 0)
+                  ∃ A : ℝ, 0 ≤ A ∧
+                    ∀ᶠ C : ℕ in atTop,
+                      (∫ value : ℝ,
+                        (Set.Iic vS).indicator
+                          (fun value => cutoffAffordanceProbability
+                            (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+                            (theorem1CutoffAtOrAboveBlock
+                              (Finset.univ : Finset (Fin (C + 1))) (cutoff C)
+                              (theorem3RankedCutoffNat C (cutoff C)
+                                (theorem3EarlyPrefixRank C
+                                  (theorem1TailPhi3 beta gamma))))
+                            value (cutoff C)) value
+                        ∂valueLaw) ≤
+                        A * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma))
 
-/-- Transparent source target for Proposition `thm2v2`.
+/-- Transparent source target for Appendix Proposition 9 (`thm2v2`).
 
 The source's central interval is specified by its two exact value-law tails.
-The formal target makes its endpoint ordering explicit and states the intended
-quantifier order: after fixing epsilon and its window, one eventual market
-threshold works simultaneously for every admissible matching and every value
-strictly inside that window.
+This target keeps the long-tailed literal basic-market domain and selected
+clearing cutoffs of the paper, and makes the intended asymptotic quantifier
+order explicit: after fixing epsilon and its window, one eventual market
+threshold works for every selected source instance and every value strictly
+inside that window.
 -/
 def source_thm2_equivalent_boundSpec : Prop :=
-  ∀ {Admissible : ℕ → Type u} {matchProb : ∀ C : ℕ, Admissible C → ℝ → ℝ}
-    (eta : Measure ℝ) [IsProbabilityMeasure eta] {totalSupply : ℝ},
-    (∀ C : ℕ, ∀ a : Admissible C, Monotone (matchProb C a)) →
-      (∀ target tolerance : ℝ, 0 < tolerance →
-        ∀ᶠ C : ℕ in atTop, ∀ a : Admissible C,
-          |matchProb C a target - totalSupply| < tolerance) →
-        ∀ epsilon vLow vHigh : ℝ, 0 < epsilon →
-          eta.real (Set.Iio vLow) = epsilon →
-            eta.real (Set.Ioi vHigh) = epsilon →
-              vLow < vHigh →
-                ∀ᶠ C : ℕ in atTop, ∀ a : Admissible C, ∀ value : ℝ,
-                  vLow < value → value < vHigh →
-                    totalSupply - epsilon < matchProb C a value ∧
-                      matchProb C a value < totalSupply + epsilon
+  ∀ {StudentTypeSeq : ℕ → Type u}
+    [∀ C : ℕ, MeasurableSpace (StudentTypeSeq C)]
+    {Admissible : ℕ → Type v}
+    (CutoffSeq : ℕ → Type w)
+    (noiseLaw eta : Measure ℝ)
+    [IsProbabilityMeasure noiseLaw] [IsProbabilityMeasure eta]
+    {totalSupply alpha : ℝ}
+    (inst : ∀ C : ℕ, Admissible C →
+      PG24LiteralBasicTwoScaleInstance C noiseLaw eta totalSupply alpha
+        (StudentTypeSeq C) (CutoffSeq C)),
+    PG24HolderIntervalRegular eta →
+      IsPreconnected eta.support →
+        LongTailedSurvival
+          (AppliedModelingLib.Probability.upperTailMass noiseLaw) →
+          0 < totalSupply → totalSupply < 1 → 0 < alpha →
+            ∀ epsilon vLow vHigh : ℝ, 0 < epsilon →
+              eta.real (Set.Iio vLow) = epsilon →
+                eta.real (Set.Ioi vHigh) = epsilon →
+                  vLow < vHigh →
+                    ∀ᶠ C : ℕ in atTop, ∀ a : Admissible C, ∀ value : ℝ,
+                      vLow < value → value < vHigh →
+                        totalSupply - epsilon <
+                          cutoffAffordanceProbability
+                            (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+                            (Finset.univ : Finset (Fin (C + 1))) value
+                            (inst C a).selectedCutoffVector ∧
+                        cutoffAffordanceProbability
+                            (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+                            (Finset.univ : Finset (Fin (C + 1))) value
+                            (inst C a).selectedCutoffVector <
+                          totalSupply + epsilon
 
 /-- Transparent v11 source-item target for `long_tailed_noise`. -/
 def long_tailed_noiseSpec : Prop :=

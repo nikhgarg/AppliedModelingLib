@@ -1,0 +1,179 @@
+{
+  "schema": 2,
+  "paper": "Naor1969QueueTolls",
+  "report_sha256": "ce21201e5b1c27401125659ff36bd57fdeb18574e3737f039798114f7d184752",
+  "source_items_sha256": "551b629fe842259f449336bae4d881cf2067c61569f360103448220c7f518648",
+  "all_selected_semantic_review_sha256": "46f49bd94ce0677b4d55db8d06b9beda73306efaaa585addb6533296be8ea845",
+  "report_inventory_complete": true,
+  "items": {
+    "convention/NAOR1969-FINITE-ADMISSION-01": {
+      "disposition": "not_material",
+      "reason": "The finite admission threshold merely defines the finite state support used throughout the report; it changes neither a stated threshold inequality nor the stationary formulas."
+    },
+    "convention/NAOR1969-TIE-AT-ZERO-01": {
+      "disposition": "not_material",
+      "reason": "The weak lower and strict upper gain cutoffs are already the exact floor convention stated in Section 10; they select the endpoint without adding a condition to the private-threshold result."
+    },
+    "convention/NAOR1969-RHO-ONE-01": {
+      "disposition": "not_material",
+      "reason": "Finite sums at load one evaluate the finite limiting quantities stated by the source."
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "1f0b933683a0f80dd0f70091fde0be6168bfbe7d8ec979f06008b4b691880614",
+      "discovered_named_result_sha256": "8859e4ac13ddf94818ce5fbec95b572ff0fa77a1a082cdd3eaf9487aa41d3323",
+      "source_format": "text",
+      "results": {
+        "socialTollImplementsOptimalThreshold": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 761,
+              "line_start": 739,
+              "presentation": "holistic_full_text_review",
+              "presentation_sha256": "8859e4ac13ddf94818ce5fbec95b572ff0fa77a1a082cdd3eaf9487aa41d3323",
+              "source_item_id": "socialTollImplementsOptimalThreshold",
+              "source_label": "Toll implementation and combined-income conclusion"
+            }
+          ],
+          "source_item_ids": [
+            "socialTollImplementsOptimalThreshold"
+          ]
+        },
+        "finiteCapacityStationaryLaw": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "finiteCapacityStationaryLaw"
+          ]
+        },
+        "selfOptimizingThreshold": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "selfOptimizingThreshold"
+          ]
+        },
+        "socialAndRevenueThresholdOrder": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "socialAndRevenueThresholdOrder"
+          ]
+        },
+        "socialOptimalThreshold": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "socialOptimalThreshold"
+          ]
+        },
+        "stationaryPerformance": {
+          "kind": "claim",
+          "presentations": [],
+          "source_item_ids": [
+            "stationaryPerformance"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "2831cb2474bef922f1ccd4cf45f5c6548c998a08546d20d0da75c87129cadc6a",
+    "results": {
+      "finiteCapacityStationaryLaw": {
+        "numbering": "numbered",
+        "printed_label": "Equations (3)–(4)",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Equations (3)–(11)",
+            "row_sha256": "8cd93e88b813fa6d00c3121bb62d2d99b7599c453976aea950755565556c2586"
+          }
+        ],
+        "grouping_reason": "The report groups the stationary-law and performance equations in one source-range row."
+      },
+      "selfOptimizingThreshold": {
+        "numbering": "numbered",
+        "printed_label": "Equations (12)–(16)",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Equations (12)–(16)",
+            "row_sha256": "4e542c020e29bd5127c170aa84650e4861624e437b0741de7b0d354e7dfb9ba1"
+          }
+        ]
+      },
+      "socialAndRevenueThresholdOrder": {
+        "numbering": "numbered",
+        "printed_label": "Equations (27)–(31)",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Equations (27)–(31)",
+            "row_sha256": "f8397381ede73f2918a743a0b4829cefc80ad3bf590de32d3ef4515ba73f05a2"
+          }
+        ]
+      },
+      "socialOptimalThreshold": {
+        "numbering": "numbered",
+        "printed_label": "Equations (17)–(25)",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Equations (17)–(25)",
+            "row_sha256": "f22990652feb5c8aa9694dbad7dadf78c155e85d995f8fcf7c62771e4adcc7f9"
+          }
+        ]
+      },
+      "socialTollImplementsOptimalThreshold": {
+        "numbering": "numbered",
+        "printed_label": "Equation (26)",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Equation (26)",
+            "row_sha256": "4428a9ff40fb06ec6318f81dd27551800b053dbf2760c06005bfc4d44f1169c0"
+          }
+        ]
+      },
+      "stationaryPerformance": {
+        "numbering": "numbered",
+        "printed_label": "Equations (5)–(11)",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Equations (3)–(11)",
+            "row_sha256": "8cd93e88b813fa6d00c3121bb62d2d99b7599c453976aea950755565556c2586"
+          }
+        ],
+        "grouping_reason": "The report groups the stationary-law and performance equations in one source-range row."
+      }
+    },
+    "rows": {
+      "8cd93e88b813fa6d00c3121bb62d2d99b7599c453976aea950755565556c2586": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "4e542c020e29bd5127c170aa84650e4861624e437b0741de7b0d354e7dfb9ba1": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "f22990652feb5c8aa9694dbad7dadf78c155e85d995f8fcf7c62771e4adcc7f9": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "4428a9ff40fb06ec6318f81dd27551800b053dbf2760c06005bfc4d44f1169c0": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "f8397381ede73f2918a743a0b4829cefc80ad3bf590de32d3ef4515ba73f05a2": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

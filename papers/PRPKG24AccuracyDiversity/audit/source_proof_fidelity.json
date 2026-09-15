@@ -1,0 +1,473 @@
+{
+  "checked_proof_steps": [
+    {
+      "checked_conclusion": "The literal PDF measure yields the reflected tail-mass identity and local-integrability/CDF-power bridge; the fixed-rank D.2 asymptotic follows without receiving a tail or split certificate as a premise.",
+      "id": "PRPKG24-D2-PDF-TAIL-BRIDGE-01",
+      "scope": "This proves the source analytic bridge under the recorded PDF and bounded-support convention. It does not claim that a bare function symbol or a tail certificate alone is the source model.",
+      "source_locator": "cited publication:2264-2317",
+      "source_step": "Reflect the endpoint density, identify G_X(x) with its integral, derive the near-zero power bounds, and use them in the fixed-rank integral asymptotic."
+    },
+    {
+      "checked_conclusion": "The literal iid PDF source law proves the stated top-k loss asymptotic directly; the endpoint is distinct from the older forward-marginal support theorem.",
+      "id": "PRPKG24-LEMMA1-PDF-TOPK-LOSS-01",
+      "scope": "This closes Lemma 1 itself. The generic corrected D.1(ii) allocation endpoint is now separately direct; this analytic row still is not a substitute for checking any downstream model-to-tail instantiation.",
+      "source_locator": "cited publication:701-713; cited publication:2181-2247",
+      "source_step": "Apply the bounded endpoint-density asymptotic to the expected top-k loss used as h's diminishing return in Theorem 1(ii)."
+    },
+    {
+      "checked_conclusion": "AppendixD2DensitySource.lean derives the PDF-to-tail bridge internally and proves the Theorem 1(ii) sequence formula from the literal withDensity model.",
+      "id": "PRPKG24-THEOREM1II-LITERAL-PDF-ALLOCATION-01",
+      "scope": "The endpoint is direct under the recorded a.e. nonnegative-value and all-positive-likelihood conventions. It does not claim the translated/lower-tail or zero-type-support extensions of the archival wording.",
+      "source_locator": "cited publication:351-359",
+      "source_step": "Use the source's bounded upper-endpoint PDF tail to derive the fixed-k allocation limit, rather than accepting a reflected-tail identity, local integrability witness, or CDF-power certificate from the caller."
+    },
+    {
+      "checked_conclusion": "For the exact objective h(a)=B*a^sigma with B>0, 0<sigma<1, and positive weights, AppendixD1GenericPower.lean derives the normalized power profile by Holder and proves a finite integer rounding window from raw fixed-total optimality and strict concavity.",
+      "id": "PRPKG24-D1IV-EXACT-POWER-INTEGER-CORE-01",
+      "scope": "This is an exact-power core, not coverage of the source's asymptotic Lemma D.1(iv). No asymptotic lifting from h(a)/(B*a^sigma)->1, supportwise zero-weight reduction, or source-level share-limit endpoint is claimed.",
+      "source_locator": "cited publication:1352-1400; cited publication:1956-1977",
+      "source_step": "Identify the corrected positive-power fixed-total optimum and transfer the continuous profile to finite integer maximizers."
+    },
+    {
+      "checked_conclusion": "AppendixD1GenericIV.lean proves the corrected all-positive D.1(iv) endpoint. It constructs a raw integer benchmark, tail comparison, strict continuous power maximizer, and compact strict gap internally, and concludes convergence to weights proportional to p_i^(1/(1-sigma)).",
+      "id": "PRPKG24-D1IV-DIRECT-POWER-OPTIMIZER-01",
+      "scope": "The endpoint visibly assumes a nonempty finite type space, every p_i>0, B>0, 0<sigma<1, strict discrete concavity, and the stated power tail. It does not silently cover the source's p_i=0 cases; that boundary is recorded as a scope restriction rather than generic source credit.",
+      "source_locator": "cited publication:1352-1400; cited publication:1901-1977",
+      "source_step": "Derive the corrected sublinear-power optimizer-share limit from a literal finite integer optimizer and the displayed asymptotic tail, rather than from the source's ratio argument or a supplied limiting objective."
+    },
+    {
+      "checked_conclusion": "AppendixD1GenericI.lean derives the corrected all-positive D.1(i) uniform-share endpoint from literal fixed-total optimality, a balanced integer competitor, direct logarithmic-tail bounds, exponential gap separation, and finite share accounting.",
+      "id": "PRPKG24-D1I-DIRECT-LOG-TAIL-01",
+      "scope": "The checked theorem visibly assumes Monotone h, B<0, sigma>0, eventual positive A-h, and positive weight for every type. It is a corrected-source result; it does not validate the printed B>0, sigma<0 statement or a zero-weight all-m conclusion.",
+      "source_locator": "cited publication:1262-1330; cited publication:1401-1710",
+      "source_step": "Compare a raw integer optimizer to the balanced allocation under the corrected logarithmic saturation-gap regime, and conclude uniform shares."
+    },
+    {
+      "checked_conclusion": "AppendixD1GenericII.lean derives eventual positive gap from the literal B>0, sigma<0 tail, proves raw optimizer deficit is no greater than every feasible competitor's deficit, and proves every all-positive-support coordinate diverges and has an explicitly constructed positive eventual linear lower bound.",
+      "id": "PRPKG24-D1II-DIRECT-RAW-INTERIOR-CORE-01",
+      "scope": "This is the raw/interiority component of the direct endpoint. By itself it does not prove the share limit; AppendixD1GenericIIFull.lean supplies the rounded-target comparison, strict minimizer/stability step, and final direct endpoint. Neither module silently covers zero-weight support.",
+      "source_locator": "cited publication:1324-1351; cited publication:1710-1840",
+      "source_step": "Replace the source's ratio of saturation-level objectives with direct weighted-deficit comparison, then establish positive-support optimizer interiority under the power tail."
+    },
+    {
+      "checked_conclusion": "AppendixD1GenericIIFull.lean proves corrected all-positive Lemma D.1(ii): a raw fixed-total OptimalSequence, Monotone h, B>0, sigma<0, and the displayed saturation-gap tail force shares proportional to p_i^(1/(1-sigma)). The proof derives its comparator, normalized-deficit bounds, strict negative-power minimizer, and compact gap internally.",
+      "id": "PRPKG24-D1II-DIRECT-POWER-OPTIMIZER-01",
+      "scope": "The endpoint visibly repairs source p_i>=0 to p_i>0 because the printed proof divides through min_i p_i and asserts all-coordinate divergence. It does not silently drop zero-weight types; their supportwise extension remains a logged nonblocking scope boundary. The source condition A>0 is not used, so Lean safely generalizes it to A:Real. Equations (55)-(61) are replaced by direct saturation-deficit comparison.",
+      "source_locator": "cited publication:1262-1351; cited publication:1401-1471; cited publication:1651-1801",
+      "source_step": "Repair the negative-power branch by deriving positive-support interiority, comparing the selected and rounded-target saturation deficits directly, and transferring the unique continuous minimizer to literal integer optimizers."
+    },
+    {
+      "checked_conclusion": "AppendixD1GenericIII.lean proves the corrected all-positive probability endpoint directly from literal optimality, monotonicity plus strict discrete concavity, an internally rounded target allocation, raw-to-log comparison, and an internally proved compact strict maximum gap.",
+      "id": "PRPKG24-D1III-DIRECT-LOG-OPTIMIZER-01",
+      "scope": "The endpoint visibly assumes every p_i>0 and sum_i p_i=1. Its generic internal target is p_i/sum_j p_j; it does not prove the source's zero-weight support cases.",
+      "source_locator": "cited publication:1352-1376; cited publication:1840-1955",
+      "source_step": "Derive the fixed-total optimizer's log-share limit from the source remainder, then identify the variational target in the correct maximum direction."
+    },
+    {
+      "checked_conclusion": "Corollary1SourceIid.lean indexes the source-family witness by arbitrary k with 0 < k. Its gamma-zero branch is a literal two-point iid Bernoulli top-k law proved through the direct finite-discrete iid theorem, and its bounded, exponential, and Pareto branches use the same supplied k. PaperInterface.corollary1 exposes this full endpoint.",
+      "id": "PRPKG24-COROLLARY1-ARBITRARY-FIXED-K-01",
+      "scope": "This repairs a prior formalization-only narrowing to k = 1. The published source statement is not represented as erroneous, and the retained top-one theorem is explicitly labelled a supporting specialization rather than paper-facing Corollary 1 coverage.",
+      "source_locator": "cited publication:333-350; cited publication:443-447",
+      "source_step": "Theorem 1 and Corollary 1 quantify over a fixed consumption constraint k; the corollary obtains each exponent from a source-iid family while retaining that arbitrary fixed k across the model and optimizer sequence."
+    },
+    {
+      "checked_conclusion": "The finite pmfPi law has the exact rankwise atom product, its top-one expectation is 1-product_i(1-q_i), and its all-consumed expectation is sum_i q_i. The four corrected PaperInterface endpoints conjoin these identities with Theorem 2(i)-(iv)'s corrected conclusions.",
+      "id": "PRPKG24-THEOREM2-LITERAL-RANK-LAW-01",
+      "scope": "This is source-model evidence, not an inference from identifier names. The top-one endpoints visibly use c>0 and q_1<1; the unified all-consumed endpoint separates positive alpha from the alpha-zero selected-optimizer correction.",
+      "source_locator": "cited publication:537-553",
+      "source_step": "Replace the inconsistent iid rank description by the explicit finite independent rank-varying Bernoulli law and show that the scalar product/sum objectives are its expectations before applying the four asymptotic branches."
+    }
+  ],
+  "defects": [
+    {
+      "acceptance_condition": "Lean checks the corrected finite bound for every eligible k and the downstream sequence convergence to square-root likelihood shares.",
+      "affected_source_locators": [
+        "WebConf 2024, Proposition 2, Equation 8; cited publication:459-489",
+        "WebConf 2024, Appendix D.5; cited publication:3874-3967"
+      ],
+      "defect_kind": "normalization_or_scaling",
+      "id": "PRPKG24-PROP2-FINITE-CONSTANT-01",
+      "repair_obligation": "State and prove the corrected finite error constant and derive the original asymptotic homogeneity endpoint from it.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "The paper interface exposes the corrected Proposition 2 sequence theorem; the dedicated validation report records the finite factor and unchanged asymptotic consequence.",
+      "source_claim": "Proposition 2 prints the finite representation error bound (m+1)/n, while the displayed relaxed optimizer and rounding argument yield the corrected bound (2m+1)/n.",
+      "source_locator": "WebConf 2024, Proposition 2 and Appendix D.5; cited publication:459-489 and 3874-3967",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The correction changes only a vanishing finite-sample constant. Lean proves the corrected finite theorem and the paper's advertised asymptotic one-half-homogeneity conclusion unchanged."
+    },
+    {
+      "acceptance_condition": "A single paper-facing endpoint for every corrected Theorem 2 part exposes the literal pmfPi law expectation for every finite count and the corresponding asymptotic or selected-optimizer conclusion, with all probability and nondegeneracy conditions visible.",
+      "affected_source_locators": [
+        "WebConf 2024, Theorem 2 header and parts (i)-(iv); cited publication:537-553",
+        "WebConf 2024, decaying-success discussion; cited publication:555-563"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "PRPKG24-THEOREM2-RANK-VARYING-IID-01",
+      "repair_obligation": "Construct a finite independent rank-varying Bernoulli law for each type and count, prove its top-one and all-consumed expectations are the product and sum objectives, and combine that law bridge with each corrected Theorem 2 endpoint. Do not use a numeric objective identity or a declaration name as evidence of independence.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "Theorem2RankBernoulliSource.lean constructs EconCSLib.pmfPi over Fin q -> Bool, proves the atom/product and both expectation identities, and PaperInterface.theorem2_i_corrected_source_model_endpoint, theorem2_ii_corrected_source_model_endpoint, theorem2_iii_corrected_source_model_endpoint, and theorem2_iv_corrected_source_model_endpoint combine that literal law with the source conclusions.",
+      "source_claim": "The Theorem 2 header calls X_i^(t) iid Bernoulli while prescribing the rank-dependent parameter q_i = c(i+d)^(-alpha). It also permits c=0 and a first-rank success probability of one although the top-one universal-optimizer conclusions become flat or tie-degenerate there.",
+      "source_locator": "WebConf 2024, Theorem 2; cited publication:537-553",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Rank-varying Bernoulli coordinates cannot be identically distributed. The corrected model retains the intended independent rankwise law and the advertised positive-alpha conclusions. The top-one branches visibly add c>0 and q_1<1 to rule out flat/tie-degenerate arbitrary optimal selections; the all-consumed alpha-zero branch remains a selected-optimizer correction."
+    },
+    {
+      "acceptance_condition": "A generic source-shaped corrected D.1(i) endpoint derives uniform shares from raw integer allocation optimality, every p_t>0, monotonicity, and the corrected tail assumptions. It must not accept a limiting objective or optimizer-convergence certificate. Downstream finite-discrete routes remain separate evidence only.",
+      "affected_source_locators": [
+        "WebConf 2024, Lemma D.1(i), Equations 29-30; cited publication:1300-1323",
+        "WebConf 2024, downstream finite-discrete applications; cited publication:2009-2179"
+      ],
+      "defect_kind": "algebra_or_sign",
+      "id": "PRPKG24-LEMMAD1-SIGN-01",
+      "repair_obligation": "Use the intended B<0, sigma>0 logarithmic-tail hypothesis (or an equivalent explicit negative exponent), eventual positive gap, monotonicity, and derive the optimizer-share limit from raw integer allocations. State all-positive weights for the literal all-m conclusion, or prove the supportwise 1/|I| correction separately.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "AppendixD1GenericI.corrected_lemmaD1_i_uniform_optimizer_shares_of_log_tail proves the all-positive corrected route from a literal OptimalSequence, balanced integer competitor, raw logarithmic-tail separation, and finite share squeeze. PaperInterface.lemmaD1_i_corrected_uniform_optimizer_shares_source exposes that route; unique_simplex_optimizer_limit_support remains explicitly non-source support.",
+      "source_claim": "Lemma D.1(i) assumes A,B>0 and sigma<0 while concluding uniform shares from log(A-h(a))/(B a^sigma) -> 1. This is false as written even for positive normalized weights: m=2, p=(1/4,3/4), h(a)=1-1/(a+1), A=2, B=1, sigma=-1 satisfies the displayed limit but has square-root rather than uniform optimizer shares.",
+      "source_locator": "WebConf 2024, Lemma D.1(i); cited publication:1262-1330",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "This is a substantive false source statement, not a cosmetic sign typo. The intended exponential regime uses B<0 and sigma>0; the literal all-m uniform conclusion also needs every type to have positive weight. The direct corrected theorem uses the source's monotonicity condition and does not rely on the source proof's unnecessary strict-growth sentence, but it does not prove the archival printed signs."
+    },
+    {
+      "acceptance_condition": "Lean proves the pointwise minimization inequality from the source sphere model and the explicit Laplace boundary.",
+      "affected_source_locators": [
+        "WebConf 2024, Proposition 4, Equation 18; cited publication:1135-1144"
+      ],
+      "defect_kind": "other",
+      "id": "PRPKG24-PROP4-EQ18-TYPE-01",
+      "repair_obligation": "State the uniform-profile conclusion as Gamma(pi) <= Gamma(alpha) for every probability profile alpha.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "The Proposition 4 paper-facing theorem concludes that the uniform profile's supremum objective is no greater than every profile's objective.",
+      "source_claim": "Equation 18 prints Gamma(pi) as an element of inf_alpha Gamma(alpha), although both sides are real-valued; the intended claim is that the uniform profile attains the infimum.",
+      "source_locator": "WebConf 2024, Proposition 4, Equation 18; cited publication:1122-1144",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The surrounding proposition and proof uniquely determine the intended minimization inequality. The printed membership symbol is a local type error, not a substantive change in the result."
+    },
+    {
+      "acceptance_condition": "Lean proves Tendsto of the preference-weighted normalized log integral to the profile payoff supremum.",
+      "affected_source_locators": [
+        "WebConf 2024, Proposition 4, Equations 17 and 20; cited publication:1122-1184"
+      ],
+      "defect_kind": "event_or_measure",
+      "id": "PRPKG24-PROP4-EQ20-MEASURE-OMISSION-01",
+      "repair_obligation": "Keep the preference measure in the relaxed failure integral and use a full-support positive-Laplace theorem to identify its normalized-log limit.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "The Equation 17 paper-facing theorem and concrete sphere helper retain preferenceMeasure for every n and derive the exact supremum limit.",
+      "source_claim": "Equation 20 changes the finite-n integral from the preference-weighted measure in Equation 17 to bare surface measure as a displayed equality. Full support preserves the limiting Laplace rate, not the finite-n integral itself.",
+      "source_locator": "WebConf 2024, Proposition 4 proof, Equation 20; cited publication:1160-1184",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Retaining the original preference measure and using its full support proves the same supremum limit. No proposition conclusion changes."
+    },
+    {
+      "acceptance_condition": "Lean derives the full Proposition 4 endpoint from continuity, source range conditions, and full support without any caller-supplied Gamma or supremum formula.",
+      "affected_source_locators": [
+        "WebConf 2024, Proposition 4 statement and proof; cited publication:1122-1248"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "PRPKG24-PROP4-CONTINUITY-BOUNDARY-01",
+      "repair_obligation": "Expose continuity of the radial kernel and prove it supplies payoff continuity, compact maximum attainment, integrability, and the exact positive-Laplace limit.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "Assumptions.lean records the continuity boundary separately from the source (0,1] and nonconstancy conditions; PaperInterface.lean exposes the raw limit theorem.",
+      "source_claim": "The source assumes only a nonconstant radial probability kernel, but the pointwise-supremum Laplace identity needs regularity excluding isolated measure-zero payoff spikes.",
+      "source_locator": "WebConf 2024, Proposition 4 and Equation 20; cited publication:1122-1184",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Continuity is the standard minor regularity implicit in the paper's invocation of the Laplace principle. Lean exposes it rather than hiding it; the economic and geometric conclusion is unchanged."
+    },
+    {
+      "acceptance_condition": "A paper-facing Lean theorem derives the strict floor(x_t*) plus-or-minus m bounds from corrected source-level concavity, regularity, fixed-sum feasibility, and both optimizer hypotheses, without accepting coordinate closeness or a no-crossing certificate as an input.",
+      "affected_source_locators": [
+        "WebConf 2024, Lemma D.5, Equations 190-195; cited publication:3819-3873",
+        "WebConf 2024, Proposition 2 proof; cited publication:3874-3967"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "PRPKG24-LEMMAD5-GENERAL-ROUNDING-01",
+      "repair_obligation": "State the corrected separable concave real/integer optimization problem with sufficient regularity and prove the no-crossing and coordinate-rounding conclusion from real and integer optimality.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "PaperInterface.lemmaD5 invokes GeneralRounding.floor_count_close_of_strictConcave_maximizers, which derives the exact strict floor/cardinality window from corrected source-level strict concavity, real optimality, and integer optimality without a no-crossing or closeness premise.",
+      "source_claim": "Lemma D.5 claims that an optimal nonnegative integer solution of a separable fixed-sum problem lies within m coordinates of an optimal nonnegative real solution.",
+      "source_locator": "WebConf 2024, Lemma D.5; cited publication:3819-3873",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Lean now derives the corrected strict floor window from separable strict concavity, fixed-sum feasibility, and both optimizer hypotheses. The source's statement requires a local concavity correction, but there is no remaining proof boundary."
+    },
+    {
+      "acceptance_condition": "The corrected mathematical statement is recorded with a coherent maximization direction and an explicit regularity basis for every marginal comparison.",
+      "affected_source_locators": [
+        "WebConf 2024, Lemma D.5, Equations 190-195; cited publication:3819-3873",
+        "WebConf 2024, Proposition 2, Equation 197; cited publication:3890-3925"
+      ],
+      "defect_kind": "algebra_or_sign",
+      "id": "PRPKG24-LEMMAD5-CONCAVITY-REGULARITY-01",
+      "repair_obligation": "Replace convexity by concavity and state sufficient regularity, or give a derivative-free strict-concavity proof, before using the optimizer-rounding lemma.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "PaperInterface.lemmaD5 states strict concavity and is proved by the derivative-free GeneralRounding secant-slope and exchange argument, so no unstated differentiability premise is added.",
+      "source_claim": "Lemma D.5 prints strictly convex summands while maximizing their sum, but Equation 197 and the marginal comparison in Equations 194-195 require concavity; the proof also invokes partial derivatives without stating differentiability.",
+      "source_locator": "WebConf 2024, Lemma D.5 and proof; cited publication:3819-3873",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Convex should read concave, and a derivative-based proof needs an explicit differentiability or subgradient formulation. These are local statement/proof defects distinct from the open Lean coverage of the corrected general lemma and do not create a formalized-with-caveat classification."
+    },
+    {
+      "acceptance_condition": "PaperInterface exposes a corrected generic D.1(ii) theorem with every source-model condition visible. Its proof starts from raw finite allocation feasibility and optimality and contains no caller-supplied limiting objective, compactness gap, share convergence, allocation certificate, or downstream theorem conclusion. It may retain the already documented all-positive source restriction; it must not silently normalize or discard zero weights. The completed D.1(i)/(iii)/(iv) routes and remaining proof handoff identify the required construction order and focused build commands.",
+      "affected_source_locators": [
+        "WebConf 2024, Lemma D.1(i)-(iv); cited publication:1262-1400",
+        "WebConf 2024, proof of coordinate divergence and limiting optimization; cited publication:1401-1977",
+        "WebConf 2024, applications in Theorems 1-2; cited publication:2009-2177 and 2913-3811"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "PRPKG24-LEMMAD1-GENERIC-ASYMPTOTICS-02",
+      "repair_obligation": "Use a direct corrected all-positive source variant of (ii): B>0, sigma<0, a deficit comparison rather than an objective-ratio limit, a rounded-target comparison, and strict weighted-negative-power minimizer stability. Derive interiority and compact separation from raw integer allocation optimality. Keep any zero-weight extension separate, or retain the visible positive-support restriction under the accepted audit scope policy.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "AppendixD1GenericI.lean, AppendixD1GenericIII.lean, and AppendixD1GenericIV.lean close corrected all-positive D.1(i)/(iii)/(iv) directly. AppendixD1GenericIIFull.lean closes corrected all-positive D.1(ii) from literal OptimalSequence optimality, tail-derived interiority, a rounded target comparator, direct normalized-deficit comparison, strict negative-power minimization, and an internal compact gap. PaperInterface.lemmaD1_ii_corrected_powerTail_optimizer_shares_source exposes that endpoint. The literal source p_i>=0 version remains a visible zero-support boundary; A>0 is safely weakened to A:Real because it is unused.",
+      "source_claim": "The single named lemma asserts four generic optimizer-share limits from nonnegative weights and asymptotics of h, then its proof uses every coordinate's divergence to infinity and a limiting compact optimization argument. Its proof divides through min_i p_i despite allowing zeros; case (ii) turns a deficit ratio into a strict objective-value ratio although both objectives approach A sum p; and case (iii) labels the required log-objective maximum a minimum.",
+      "source_locator": "WebConf 2024, Lemma D.1 and proof; cited publication:1262-1977",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "All four D.1 branches now have direct corrected all-positive routes. D.1(ii) derives its deficit comparison, rounded target comparator, positive interiority, strict negative-power minimizer, and compact stability from raw integer optimality; it does not reuse the old generic Lean bridge's limiting certificates. The source's zero-weight scope remains explicitly restricted rather than silently claimed as proved."
+    },
+    {
+      "acceptance_condition": "The corrected D.1(ii) endpoint proves an eventual strict raw objective comparison from a direct deficit inequality and then derives the source share limit without a caller-supplied gap, ratio, or limiting objective.",
+      "affected_source_locators": [
+        "WebConf 2024, Lemma D.1(ii), Equations 55-61; cited publication:1710-1840",
+        "WebConf 2024, Lemma D.1(ii) statement; cited publication:1324-1351"
+      ],
+      "defect_kind": "logical_dependency",
+      "id": "PRPKG24-LEMMAD1-II-OBJECTIVE-RATIO-03",
+      "repair_obligation": "Keep the optimizer comparison in the positive deficit objective sum p_t*(A-h(a_t)), prove that the candidate has strictly smaller deficit for all sufficiently large n, and translate that strict difference to the original objective without taking a limiting ratio of the saturation-level objectives.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "AppendixD1GenericIIFull.corrected_lemmaD1_ii_powerTail_optimizer_shares derives direct normalized saturation-deficit bounds, compares the selected raw deficit to the rounded target allocation, and proves the power-share limit without taking a ratio of saturation-level objective values. PaperInterface.lemmaD1_ii_corrected_powerTail_optimizer_shares_source exposes the direct endpoint.",
+      "source_claim": "After proving a strict ratio comparison of the saturation deficits A-h(a), the proof concludes that the ratio of the original objective values is strictly below one in Equation (61).",
+      "source_locator": "WebConf 2024, Lemma D.1(ii) proof; cited publication:1710-1840",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Both objective values approach A times the total weight, so their ratio approaches one even when their positive deficits have a strict ratio. AppendixD1GenericIIFull.lean avoids that invalid inference: it compares normalized positive deficits directly and transfers the resulting inequality through an internally constructed compact stability argument."
+    },
+    {
+      "acceptance_condition": "The corrected D.1(iii) endpoint visibly states sum p=1 or p/sum p, uses the maximum direction, and proves the share limit from raw allocation optimality rather than a supplied simplex optimizer certificate.",
+      "affected_source_locators": [
+        "WebConf 2024, Lemma D.1(iii), Equations 63-66; cited publication:1840-1955",
+        "WebConf 2024, Lemma D.1(iii) statement; cited publication:1352-1376"
+      ],
+      "defect_kind": "inequality_direction",
+      "id": "PRPKG24-LEMMAD1-III-MAX-DIRECTION-04",
+      "repair_obligation": "Use the strict maximum of the normalized weighted log objective, make sum p=1 or p/sum p visible, and derive the comparison from raw integer optimality. Extend the checked all-positive route to zero-weight support separately.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "AppendixD1GenericIII.corrected_lemmaD1_iii_probability_optimizer_shares_of_log_remainder derives the source-probability endpoint from literal fixed-total optimality, internally constructed rounding/interiority/raw-log comparison, and a locally proved compact strict gap. PaperInterface.lemmaD1_iii_corrected_probability_optimizer_shares_source exposes it.",
+      "source_claim": "The proof says that sum_t p_t log(x_t) has a unique minimum at the target shares, while its preceding strict inequality and the correct entropy calculation require a unique maximum.",
+      "source_locator": "WebConf 2024, Lemma D.1(iii) proof; cited publication:1840-1955",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "For positive normalized weights, the weighted log objective is strictly concave and uniquely maximized at p, not minimized there. Lean now derives the raw allocation share limit through that maximum after exposing probability normalization and all-positive support. The standalone source lemma's zero-weight scope remains a separate boundary."
+    },
+    {
+      "acceptance_condition": "The source-facing finite-discrete endpoint derives the uniform limit from an actual finite PMF, a strict top/non-top value split, positive mass for each side, positive type likelihoods, and raw integer allocation optimality without a generic Lemma D.1 certificate.",
+      "affected_source_locators": [
+        "WebConf 2024, Theorem 1(i); cited publication:345-366",
+        "WebConf 2024, finite-discrete Appendix D.1 reduction and proof; cited publication:2009-2179"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "PRPKG24-THEOREM1I-NONDEGENERATE-TOP-05",
+      "repair_obligation": "State the finite-discrete theorem with positive likelihoods and a nondegenerate top split 0<q<1, or weaken the result to an existence/tie-broken selection claim for degenerate laws.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "AppendixD1Source.lean requires htop_mass_pos, hnontop_mass_pos, hsecond_lt_top, and hlike_pos, and PaperInterface.theorem1_i_finiteDiscrete_iid_source_model exposes that direct source-model route.",
+      "source_claim": "Theorem 1(i) says every finite discrete D gives an all-type uniform limiting representation for arbitrary optimal sets.",
+      "source_locator": "WebConf 2024, Theorem 1(i) and proof; cited publication:345-366 and 2009-2179",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "A point-mass conditional law makes the fixed-top-k value eventually flat, so non-uniform optimal selections exist. The direct checked theorem states the nondegenerate intended source domain: positive likelihood for every type and positive mass both at and below the top value. This is an explicit tie/nondegeneracy correction, not evidence that the literal degenerate theorem was proved."
+    },
+    {
+      "acceptance_condition": "The paper-facing endpoints are direct iid exponential statements, derive the harmonic formula from the actual sample measure, retain the scale factor, and prove the corrected limit and eventual strict forward-marginal antitonicity without a cited sequence or asymptotic certificate premise.",
+      "affected_source_locators": [
+        "WebConf 2024, Lemma D.3 statement; cited publication:2778-2792",
+        "WebConf 2024, harmonic-sum calculation; cited publication:2793-2814",
+        "WebConf 2024, Theorem 1(iii) application; cited publication:2754-2777"
+      ],
+      "defect_kind": "normalization_or_scaling",
+      "id": "PRPKG24-LEMMAD3-SCALE-CONSTANT-01",
+      "repair_obligation": "State mu_D(a-i,a) = (H_a-H_i)/lambda on valid ranks, use the limit (EulerMascheroniConstant-H_i)/lambda after subtracting (log a)/lambda, and formulate strict diminishing marginals eventually over valid ranks.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "AppendixD3Source.lean proves the direct iid formula, corrected limit, and eventual strict forward-marginal theorem. PaperInterface.lean exposes them as lemmaD3_exponential_iid_fixed_rank_*_source and labels the source correction.",
+      "source_claim": "For an exponential distribution with rate lambda, Lemma D.3 prints mu_D(a-i,a) - log a - B(i) -> 0 for a positive constant B(i), and calls the sequence strictly concave without stating the valid-rank domain.",
+      "source_locator": "WebConf 2024, Lemma D.3 and proof; cited publication:2778-2814",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The source omits the required 1/lambda scale and its claimed positive additive constant fails for every fixed upper rank after the maximum. The corrected formula, limit, and eventual strict diminishing-marginal consequence are directly proved for the actual iid exponential law, preserving the intended Theorem 1(iii) conclusion."
+    },
+    {
+      "acceptance_condition": "Direct iid Pareto paper-facing endpoints derive the power asymptotic and eventual strict forward-marginal antitonicity from the normalized source law, rather than accepting a cited order-statistic sequence or a concavity certificate.",
+      "affected_source_locators": [
+        "WebConf 2024, Lemma D.4 statement; cited publication:2844-2862",
+        "WebConf 2024, cited gamma-ratio argument; cited publication:2863-2908",
+        "WebConf 2024, Theorem 1(iv) application; cited publication:2815-2843"
+      ],
+      "defect_kind": "normalization_or_scaling",
+      "id": "PRPKG24-LEMMAD4-PDF-RANK-DOMAIN-01",
+      "repair_obligation": "Use the normalized Pareto density alpha*x^(-alpha-1) on its support, retain alpha > 1, and state the fixed-rank asymptotic and strict marginal property on valid eventual ranks.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "AppendixD4Source.lean proves the actual iid Pareto fixed-rank asymptotic and eventual strict marginal result; PaperInterface.lean exposes both corrected source endpoints.",
+      "source_claim": "Lemma D.4 calls x^(-alpha-1) a Pareto PDF for alpha > 1, omitting its alpha normalizer, and asserts strict concavity over a totalized fixed-rank order-statistic expression without a valid-rank/eventual domain.",
+      "source_locator": "WebConf 2024, Lemma D.4 and proof; cited publication:2844-2908",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The displayed density is not normalized as written. The direct iid route uses the normalized Pareto law and proves the advertised fixed-rank power asymptotic together with the valid eventual strict diminishing-marginal conclusion, so the substantive Theorem 1(iv) route is checked under the corrected model."
+    },
+    {
+      "acceptance_condition": "A paper-facing endpoint visibly assumes integrability and nonnegative common mean, identifies every allocation's all-consumed objective with the preferred-type PMF followed by the finite iid-sample expectation, and proves that an all-on allocation at a likelihood-maximizing type is optimal at every total. It must not assert that the archival conclusion holds for negative means or that all tied optima are concentrated.",
+      "affected_source_locators": [
+        "WebConf 2024, Theorem 1 header; cited publication:345-347",
+        "WebConf 2024, Theorem 1(v); cited publication:437-438",
+        "WebConf 2024, all-consumed objective explanation; cited publication:55-71"
+      ],
+      "defect_kind": "inequality_direction",
+      "id": "PRPKG24-THEOREM1V-NEGATIVE-MEAN-DIRECTION-01",
+      "repair_obligation": "Model the initial preferred-type draw as a finite PMF and, conditional on that draw, the all-consumed slate as a finite iid sample from the common integrable law. Prove the source objective is the resulting two-stage expectation, then require nonnegative common mean before comparing likelihood masses.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "AllConsumedIidSource.lean constructs the finite iid product law and proves its expected slate value is the common-mean linear objective. PaperInterface.theorem1_v_source_experiment_formula exposes the PMF outer expectation, and PaperInterface.theorem1_v_selected_maximizer_conclusion proves the nonnegative-mean all-on optimum. The selected-optimizer convention is recorded separately in the existing approval addendum rather than being treated as a second defect.",
+      "source_claim": "Theorem 1 assumes only that the common iid conditional-value law has finite mean, then says that the all-consumed optimum uses a type maximizing p_t. A negative common mean reverses that direction: the all-consumed expected value of an item of type t is p_t times the common mean.",
+      "source_locator": "WebConf 2024, Theorem 1 header and part (v); cited publication:345-347 and 437-438",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "Finite mean alone does not support the printed likelihood-argmax direction. The corrected result makes the nonnegative-mean condition visible and establishes one selected all-on likelihood maximizer under the literal two-stage source experiment; it does not claim the archival finite-mean-only statement."
+    },
+    {
+      "acceptance_condition": "A paper-facing endpoint exposes q_t>0 and q_t<1 for every type, the actual preferred-type PMF and finite iid Bernoulli experiment, and the logarithmic-share limit. It must not replace the endpoint restriction by an unproved convention or use an unbounded/undefined endpoint expression as a real share weight.",
+      "affected_source_locators": [
+        "WebConf 2024, Theorem 3 header and Equation (9); cited publication:605-617",
+        "WebConf 2024, Theorem 3 all-consumed clause; cited publication:617-619"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "PRPKG24-THEOREM3-ENDPOINT-DOMAIN-01",
+      "repair_obligation": "Restrict the top-one logarithmic-share theorem to typewise Bernoulli parameters in the open interval (0,1), construct the finite iid Boolean law for each selected type and count, and prove the PMF outer objective is its two-stage expectation before applying the optimizer-share theorem.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "BernoulliIidSource.lean proves the finite iid Bernoulli expectation and the PMF-selected two-stage objective identity. PaperInterface.theorem3_top_one_source_experiment_formula exposes that identity, and PaperInterface.theorem3_log_share_conclusion visibly supplies the strict endpoint conditions and proves the share limit. The all-positive preferred-type support condition remains an explicit model convention rather than a separate source-statement defect.",
+      "source_claim": "Theorem 3 prints the all-type share weight 1 / log(1 / (1-q_t)) for Bernoulli(q_t) conditional values without excluding q_t=0 or q_t=1. At q_t=0 the denominator is zero, and at q_t=1 the displayed real-valued expression is not a finite defined share weight.",
+      "source_locator": "WebConf 2024, Theorem 3; cited publication:605-619",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The open Bernoulli domain is necessary for the displayed logarithmic weight to be a finite real-valued all-type share formula. The checked endpoint states 0<q_t<1 for each type and retains the intended top-one conclusion under the literal selected-type and iid-Bernoulli experiment. It does not treat the endpoint cases as archival coverage."
+    },
+    {
+      "acceptance_condition": "A paper-facing endpoint makes the strict upper success-probability bound and the source two-stage finite iid experiment explicit, then proves the uniform asymptotic conclusion. It must not claim universal uniformity at q=1 or hide the boundary by selecting one convenient optimizer.",
+      "affected_source_locators": [
+        "WebConf 2024, Corollary 3; cited publication:518-521",
+        "WebConf 2024, top-one interpretation; cited publication:503-512"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "PRPKG24-COROLLARY3-QONE-OPTIMALITY-01",
+      "repair_obligation": "Replace q>0 by 0<q<1 for the universal top-one homogeneity result, construct the finite iid Bernoulli source law, and establish the selected-type PMF outer expectation before deriving uniformity from the common success probability.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "BernoulliIidSource.lean constructs the finite iid Boolean law and proves the selected-type PMF objective identity. PaperInterface.theorem3_top_one_source_experiment_formula exposes that identity, and PaperInterface.corollary3_iid_bernoulli_conclusion exposes the common q in (0,1) conditions and proves uniform homogeneity; its positive preferred-type support is a separately visible model convention, not a second defect.",
+      "source_claim": "Corollary 3 assumes q>0 and concludes that every top-one optimal sequence is asymptotically uniform. The stated domain includes q=1. With at least two positively likely types and q=1, every allocation that gives each such type at least one item already has top-one success probability one, so nonuniform optimal sequences exist.",
+      "source_locator": "WebConf 2024, Corollary 3; cited publication:518-521",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The q=1 boundary makes the universal arbitrary-optimizer conclusion false, not merely undefined. The corrected target uses one common q in (0,1) and proves the uniform limit under the literal selected-type PMF and finite iid Bernoulli source experiment, without attributing that restriction to the archival q>0 statement."
+    },
+    {
+      "acceptance_condition": "The four PaperInterface endpoints visibly quantify a strictly positive PMF, positive fixed k, and an existentially selected optimal sequence, while the source map marks them as non-equivalent approved corrected targets with this defect as governing evidence.",
+      "affected_source_locators": [
+        "WebConf 2024, model definition; cited publication:55-71",
+        "WebConf 2024, Theorem 1(ii)-(iv); cited publication:351-365 and 431-437",
+        "WebConf 2024, Corollary 1; cited publication:443-457"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "PRPKG24-ALL-COORDINATE-SHARE-DOMAIN-01",
+      "repair_obligation": "For the all-coordinate theorem and corollary routes, make every preferred-type PMF mass and k strictly positive; explicitly return a selected fixed-total optimizer sequence; and preserve a separate counterexample or supportwise analysis rather than claiming the archival zero-support extension.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "SeparableAsymptotic.OptimalAllocationSequence.selected noncomputably selects a finite optimum at each total. ConsumptionModel.objective_eq_of_agree_on_likelihood_support and isOptimalAtTotal_of_agree_on_likelihood_support isolate the supportwise invariance. ZeroSupportCounterexample.lean compiles the two-type p=(1,0) witness where an all-zero-support allocation is optimal. PaperInterface's four selected-sequence endpoints then prove the all-positive corrected routes.",
+      "source_claim": "The model permits a preferred-type probability p_t of zero, while the stated all-coordinate homogeneity formulas include p_t^gamma divided by a sum of such powers and do not state an optimizer tie-selection rule. Corollary 1 includes gamma=0, for which the all-coordinate expression needs a zero-power convention at p_t=0.",
+      "source_locator": "WebConf 2024, model and Theorem 1(ii)-(iv)/Corollary 1; cited publication:55-71 and 351-457",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "A zero-likelihood type has no effect on the expected objective, so arbitrary optimal allocations can retain a nonvanishing off-support share. The archival wording names one S_(n,k), rather than every optimum, but does not make its selection or the p_t=0 all-coordinate expression explicit. The correction restricts the verified result to the ordinary positive-mass all-coordinate domain and existentially selects a finite optimum at every total."
+    },
+    {
+      "acceptance_condition": "The approved corrected target and its PaperInterface endpoint visibly retain the literal PDF law, a.e. nonnegative values, finite bounds L and M with 0<M and 0<M-L, and the displayed beta,c>0 tail condition.",
+      "affected_source_locators": [
+        "WebConf 2024, Theorem 1(ii), Equation 7; cited publication:351-365",
+        "WebConf 2024, Lemma 1 and bounded-tail bridge; cited publication:701-713 and 2181-2317"
+      ],
+      "defect_kind": "domain_or_endpoint",
+      "id": "PRPKG24-THEOREM1II-VALUE-DOMAIN-01",
+      "repair_obligation": "State the nonnegative bounded-PDF value-domain and endpoint normalizations in the approved Theorem 1(ii) target, or separately formalize a translation/lower-tail extension before claiming that broader source scope.",
+      "resolution": "corrected_source_statement",
+      "resolution_evidence": "AppendixD2DensitySource.lean derives the density-to-tail and fixed-rank integral bridge internally from the literal withDensity law; PaperInterface.theorem1_ii_formulaSpec_proof joins that direct bridge to the selected all-positive-PMF allocation endpoint.",
+      "source_claim": "Theorem 1(ii) states only an upper support bound and an upper-endpoint PDF tail. The direct formal PDF-to-top-k bridge instead verifies a nonnegative bounded density law on [L,M], with finite lower endpoint L, 0<M, and positive width M-L.",
+      "source_locator": "WebConf 2024, Theorem 1(ii) and bounded-tail proof bridge; cited publication:351-365 and 701-713",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "This records a restricted direct formalization domain; it does not assert that the source conclusion is false for translated laws or distributions with an unbounded lower tail. The added regularity is visible because the Lean endpoint proves the literal withDensity bridge only on this value domain."
+    }
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "AppendixD2DensitySource.lean derives a.e. density zero above M from the literal PDF law, the reflected tail-mass integral identity by interval substitution, local integrability, the CDF-power sandwich, and then the D.2, Lemma 1, and Theorem 1(ii) endpoints. No tail, split, or optimizer certificate is accepted from callers. It does not claim a translated/lower-tail extension outside the recorded nonnegative convention.",
+      "classification": "standard_pdf_measure_semantics",
+      "formal_meaning": "The phrase 'D has pdf f_D' is represented by a probability measure equal to Lebesgue volume with density ofReal(f_D), with f_D nonnegative, measurable, and integrable. The Theorem 1(ii) allocation endpoint additionally adopts an a.e. nonnegative conditional-value convention. Given that convention, its lower endpoint L, positive width, and positive M are support normalizations rather than separate claims about every merely upper-bounded translated law.",
+      "id": "PRPKG24-BOUNDED-PDF-MEASURE-01",
+      "source_locator": "cited publication:701-713; cited publication:2264-2317",
+      "why_needed": "The source proof silently changes from a reflected density to an integral representation of upper-tail mass and then to CDF-power bounds. These are not theorem-name consequences of a function called pdf: they require an actual density measure and enough boundedness/integrability for the expected top-k loss to be well defined. The source says only bounded above, so the nonnegative value-domain convention must remain visible rather than being inferred from the tail formula."
+    },
+    {
+      "checked_scope": "PaperInterface.theorem1_ii_formulaSpec, theorem1_iii_formulaSpec, theorem1_iv_formulaSpec, and corollary1Spec visibly retain strict positivity of each preferred-type mass and existentially select the source's finite optima. Corollary 1 also returns an explicit probability law D, tied to the concrete iid model branch. Their PMF-selected source objectives and fixed-k conclusions are checked only on that regular all-coordinate domain. The stronger universal formulas remain support and the convention does not assert a zero-support extension.",
+      "classification": "all_coordinate_positive_support_convention",
+      "formal_meaning": "For the checked fixed-k gamma-share endpoints that assert a limiting representation for every named type, the source-selected preferred-type PMF has strictly positive mass at every type. This is an additional regularity condition on the all-coordinate route, not a claim that the archival model text excluded zero-probability types.",
+      "id": "PRPKG24-POSITIVE-PREFERENCE-SUPPORT-01",
+      "source_locator": "cited publication:55-63; cited publication:351-457",
+      "why_needed": "The source says only that one type is selected with probabilities p_t, which permits zero masses. The direct all-coordinate optimizer-share arguments use positive weights and finite normalized powers for every coordinate; a zero-probability type instead requires a separate supportwise formulation and optimizer-selection analysis. Recording the restriction prevents that zero-support boundary from being smuggled into a source theorem match."
+    },
+    {
+      "checked_scope": "Theorem2RankBernoulliSource.lean uses EconCSLib.pmfPi, proves the atom formula and both expectations, and the corrected PaperInterface endpoints include those equalities in their conclusions. Top-one adds c>0 and q_1<1 for arbitrary-optimum homogeneity; positive-alpha all-consumed needs q_1<=1; alpha zero uses the recorded selected-optimizer convention.",
+      "classification": "corrected_probability_model",
+      "formal_meaning": "For each type and finite count, the rank coordinates are independent Boolean variables with rank-specific success parameter c*((i+1)+d)^(-alpha). They are not asserted iid across ranks; cross-type independence is neither asserted nor needed because one preferred type is evaluated.",
+      "id": "PRPKG24-THEOREM2-INDEPENDENT-RANK-BERNOULLI-MODEL-01",
+      "source_locator": "cited publication:537-553",
+      "why_needed": "The product top-one objective requires within-type independence, while the all-consumed sum objective only needs the rankwise means. The source uses inconsistent iid wording, so the actual finite PMF and its expectation identities must be checked before asymptotic objective theorems receive source-model credit."
+    },
+    {
+      "checked_scope": "AllConsumedIidSource.lean derives the common-mean linear objective from a finite iid sample law. PaperInterface.theorem1_v_source_experiment_formula and PaperInterface.theorem1_v_selected_maximizer_conclusion separately expose the PMF experiment, integrability, nonnegative mean, and selected all-on likelihood-maximizing optimum. Strict uniqueness remains a separate strengthening, not a claim about every tied optimum.",
+      "classification": "routine_value_domain_convention",
+      "formal_meaning": "For the all-consumed common-distribution endpoint, the common conditional mean is nonnegative for the weak argmax direction and positive for the unique argmax direction.",
+      "id": "PRPKG24-COMMON-MEAN-SIGN-01",
+      "source_locator": "cited publication:430-439",
+      "why_needed": "When every item is consumed, the objective is linear in the common mean. A negative common mean reverses the stated argmax direction, and a zero mean eliminates uniqueness."
+    }
+  ],
+  "paper": "PRPKG24AccuracyDiversity",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Calibration example, representation and homogeneity definitions, main i.i.d. and Bernoulli theorem families, and proof-sketch objective formulas.",
+      "source_locator": "WebConf 2024, Sections 1.2-4 and Equations 1-11; cited publication:175-746"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Uniform-order-statistic finite allocation bound and its asymptotic one-half-homogeneity consequence.",
+      "source_locator": "WebConf 2024, Proposition 2 and Appendix D.5; cited publication:459-489 and 3874-3967"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Multiple-preference reduction, finite product/log identity, relaxed sphere profile, Laplace limit, Fubini and sphere-symmetry averaging, and the uniform-profile minimizer.",
+      "source_locator": "WebConf 2024, Appendix C, Equations 13-26 and Proposition 4; cited publication:1045-1248"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Optimizer-share limits for exponential, power, logarithmic, and sublinear objective asymptotics.",
+      "source_locator": "WebConf 2024, Lemma D.1 and proof; cited publication:1262-2177"
+    },
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "Bounded-tail integral asymptotics, exponential and Pareto order-statistic formulas, and integer-rounding support for the named results.",
+      "source_locator": "WebConf 2024, Lemmas D.2-D.5 and proofs; cited publication:2248-3967"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "4dd55b1445de448e81d5494fbf9bafe4aac3f8c59f0ee62dac00aa1345dc4830"
+}

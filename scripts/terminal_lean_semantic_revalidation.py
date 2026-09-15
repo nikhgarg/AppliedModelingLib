@@ -10,6 +10,7 @@ leaf, or closure receipt.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 import subprocess
@@ -42,6 +43,7 @@ from scripts.lean_signature_manifest import (
 from scripts.obligation_current_material import current_source_semantic_material
 from scripts.obligation_evidence_graph import (
     ObligationEvidenceError,
+    portable_evidence_sha256,
     source_atom_semantic_projection,
 )
 from scripts.obligation_evidence_projection import (
@@ -157,6 +159,35 @@ def _current_review_import_module(
     return module
 
 
+PUBLIC_SOURCE_ROLE_APPROVALS_FILE = "docs/PUBLIC_SOURCE_ROLE_APPROVALS.json"
+
+
+def _approved_public_source_role_digests(raw: bytes, paper: str) -> tuple[str, ...]:
+    """Read exact envelope approvals; this data must come from canonical main."""
+
+    payload = json.loads(raw)
+    if (
+        not isinstance(payload, dict)
+        or set(payload) != {"schema", "approved_envelope_sha256s_by_paper"}
+        or type(payload.get("schema")) is not int
+        or payload["schema"] != 1
+        or not isinstance(payload["approved_envelope_sha256s_by_paper"], dict)
+    ):
+        raise ValueError("malformed public source-role approval registry")
+    approvals = payload["approved_envelope_sha256s_by_paper"]
+    for name, digests in approvals.items():
+        if (
+            not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]*", name)
+            or not isinstance(digests, list)
+            or not digests
+            or any(not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest)
+                   for digest in digests)
+            or digests != sorted(set(digests))
+        ):
+            raise ValueError("malformed public source-role approval registry")
+    return tuple(approvals.get(paper, ()))
+
+
 def _trusted_public_source_role_envelope(paper_dir: Path) -> bytes:
     """Read release authority from a fetched canonical public main Git tree.
 
@@ -164,6 +195,10 @@ def _trusted_public_source_role_envelope(paper_dir: Path) -> bytes:
     out the canonical repository with full remote history; offline readers
     must likewise have fetched its main ref. The private release guard checks
     issuance against private inputs before the public maintainer merges it.
+    An exact envelope hash may first be approved in the canonical-main
+    registry so that a later release PR can undergo the same strict checks
+    before its envelope file itself reaches main. Branch-local approval files
+    do not grant authority.
     """
 
     paper_dir = paper_dir.resolve()
@@ -187,18 +222,28 @@ def _trusted_public_source_role_envelope(paper_dir: Path) -> bytes:
         r"nikhgarg/(?:AppliedModelingLib|EconCSLib)(?:\.git)?"
     )
     candidates = []
+    approved_digests: set[str] = set()
     for remote in git("remote").decode().splitlines():
         urls = git("remote", "get-url", "--all", remote).decode().splitlines()
         if len(urls) == 1 and canonical.fullmatch(urls[0]):
             try:
                 candidates.append(git("show", f"refs/remotes/{remote}/main:{relative}"))
             except ValueError:
-                continue
+                pass
+            try:
+                approval_bytes = git(
+                    "show", f"refs/remotes/{remote}/main:{PUBLIC_SOURCE_ROLE_APPROVALS_FILE}"
+                )
+                approved_digests.update(
+                    _approved_public_source_role_digests(approval_bytes, paper_dir.name)
+                )
+            except (ValueError, UnicodeError):
+                pass
     try:
         current = (root / relative).read_bytes()
     except OSError as exc:
         raise ValueError("public source-role envelope is unavailable") from exc
-    if current not in candidates:
+    if current not in candidates and hashlib.sha256(current).hexdigest() not in approved_digests:
         raise ValueError(
             "public source-role envelope is not authenticated by canonical public main"
         )
@@ -355,11 +400,45 @@ def _validate_current_source_routes(
         # their exact route names and semantic source atoms fixed instead;
         # subsequent Lean checks still validate every target and dependency.
         # This route reads recorded evidence and cannot issue acceptance.
+        def public_atoms_match(source_item_id: str, atom_ids: tuple[str, ...]) -> bool:
+            current_atoms = semantic_atoms(tuple(atom_ids), current_leaves)
+            accepted_atoms = accepted_entries[source_item_id]["source_atoms"]
+
+            def retained(atoms):
+                return tuple(atom[:2] if source_item_id in withheld_roles else atom
+                             for atom in atoms)
+
+            if retained(current_atoms) == retained(accepted_atoms):
+                return True
+            item = projected_source_map.get("items", {}).get(source_item_id, {})
+            statement = item.get("statement")
+            if item.get("source_claim_atoms") or not isinstance(statement, str):
+                return False
+            # Legacy unstructured atoms hashed their whole statement header,
+            # including its source.txt line citation. The canonical public
+            # projector changes that locator to "cited publication". Recover
+            # only this header spelling and require the entire original hash
+            # to match: quote, equation, line range, and role changes still fail.
+            restored = re.sub(
+                r"^(\s*[-*]?\s*(?:Remark|Lemma|Theorem|Proposition|Corollary|"
+                r"Definition|Observation|Equation|Appendix)\b[^()\n]{0,80}\()"
+                r"cited publication:(\d+(?:[-–]\d+)?)\)(:\s)",
+                r"\1source.txt:\2)\3", statement, count=1,
+            )
+            if restored == statement:
+                return False
+            legacy_atoms = tuple(sorted(
+                (quote, portable_evidence_sha256({
+                    "schema": 1,
+                    "source_quote_sha256": quote,
+                    "semantic_claim": " ".join(restored.split()),
+                }), role)
+                for quote, _component, role in current_atoms
+            ))
+            return retained(legacy_atoms) == retained(accepted_atoms)
+
         if set(navigation) != set(accepted_entries) or any(
-            tuple(a[:2] if source_item_id in withheld_roles else a
-                  for a in semantic_atoms(tuple(atom_ids), current_leaves))
-            != tuple(a[:2] if source_item_id in withheld_roles else a
-                     for a in accepted_entries[source_item_id]["source_atoms"])
+            not public_atoms_match(source_item_id, atom_ids)
             for source_item_id, atom_ids in navigation.items()
         ):
             raise TerminalLeanSemanticRevalidationError(

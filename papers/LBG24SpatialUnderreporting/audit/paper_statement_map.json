@@ -8,16 +8,22 @@
         "Appendix D.8.2 second-report start result"
       ],
       "claim_bearing": true,
-      "inventory_role": "source_scope_exclusion",
-      "scope_disposition": "user_approved_scope_exclusion",
-      "scope_disposition_note": "The user deferred appendix proof repair for this release. The post-first-jump same-rate process and second-report-start assertion remains explicitly uncredited in the selected formalization surface; this scope decision does not establish the printed claim or classify it as a typo.",
+      "lean_declarations": [
+        "LBG24SpatialUnderreporting.sourcePostFirstJumpPoissonShift"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "LBG24SpatialUnderreporting.sourcePostFirstJumpPoissonShift",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "LBG24SpatialUnderreporting.sourcePostFirstJumpPoissonShiftSpec"
+      },
       "source_anchor_evidence": [
         {
-          "line_end": 4144,
-          "line_start": 4120,
+          "line_end": 4420,
+          "line_start": 4402,
           "publication_locator": "cited publication",
-          "quoted_text": "D.8.2\n\nSupplementary information on using a training set starting from the second\nreport\n\nIn Section 6.2 and in Appendix D.8.1, the predictions were generated using the results of the\nspatial model we presented in the main text. The training set used to obtain such results was\nconstructed by defining the time of the first report as the start of our observation period, as\ndetailed in Appendix D.2.\nHowever, our theoretical analysis also holds if we instead use as the Poisson interval the time\nstarting after the second report – if we split a Poisson process on the time of the first jump, and start\ncounting subsequent jumps at that time, the resulting counting process would still be a Poisson\nprocess with the same rate. Thus, we can estimate the Poisson process rate using our methods,\nstarting with the second report time.25 However, crucially, we as researchers know for the incident\nthe time between the first and second report, which was not used to train the model (but which the\nmodel is trying to predict). Intuitively, this procedure evaluates our methods in a setting in which\nthe ground truth is known.\n25\n\nFormally, consider a Poisson process with rate λ, denoted as {X(t), t ≥ 0}, with the first jump time denoted as\nT1 . Based on the memoryless property of Poisson process jump times, the process {X(t) − 1, t ≥ T1 } is still a Poisson\nprocess with the same rate parameter (see e.g., [34]). Thus in our context, for an incident with type θ, if we treat\nthe first report as the start of a Poisson process, treat the second report as equivalent to the first report, and count\nduplicates starting at the third report, this reporting process is still a Poisson process with rate λθ , but now the start\nof this process is observed.",
-          "quoted_text_sha256": "7966323174c4f49ba54e5c5f08d3035c6e7e09f3cf511aa9ea1fe51453fea2ca"
+          "quoted_text": "In Section 6.2 and in Appendix D.8.1, the predictions were generated using the results of the\nspatial model we presented in the main text. The training set used to obtain such results was\nconstructed by defining the time of the first report as the start of our observation period, as\ndetailed in Appendix D.2.\nHowever, our theoretical analysis also holds if we instead use as the Poisson interval the time\nstarting after the second report – if we split a Poisson process on the time of the first jump, and start\ncounting subsequent jumps at that time, the resulting counting process would still be a Poisson\nprocess with the same rate. Thus, we can estimate the Poisson process rate using our methods,\nstarting with the second report time.25 However, crucially, we as researchers know for the incident\nthe time between the first and second report, which was not used to train the model (but which the\nmodel is trying to predict). Intuitively, this procedure evaluates our methods in a setting in which\nthe ground truth is known.\n\n25Formally, consider a Poisson process with rate λ, denoted as {X(t), t ≥0}, with the first jump time denoted as\nT1. Based on the memoryless property of Poisson process jump times, the process {X(t)−1, t ≥T1} is still a Poisson\nprocess with the same rate parameter (see e.g., [34]). Thus in our context, for an incident with type θ, if we treat\nthe first report as the start of a Poisson process, treat the second report as equivalent to the first report, and count\nduplicates starting at the third report, this reporting process is still a Poisson process with rate λθ, but now the start\nof this process is observed.",
+          "quoted_text_sha256": "b12d9435f13c0820dc6362c191d2b143474303aac09352848e35df92aed3db87"
         }
       ],
       "source_claim_atoms": [
@@ -26,25 +32,18 @@
           "identity_schema": 2,
           "reviewed_lean_route": "LBG24SpatialUnderreporting.sourcePostFirstJumpPoissonShift",
           "semantic_claim": "Appendix D.8.2 states that after splitting a homogeneous Poisson process at its first jump, the post-first-jump counting process remains a Poisson process with the same rate; consequently the method may start after the second report.",
-          "source_locator": "cited publication:4120-4144",
-          "source_quote_sha256": "7966323174c4f49ba54e5c5f08d3035c6e7e09f3cf511aa9ea1fe51453fea2ca"
+          "source_locator": "cited publication:4402-4420",
+          "source_quote_sha256": "b12d9435f13c0820dc6362c191d2b143474303aac09352848e35df92aed3db87"
         }
       ],
       "source_kind": "claim",
-      "source_location": "cited publication:4120-4144",
+      "source_location": "cited publication:4402-4420",
       "source_status": "supporting Appendix D.8.2 assertion; not an independently named theorem presentation",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Appendix D.8.2 states that after splitting a homogeneous Poisson process at its first jump, the post-first-jump counting process remains a Poisson process with the same rate; consequently the method may start after the second report.",
-      "user_approved_scope_exclusion": {
-        "approval_kind": "explicit_user_instruction",
-        "approval_reference": "The underlying approval record is withheld from this public projection.",
-        "approved_at": "2026-09-06",
-        "reason": "The user deferred appendix proof repair for this release. The post-first-jump same-rate process and second-report-start assertion remains explicitly uncredited in the selected formalization surface; this scope decision does not establish the printed claim or classify it as a typo.",
-        "schema": 1,
-        "source_anchor_quote_sha256": "7966323174c4f49ba54e5c5f08d3035c6e7e09f3cf511aa9ea1fe51453fea2ca",
-        "source_evidence": "Appendix D.8.2 and footnote 25 assert that counting after the first Poisson jump preserves the rate and supports starting the method at the second report. The complete statement and footnote remain at cited publication:4120-4144.",
-        "source_locator": "cited publication:4120-4144"
-      }
+      "support_lean_declarations": [
+        "LBG24SpatialUnderreporting.sourcePostFirstJumpPoissonShiftSpec"
+      ]
     },
     "condition1_selected_start": {
       "aliases": [
@@ -54,22 +53,22 @@
       "claim_bearing": true,
       "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "LBG24SpatialUnderreporting.Theorem2ConditionOneSelection"
+        "LBG24SpatialUnderreporting.Theorem2ConditionOneFixedHistoryDensityPresentation"
       ],
       "source_anchor_evidence": [
         {
-          "line_end": 1573,
-          "line_start": 1571,
+          "line_end": 1847,
+          "line_start": 1843,
           "publication_locator": "cited publication",
-          "quoted_text": "Condition 1: Given T1 = t1 , S is defined on [t1 , T ], and\nP(S = t|T1 = t1 ) = g(t), ∀T ≥ t ≥ t1 ,\nwhere g(t) is not dependent on λ or the sample path of the Poisson process after t1 .",
-          "quoted_text_sha256": "80e097e09db9f6113b1dbc45833441a1525626dc7198311c91a477227ca00322"
+          "quoted_text": "Condition 1: Given T1 = t1, S is defined on [t1, T], and\n\nP(S = t|T1 = t1) = g(t), ∀T ≥t ≥t1,\n\nwhere g(t) is not dependent on λ or the sample path of the Poisson process after t1.",
+          "quoted_text_sha256": "e81209546b2fa4748be9200956979c3a24be8858d19d0efe64e64629bb413339"
         }
       ],
       "source_kind": "assumption",
-      "source_location": "cited publication:1571-1573",
+      "source_location": "cited publication:1843-1847",
       "source_note": "The continuous conditional-density display is represented by a rate-free regular conditional start kernel with support after the first report and conditional independence from the post-first-report tail. The fixed-history rate-free g(s) factor used in the Eq. (8) likelihood is reviewed separately in the causal stopping-policy source model.",
       "source_status": "direct source condition, represented by a regular conditional start kernel and conditional tail independence",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Condition 1: conditional on the first jump T1=t1, S has density g(t) on [t1,T], where g is independent of lambda and of the post-T1 Poisson sample path."
     },
     "condition2_endpoint_selection": {
@@ -85,18 +84,35 @@
       ],
       "source_anchor_evidence": [
         {
-          "line_end": 1592,
-          "line_start": 1574,
+          "line_end": 1856,
+          "line_start": 1848,
           "publication_locator": "cited publication",
-          "quoted_text": "Condition 2: Given the jumping times of the Poisson process up to any time t, that is, for some\nm ∈ Z+, given {T1 = t1 , . . . , Tm = tm , Tm+1 > t}, the distribution of E is\nP[E = t|{T1 = t1 , . . . , Tm = tm , Tm+1 > t}] = hm (t), for some m ∈ Z+, ∀T ≥ t ≥ tm ,\nwhere hm (t) is a function independent of λ. Furthermore, given T1 = t1 , the distribution of E is\nindependent of the realization of S:\nP[E = t|T1 = t1 , S = s] = P[E = t|T1 = t1 ], ∀T ≥ t ≥ t1 , ∀s ≥ t1 .\nNow, suppose we observe data which contains for each incident, S = s, E = e, X(e) − X(s) =\nM , where X(s) = m ≥ 1, and all the jumping times within interval (s, e]: JM = {Tm+1 =\ntm+1 , . . . , Tm+M = tm+M }, where tm+1 > s and Tm+M ≤ e. Then, conditional on the observed\njumping times before s: H := {T1 = t1 , . . . , Tm = tm ≤ s}, the likelihood of the data can be\ndecomposed as follows:\nP[X(e) − X(s) = M, E = e, S = s, JM |H] = f (e, s, H, JM )p(M |λ(e − s)),\n\n(8)\n\nwhere p(M |λ(e − s)) denotes the likelihood of a Poisson distribution with M occurrences and rate\nparameter λ(e − s), and f (e, s, H, JM ) is a function that does not depend on λ.\nThe proof of the theorem relies on the following lemma, which establishes the distribution of\nthe (random) time between S and the first jump time after S.",
-          "quoted_text_sha256": "65d2e5aae2861018a86a215a1b13e0dd182843271e5dda2a4b58104de39a9c8b"
+          "quoted_text": "Condition 2: Given the jumping times of the Poisson process up to any time t, that is, for some\nm ∈Z+, given {T1 = t1, . . . , Tm = tm, Tm+1 > t}, the distribution of E is\n\nP[E = t|{T1 = t1, . . . , Tm = tm, Tm+1 > t}] = hm(t), for some m ∈Z+, ∀T ≥t ≥tm,\n\nwhere hm(t) is a function independent of λ. Furthermore, given T1 = t1, the distribution of E is\nindependent of the realization of S:\n\nP[E = t|T1 = t1, S = s] = P[E = t|T1 = t1], ∀T ≥t ≥t1, ∀s ≥t1.",
+          "quoted_text_sha256": "86c7caa6d575d3ba832514f168a04c0c61ed6d31799c577382e6eea9e31dc19c"
         }
       ],
       "source_kind": "assumption",
-      "source_location": "cited publication:1574-1592",
+      "source_location": "cited publication:1848-1856",
       "source_note": "The density-source interface records the printed h_m rate invariance and start-realization independence. The Eq. (8) theorem additionally uses the main theorem's explicit visible-history conditioning and application stopping-times language to construct one endpoint; it is not a global product of counterfactual endpoint clocks.",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "completed_statement_then_explanation",
+        "core_anchor": {
+          "line_end": 1856,
+          "line_start": 1848,
+          "publication_locator": "cited publication",
+          "quoted_text": "Condition 2: Given the jumping times of the Poisson process up to any time t, that is, for some\nm ∈Z+, given {T1 = t1, . . . , Tm = tm, Tm+1 > t}, the distribution of E is\n\nP[E = t|{T1 = t1, . . . , Tm = tm, Tm+1 > t}] = hm(t), for some m ∈Z+, ∀T ≥t ≥tm,\n\nwhere hm(t) is a function independent of λ. Furthermore, given T1 = t1, the distribution of E is\nindependent of the realization of S:\n\nP[E = t|T1 = t1, S = s] = P[E = t|T1 = t1], ∀T ≥t ≥t1, ∀s ≥t1.",
+          "quoted_text_sha256": "86c7caa6d575d3ba832514f168a04c0c61ed6d31799c577382e6eea9e31dc19c"
+        },
+        "presentation_kind": "assumption",
+        "presentation_label": "Condition 2",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "Condition 2's conditional-law and independence requirements end at the terminal display on line 1856. The conservative text index retains the following theorem conclusion through line 1871, but that conclusion is not part of the condition's statement core.",
+        "validated_at": "2026-09-09T01:17:26Z",
+        "validator": "source-recovery anchor reconciliation"
+      },
       "source_status": "direct source condition, represented by the rate-invariant endpoint-density source model with start-realization independence",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Condition 2: conditional on the observed jump history through t, E has an h_m(t) law independent of lambda, and conditional on T1 the distribution of E is independent of the realization of S."
     },
     "equation2_poisson_count_pmf_formula": {
@@ -116,18 +132,18 @@
       },
       "source_anchor_evidence": [
         {
-          "line_end": 41,
-          "line_start": 30,
+          "line_end": 323,
+          "line_start": 291,
           "publication_locator": "cited publication",
-          "quoted_text": ") [λ(e − s )]M̃i\ni\ni\np M̃i ; λ(ei − si ) =\nexp (−λ(ei − si ))\nM̃i !\n5\n\n(2)\n\n\fis the probability mass function of a Poisson distributed random variable with M̃i occurrences and\nrate parameter λ(ei − si ), and f (Di ) is a function that does not depend on λ.",
-          "quoted_text_sha256": "a49c0f48b9e374b4d1fbb11e81b20d9cdfc5eb604ce4fa243d3626ef1f7e1c64"
+          "quoted_text": "Then, the likelihood of the data Di as a function of the reporting rate λ, conditional on all\nreports before si, can be decomposed as\n\nL(λ|Di) = p\n�\n˜\nMi; λ(ei −si)\n�\nf(Di),\n(1)\n\nwhere\n\np\n�\n˜\nMi; λ(ei −si)\n�\n= [λ(ei −si)]\n˜\nMi\n\n˜\nMi!\nexp (−λ(ei −si))\n(2)\n\n5\n\n\f\nis the probability mass function of a Poisson distributed random variable with ˜\nMi occurrences and\nrate parameter λ(ei −si), and f(Di) is a function that does not depend on λ.",
+          "quoted_text_sha256": "2dd643d075d1746f70a6b160318b2d4770aa08bfb68c4262d9f2111f48f28a66"
         },
         {
-          "line_end": 247,
-          "line_start": 242,
+          "line_end": 1984,
+          "line_start": 1978,
           "publication_locator": "cited publication",
-          "quoted_text": "As reference, the likelihood of a Poisson distribution with M ≥ 0 occurrences and rate λ(e−s) >\n0 is as follows:\n[λ(e − s)]M\np(M |λ(e − s)) =\nexp(−λ(e − s)).\nM!",
-          "quoted_text_sha256": "4f68ce4d710d6ef6446f79399e480af53f27b99e326dc032ca07c68bbc012932"
+          "quoted_text": "As reference, the likelihood of a Poisson distribution with M ≥0 occurrences and rate λ(e−s) >\n0 is as follows:\n\np(M|λ(e −s)) = [λ(e −s)]M\n\nM!\nexp(−λ(e −s)).",
+          "quoted_text_sha256": "9dea09a89ff9aaa49d7d2911bb8d9051343cc18d872466bdb81f4402e94c1add"
         }
       ],
       "source_claim_atoms": [
@@ -136,14 +152,14 @@
           "identity_schema": 2,
           "reviewed_lean_route": "LBG24SpatialUnderreporting.sourceEquation2PoissonCountPMF",
           "semantic_claim": "For the stated positive parameter lambda(e-s), Equation (2) gives the Poisson count mass exp(-lambda(e-s))[lambda(e-s)]^M/M!.",
-          "source_locator": "cited publication:270-278",
-          "source_quote_sha256": "4684dbcd19576daaa9e7e8f0908f6d08dd1aa6084d279c2c428f094ff90aab7b"
+          "source_locator": "cited publication:294-323",
+          "source_quote_sha256": "597380574cd7651fd78a6529000f9e26f63bdc6961f52bb3643b79d4f81b272f"
         }
       ],
       "source_kind": "formula",
-      "source_location": "sources/lbg24_spatial_underreporting_visual_review_transcript.md:30-41; sources/lbg24_spatial_underreporting_visual_review_transcript.md:242-247",
+      "source_location": "cited publication:291-323; cited publication:1978-1984",
       "source_status": "direct source formula; repeated unnumbered in the Appendix B.2 proof",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Equation (2) defines p(M;lambda(e-s)) as exp(-lambda(e-s))[lambda(e-s)]^M/M!.",
       "support_lean_declarations": [
         "LBG24SpatialUnderreporting.sourceEquation2PoissonCountPMFSpec"
@@ -168,17 +184,17 @@
       ],
       "source_anchor_evidence": [
         {
-          "line_end": 272,
-          "line_start": 248,
+          "line_end": 2467,
+          "line_start": 2437,
           "publication_locator": "cited publication",
-          "quoted_text": "Constructing an observation interval (Si , Ei ] As outlined in Theorem 1, we must be careful\nin how we choose an observation interval (Si , Ei ] in which we count reports – we need that the\ninterval is inside the incident lifetime, i.e., we must end the interval before the incident is addressed,\nEi ≤ ti + Ti . Both endpoints of the interval must also satisfy the conditions outlined in Theorem 1.\nAs discussed above, the best choice to start the observation period Si is the time of the first report,\nbut choosing the observation end is a design choice.\nWe make the following choice. Let tINSP\nbe the inspection time of incident i, and, tWO\nbe the\ni\ni\ntime that a work order is placed for incident i, if applicable. Then, Ei of each incident i is:\n{\nEi = min 100 days + Si , tINSP\n, tWO\n.\n(33)\ni\ni\nThe maximum duration of 100 is a design choice, for which we perform robustness checks (with 30\nand 200 days); a maximum mitigates – for incidents not inspected for a long time – the inclusion\nof a time period in which an issue might have been resolved before an inspection, which would bias\nour estimates downward. Equation (33) requires that inspection and work order times are stopping\ntimes; that they do not depend on the future trivially holds, and it is likely that they do not depend\non the reporting rate except through the type θ and the sample path number of reports received",
-          "quoted_text_sha256": "1d13dfd5832f638de8287ba04fb538fa80d1a55b623bc539c6897f011217f811"
+          "quoted_text": "Constructing an observation interval (Si, Ei]\nAs outlined in Theorem 1, we must be careful\nin how we choose an observation interval (Si, Ei] in which we count reports – we need that the\ninterval is inside the incident lifetime, i.e., we must end the interval before the incident is addressed,\nEi ≤ti +Ti. Both endpoints of the interval must also satisfy the conditions outlined in Theorem 1.\nAs discussed above, the best choice to start the observation period Si is the time of the first report,\nbut choosing the observation end is a design choice.\nWe make the following choice. Let tINSP\ni\nbe the inspection time of incident i, and, tWO\ni\nbe the\ntime that a work order is placed for incident i, if applicable. Then, Ei of each incident i is:\n\nEi = min\n�\n100 days + Si, tINSP\ni\n, tWO\ni\n�\n.\n(33)\n\nThe maximum duration of 100 is a design choice, for which we perform robustness checks (with 30\nand 200 days); a maximum mitigates – for incidents not inspected for a long time – the inclusion\nof a time period in which an issue might have been resolved before an inspection, which would bias\nour estimates downward. Equation (33) requires that inspection and work order times are stopping\ntimes; that they do not depend on the future trivially holds, and it is likely that they do not depend\non the reporting rate except through the type θ and the sample path number of reports received\n",
+          "quoted_text_sha256": "69825b3e964d636b93a23d65a1eed2ef288e08348d30399203fd2f5978ea0cf2"
         }
       ],
       "source_kind": "formula",
-      "source_location": "sources/lbg24_spatial_underreporting_visual_review_transcript.md:248-272",
+      "source_location": "cited publication:2437-2467",
       "source_status": "direct source endpoint formula; the stopping-time discussion is a source condition, not an independently formalized empirical claim",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Equation (33) sets the NYC observation endpoint to min(S_i+100 days,t_i^INSP,t_i^WO); the surrounding text requires inspection and work-order endpoints to be stopping times."
     },
     "equation34_chicago_observation_end": {
@@ -200,17 +216,17 @@
       ],
       "source_anchor_evidence": [
         {
-          "line_end": 285,
-          "line_start": 273,
+          "line_end": 5628,
+          "line_start": 5610,
           "publication_locator": "cited publication",
-          "quoted_text": "Constructing an observation interval (Si , Ei ] For Chicago reports, we make the following\nchoice. Let t̃i be the first time an incident is reported, tCLOSED\nbe the time an incident is marked\ni\nclosed, and t̄ be the time that we retrieved the dataset (and that it was last updated), 7/4/2022 at\n21:40 EDT. Then, Ei of each incident i is:\n{\nEi = min 100 days + t̃i , tCLOSED\n, t̄ .\n(34)\ni\nThe choice of adding t̄ ensures that for “open” incidents, the observation interval is not overly\nlong, which could bias our estimates for the reporting rate downward.",
-          "quoted_text_sha256": "375fd5882a60f79e8625c2606837a40ae53403cf8dc4194431549ca25510efc4"
+          "quoted_text": "Constructing an observation interval (Si, Ei]\nFor Chicago reports, we make the following\nchoice. Let ˜ti be the first time an incident is reported, tCLOSED\ni\nbe the time an incident is marked\nclosed, and ¯t be the time that we retrieved the dataset (and that it was last updated), 7/4/2022 at\n21:40 EDT. Then, Ei of each incident i is:\n\nEi = min\n�\n100 days + ˜ti, tCLOSED\ni\n, ¯t\n�\n.\n(34)\n\nThe choice of adding ¯t ensures that for “open” incidents, the observation interval is not overly\nlong, which could bias our estimates for the reporting rate downward.",
+          "quoted_text_sha256": "89b8351cce699e6a3f69af024ef968a6927394ff7ffbc94b006c3ef7cd50bb5b"
         }
       ],
       "source_kind": "formula",
-      "source_location": "sources/lbg24_spatial_underreporting_visual_review_transcript.md:273-285",
+      "source_location": "cited publication:5610-5628",
       "source_status": "direct source preprocessing formula; the cited source passage does not itself state a stopping-time theorem",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Equation (34) sets the Chicago observation endpoint to the minimum of first-report time plus 100 days, incident closed time, and dataset retrieval/update time."
     },
     "equation3_mle_formula_and_maximum_likelihood_claim": {
@@ -234,11 +250,11 @@
       },
       "source_anchor_evidence": [
         {
-          "line_end": 288,
-          "line_start": 279,
+          "line_end": 334,
+          "line_start": 325,
           "publication_locator": "cited publication",
-          "quoted_text": "The decomposition in Equation (1) enables standard Poisson rate estimation methods to be\napplied. For example, the maximum likelihood estimate for λ is:\nP\nM̃i\nM LE\nλ̂\n=P i\n.\n(3)\ni (ei − si )",
-          "quoted_text_sha256": "9b7bcbbce177f5ba2e5d9cf5b7e383dc19a57b95a049f2c327c50dfe0ce19f75"
+          "quoted_text": "The decomposition in Equation (1) enables standard Poisson rate estimation methods to be\napplied. For example, the maximum likelihood estimate for λ is:\n\nˆλMLE =\n�\ni ˜\nMi\n�\ni(ei −si).\n(3)",
+          "quoted_text_sha256": "841be8aaa8e8dd3ec68729fd369287a467424daed79e9311801624aeb4116489"
         }
       ],
       "source_claim_atoms": [
@@ -247,15 +263,15 @@
           "identity_schema": 2,
           "reviewed_lean_route": "LBG24SpatialUnderreporting.sourceEquation3MaximumLikelihoodEstimate",
           "semantic_claim": "Equation (3) gives lambda-hat_MLE=sum_i M-tilde_i / sum_i(e_i-s_i), described by the source as the maximum-likelihood estimate.",
-          "source_locator": "cited publication:279-288",
-          "source_quote_sha256": "9b7bcbbce177f5ba2e5d9cf5b7e383dc19a57b95a049f2c327c50dfe0ce19f75"
+          "source_locator": "cited publication:325-334",
+          "source_quote_sha256": "841be8aaa8e8dd3ec68729fd369287a467424daed79e9311801624aeb4116489"
         }
       ],
-      "source_kind": "formula",
-      "source_location": "cited publication:279-288",
+      "source_kind": "claim",
+      "source_location": "cited publication:325-334",
       "source_note": "The source does not spell out total-exposure and parameter-domain/boundary conventions. This is recorded as a routine additional-assumption note, not a separate proof campaign.",
       "source_status": "source formula with maximum-likelihood wording; global-max scope is conditional on an explicit domain convention",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Equation (3) gives lambda-hat_MLE=sum_i M-tilde_i / sum_i(e_i-s_i), described by the source as the maximum-likelihood estimate.",
       "support_lean_declarations": [
         "LBG24SpatialUnderreporting.sourceEquation3MaximumLikelihoodEstimateSpec"
@@ -273,24 +289,24 @@
       ],
       "source_anchor_evidence": [
         {
-          "line_end": 72,
-          "line_start": 64,
+          "line_end": 365,
+          "line_start": 351,
           "publication_locator": "cited publication",
-          "quoted_text": "Second, we must empirically estimate reporting rates given high dimensional incident types θ.\nWe leverage Poisson regression, i.e., we assume the form\n(\nλθ = exp α + β T θ .\n(4)\nTo better match the data distribution, we further fit a zero-inflation component (corresponding\nto the probability that we receive no reports in the given period). To accommodate the high\ndimensionality of the incident type vector θ, we fit our models in a Bayesian setting and report\nposterior distributions of regression coefficients α and β.",
-          "quoted_text_sha256": "a0a74d9f654d8eedf52ea2726769b5029a91d9ffb3a5a4b08246317a97c5ba04"
+          "quoted_text": "Second, we must empirically estimate reporting rates given high dimensional incident types θ.\nWe leverage Poisson regression, i.e., we assume the form\n\nλθ = exp\n�\nα + βT θ\n�\n.\n(4)\n\nTo better match the data distribution, we further fit a zero-inflation component (corresponding\nto the probability that we receive no reports in the given period).\nTo accommodate the high\ndimensionality of the incident type vector θ, we fit our models in a Bayesian setting and report\nposterior distributions of regression coefficients α and β.",
+          "quoted_text_sha256": "5a7aa0de12a861a9a58450b2e30f4082cc517d8de7e662bb127584baa49a4fc1"
         },
         {
-          "line_end": 86,
-          "line_start": 73,
+          "line_end": 929,
+          "line_start": 920,
           "publication_locator": "cited publication",
-          "quoted_text": "First, we assume that the reporting rate is affected by the type vector θ as in a Poisson regression:\nfor each model, we have a standard reporting rate λθ , defined as:\n(\nλθ = exp α + β T θ ,\n(5)\nand so, for each incident i, the likelihood follows from Equation (1) and satisfies the following:\n(\n)\nL(λθi |Di ) ∝ p M̃i ; λθi (ei − si ) ,\n(6)\n13\n\n\fwhere β is a coefficient vector of appropriate dimension, (α, β) are coefficients to be estimated, and\np(·) is the Poisson likelihood function as defined in Equation (2).",
-          "quoted_text_sha256": "6fb8bcdb9af7802ba8b6d5a1d8e460c9e0ba11328028f7b43e6f9d4d777f203e"
+          "quoted_text": "First, we assume that the reporting rate is affected by the type vector θ as in a Poisson regression:\nfor each model, we have a standard reporting rate λθ, defined as:\n\nλθ = exp\n�\nα + βT θ\n�\n,\n(5)\n",
+          "quoted_text_sha256": "f6092fb8a0f24f0c02c19d99317b1d8a798c2324bd353309c7f78555fa21b3b0"
         }
       ],
       "source_kind": "formula",
-      "source_location": "sources/lbg24_spatial_underreporting_visual_review_transcript.md:64-72; sources/lbg24_spatial_underreporting_visual_review_transcript.md:73-86",
+      "source_location": "cited publication:351-365; cited publication:920-929",
       "source_status": "direct source formula with duplicate numbering alias",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Equations (4) and (5) are the same Poisson-regression log link lambda_theta=exp(alpha+beta^T theta)."
     },
     "equation6_poisson_regression_likelihood_formula": {
@@ -309,11 +325,11 @@
       },
       "source_anchor_evidence": [
         {
-          "line_end": 845,
-          "line_start": 832,
+          "line_end": 944,
+          "line_start": 920,
           "publication_locator": "cited publication",
-          "quoted_text": "First, we assume that the reporting rate is affected by the type vector θ as in a Poisson regression:\nfor each model, we have a standard reporting rate λθ , defined as:\n\u0001\nλθ = exp α + β T θ ,\n(5)\nand so, for each incident i, the likelihood follows from Equation (1) and satisfies the following:\n\u0010\n\u0011\nL(λθi |Di ) ∝ p M̃i ; λθi (ei − si ) ,\n(6)\n13\n\n\fwhere β is a coefficient vector of appropriate dimension, (α, β) are coefficients to be estimated, and\np(·) is the Poisson likelihood function as defined in Equation (2).",
-          "quoted_text_sha256": "981ee3bd65dbcd88ce17f014d86679f2a1fddb3f11b3f2dbf8450243e6a70f4f"
+          "quoted_text": "First, we assume that the reporting rate is affected by the type vector θ as in a Poisson regression:\nfor each model, we have a standard reporting rate λθ, defined as:\n\nλθ = exp\n�\nα + βT θ\n�\n,\n(5)\n\nand so, for each incident i, the likelihood follows from Equation (1) and satisfies the following:\n\nL(λθi|Di) ∝p\n�\n˜\nMi; λθi(ei −si)\n�\n,\n(6)\n\n13\n\n\f\nwhere β is a coefficient vector of appropriate dimension, (α, β) are coefficients to be estimated, and\np(·) is the Poisson likelihood function as defined in Equation (2).",
+          "quoted_text_sha256": "502ef48423763da66bec1cd2708557c9887fa76e13ffc539a2d867e278367392"
         }
       ],
       "source_claim_atoms": [
@@ -322,8 +338,8 @@
           "identity_schema": 2,
           "reviewed_lean_route": "LBG24SpatialUnderreporting.sourceEquation6PoissonRegressionLikelihood",
           "semantic_claim": "Substituting the Poisson-regression log-link rate into the incident likelihood leaves the displayed Poisson count mass up to a factor independent of that rate.",
-          "source_locator": "cited publication:832-845",
-          "source_quote_sha256": "981ee3bd65dbcd88ce17f014d86679f2a1fddb3f11b3f2dbf8450243e6a70f4f"
+          "source_locator": "cited publication:920-944",
+          "source_quote_sha256": "502ef48423763da66bec1cd2708557c9887fa76e13ffc539a2d867e278367392"
         }
       ],
       "source_conditions": [
@@ -334,9 +350,9 @@
         }
       ],
       "source_kind": "formula",
-      "source_location": "cited publication:832-845",
+      "source_location": "cited publication:920-944",
       "source_status": "source formula formalized by log-link substitution in the direct causal-stopping Eq. (8) likelihood model",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Equation (6) substitutes the Poisson-regression rate into the incident likelihood, leaving the Poisson PMF factor up to a rate-independent proportionality factor.",
       "support_lean_declarations": [
         "LBG24SpatialUnderreporting.sourceEquation6PoissonRegressionLikelihoodSpec"
@@ -363,18 +379,18 @@
       },
       "source_anchor_evidence": [
         {
-          "line_end": 291,
-          "line_start": 289,
+          "line_end": 339,
+          "line_start": 336,
           "publication_locator": "cited publication",
-          "quoted_text": "The proof is in Appendix B.2 and follows from decomposing the likelihood function into full\nconditional probabilities. The key step is to find the conditions under which one can use datadependent observation period length Ei − Si , while maintaining a Poisson likelihood for reports\nwithin the period.5 The result extends to the zero-inflated model we use in our empirical estimation.",
-          "quoted_text_sha256": "abbddf6ea9da0f3ac9a2970761d50b639bb40356cd99056d1f7ca77c52652674"
+          "quoted_text": "The proof is in Appendix B.2 and follows from decomposing the likelihood function into full\nconditional probabilities. The key step is to find the conditions under which one can use data-\ndependent observation period length Ei −Si, while maintaining a Poisson likelihood for reports\nwithin the period.5 The result extends to the zero-inflated model we use in our empirical estimation.",
+          "quoted_text_sha256": "c8218f9af7865933269578e2adf03278a87fde6531fd5dbf822ce86aaf84415f"
         },
         {
-          "line_end": 860,
-          "line_start": 846,
+          "line_end": 971,
+          "line_start": 945,
           "publication_locator": "cited publication",
-          "quoted_text": "We further fit a zero-inflated Poisson regression [19], which corresponds to a data generating\nprocess in which, independently for each incident, only one report can be generated with probability\nγ, and thus there are 0 duplicate reports: M̃i = 0.9 For example, perhaps those incidents are\npersonal requests for service (e.g., to plant a tree somewhere or to prune a tree to enable certain\nconstruction), for which duplicates are unlikely; alternatively, officials may physically mark the\nlocation of an incident as “report received; full inspection pending,” preventing future reports.\nUnder this case, the likelihood of the data satisfies:\n\u0011\n\u0010\n(\nM̃i ≥ 1;\n(1 − γ)p M̃i ; λθi (ei − si ) ,\nL(λθi |Di ) ∝\n(7)\nγ + (1 − γ)p (0; λθi (ei − si )) , M̃i = 0.",
-          "quoted_text_sha256": "db57eff1ae64733706915e5489aab512749a1649c5526827e2db10cdabf4c8cb"
+          "quoted_text": "We further fit a zero-inflated Poisson regression [19], which corresponds to a data generating\nprocess in which, independently for each incident, only one report can be generated with probability\nγ, and thus there are 0 duplicate reports:\n˜\nMi = 0.9\nFor example, perhaps those incidents are\npersonal requests for service (e.g., to plant a tree somewhere or to prune a tree to enable certain\nconstruction), for which duplicates are unlikely; alternatively, officials may physically mark the\nlocation of an incident as “report received; full inspection pending,” preventing future reports.\nUnder this case, the likelihood of the data satisfies:\n\nL(λθi|Di) ∝\n\n�\n(1 −γ)p\n�\n˜\nMi; λθi(ei −si)\n�\n,\n˜\nMi ≥1;\n\nγ + (1 −γ)p (0; λθi(ei −si)) ,\n˜\nMi = 0.\n(7)",
+          "quoted_text_sha256": "796121819e90c355fc87bc2ba262047b799037e4aa53b28c6e5c36235193921d"
         }
       ],
       "source_claim_atoms": [
@@ -383,8 +399,8 @@
           "identity_schema": 3,
           "reviewed_lean_route": "LBG24SpatialUnderreporting.sourceZeroInflatedLikelihoodExtension",
           "semantic_claim": "The likelihood result extends from the ordinary Poisson model to the source's zero-inflated model.",
-          "source_locator": "cited publication:289-291",
-          "source_quote_sha256": "abbddf6ea9da0f3ac9a2970761d50b639bb40356cd99056d1f7ca77c52652674",
+          "source_locator": "cited publication:336-339",
+          "source_quote_sha256": "c8218f9af7865933269578e2adf03278a87fde6531fd5dbf822ce86aaf84415f",
           "verbatim_source_clause": "The result extends to the zero-inflated model we use in our empirical estimation."
         },
         {
@@ -392,8 +408,8 @@
           "identity_schema": 3,
           "reviewed_lean_route": "LBG24SpatialUnderreporting.sourceZeroInflatedLikelihoodExtension",
           "semantic_claim": "The zero-inflated likelihood uses the structural-zero-plus-Poisson branch when the duplicate count is zero and the non-structural Poisson branch when the count is positive.",
-          "source_locator": "cited publication:846-860",
-          "source_quote_sha256": "db57eff1ae64733706915e5489aab512749a1649c5526827e2db10cdabf4c8cb",
+          "source_locator": "cited publication:945-971",
+          "source_quote_sha256": "796121819e90c355fc87bc2ba262047b799037e4aa53b28c6e5c36235193921d",
           "verbatim_source_clause": "Under this case, the likelihood of the data satisfies:"
         }
       ],
@@ -410,9 +426,9 @@
         }
       ],
       "source_kind": "formula",
-      "source_location": "cited publication:289-291; cited publication:846-860",
+      "source_location": "cited publication:336-339; cited publication:945-971",
       "source_status": "source count-mixture formula formalized under the explicitly stated independent structural-zero model",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "The paper states that Theorem 1 extends to a zero-inflated model in which, independently for each incident, only one report can be generated with probability gamma, hence there are zero duplicate reports; Equation (7) gives the zero-duplicate and positive-duplicate likelihood branches.",
       "support_lean_declarations": [
         "LBG24SpatialUnderreporting.sourceZeroInflatedLikelihoodExtensionSpec"
@@ -439,20 +455,20 @@
       "scope_disposition_note": "Equations (17)-(20) are the zero-report proof case for the selected likelihood-factorization theorem rather than a separate source conclusion.",
       "source_anchor_evidence": [
         {
-          "line_end": 1718,
-          "line_start": 1691,
+          "line_end": 2016,
+          "line_start": 1993,
           "publication_locator": "cited publication",
-          "quoted_text": "\fempty set and we omit it from the equation.\nP[S = s, E = e, X(e) = X(s) = m|H]\n\n(17)\n\n=P[S = s|H]P[E = e|S = s, H]P[Tm+1 − s > e − s|E = e, S = s, H]\n\n(18)\n\n=g(s)hm (e) exp(−λ(e − s))\n\n(19)\n\n=f (e, s, H, JM )p(0|λ(e − s))\n\n(20)\n\nFrom Equation (17) to Equation (18) we decompose the likelihood by the full conditional\nprobabilities. The likelihood of the data contains three parts: (i) conditional on the history of\nreports H, the likelihood of observing a realization of S = s; (ii) conditional on the history of\nreports H and S = s, the likelihood of observing a realization of E = e; (iii) conditional on the\nhistory of reports H, S = s and E = e, the likelihood of not observing the next jump time, that is\nTm+1 > e.\nFrom Equation (18) to Equation (19) we use condition 1 to express (i) as g(s), condition 2\nto express (ii) as hm (e), and Lemma 2 to express (iii) as exp(−λ(e − s)). The final equation follows\nby defining\nf (e, s, H, JM ) = g(s)hm (e),\nwhich is independent of λ.",
-          "quoted_text_sha256": "f084b3b1d15723fee9ef3de1cf9f5d7e7b3f36810009bf2f915fb53a02d52a69"
+          "quoted_text": "P[S = s, E = e, X(e) = X(s) = m|H]\n(17)\n\n=P[S = s|H]P[E = e|S = s, H]P[Tm+1 −s > e −s|E = e, S = s, H]\n(18)\n\n=g(s)hm(e) exp(−λ(e −s))\n(19)\n\n=f(e, s, H, JM)p(0|λ(e −s))\n(20)\n\nFrom Equation (17) to Equation (18) we decompose the likelihood by the full conditional\nprobabilities. The likelihood of the data contains three parts: (i) conditional on the history of\nreports H, the likelihood of observing a realization of S = s; (ii) conditional on the history of\nreports H and S = s, the likelihood of observing a realization of E = e; (iii) conditional on the\nhistory of reports H, S = s and E = e, the likelihood of not observing the next jump time, that is\nTm+1 > e.\nFrom Equation (18) to Equation (19) we use condition 1 to express (i) as g(s), condition 2\nto express (ii) as hm(e), and Lemma 2 to express (iii) as exp(−λ(e−s)). The final equation follows\nby defining\nf(e, s, H, JM) = g(s)hm(e),\n\nwhich is independent of λ.",
+          "quoted_text_sha256": "4616f050707a2fb9628dd08715ada082f9837abddb895560afb709da8df1bd35"
         }
       ],
       "source_defect_ids": [
         "LBG24-EQ8-CAUSAL-PREEND-01"
       ],
       "source_kind": "equation",
-      "source_location": "cited publication:1691-1718",
+      "source_location": "cited publication:1993-2016",
       "source_status": "supporting source-proof cluster; out of default named-theory coverage; conclusion subsumed by the direct causal-stopping Eq. (8) theorem",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Equations (17)-(20) are the zero-report case of Theorem 2, decomposing the data likelihood and collecting the rate-free start/end factors against the Poisson zero-count mass."
     },
     "equations21_26_one_report_proof_cluster": {
@@ -478,20 +494,20 @@
       "scope_disposition_note": "Equations (21)-(26) are the one-report proof case for the selected likelihood-factorization theorem rather than a separate source conclusion.",
       "source_anchor_evidence": [
         {
-          "line_end": 1784,
-          "line_start": 1719,
+          "line_end": 2084,
+          "line_start": 2017,
           "publication_locator": "cited publication",
-          "quoted_text": "For the case with M = 1, we cannot omit J1 , but similarly have:\nP[S = s, E = e, X(e) = m + 1, X(s) = m, J1 |H]\n\n(21)\n\n=P[S = s, E = e > tm+1 , Tm+1 = tm+1 , Tm+2 > e|H]\n\n(22)\n\n=P[S = s|H] × P[E > tm+1 |S = s, H] × P[Tm+1 − s = tm+1 − s|S = s, E > tm+1 , H]\n× P[E = e|S = s, H, {Tm+1 = tm+1 }] × P[Tm+2 > e|E = e, S = s, H, {Tm+1 = tm+1 }]\n\"Z\n#\nT\nhm (t)dt × λ exp(−λ(tm+1 − s)) × hm+1 (e) × exp(−λ(e − tm+1 ))\n=g(s) ×\n\n(23)\n(24)\n\ntm+1\n\n\"Z\n\nT\n\n=λ exp(−λ(e − s))g(s)hm+1 (e)\n\n#\nhm (t)dt\n\n(25)\n\ntm+1\n\n=f (e, s, H, JM )p(1|λ(e − s))\n\n(26)\n\nFrom Equation (21) to Equation (22) we express the data in a different but equivalent manner.\nNote that the fact J1 contains the first jump time tm+1 . It (along with X(e) = m + 1 equivalently\ncan be stated as two events: first, trivially, we know Tm+1 = tm+1 ; second, we also know that Tm+2\narrives later than e, which is why that jump is not observed. From Equation (22) to Equation (23)\nwe similarly decompose the likelihood into full conditional probabilities. The likelihood now contains five parts: (i) conditional on the history of reports H, the likelihood of observing S = s; (ii)\nconditional on the history of reports H and S = s, the likelihood of observing E to be greater than\ntm+1 ; (iii) conditional on the history of reports H, S = s and E still not realized, the likelihood\nof observing Tm+1 = tm+1 ; (iv) conditional on the history of reports H, S = s, Tm+1 = tm+1 , the\nlikelihood of observing a realization E = e; (v) conditional on the the history of reports H, S = s,\nE = e, and Tm+1 = tm+1 , the likelihood of not observing the next jump time, that is Tm+2 > e.\nFrom Equation (23) to Equation (24) we use condition 1 to express (i), condition 2 to express\n(ii), Lemma 2 to express (iii), condition 2 again to express (iv), and then the memoryless property\nof Poisson process jump times to express (v). Equation (25) follows by collecting terms. The final\n\n27\n\n\fequation follows by defining\n1\nf (e, s, H, JM ) =\ng(s)hm+1 (e)\n(e − s)\n\nZ T\nhm (t)dt,\ntm+1\n\nwhich is independent of λ.",
-          "quoted_text_sha256": "db22a9db7469307ad4203487b30ddc5463e3a3eeecf1f17b16ddf72c1c3e8318"
+          "quoted_text": "For the case with M = 1, we cannot omit J1, but similarly have:\n\nP[S = s, E = e, X(e) = m + 1, X(s) = m, J1|H]\n(21)\n\n=P[S = s, E = e > tm+1, Tm+1 = tm+1, Tm+2 > e|H]\n(22)\n\n=P[S = s|H] × P[E > tm+1|S = s, H] × P[Tm+1 −s = tm+1 −s|S = s, E > tm+1, H]\n\n× P[E = e|S = s, H, {Tm+1 = tm+1}] × P[Tm+2 > e|E = e, S = s, H, {Tm+1 = tm+1}]\n(23)\n\n=g(s) ×\n\n��T\n\ntm+1\nhm(t)dt\n\n�\n\n× λ exp(−λ(tm+1 −s)) × hm+1(e) × exp(−λ(e −tm+1))\n(24)\n\n=λ exp(−λ(e −s))g(s)hm+1(e)\n\n��T\n\ntm+1\nhm(t)dt\n\n�\n\n(25)\n\n=f(e, s, H, JM)p(1|λ(e −s))\n(26)\n\nFrom Equation (21) to Equation (22) we express the data in a different but equivalent manner.\nNote that the fact J1 contains the first jump time tm+1. It (along with X(e) = m + 1 equivalently\ncan be stated as two events: first, trivially, we know Tm+1 = tm+1; second, we also know that Tm+2\narrives later than e, which is why that jump is not observed. From Equation (22) to Equation (23)\nwe similarly decompose the likelihood into full conditional probabilities. The likelihood now con-\ntains five parts: (i) conditional on the history of reports H, the likelihood of observing S = s; (ii)\nconditional on the history of reports H and S = s, the likelihood of observing E to be greater than\ntm+1; (iii) conditional on the history of reports H, S = s and E still not realized, the likelihood\nof observing Tm+1 = tm+1; (iv) conditional on the history of reports H, S = s, Tm+1 = tm+1, the\nlikelihood of observing a realization E = e; (v) conditional on the the history of reports H, S = s,\nE = e, and Tm+1 = tm+1, the likelihood of not observing the next jump time, that is Tm+2 > e.\nFrom Equation (23) to Equation (24) we use condition 1 to express (i), condition 2 to express\n(ii), Lemma 2 to express (iii), condition 2 again to express (iv), and then the memoryless property\nof Poisson process jump times to express (v). Equation (25) follows by collecting terms. The final\n\n27\n\n\f\nequation follows by defining\n\nf(e, s, H, JM) =\n1\n(e −s)g(s)hm+1(e)\n�T\n\ntm+1\nhm(t)dt,\n\nwhich is independent of λ.",
+          "quoted_text_sha256": "5717ae3b9ebc8c6b79c608c8477522ef8603bf5b68a62987187954de0faf66b9"
         }
       ],
       "source_defect_ids": [
         "LBG24-EQ8-CAUSAL-PREEND-01"
       ],
       "source_kind": "equation",
-      "source_location": "cited publication:1719-1784",
+      "source_location": "cited publication:2017-2084",
       "source_status": "supporting source-proof cluster; out of default named-theory coverage; conclusion subsumed by the direct causal-stopping Eq. (8) theorem",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Equations (21)-(26) are the one-report case of Theorem 2, decomposing the likelihood into start, endpoint-survival, one interarrival, endpoint density, and terminal no-report factors before collecting the Poisson one-count mass."
     },
     "equations27_32_multi_report_proof_cluster": {
@@ -530,11 +546,11 @@
       "scope_disposition_note": "Equations (27)-(32) are the multi-report proof case for the selected likelihood-factorization theorem rather than a separate source conclusion.",
       "source_anchor_evidence": [
         {
-          "line_end": 1883,
-          "line_start": 1785,
+          "line_end": 2195,
+          "line_start": 2085,
           "publication_locator": "cited publication",
-          "quoted_text": "Next, for any M > 1, we similarly have:\nP[S = s, E = e, X(e) = m + M, X(s) = m, JM |H]\n\n(27)\n\n=P[S = s, E = e > tm+M > · · · > tm+1 , Tm+1 = tm+1 , . . . , Tm+M = tm+M , Tm+M +1 > e|H] (28)\n=P[S = s|H]\n×\n\n×\n\nM\nY\ni=1\nM\nY\n\nP[E > tm+i |S = s, H, {Tm+1 = tm+1 , . . . , Tm+i−1 = tm+i−1 }]\nP[Tm+i = tm+i |S = s, H, {Tm+1 = tm+1 , . . . , Tm+i−1 = tm+i−1 }]\n\ni=1\n\n× P[E = e|S = s, H, {Tm+1 = tm+1 , . . . , Tm+M = tm+M }]\n× P[Tm+M +1 > e|E = e, S = s, H, {Tm+1 = tm+1 , . . . , Tm+M = tm+M }]\n\n(29)\n\n=g(s)\n×\n\n×\n\nM\nY\n\nλ exp(−λ(tm+i − tm+i−1 ))\n\ni=1\nM Z T\nY\ni=1\n\nhm+i−1 (t)dt\n\ntm+i\n\n× hm+M (e) × exp(−λ(e − tm+M ))\n=λM exp(−λ(e − s)) × g(s)hm+M (e)\n\n(30)\nM Z T\nY\ni=1\n\nhm+i−1 (t)dt\n\n(31)\n\ntm+i\n\n=f (e, s, H, JM )p(M |λ(e − s)).\n\n(32)\n\nFrom Equation (27) to Equation (28) we similarly express the data in an equivalent manner, also\nnoting that the data provides information that Tm+M +1 > e. From Equation (28) to Equation (29)\nwe decompose the likelihood by the full conditional probabilities, which similar to the previous case\ncontains five parts: (i) conditional on the history of reports H, the likelihood of observing S = s;\n(ii) for i = 1, . . . , M , conditional on the history of reports H, S = s and all jump times Tm+1 to\nTm+i−1 ,15 the likelihood of observing E to be greater than tm+i ; (iii) for i = 1, . . . , M , conditional\non the history of reports H, S = s, all jump times Tm+1 to Tm+i−1 and E still not realized, the\nlikelihood of observing Tm+i = tm+i ; (iv) conditional on the history of reports H, S = s, all jump\ntimes Tm+1 , . . . , Tm+M , the likelihood of observing a realization E = e; (v) conditional on the the\nhistory of reports H, S = s, E = e, and Tm+1 . . . Tm+M , the likelihood of not observing the next\njump time, that is Tm+M +1 > e.\nFrom Equation (29) to Equation (30) we use condition 1 to express (i), condition 2 to express\n(ii), Lemma 2 to express (iii), condition 2 again to express (iv), and then the memoryless property\nof Poisson process jump times to express (v). Equation (31) follows by collecting terms, and the\n15\n\nWhere i = 1, this degenerates to be an empty set, the same for part (iii) below.\n\n28\n\n\flast step follows by defining\nM Z T\n\nY\n(e − s)M\nf (e, s, H, JM ) =\ng(s)hm+M (e)\nM!\ni=1\n\nhm+i−1 (t)dt,\ntm+i\n\nwhich is independent of λ.\nCombining Equations 20, 26 and 32 concludes our claim.",
-          "quoted_text_sha256": "902005fa5e5e9f6e732d999bef179efd2193d25e24f16d042055cce11d7b9104"
+          "quoted_text": "Next, for any M > 1, we similarly have:\n\nP[S = s, E = e, X(e) = m + M, X(s) = m, JM|H]\n(27)\n\n=P[S = s, E = e > tm+M > · · · > tm+1, Tm+1 = tm+1, . . . , Tm+M = tm+M, Tm+M+1 > e|H]\n(28)\n\n=P[S = s|H]\n\n×\n\nM\n�\n\ni=1\nP[E > tm+i|S = s, H, {Tm+1 = tm+1, . . . , Tm+i−1 = tm+i−1}]\n\n×\n\nM\n�\n\ni=1\nP[Tm+i = tm+i|S = s, H, {Tm+1 = tm+1, . . . , Tm+i−1 = tm+i−1}]\n\n× P[E = e|S = s, H, {Tm+1 = tm+1, . . . , Tm+M = tm+M}]\n\n× P[Tm+M+1 > e|E = e, S = s, H, {Tm+1 = tm+1, . . . , Tm+M = tm+M}]\n(29)\n\n=g(s)\n\n×\n\nM\n�\n\ni=1\nλ exp(−λ(tm+i −tm+i−1))\n\n×\n\nM\n�\n\ni=1\n\n�T\n\ntm+i\nhm+i−1(t)dt\n\n× hm+M(e) × exp(−λ(e −tm+M))\n(30)\n\n=λM exp(−λ(e −s)) × g(s)hm+M(e)\n\nM\n�\n\ni=1\n\n�T\n\ntm+i\nhm+i−1(t)dt\n(31)\n\n=f(e, s, H, JM)p(M|λ(e −s)).\n(32)\n\nFrom Equation (27) to Equation (28) we similarly express the data in an equivalent manner, also\nnoting that the data provides information that Tm+M+1 > e. From Equation (28) to Equation (29)\nwe decompose the likelihood by the full conditional probabilities, which similar to the previous case\ncontains five parts: (i) conditional on the history of reports H, the likelihood of observing S = s;\n(ii) for i = 1, . . . , M, conditional on the history of reports H, S = s and all jump times Tm+1 to\nTm+i−1,15 the likelihood of observing E to be greater than tm+i; (iii) for i = 1, . . . , M, conditional\non the history of reports H, S = s, all jump times Tm+1 to Tm+i−1 and E still not realized, the\nlikelihood of observing Tm+i = tm+i; (iv) conditional on the history of reports H, S = s, all jump\ntimes Tm+1, . . . , Tm+M, the likelihood of observing a realization E = e; (v) conditional on the the\nhistory of reports H, S = s, E = e, and Tm+1 . . . Tm+M, the likelihood of not observing the next\njump time, that is Tm+M+1 > e.\nFrom Equation (29) to Equation (30) we use condition 1 to express (i), condition 2 to express\n(ii), Lemma 2 to express (iii), condition 2 again to express (iv), and then the memoryless property\nof Poisson process jump times to express (v). Equation (31) follows by collecting terms, and the\n\n15Where i = 1, this degenerates to be an empty set, the same for part (iii) below.\n\n28\n\n\f\nlast step follows by defining\n\nf(e, s, H, JM) = (e −s)M\n\nM!\ng(s)hm+M(e)\n\nM\n�\n\ni=1\n\n�T\n\ntm+i\nhm+i−1(t)dt,\n\nwhich is independent of λ.\nCombining Equations 20, 26 and 32 concludes our claim.",
+          "quoted_text_sha256": "510f5fd46c92d4cf946c11ae05759ed79a59a10caaa0c38c56b3228aeafc2a1a"
         }
       ],
       "source_defect_ids": [
@@ -543,9 +559,9 @@
         "LBG24-EQ31-RESIDUAL-RECIPROCAL-01"
       ],
       "source_kind": "equation",
-      "source_location": "cited publication:1785-1883",
+      "source_location": "cited publication:2085-2195",
       "source_status": "supporting source-proof cluster; out of default named-theory coverage; conclusion subsumed by the direct causal-stopping Eq. (8) theorem; Eq. (30)-(31) corrected proof notes remain recorded",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Equations (27)-(32) are the multi-report case of Theorem 2, expanding the ordered interarrival and endpoint-kernel product and intending to factor it as a rate-independent residual times the Poisson M-count mass."
     },
     "equations9_16_lemma2_proof_cluster": {
@@ -571,17 +587,17 @@
       "scope_disposition_note": "Equations (9)-(16) are the displayed derivation of selected Lemma 2 rather than a separate source conclusion.",
       "source_anchor_evidence": [
         {
-          "line_end": 1674,
-          "line_start": 1599,
+          "line_end": 1969,
+          "line_start": 1880,
           "publication_locator": "cited publication",
-          "quoted_text": "\fProof. Following the definition of jump times, we have for any ϵ > 0,\nP[TX(S)+1 − S > ϵ|T1 = t1 ]\n∞\nX\n=\nP[X(S + ϵ) = m, X(S) = m|T1 = t1 ]\n=\n=\n=\n\nm=1\n∞ Z\nX\nm=1 s≥t1\n∞ Z\nX\nm=1 s≥t1\n∞ Z\nX\n\n(9)\n(10)\n\nP[X(s + ϵ) = m, X(s) = m|S = s, T1 = t1 ]P[S = s|T1 = t1 ]ds\n\n(11)\n\nP[X(s + ϵ) = m|X(s) = m, S = s, T1 = t1 ]P[X(s) = m|S = s, T1 = t1 ]g(s)ds\n\n(12)\n\nP[X(ϵ) = 0]P[X(s − t1 ) = m − 1]g(s)ds\n\n(13)\n\nm=1 s≥t1\n\nZ\n=P[X(ϵ) = 0]\n\ng(s)\ns≥t1\n\n\" ∞\nX\n\n#\nP[X(s − t1 ) = m − 1] ds\n\n(14)\n\nm=1\n\nZ\n= exp(−λϵ)\n\ng(s)ds\n\n(15)\n\ns≥t1\n\n= exp(−λϵ)\n\n(16)\n\nwhere from Equation (12) to Equation (13) we use the memoryless property of Poisson processes\njump times, and denote {X(t), t ≥ 0} as a new Poisson process with rate λ, starting from t =\n0. From Equation (13) to Equation (14) we use P[X(ϵ) = 0] = exp(−λϵ) is independent of s,\ng(s) is independent of m (as a result of it being independent of the sample path after t1 ), and\nP[X(s − t1 ) = m − 1] ≥ 0, ∀m ≥ 1, s ≥ t1 , thus we can exchange the summation and integral, and\nput g(s) outside of the summation. From Equation (14) to Equation (15) we use the fact that the\nsummation is of the probability mass function of a Poisson random variable with rate λ(s − t1 ) over\nits range, thus evaluates to 1, and finally the last equation follows from the definition of g(s) as a\nprobability density function. We note that the final equation corresponds to the tail probability of\nan exponential random variable with rate parameter λ, and thus conclude our claim.",
-          "quoted_text_sha256": "6cebef845808c77551b07b9cb977483d77c675d993a148cc621d8963e743d158"
+          "quoted_text": "Proof. Following the definition of jump times, we have for any ϵ > 0,\n\nP[TX(S)+1 −S > ϵ|T1 = t1]\n(9)\n\n=\n\n∞\n�\n\nm=1\nP[X(S + ϵ) = m, X(S) = m|T1 = t1]\n(10)\n\n=\n\n∞\n�\n\nm=1\n\n�\n\ns≥t1\nP[X(s + ϵ) = m, X(s) = m|S = s, T1 = t1]P[S = s|T1 = t1]ds\n(11)\n\n=\n\n∞\n�\n\nm=1\n\n�\n\ns≥t1\nP[X(s + ϵ) = m|X(s) = m, S = s, T1 = t1]P[X(s) = m|S = s, T1 = t1]g(s)ds\n(12)\n\n=\n\n∞\n�\n\nm=1\n\n�\n\ns≥t1\nP[X(ϵ) = 0]P[X(s −t1) = m −1]g(s)ds\n(13)\n\n=P[X(ϵ) = 0]\n�\n\ns≥t1\ng(s)\n\n�∞\n�\n\nm=1\nP[X(s −t1) = m −1]\n\n�\n\nds\n(14)\n\n= exp(−λϵ)\n�\n\ns≥t1\ng(s)ds\n(15)\n\n= exp(−λϵ)\n(16)\n\nwhere from Equation (12) to Equation (13) we use the memoryless property of Poisson processes\njump times, and denote {X(t), t ≥0} as a new Poisson process with rate λ, starting from t =\n0. From Equation (13) to Equation (14) we use P[X(ϵ) = 0] = exp(−λϵ) is independent of s,\ng(s) is independent of m (as a result of it being independent of the sample path after t1), and\nP[X(s −t1) = m −1] ≥0, ∀m ≥1, s ≥t1, thus we can exchange the summation and integral, and\nput g(s) outside of the summation. From Equation (14) to Equation (15) we use the fact that the\nsummation is of the probability mass function of a Poisson random variable with rate λ(s−t1) over\nits range, thus evaluates to 1, and finally the last equation follows from the definition of g(s) as a\nprobability density function. We note that the final equation corresponds to the tail probability of\nan exponential random variable with rate parameter λ, and thus conclude our claim.",
+          "quoted_text_sha256": "a7e2c04a147a3d57d934e250b8bb3b2575cf52f76475e61b544b96fa8704cde2"
         }
       ],
       "source_kind": "equation",
-      "source_location": "cited publication:1599-1674",
+      "source_location": "cited publication:1880-1969",
       "source_status": "direct source proof derivation supporting Lemma 2",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Equations (9)-(16) expand the selected-start next-jump tail, apply Condition 1 and Poisson memorylessness, sum the Poisson count mass, integrate the normalized start density, and conclude exp(-lambda epsilon)."
     },
     "homogeneous_reporting_delay_mean_formula": {
@@ -600,18 +616,18 @@
       },
       "source_anchor_evidence": [
         {
-          "line_end": 190,
-          "line_start": 184,
+          "line_end": 214,
+          "line_start": 206,
           "publication_locator": "cited publication",
-          "quoted_text": "Figure 1: Model of resident reports of an incident i of type θ. Observed and unobserved events\nare marked with solid and dotted lines, respectively. In this example, there are a total of 3 reports\nmade about this incident. When the reports are generated according to a homogeneous Poisson\nprocess with rate λθ , the average reporting delay is λ1θ . Incident ‘death’ refers to the incident being\nresolved or otherwise marked such that no future reports are submitted and logged. The goal is to\nestimate the reporting rate λθ (and consequently, the unobserved reporting delay) for each incident\nof type θ.",
-          "quoted_text_sha256": "a224331585c5e4b31a14aa24c7d092072cc8a335fefaa95f39f6ad17cd46de8f"
+          "quoted_text": "Figure 1: Model of resident reports of an incident i of type θ. Observed and unobserved events\nare marked with solid and dotted lines, respectively. In this example, there are a total of 3 reports\nmade about this incident. When the reports are generated according to a homogeneous Poisson\nprocess with rate λθ, the average reporting delay is\n1\nλθ . Incident ‘death’ refers to the incident being\nresolved or otherwise marked such that no future reports are submitted and logged. The goal is to\nestimate the reporting rate λθ (and consequently, the unobserved reporting delay) for each incident\nof type θ.",
+          "quoted_text_sha256": "f444789487a8fed1f63df373b7072eda7b0d630b264df5d0d03d424e3c418cfa"
         },
         {
-          "line_end": 224,
-          "line_start": 221,
+          "line_end": 254,
+          "line_start": 247,
           "publication_locator": "cited publication",
-          "quoted_text": "Research question. We are interested in auditing the efficiency and equity of the reporting\nprocess: how quickly are incidents reported, and how does that reporting rate λθ vary with the\nincident type θ? Estimating this value directly reveals heterogeneous reporting delays, as the\nexpected time between incident occurrence and first report in the model is λ1θ . The primary",
-          "quoted_text_sha256": "e1885fa334b2908c2235d6d823c7c60296987b6fb764d1955f73a07aff28d996"
+          "quoted_text": "Research question.\nWe are interested in auditing the efficiency and equity of the reporting\nprocess: how quickly are incidents reported, and how does that reporting rate λθ vary with the\nincident type θ?\nEstimating this value directly reveals heterogeneous reporting delays, as the\nexpected time between incident occurrence and first report in the model is\n1\nλθ .",
+          "quoted_text_sha256": "c941fa69d15b0bffb4037bf35b147032a681cee96eb3ae91def547970d306893"
         }
       ],
       "source_claim_atoms": [
@@ -620,14 +636,14 @@
           "identity_schema": 2,
           "reviewed_lean_route": "LBG24SpatialUnderreporting.sourceHomogeneousReportingDelayMean",
           "semantic_claim": "Under homogeneous Poisson reporting at rate lambda_theta, the expected time from incident occurrence to the first report is the reciprocal 1/lambda_theta.",
-          "source_locator": "cited publication:221-224",
-          "source_quote_sha256": "e1885fa334b2908c2235d6d823c7c60296987b6fb764d1955f73a07aff28d996"
+          "source_locator": "cited publication:247-254",
+          "source_quote_sha256": "c941fa69d15b0bffb4037bf35b147032a681cee96eb3ae91def547970d306893"
         }
       ],
       "source_kind": "formula",
-      "source_location": "cited publication:184-190; cited publication:221-224",
+      "source_location": "cited publication:206-214; cited publication:247-254",
       "source_status": "direct source model consequence",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Under homogeneous Poisson reporting with rate lambda_theta, the reporting delay is exponential with mean 1/lambda_theta.",
       "support_lean_declarations": [
         "LBG24SpatialUnderreporting.sourceHomogeneousReportingDelayMeanSpec"
@@ -668,11 +684,11 @@
       },
       "source_anchor_evidence": [
         {
-          "line_end": 1520,
-          "line_start": 1453,
+          "line_end": 1770,
+          "line_start": 1660,
           "publication_locator": "cited publication",
-          "quoted_text": "Lemma 1. Suppose each incident gets reported independently, and the distribution of the interval\nof reporting duration Ti has density function f (·) : [0, ∞) 7→ R. Then under steady state, Nθobserved\nfollows a Poisson process with rate Λ′θ , where\n\u0014\n\u0012 Z t\n\u0013\n\u0015\nZ ∞\n′\nΛθ = Λθ 1 −\nexp −\nλθ (u)du f (t)dt .\n0\n\n0\n\nIn the simplest time-homogeneous case, this rate simplifies to:\n\u0014\n\u0015\nZ ∞\n′\nΛθ = Λθ 1 −\nexp (−λθ t) f (t)dt .\n0\n\nProof of Lemma 1. Let m(t) be the number of times an incident is reported in an interval of t,\nstarting from its birth. We know from the model assumption that m(t) follows a Poisson distribution:\n\u0012Z t\n\u0013\nm(t) ∼ Poisson\nλθ (u)du .\n0\n\n23\n\n\fIn steady state, each unique incident gets reported with probability\nZ ∞\nPr[m(t) ≥ 1|Ti = t]f (t)dt\np=\n0\n\u0013\u0015\n\u0012 Z t\nZ ∞\u0014\nλθ (u)du f (t)dt\n=\n1 − exp −\n0\n0\n\u0013\n\u0012 Z t\nZ ∞\nλθ (u)du f (t)dt,\nexp −\n=1−\n0\n\n0\n\nwhich simplifies under time-homogeneity to\nZ ∞\nexp (−λθ t) f (t)dt.\np=1−\n0\n\nOver a time interval of t, the total number of incidents of type θ that happen, Nθ (t) follows\na Poisson process with rate Λθ . Conditional on Nθ (t) = n, n = 0, 1, . . . , under steady state,\nNθobserved (t) follows a binomial distribution with parameters (n, p). Thus Nθobserved (t) follows a\nPoisson distribution with rate Λθ p, which completes the proof.",
-          "quoted_text_sha256": "75f106e59a246c5a5d38a4c6b2a53abd1d2596b105d46c8b0117944d9fba064e"
+          "quoted_text": "Lemma 1. Suppose each incident gets reported independently, and the distribution of the interval\nof reporting duration Ti has density function f(·) : [0, ∞) �→R. Then under steady state, Nobserved\nθ\nfollows a Poisson process with rate Λ′\nθ, where\n\nΛ′\nθ = Λθ\n\n�\n1 −\n�∞\n\n0\nexp\n�\n−\n�t\n\n0\nλθ(u)du\n�\nf(t)dt\n�\n.\n\nIn the simplest time-homogeneous case, this rate simplifies to:\n\nΛ′\nθ = Λθ\n\n�\n1 −\n�∞\n\n0\nexp (−λθt) f(t)dt\n�\n.\n\nProof of Lemma 1. Let m(t) be the number of times an incident is reported in an interval of t,\nstarting from its birth. We know from the model assumption that m(t) follows a Poisson distribu-\ntion:\n\nm(t) ∼Poisson\n��t\n\n0\nλθ(u)du\n�\n.\n\n23\n\n\f\nIn steady state, each unique incident gets reported with probability\n\np =\n�∞\n\n0\nPr[m(t) ≥1|Ti = t]f(t)dt\n\n=\n�∞\n\n0\n\n�\n1 −exp\n�\n−\n�t\n\n0\nλθ(u)du\n��\nf(t)dt\n\n= 1 −\n�∞\n\n0\nexp\n�\n−\n�t\n\n0\nλθ(u)du\n�\nf(t)dt,\n\nwhich simplifies under time-homogeneity to\n\np = 1 −\n�∞\n\n0\nexp (−λθt) f(t)dt.\n\nOver a time interval of t, the total number of incidents of type θ that happen, Nθ(t) follows\na Poisson process with rate Λθ.\nConditional on Nθ(t) = n, n = 0, 1, . . . , under steady state,\nNobserved\nθ\n(t) follows a binomial distribution with parameters (n, p).\nThus Nobserved\nθ\n(t) follows a\nPoisson distribution with rate Λθp, which completes the proof.",
+          "quoted_text_sha256": "30f62e0afb5210536e03bb31f8848647f2eac429349557ca0863af9c0ed6a263"
         }
       ],
       "source_claim_atoms": [
@@ -681,8 +697,8 @@
           "identity_schema": 2,
           "reviewed_lean_route": "LBG24SpatialUnderreporting.sourceLemma1CalendarTimeDurationObservedProcess",
           "semantic_claim": "Independently reported incidents with the stated duration density yield a steady-state observed Poisson process with the displayed general and time-homogeneous duration-averaged rates.",
-          "source_locator": "cited publication:1453-1520",
-          "source_quote_sha256": "75f106e59a246c5a5d38a4c6b2a53abd1d2596b105d46c8b0117944d9fba064e"
+          "source_locator": "cited publication:1660-1770",
+          "source_quote_sha256": "30f62e0afb5210536e03bb31f8848647f2eac429349557ca0863af9c0ed6a263"
         }
       ],
       "source_components": [
@@ -690,79 +706,79 @@
           "component": "nonhomogeneous observed-rate integral",
           "source_anchor_evidence": [
             {
-              "line_end": 1468,
-              "line_start": 1453,
+              "line_end": 1684,
+              "line_start": 1660,
               "publication_locator": "cited publication",
-              "quoted_text": "Lemma 1. Suppose each incident gets reported independently, and the distribution of the interval\nof reporting duration Ti has density function f (·) : [0, ∞) 7→ R. Then under steady state, Nθobserved\nfollows a Poisson process with rate Λ′θ , where\n\u0014\n\u0012 Z t\n\u0013\n\u0015\nZ ∞\n′\nΛθ = Λθ 1 −\nexp −\nλθ (u)du f (t)dt .\n0\n\n0\n",
-              "quoted_text_sha256": "add252e3ad07aa553f85bbe3e9ffba4d817d49da148e86b881482cf219b8c416"
+              "quoted_text": "Lemma 1. Suppose each incident gets reported independently, and the distribution of the interval\nof reporting duration Ti has density function f(·) : [0, ∞) �→R. Then under steady state, Nobserved\nθ\nfollows a Poisson process with rate Λ′\nθ, where\n\nΛ′\nθ = Λθ\n\n�\n1 −\n�∞\n\n0\nexp\n�\n−\n�t\n\n0\nλθ(u)du\n�\nf(t)dt\n�\n.",
+              "quoted_text_sha256": "750124cc2540f43f1ff135ef31dfbb8674a84c10068898d751c485f0fcab4d45"
             }
           ],
-          "source_location": "cited publication:1453-1468"
+          "source_location": "cited publication:1660-1684"
         },
         {
           "component": "homogeneous observed-rate specialization",
           "source_anchor_evidence": [
             {
-              "line_end": 1476,
-              "line_start": 1469,
+              "line_end": 1698,
+              "line_start": 1686,
               "publication_locator": "cited publication",
-              "quoted_text": "In the simplest time-homogeneous case, this rate simplifies to:\n\u0014\n\u0015\nZ ∞\n′\nΛθ = Λθ 1 −\nexp (−λθ t) f (t)dt .\n0",
-              "quoted_text_sha256": "a0039b2fe2078fc95ada725fce449ae7e6a0fcc0c3fb58263225b0c405bb322c"
+              "quoted_text": "In the simplest time-homogeneous case, this rate simplifies to:\n\nΛ′\nθ = Λθ\n\n�\n1 −\n�∞\n\n0\nexp (−λθt) f(t)dt\n�\n.",
+              "quoted_text_sha256": "8aed8aa5a5d7a645783833b022d8a9a05ac44a10a0a9dea74b4e774ab68bcafc"
             }
           ],
-          "source_location": "cited publication:1469-1476"
+          "source_location": "cited publication:1686-1698"
         },
         {
           "component": "Poisson report count over a fixed duration",
           "source_anchor_evidence": [
             {
-              "line_end": 1484,
-              "line_start": 1478,
+              "line_end": 1710,
+              "line_start": 1700,
               "publication_locator": "cited publication",
-              "quoted_text": "Proof of Lemma 1. Let m(t) be the number of times an incident is reported in an interval of t,\nstarting from its birth. We know from the model assumption that m(t) follows a Poisson distribution:\n\u0012Z t\n\u0013\nm(t) ∼ Poisson\nλθ (u)du .\n0",
-              "quoted_text_sha256": "cd52c3151d42d1401b68b3775de7a81778dd7b2637d802933b64d4a40c2cdf60"
+              "quoted_text": "Proof of Lemma 1. Let m(t) be the number of times an incident is reported in an interval of t,\nstarting from its birth. We know from the model assumption that m(t) follows a Poisson distribu-\ntion:\n\nm(t) ∼Poisson\n��t\n\n0\nλθ(u)du\n�\n.",
+              "quoted_text_sha256": "88fcfb0bd41c5fecbbcd6ae86f253ef828173006d30a0c8e689ba731c4275b0c"
             }
           ],
-          "source_location": "cited publication:1478-1484"
+          "source_location": "cited publication:1700-1710"
         },
         {
           "component": "nonhomogeneous first-report probability integral",
           "source_anchor_evidence": [
             {
-              "line_end": 1509,
-              "line_start": 1488,
+              "line_end": 1751,
+              "line_start": 1715,
               "publication_locator": "cited publication",
-              "quoted_text": "\fIn steady state, each unique incident gets reported with probability\nZ ∞\nPr[m(t) ≥ 1|Ti = t]f (t)dt\np=\n0\n\u0013\u0015\n\u0012 Z t\nZ ∞\u0014\nλθ (u)du f (t)dt\n=\n1 − exp −\n0\n0\n\u0013\n\u0012 Z t\nZ ∞\nλθ (u)du f (t)dt,\nexp −\n=1−\n0\n\n0",
-              "quoted_text_sha256": "30ba93e6e3ad21ad432dbc753e8d5d5dd092ed0f8014509c5c59ad748cbd54a3"
+              "quoted_text": "In steady state, each unique incident gets reported with probability\n\np =\n�∞\n\n0\nPr[m(t) ≥1|Ti = t]f(t)dt\n\n=\n�∞\n\n0\n\n�\n1 −exp\n�\n−\n�t\n\n0\nλθ(u)du\n��\nf(t)dt\n\n= 1 −\n�∞\n\n0\nexp\n�\n−\n�t\n\n0\nλθ(u)du\n�\nf(t)dt,",
+              "quoted_text_sha256": "e002c379ce66af4c1411edd07ed7fa97d7491cc271676d5de38eb2ed08501332"
             }
           ],
-          "source_location": "cited publication:1488-1509"
+          "source_location": "cited publication:1715-1751"
         },
         {
           "component": "homogeneous first-report probability integral",
           "source_anchor_evidence": [
             {
-              "line_end": 1515,
-              "line_start": 1511,
+              "line_end": 1759,
+              "line_start": 1753,
               "publication_locator": "cited publication",
-              "quoted_text": "which simplifies under time-homogeneity to\nZ ∞\nexp (−λθ t) f (t)dt.\np=1−\n0",
-              "quoted_text_sha256": "855ef6a02263ac090b3bd0e633c6f2d18702e5a02656717394242bea4a4e7692"
+              "quoted_text": "which simplifies under time-homogeneity to\n\np = 1 −\n�∞\n\n0\nexp (−λθt) f(t)dt.",
+              "quoted_text_sha256": "9979203c0ce7038d96b8cfbe74cea01340a22e95779ea43085d1011ceadb578a"
             }
           ],
-          "source_location": "cited publication:1511-1515"
+          "source_location": "cited publication:1753-1759"
         },
         {
           "component": "Poisson thinning process conclusion",
           "source_anchor_evidence": [
             {
-              "line_end": 1520,
-              "line_start": 1517,
+              "line_end": 1770,
+              "line_start": 1761,
               "publication_locator": "cited publication",
-              "quoted_text": "Over a time interval of t, the total number of incidents of type θ that happen, Nθ (t) follows\na Poisson process with rate Λθ . Conditional on Nθ (t) = n, n = 0, 1, . . . , under steady state,\nNθobserved (t) follows a binomial distribution with parameters (n, p). Thus Nθobserved (t) follows a\nPoisson distribution with rate Λθ p, which completes the proof.",
-              "quoted_text_sha256": "f000aafa3f0c5705e747d028bfe780b7353d6247983b506b7fae9837baa92ef7"
+              "quoted_text": "Over a time interval of t, the total number of incidents of type θ that happen, Nθ(t) follows\na Poisson process with rate Λθ.\nConditional on Nθ(t) = n, n = 0, 1, . . . , under steady state,\nNobserved\nθ\n(t) follows a binomial distribution with parameters (n, p).\nThus Nobserved\nθ\n(t) follows a\nPoisson distribution with rate Λθp, which completes the proof.",
+              "quoted_text_sha256": "71b613fddc2f0fe55db068da4f1c2c38d37de6c7982e49e43ca44c26f1e399b1"
             }
           ],
-          "source_location": "cited publication:1517-1520"
+          "source_location": "cited publication:1761-1770"
         }
       ],
       "source_conditions": [
@@ -781,10 +797,10 @@
         "LBG24-LEMMA1-PROP1-STEADY-STATE-SCOPE-01"
       ],
       "source_kind": "lemma",
-      "source_location": "cited publication:1453-1520",
+      "source_location": "cited publication:1660-1770",
       "source_note": "The paper-facing route uses the approved calendar-time first-report reading. Lean derives its interval laws and independent increments by displacing a stationary marked birth process with the retained first-report delay. The duration mixture is the explicit pre-first-report survival condition in the source model; this narrow clarification does not add assumptions about later reports or the endpoint policy.",
       "source_status": "formalized_source_statement_with_calendar_time_clarification",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Lemma 1 states that independently reported incidents with a probability duration density form an observed Poisson process under steady state, with rate Lambda_theta times the duration-averaged probability of at least one report, including nonhomogeneous and homogeneous integral forms.",
       "support_lean_declarations": [
         "LBG24SpatialUnderreporting.sourceLemma1CalendarTimeDurationObservedProcessSpec"
@@ -1214,12 +1230,12 @@
         "spec_closure_sha256": "ab5eb718f85cb6467e24dae2102adc4251e53de8612865b2ada8f4209f6f6379",
         "spec_surface_sha256": "8bc93686b36dd0c47238bb3d12de254d1217ea07d2e901b407793b5e46a364ae"
       },
-      "inventory_role": "source_scope_exclusion",
+      "lean_declarations": [
+        "LBG24SpatialUnderreporting.sourceLemma2SelectedStartExponentialTail"
+      ],
       "model_convention_ids": [
         "LBG24-CONDITION1-KERNEL-CONDITIONING-01"
       ],
-      "scope_disposition": "user_approved_scope_exclusion",
-      "scope_disposition_note": "The user deferred appendix proof repair for this release. The selected-start exponential waiting claim remains explicitly uncredited in the selected formalization surface; this scope decision does not establish the printed claim or classify it as a typo.",
       "semantic_context_requirements": [
         {
           "semantic_role": "stated_antecedent",
@@ -1228,19 +1244,37 @@
               "line_end": 1573,
               "line_start": 1571,
               "publication_locator": "cited publication",
-              "quoted_text": "Condition 1: Given T1 = t1 , S is defined on [t1 , T ], and\nP(S = t|T1 = t1 ) = g(t), ∀T ≥ t ≥ t1 ,\nwhere g(t) is not dependent on λ or the sample path of the Poisson process after t1 .",
-              "quoted_text_sha256": "80e097e09db9f6113b1dbc45833441a1525626dc7198311c91a477227ca00322"
+              "quoted_text": "differentially report those problems to the government. Such differences might emerge, for example,\ndue to access to communications technologies, familiarity with the system, or trust in government\n[3]. As discussed above, the biggest challenge to studying under-reporting is that researchers rarely",
+              "quoted_text_sha256": "0d616f946ac4e560f2443cfaf70a5b990a07588f04085b4ed3d7a236d252bf97"
+            }
+          ]
+        },
+        {
+          "semantic_role": "stated_antecedent",
+          "source_anchor_evidence": [
+            {
+              "line_end": 1847,
+              "line_start": 1843,
+              "publication_locator": "cited publication",
+              "quoted_text": "Condition 1: Given T1 = t1, S is defined on [t1, T], and\n\nP(S = t|T1 = t1) = g(t), ∀T ≥t ≥t1,\n\nwhere g(t) is not dependent on λ or the sample path of the Poisson process after t1.",
+              "quoted_text_sha256": "e81209546b2fa4748be9200956979c3a24be8858d19d0efe64e64629bb413339"
             }
           ]
         }
       ],
+      "semantic_contract": {
+        "evidence_declaration": "LBG24SpatialUnderreporting.sourceLemma2SelectedStartExponentialTail",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "LBG24SpatialUnderreporting.sourceLemma2SelectedStartExponentialTailSpec"
+      },
       "source_anchor_evidence": [
         {
-          "line_end": 1595,
-          "line_start": 1593,
+          "line_end": 1875,
+          "line_start": 1870,
           "publication_locator": "cited publication",
-          "quoted_text": "Lemma 2. If the distribution of S satisfies condition 1, then the distribution of the time between\nany realization of S and the next jump time TX(S)+1 is an exponential random variable with rate\nλ.",
-          "quoted_text_sha256": "ab618f27db0320435848c2ded538709cfeebcb8445ebdd5360155478d648b980"
+          "quoted_text": "The proof of the theorem relies on the following lemma, which establishes the distribution of\nthe (random) time between S and the first jump time after S.\n\nLemma 2. If the distribution of S satisfies condition 1, then the distribution of the time between\nany realization of S and the next jump time TX(S)+1 is an exponential random variable with rate\nλ.",
+          "quoted_text_sha256": "4aaf9b7c1f0a4bf928bcdfe3a4d1a2d606533778215c428e0842367c32101e65"
         }
       ],
       "source_claim_atoms": [
@@ -1249,17 +1283,17 @@
           "identity_schema": 2,
           "reviewed_lean_route": "LBG24SpatialUnderreporting.sourceLemma2SelectedStartExponentialTail",
           "semantic_claim": "Under exact Condition 1, the time from any selected start S to the next report jump has the exponential distribution at the original reporting rate.",
-          "source_locator": "cited publication:1593-1595",
+          "source_locator": "cited publication:1873-1875",
           "source_quote_sha256": "ab618f27db0320435848c2ded538709cfeebcb8445ebdd5360155478d648b980"
         }
       ],
       "source_kind": "lemma",
-      "source_location": "cited publication:1593-1595",
+      "source_location": "cited publication:1870-1875",
       "source_presentation_reconciliation": {
         "boundary_reason": "completed_statement_then_explanation",
         "core_anchor": {
-          "line_end": 1595,
-          "line_start": 1593,
+          "line_end": 1875,
+          "line_start": 1873,
           "publication_locator": "cited publication",
           "quoted_text": "Lemma 2. If the distribution of S satisfies condition 1, then the distribution of the time between\nany realization of S and the next jump time TX(S)+1 is an exponential random variable with rate\nλ.",
           "quoted_text_sha256": "ab618f27db0320435848c2ded538709cfeebcb8445ebdd5360155478d648b980"
@@ -1273,18 +1307,11 @@
         "validator": "independent LBG source-inventory reconciliation"
       },
       "source_status": "direct source lemma",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Lemma 2 states that under Condition 1 the wait from any realization of S to the next Poisson jump is exponential with rate lambda.",
-      "user_approved_scope_exclusion": {
-        "approval_kind": "explicit_user_instruction",
-        "approval_reference": "The underlying approval record is withheld from this public projection.",
-        "approved_at": "2026-09-06",
-        "reason": "The user deferred appendix proof repair for this release. The selected-start exponential waiting claim remains explicitly uncredited in the selected formalization surface; this scope decision does not establish the printed claim or classify it as a typo.",
-        "schema": 1,
-        "source_anchor_quote_sha256": "ab618f27db0320435848c2ded538709cfeebcb8445ebdd5360155478d648b980",
-        "source_evidence": "Appendix Lemma 2 states that Condition 1 makes the wait from any realization of S to the next jump exponential with rate lambda. Its complete statement remains at cited publication:1593-1595, with Condition 1 separately retained as bound source context.",
-        "source_locator": "cited publication:1593-1595"
-      }
+      "support_lean_declarations": [
+        "LBG24SpatialUnderreporting.sourceLemma2SelectedStartExponentialTailSpec"
+      ]
     },
     "proposition1_nonidentifiability": {
       "accepted_additional_assumptions": {
@@ -1531,11 +1558,11 @@
       },
       "source_anchor_evidence": [
         {
-          "line_end": 1452,
-          "line_start": 1433,
+          "line_end": 1658,
+          "line_start": 1626,
           "publication_locator": "cited publication",
-          "quoted_text": "Proposition 1. Consider the simplest setting: both incident occurrence and reporting follow timehomogeneous Poisson processes, with Λθ (τ ) = Λθ and λθ (τ ) = λθ . Further, let incident reporting duration Ti be distributed according to F . Then using just the number of observed incidents\nNθobserved (T ) of type θ in a known time duration [0, T ], the reporting rate λθ is not identifiable. In\nother words, Nθobserved (T ) is a function of both Λθ and λθ :\nNθobserved (T )\n= Λ′θ\nT →∞\nT\n\u0014\n\u0015\nZ ∞\n′\nexp (−λθ t) dF (t) .\nΛθ = Λθ 1 −\nlim\n\nwhere\n\n0\n\nThe proof of Proposition 1 follows directly from the following Lemma.",
-          "quoted_text_sha256": "6f11c923d2ffdaf4e5d7a0058d64dbc368311b3748d62acaad553bf7b9a0cf5e"
+          "quoted_text": "Proposition 1. Consider the simplest setting: both incident occurrence and reporting follow time-\nhomogeneous Poisson processes, with Λθ(τ) = Λθ and λθ(τ) = λθ. Further, let incident report-\ning duration Ti be distributed according to F. Then using just the number of observed incidents\nNobserved\nθ\n(T) of type θ in a known time duration [0, T], the reporting rate λθ is not identifiable. In\nother words, Nobserved\nθ\n(T) is a function of both Λθ and λθ:\n\nlim\nT→∞\nNobserved\nθ\n(T)\nT\n= Λ′\nθ\n\nwhere\nΛ′\nθ = Λθ\n\n�\n1 −\n�∞\n\n0\nexp (−λθt) dF(t)\n�\n.\n\nThe proof of Proposition 1 follows directly from the following Lemma.",
+          "quoted_text_sha256": "14d4b0e5e5263b28d588f932ca66e45dd84604728349509e04b9fc9ef9eeb67e"
         }
       ],
       "source_claim_atoms": [
@@ -1544,8 +1571,8 @@
           "identity_schema": 2,
           "reviewed_lean_route": "LBG24SpatialUnderreporting.sourceProposition1CalendarTimeNonidentifiability",
           "semantic_claim": "For homogeneous incident and reporting processes, the observed unique-incident count divided by calendar time converges to the displayed steady-state rate, and that observable rate does not identify the reporting rate because distinct reporting rates can induce the same observed process rate.",
-          "source_locator": "cited publication:1433-1452",
-          "source_quote_sha256": "6f11c923d2ffdaf4e5d7a0058d64dbc368311b3748d62acaad553bf7b9a0cf5e"
+          "source_locator": "cited publication:1626-1658",
+          "source_quote_sha256": "14d4b0e5e5263b28d588f932ca66e45dd84604728349509e04b9fc9ef9eeb67e"
         }
       ],
       "source_conditions": [
@@ -1569,10 +1596,10 @@
         "LBG24-LEMMA1-PROP1-STEADY-STATE-SCOPE-01"
       ],
       "source_kind": "proposition",
-      "source_location": "cited publication:1433-1452",
+      "source_location": "cited publication:1626-1658",
       "source_note": "The final route uses actual calendar-time first-report counts. It derives their unit-window strong law and, for two source models with distinct reporting rates and the same compensated observed rate, derives homogeneous first-report processes with equal rates. The equal-rate premise is the source compensation relation; the observed processes are derived rather than supplied.",
       "source_status": "formalized_source_statement_with_calendar_time_clarification",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Proposition 1 considers homogeneous incident and reporting Poisson processes with the Lemma 1 duration-density law, and states that the reporting rate is not identifiable from observed unique-incident counts alone; it gives the steady-state rate and a large-time observed-count limit.",
       "support_lean_declarations": [
         "LBG24SpatialUnderreporting.sourceProposition1CalendarTimeNonidentifiabilitySpec"
@@ -1589,18 +1616,18 @@
       ],
       "source_anchor_evidence": [
         {
-          "line_end": 201,
-          "line_start": 194,
+          "line_end": 226,
+          "line_start": 219,
           "publication_locator": "cited publication",
-          "quoted_text": "Model part 1: incident birth and death. Incidents of type θ occur (“are born”) according to\na random process parameterized by Λθ . (For example, a homogeneous Poisson process with rate\nΛθ ). Type θ encodes geographic and incident-level (e.g., whether it is a hazard) characteristics. For\neach incident i, let ti denote its birth time. Furthermore, the incident “dies” at some time ti + Ti ,\nand no more reports are logged. The death time reflects, for example, the incident being resolved\nby the agency or by an outside group, or reports no longer being logged because the issue has been\ninspected. Crucially, birth times are unobserved in the model; death times may be unobserved or\npartially observed.4",
-          "quoted_text_sha256": "ab9743f73a9a95195ec96829af597f6ae22fc85211d46c7a4cb48bb7c39d0168"
+          "quoted_text": "Model part 1: incident birth and death. Incidents of type θ occur (“are born”) according to\na random process parameterized by Λθ. (For example, a homogeneous Poisson process with rate\nΛθ). Type θ encodes geographic and incident-level (e.g., whether it is a hazard) characteristics. For\neach incident i, let ti denote its birth time. Furthermore, the incident “dies” at some time ti + Ti,\nand no more reports are logged. The death time reflects, for example, the incident being resolved\nby the agency or by an outside group, or reports no longer being logged because the issue has been\ninspected. Crucially, birth times are unobserved in the model; death times may be unobserved or\npartially observed.4",
+          "quoted_text_sha256": "37be2350bcb3aaf3e1666e452d815dbd221dc56732ba9833c70099c180f713dc"
         }
       ],
       "source_kind": "model",
-      "source_location": "cited publication:194-201",
+      "source_location": "cited publication:219-226",
       "source_note": "The source model allows a general incident-occurrence process; the listed Lean declaration is the nearest homogeneous process-level routing and this row assigns no coverage verdict.",
       "source_status": "direct source model definition",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Model part 1: incidents of type theta occur according to a process parameterized by Lambda_theta; incident i has unobserved birth time t_i, lifetime T_i, and death time t_i+T_i, after which no reports are logged."
     },
     "source_lemma1_reporting_duration_primitives": {
@@ -1639,15 +1666,15 @@
       ],
       "source_anchor_evidence": [
         {
-          "line_end": 193,
-          "line_start": 126,
+          "line_end": 1770,
+          "line_start": 1660,
           "publication_locator": "cited publication",
-          "quoted_text": "Lemma 1. Suppose each incident gets reported independently, and the distribution of the interval\nof reporting duration Ti has density function f (·) : [0, ∞) 7→ R. Then under steady state, Nθobserved\nfollows a Poisson process with rate Λ′θ , where\n[\n( Z t\n)\n]\nZ ∞\n′\nΛθ = Λθ 1 −\nexp −\nλθ (u)du f (t)dt .\n0\n\n0\n\nIn the simplest time-homogeneous case, this rate simplifies to:\n[\n]\nZ ∞\n′\nΛθ = Λθ 1 −\nexp (−λθ t) f (t)dt .\n0\nProof of Lemma 1. Let m(t) be the number of times an incident is reported in an interval of t,\nstarting from its birth. We know from the model assumption that m(t) follows a Poisson distribution:\n(Z t\n)\nm(t) ∼ Poisson\nλθ (u)du .\n0\n\n23\n\n\nIn steady state, each unique incident gets reported with probability\nZ ∞\nPr[m(t) ≥ 1|Ti = t]f (t)dt\np=\n0\n)]\n( Z t\nZ ∞[\nλθ (u)du f (t)dt\n=\n1 − exp −\n0\n0\n)\n( Z t\nZ ∞\nλθ (u)du f (t)dt,\nexp −\n=1−\n0\n\n0\n\nwhich simplifies under time-homogeneity to\nZ ∞\nexp (−λθ t) f (t)dt.\np=1−\n0\n\nOver a time interval of t, the total number of incidents of type θ that happen, Nθ (t) follows\na Poisson process with rate Λθ . Conditional on Nθ (t) = n, n = 0, 1, . . . , under steady state,\nNθobserved (t) follows a binomial distribution with parameters (n, p). Thus Nθobserved (t) follows a\nPoisson distribution with rate Λθ p, which completes the proof.",
-          "quoted_text_sha256": "722bb85f709e9f0ee63686dbc3cdfcbfcedfe44fa4aedd1b4e05843602a35fa6"
+          "quoted_text": "Lemma 1. Suppose each incident gets reported independently, and the distribution of the interval\nof reporting duration Ti has density function f(·) : [0, ∞) �→R. Then under steady state, Nobserved\nθ\nfollows a Poisson process with rate Λ′\nθ, where\n\nΛ′\nθ = Λθ\n\n�\n1 −\n�∞\n\n0\nexp\n�\n−\n�t\n\n0\nλθ(u)du\n�\nf(t)dt\n�\n.\n\nIn the simplest time-homogeneous case, this rate simplifies to:\n\nΛ′\nθ = Λθ\n\n�\n1 −\n�∞\n\n0\nexp (−λθt) f(t)dt\n�\n.\n\nProof of Lemma 1. Let m(t) be the number of times an incident is reported in an interval of t,\nstarting from its birth. We know from the model assumption that m(t) follows a Poisson distribu-\ntion:\n\nm(t) ∼Poisson\n��t\n\n0\nλθ(u)du\n�\n.\n\n23\n\n\f\nIn steady state, each unique incident gets reported with probability\n\np =\n�∞\n\n0\nPr[m(t) ≥1|Ti = t]f(t)dt\n\n=\n�∞\n\n0\n\n�\n1 −exp\n�\n−\n�t\n\n0\nλθ(u)du\n��\nf(t)dt\n\n= 1 −\n�∞\n\n0\nexp\n�\n−\n�t\n\n0\nλθ(u)du\n�\nf(t)dt,\n\nwhich simplifies under time-homogeneity to\n\np = 1 −\n�∞\n\n0\nexp (−λθt) f(t)dt.\n\nOver a time interval of t, the total number of incidents of type θ that happen, Nθ(t) follows\na Poisson process with rate Λθ.\nConditional on Nθ(t) = n, n = 0, 1, . . . , under steady state,\nNobserved\nθ\n(t) follows a binomial distribution with parameters (n, p).\nThus Nobserved\nθ\n(t) follows a\nPoisson distribution with rate Λθp, which completes the proof.",
+          "quoted_text_sha256": "30f62e0afb5210536e03bb31f8848647f2eac429349557ca0863af9c0ed6a263"
         }
       ],
       "source_kind": "model",
-      "source_location": "sources/lbg24_spatial_underreporting_visual_review_transcript.md:126-193",
+      "source_location": "cited publication:1660-1770",
       "source_note": "Exact source-model and proof primitives separated from the Lemma 1 result contract so the duration-density, intensity, time-indexed incident process, and independent conditional-thinning declarations receive their own semantic route.",
       "statement": "Lemma 1 assumes a reporting-duration probability density on the nonnegative real line, a valid age-dependent reporting intensity, stationary Poisson incident births, and independent first-report delays. Actual calendar-time first reports are the retained marked births displaced by birth time plus first-report delay, with retained mass equal to the displayed probability of reporting before duration ends."
     },
@@ -1662,25 +1689,25 @@
       "scope_disposition_note": "The observed report-history fields are represented directly in the selected likelihood Specs through their ordered timeline arguments; they are retained as exact source context rather than duplicated as a second semantic prerequisite row.",
       "source_anchor_evidence": [
         {
-          "line_end": 16,
-          "line_start": 1,
+          "line_end": 246,
+          "line_start": 231,
           "publication_locator": "cited publication",
-          "quoted_text": "Observed data. From the viewpoint of the city and researchers, we observe reports and city\nactions. The observed data for a time interval (0, T ) consists of the following, for each type θ. We\nobserve the subset of incidents for which there was at least one report. For each such incident,\n4\n\nIn practice, death times are partially observed: agency actions such as inspections and work orders are observed\nby the agency. However, (1) such data may not be available to external researchers; (2) many incidents are resolved by\noutside community groups, and these times are unobserved even by the agency. Fully observed death times improve\nour method’s accuracy but do not change the problem difficulty: crucially, birth times are always unobserved by both\nthe agency and researchers, by definition.\n\n4\n\n\fwe observe Mi and the time of each report. Finally, we observe how the agency responded to the\nreported incidents, such as when an inspection was completed, and the details of any inspection\nand completed work order.",
-          "quoted_text_sha256": "278f069a1941d9625aa99edb323d015c89cd5db87d69fe97b953ad0a784d4f5e"
+          "quoted_text": "Observed data. From the viewpoint of the city and researchers, we observe reports and city\nactions. The observed data for a time interval (0, T) consists of the following, for each type θ. We\nobserve the subset of incidents for which there was at least one report. For each such incident,\n\n4In practice, death times are partially observed: agency actions such as inspections and work orders are observed\nby the agency. However, (1) such data may not be available to external researchers; (2) many incidents are resolved by\noutside community groups, and these times are unobserved even by the agency. Fully observed death times improve\nour method’s accuracy but do not change the problem difficulty: crucially, birth times are always unobserved by both\nthe agency and researchers, by definition.\n\n4\n\n\f\nwe observe Mi and the time of each report. Finally, we observe how the agency responded to the\nreported incidents, such as when an inspection was completed, and the details of any inspection\nand completed work order.",
+          "quoted_text_sha256": "8f33ca338188502e58fcd4e4ef2612f07c5e921b1e7b696af61cc95bfe32484a"
         },
         {
-          "line_end": 41,
-          "line_start": 17,
+          "line_end": 323,
+          "line_start": 285,
           "publication_locator": "cited publication",
-          "quoted_text": "Theorem 1. Suppose reporting follows a homogeneous Poisson process with reporting rate λ. For\neach incident, construct (a) interval start time random variable Si ≥ ti that is independent of the\nreporting rate λ, conditional on the first report; (b) end time random variable Ei ≤ ti + Ti that is\nindependent of λ and Si , conditional on the reports observed up to that time. Let data Di include\nSi = si , Ei = ei , the number of reports M̃i within (si , ei ] and their associated report times.\nThen, the likelihood of the data Di as a function of the reporting rate λ, conditional on all\nreports before si , can be decomposed as\n(\n)\nL(λ|Di ) = p M̃i ; λ(ei − si ) f (Di ),\n(1)\nwhere\n(\n) [λ(e − s )]M̃i\ni\ni\np M̃i ; λ(ei − si ) =\nexp (−λ(ei − si ))\nM̃i !\n5\n\n(2)\n\n\fis the probability mass function of a Poisson distributed random variable with M̃i occurrences and\nrate parameter λ(ei − si ), and f (Di ) is a function that does not depend on λ.",
-          "quoted_text_sha256": "55668d8a3d8a997ec8eaf51ab0bc0c12c37d194f6213ed294d9133cc60280213"
+          "quoted_text": "Theorem 1. Suppose reporting follows a homogeneous Poisson process with reporting rate λ. For\neach incident, construct (a) interval start time random variable Si ≥ti that is independent of the\nreporting rate λ, conditional on the first report; (b) end time random variable Ei ≤ti + Ti that is\nindependent of λ and Si, conditional on the reports observed up to that time. Let data Di include\nSi = si, Ei = ei, the number of reports ˜\nMi within (si, ei] and their associated report times.\nThen, the likelihood of the data Di as a function of the reporting rate λ, conditional on all\nreports before si, can be decomposed as\n\nL(λ|Di) = p\n�\n˜\nMi; λ(ei −si)\n�\nf(Di),\n(1)\n\nwhere\n\np\n�\n˜\nMi; λ(ei −si)\n�\n= [λ(ei −si)]\n˜\nMi\n\n˜\nMi!\nexp (−λ(ei −si))\n(2)\n\n5\n\n\f\nis the probability mass function of a Poisson distributed random variable with ˜\nMi occurrences and\nrate parameter λ(ei −si), and f(Di) is a function that does not depend on λ.",
+          "quoted_text_sha256": "8b712fa38be240dc6cd078902a1aa0b84db465984c11220a6928a4be9b6ddde7"
         }
       ],
       "source_kind": "model",
-      "source_location": "sources/lbg24_spatial_underreporting_visual_review_transcript.md:1-16; sources/lbg24_spatial_underreporting_visual_review_transcript.md:17-41",
+      "source_location": "cited publication:231-246; cited publication:285-323",
       "source_note": "The reviewed zero/one/multi window row is a shared source-model representation convention, not a direct source-result endpoint. It exposes the exhaustive encoding shape but does not construct the source S, E, and H variables.",
       "source_status": "shared source-model representation convention; not a direct named-result endpoint",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "The observed data retain incidents with at least one report, their report counts and times, and observed agency actions; Theorem 1 packages an interval realization S=s, E=e, the count in (s,e], and the report times in that interval."
     },
     "source_reporting_process_model": {
@@ -1695,24 +1722,24 @@
       ],
       "source_anchor_evidence": [
         {
-          "line_end": 204,
-          "line_start": 202,
+          "line_end": 230,
+          "line_start": 228,
           "publication_locator": "cited publication",
-          "quoted_text": "Model part 2: reports. An incident i of type θ is active in time window [ti , ti + Ti ]. During this\ntime, reports are submitted according to a homogeneous Poisson process, with rate λθ > 0. Thus,\nthe number of reports Mi for incident i follows a Poisson distribution, Mi ∼ Poisson (λθ Ti ).",
-          "quoted_text_sha256": "3bcd71e2d4d6c83c6989b6117c69ed51779f738a8625dfa89bdfb18a0c490bbb"
+          "quoted_text": "Model part 2: reports. An incident i of type θ is active in time window [ti, ti + Ti]. During this\ntime, reports are submitted according to a homogeneous Poisson process, with rate λθ > 0. Thus,\nthe number of reports Mi for incident i follows a Poisson distribution, Mi ∼Poisson (λθTi).",
+          "quoted_text_sha256": "8caf8832f1abfb7020d94a87a63bac09b9d5d1a837471ef770c9d6e70c206ca0"
         },
         {
-          "line_end": 1568,
-          "line_start": 1567,
+          "line_end": 1842,
+          "line_start": 1839,
           "publication_locator": "cited publication",
-          "quoted_text": "Theorem 2. Consider a Poisson process {X(t), T ≥ t ≥ 0} with rate λ (where X(t) denotes the\nnumber of jumps up to time t), and denote the jumping times {T1 , T2 , . . . }. Denote the random",
-          "quoted_text_sha256": "7c68af5e23f97003f807f7dfef0d27483e164deb88f8718d12483604cfcffcf1"
+          "quoted_text": "Theorem 2. Consider a Poisson process {X(t), T ≥t ≥0} with rate λ (where X(t) denotes the\nnumber of jumps up to time t), and denote the jumping times {T1, T2, . . . }. Denote the random\nvariables of the start and end of an observation period S and E, and suppose S and E satisfy the\nfollowing conditions, respectively:",
+          "quoted_text_sha256": "ad508214915e91e6f7845f60a0348a411d138c62e4f5df283675ba8007d4f102"
         }
       ],
       "source_kind": "model",
-      "source_location": "cited publication:202-204; cited publication:1567-1568",
+      "source_location": "cited publication:228-230; cited publication:1839-1842",
       "source_note": "This prerequisite owns the per-incident homogeneous reporting process and the finite independent-gap law used by the likelihood model. The printed count formula is retained in its source quotation; this route does not assert a fixed-time Poisson count law at an arbitrary observation endpoint. Selected-start and endpoint conditions have their separate source routes. Calendar-time incident births and first-report displacement belong to source_lemma1_reporting_duration_primitives.",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Model part 2 reporting-process premise: reports arrive according to a positive-rate homogeneous Poisson process. The finite observation model uses independent exponential interarrival gaps."
     },
     "source_zero_inflated_incident_model": {
@@ -1726,15 +1753,15 @@
       ],
       "source_anchor_evidence": [
         {
-          "line_end": 93,
-          "line_start": 87,
+          "line_end": 971,
+          "line_start": 945,
           "publication_locator": "cited publication",
-          "quoted_text": "We further fit a zero-inflated Poisson regression [19], which corresponds to a data generating\nprocess in which, independently for each incident, only one report can be generated with probability\nγ, and thus there are 0 duplicate reports: M̃i = 0.9 For example, perhaps those incidents are\npersonal requests for service (e.g., to plant a tree somewhere or to prune a tree to enable certain\nconstruction), for which duplicates are unlikely; alternatively, officials may physically mark the\nlocation of an incident as “report received; full inspection pending,” preventing future reports.\nUnder this case, the likelihood of the data satisfies:",
-          "quoted_text_sha256": "5510f67457087ffbdfe929e090189ca3475b91027c97655cf23bb7fd07db82d8"
+          "quoted_text": "We further fit a zero-inflated Poisson regression [19], which corresponds to a data generating\nprocess in which, independently for each incident, only one report can be generated with probability\nγ, and thus there are 0 duplicate reports:\n˜\nMi = 0.9\nFor example, perhaps those incidents are\npersonal requests for service (e.g., to plant a tree somewhere or to prune a tree to enable certain\nconstruction), for which duplicates are unlikely; alternatively, officials may physically mark the\nlocation of an incident as “report received; full inspection pending,” preventing future reports.\nUnder this case, the likelihood of the data satisfies:\n\nL(λθi|Di) ∝\n\n�\n(1 −γ)p\n�\n˜\nMi; λθi(ei −si)\n�\n,\n˜\nMi ≥1;\n\nγ + (1 −γ)p (0; λθi(ei −si)) ,\n˜\nMi = 0.\n(7)",
+          "quoted_text_sha256": "796121819e90c355fc87bc2ba262047b799037e4aa53b28c6e5c36235193921d"
         }
       ],
       "source_kind": "model",
-      "source_location": "sources/lbg24_spatial_underreporting_visual_review_transcript.md:87-93",
+      "source_location": "cited publication:945-971",
       "source_note": "The source data-generating-process paragraph is separated from the following Equation (7) likelihood result so its valid probability-domain and incident-independence semantics are checked as prerequisites.",
       "statement": "Independently for each incident, a latent structural class occurs with probability gamma and forces the duplicate-report count to zero; otherwise the count follows the ordinary Poisson component."
     },
@@ -1747,15 +1774,15 @@
       "inventory_role": "source_presentation_alias",
       "source_anchor_evidence": [
         {
-          "line_end": 282,
-          "line_start": 254,
+          "line_end": 323,
+          "line_start": 285,
           "publication_locator": "cited publication",
-          "quoted_text": "Theorem 1. Suppose reporting follows a homogeneous Poisson process with reporting rate λ. For\neach incident, construct (a) interval start time random variable Si ≥ ti that is independent of the\nreporting rate λ, conditional on the first report; (b) end time random variable Ei ≤ ti + Ti that is\nindependent of λ and Si , conditional on the reports observed up to that time. Let data Di include\nSi = si , Ei = ei , the number of reports M̃i within (si , ei ] and their associated report times.\nThen, the likelihood of the data Di as a function of the reporting rate λ, conditional on all\nreports before si , can be decomposed as\n\u0010\n\u0011\nL(λ|Di ) = p M̃i ; λ(ei − si ) f (Di ),\n(1)\nwhere\n\u0010\n\u0011 [λ(e − s )]M̃i\ni\ni\np M̃i ; λ(ei − si ) =\nexp (−λ(ei − si ))\nM̃i !\n5\n\n(2)\n\n\fis the probability mass function of a Poisson distributed random variable with M̃i occurrences and\nrate parameter λ(ei − si ), and f (Di ) is a function that does not depend on λ.\nThe decomposition in Equation (1) enables standard Poisson rate estimation methods to be\napplied. For example, the maximum likelihood estimate for λ is:\nP\nM̃i",
-          "quoted_text_sha256": "ad333bf00e03c6a679dfd70918f06b73e481297fb04d757bf70779aec616c6a6"
+          "quoted_text": "Theorem 1. Suppose reporting follows a homogeneous Poisson process with reporting rate λ. For\neach incident, construct (a) interval start time random variable Si ≥ti that is independent of the\nreporting rate λ, conditional on the first report; (b) end time random variable Ei ≤ti + Ti that is\nindependent of λ and Si, conditional on the reports observed up to that time. Let data Di include\nSi = si, Ei = ei, the number of reports ˜\nMi within (si, ei] and their associated report times.\nThen, the likelihood of the data Di as a function of the reporting rate λ, conditional on all\nreports before si, can be decomposed as\n\nL(λ|Di) = p\n�\n˜\nMi; λ(ei −si)\n�\nf(Di),\n(1)\n\nwhere\n\np\n�\n˜\nMi; λ(ei −si)\n�\n= [λ(ei −si)]\n˜\nMi\n\n˜\nMi!\nexp (−λ(ei −si))\n(2)\n\n5\n\n\f\nis the probability mass function of a Poisson distributed random variable with ˜\nMi occurrences and\nrate parameter λ(ei −si), and f(Di) is a function that does not depend on λ.",
+          "quoted_text_sha256": "8b712fa38be240dc6cd078902a1aa0b84db465984c11220a6928a4be9b6ddde7"
         }
       ],
       "source_kind": "theorem",
-      "source_location": "cited publication:254-282",
+      "source_location": "cited publication:285-323",
       "source_note": "Appendix B.2 explicitly says that Theorem 2 is a restated version of Theorem 1 in standard Poisson-process notation and with the two conditions stated mathematically. This alias preserves the separately printed main-text theorem presentation without assigning a second Lean route.",
       "source_presentation_alias": {
         "canonical_source_item": "theorem1_theorem2_likelihood_decomposition",
@@ -1764,8 +1791,8 @@
         "schema": 1,
         "semantic_basis": "The source explicitly calls Theorem 2 a restated version of Theorem 1; the appendix statement owns the canonical semantic route.",
         "source_restatement_evidence": {
-          "line_end": 1566,
-          "line_start": 1565,
+          "line_end": 1837,
+          "line_start": 1836,
           "publication_locator": "cited publication",
           "quoted_text": "The following Theorem 2 is a restated version of Theorem 1, where we use standard Poisson\nprocess notation, and state mathematically the two conditions we introduce in Theorem 1.",
           "quoted_text_sha256": "cebde4b33ed9c7e66925ae1625a3213ba4e49889f2fc733fb034bf16b432843e"
@@ -1773,8 +1800,25 @@
         "validated_at": "2026-08-18T00:00:00Z",
         "validator": "v11 source-first review-surface preparation"
       },
+      "source_presentation_reconciliation": {
+        "boundary_reason": "completed_statement_then_explanation",
+        "core_anchor": {
+          "line_end": 323,
+          "line_start": 285,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 1. Suppose reporting follows a homogeneous Poisson process with reporting rate λ. For\neach incident, construct (a) interval start time random variable Si ≥ti that is independent of the\nreporting rate λ, conditional on the first report; (b) end time random variable Ei ≤ti + Ti that is\nindependent of λ and Si, conditional on the reports observed up to that time. Let data Di include\nSi = si, Ei = ei, the number of reports ˜\nMi within (si, ei] and their associated report times.\nThen, the likelihood of the data Di as a function of the reporting rate λ, conditional on all\nreports before si, can be decomposed as\n\nL(λ|Di) = p\n�\n˜\nMi; λ(ei −si)\n�\nf(Di),\n(1)\n\nwhere\n\np\n�\n˜\nMi; λ(ei −si)\n�\n= [λ(ei −si)]\n˜\nMi\n\n˜\nMi!\nexp (−λ(ei −si))\n(2)\n\n5\n\n\f\nis the probability mass function of a Poisson distributed random variable with ˜\nMi occurrences and\nrate parameter λ(ei −si), and f(Di) is a function that does not depend on λ.",
+          "quoted_text_sha256": "8b712fa38be240dc6cd078902a1aa0b84db465984c11220a6928a4be9b6ddde7"
+        },
+        "presentation_kind": "theorem",
+        "presentation_label": "Theorem 1",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "The context-isolated 2026-09-09 source-only inventory records lines 285-323 as Theorem 1's statement and factorization. The conservative text index continues into theorem-adjacent estimation narrative; this byte-pinned core ends at the displayed factorization's terminal sentence.",
+        "validated_at": "2026-09-09T01:17:26Z",
+        "validator": "source-recovery anchor reconciliation"
+      },
       "source_status": "source-presentation alias of the Appendix B.2 formal restatement",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Theorem 1: under the homogeneous Poisson report process and the stated start/end conditions, the likelihood of the observed interval data factors as a Poisson count PMF with mean lambda(e-s) times a factor independent of lambda."
     },
     "theorem1_theorem2_likelihood_decomposition": {
@@ -4342,11 +4386,11 @@
       },
       "source_anchor_evidence": [
         {
-          "line_end": 1590,
-          "line_start": 1565,
+          "line_end": 1868,
+          "line_start": 1833,
           "publication_locator": "cited publication",
-          "quoted_text": "The following Theorem 2 is a restated version of Theorem 1, where we use standard Poisson\nprocess notation, and state mathematically the two conditions we introduce in Theorem 1.\nTheorem 2. Consider a Poisson process {X(t), T ≥ t ≥ 0} with rate λ (where X(t) denotes the\nnumber of jumps up to time t), and denote the jumping times {T1 , T2 , . . . }. Denote the random\nvariables of the start and end of an observation period S and E, and suppose S and E satisfy the\nfollowing conditions, respectively:\nCondition 1: Given T1 = t1 , S is defined on [t1 , T ], and\nP(S = t|T1 = t1 ) = g(t), ∀T ≥ t ≥ t1 ,\nwhere g(t) is not dependent on λ or the sample path of the Poisson process after t1 .\nCondition 2: Given the jumping times of the Poisson process up to any time t, that is, for some\nm ∈ Z+, given {T1 = t1 , . . . , Tm = tm , Tm+1 > t}, the distribution of E is\nP[E = t|{T1 = t1 , . . . , Tm = tm , Tm+1 > t}] = hm (t), for some m ∈ Z+, ∀T ≥ t ≥ tm ,\nwhere hm (t) is a function independent of λ. Furthermore, given T1 = t1 , the distribution of E is\nindependent of the realization of S:\nP[E = t|T1 = t1 , S = s] = P[E = t|T1 = t1 ], ∀T ≥ t ≥ t1 , ∀s ≥ t1 .\nNow, suppose we observe data which contains for each incident, S = s, E = e, X(e) − X(s) =\nM , where X(s) = m ≥ 1, and all the jumping times within interval (s, e]: JM = {Tm+1 =\ntm+1 , . . . , Tm+M = tm+M }, where tm+1 > s and Tm+M ≤ e. Then, conditional on the observed\njumping times before s: H := {T1 = t1 , . . . , Tm = tm ≤ s}, the likelihood of the data can be\ndecomposed as follows:\nP[X(e) − X(s) = M, E = e, S = s, JM |H] = f (e, s, H, JM )p(M |λ(e − s)),\n\n(8)\n\nwhere p(M |λ(e − s)) denotes the likelihood of a Poisson distribution with M occurrences and rate\nparameter λ(e − s), and f (e, s, H, JM ) is a function that does not depend on λ.",
-          "quoted_text_sha256": "924381eadd662fea8d1096600015f9767579dacc7466f2a14352b37d960d7287"
+          "quoted_text": "Formally, we separate terms involving λ from terms independent of λ, which requires the two\nconditions; then, we arrange the likelihood function to exhibit the structure of a Poisson distribution\nlikelihood.\nThe following Theorem 2 is a restated version of Theorem 1, where we use standard Poisson\nprocess notation, and state mathematically the two conditions we introduce in Theorem 1.\n\nTheorem 2. Consider a Poisson process {X(t), T ≥t ≥0} with rate λ (where X(t) denotes the\nnumber of jumps up to time t), and denote the jumping times {T1, T2, . . . }. Denote the random\nvariables of the start and end of an observation period S and E, and suppose S and E satisfy the\nfollowing conditions, respectively:\nCondition 1: Given T1 = t1, S is defined on [t1, T], and\n\nP(S = t|T1 = t1) = g(t), ∀T ≥t ≥t1,\n\nwhere g(t) is not dependent on λ or the sample path of the Poisson process after t1.\nCondition 2: Given the jumping times of the Poisson process up to any time t, that is, for some\nm ∈Z+, given {T1 = t1, . . . , Tm = tm, Tm+1 > t}, the distribution of E is\n\nP[E = t|{T1 = t1, . . . , Tm = tm, Tm+1 > t}] = hm(t), for some m ∈Z+, ∀T ≥t ≥tm,\n\nwhere hm(t) is a function independent of λ. Furthermore, given T1 = t1, the distribution of E is\nindependent of the realization of S:\n\nP[E = t|T1 = t1, S = s] = P[E = t|T1 = t1], ∀T ≥t ≥t1, ∀s ≥t1.\n\nNow, suppose we observe data which contains for each incident, S = s, E = e, X(e) −X(s) =\nM, where X(s) = m ≥1, and all the jumping times within interval (s, e]: JM = {Tm+1 =\ntm+1, . . . , Tm+M = tm+M}, where tm+1 > s and Tm+M ≤e. Then, conditional on the observed\njumping times before s: H := {T1 = t1, . . . , Tm = tm ≤s}, the likelihood of the data can be\ndecomposed as follows:\n\nP[X(e) −X(s) = M, E = e, S = s, JM|H] = f(e, s, H, JM)p(M|λ(e −s)),\n(8)\n\nwhere p(M|λ(e −s)) denotes the likelihood of a Poisson distribution with M occurrences and rate\nparameter λ(e −s), and f(e, s, H, JM) is a function that does not depend on λ.",
+          "quoted_text_sha256": "369b89e4a100cc642fc9916ef0262c53efac3063dc01bf4620d2cc25bed36eb3"
         }
       ],
       "source_claim_atoms": [
@@ -4355,8 +4399,8 @@
           "identity_schema": 2,
           "reviewed_lean_route": "LBG24SpatialUnderreporting.sourceTheorem1LikelihoodDecomposition",
           "semantic_claim": "For a homogeneous Poisson report process whose selected start and endpoint satisfy Conditions 1 and 2, the complete observed interval likelihood conditional on the report history before the start is a Poisson count mass with mean lambda times E minus S multiplied by a factor independent of lambda.",
-          "source_locator": "cited publication:1565-1590",
-          "source_quote_sha256": "924381eadd662fea8d1096600015f9767579dacc7466f2a14352b37d960d7287"
+          "source_locator": "cited publication:1836-1868",
+          "source_quote_sha256": "8fae92040ca264d0e27a03818fd9abac94514de26004f9101285b6849b6c4f11"
         }
       ],
       "source_defect_ids": [
@@ -4367,16 +4411,16 @@
         "LBG24-LEGACY-POISSON-UNINHABITED-01"
       ],
       "source_kind": "theorem",
-      "source_location": "cited publication:1565-1590",
+      "source_location": "cited publication:1833-1868",
       "source_note": "The source explicitly presents Theorem 2 as a formal restatement of Theorem 1. Its main-text conditional-on-observed-reports endpoint condition is formalized as a rate-free response kernel indexed by the visible report prefix. Its canonical trace produces one terminal endpoint; the scalar h_m(e) likelihood is the absolutely-continuous presentation of an atom-safe kernel law. The retired stationary/Palm resampled-clock theorem is auxiliary and receives no source credit.",
       "source_presentation_reconciliation": {
         "boundary_reason": "complete_indexed_presentation",
         "core_anchor": {
-          "line_end": 1570,
-          "line_start": 1567,
+          "line_end": 1842,
+          "line_start": 1839,
           "publication_locator": "cited publication",
-          "quoted_text": "Theorem 2. Consider a Poisson process {X(t), T ≥ t ≥ 0} with rate λ (where X(t) denotes the\nnumber of jumps up to time t), and denote the jumping times {T1 , T2 , . . . }. Denote the random\nvariables of the start and end of an observation period S and E, and suppose S and E satisfy the\nfollowing conditions, respectively:",
-          "quoted_text_sha256": "e08bddcea537c98d8da2de381a80a3c666bce3031f753310e788904bc00d3d7d"
+          "quoted_text": "Theorem 2. Consider a Poisson process {X(t), T ≥t ≥0} with rate λ (where X(t) denotes the\nnumber of jumps up to time t), and denote the jumping times {T1, T2, . . . }. Denote the random\nvariables of the start and end of an observation period S and E, and suppose S and E satisfy the\nfollowing conditions, respectively:",
+          "quoted_text_sha256": "ad508214915e91e6f7845f60a0348a411d138c62e4f5df283675ba8007d4f102"
         },
         "presentation_kind": "theorem",
         "presentation_label": "Theorem 2",
@@ -4387,7 +4431,7 @@
         "validator": "independent LBG source-inventory reconciliation"
       },
       "source_status": "source theorem formalized through a rate-free causal stopping-policy model with one realized endpoint",
-      "source_text_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+      "source_text_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
       "statement": "Theorem 2: under the homogeneous Poisson report process and Conditions 1 and 2, the likelihood of the observed interval data factors as a Poisson count PMF with mean lambda(e-s) times a factor independent of lambda.",
       "support_lean_declarations": [
         "LBG24SpatialUnderreporting.sourceTheorem1LikelihoodDecompositionSpec"
@@ -4403,95 +4447,95 @@
       "formalization_disposition": "empirical/descriptive; not a paper-theorem target",
       "source_anchor_evidence": [
         {
-          "line_end": 1199,
-          "line_start": 1195,
+          "line_end": 1318,
+          "line_start": 1314,
           "path": "cited publication",
           "quoted_text": "We fit the models using Stan [4], a Bayesian probabilistic programming language that estimates\nmodels using Hamiltonian Monte Carlo. All models were run with 150 warm-up iterations and 300\nsampling iterations on 4 chains. Priors are generally zero mean Normal distributions, with variance\nchosen according to the dimensionality and expected scale of the parameters. Models (with full\nprior information) are in Appendix D.12 and the code repository.",
           "quoted_text_sha256": "9685d9f922feec8d3e7cdad239278ca5b055c53c48ae089cb4e3a749d5cc3af9"
         },
         {
-          "line_end": 1213,
-          "line_start": 1209,
+          "line_end": 1334,
+          "line_start": 1330,
           "path": "cited publication",
           "quoted_text": "In our Spatial analysis, we include coefficients for each of the (over 2,000) census tracts. We use\nan Intrinsic Conditional Auto-Regressive (ICAR) model [26] for the spatial coefficients, alongside\nthe incident level coefficients. In such models, each census tract coefficient is assumed to be normally\ndistributed with a mean equal to the average of its neighbors – i.e., spatial smoothness is encoded\nsuch that census tracts with few incidents borrow information from neighboring census tracts.",
           "quoted_text_sha256": "19d8559f09e223e0472a4debd953b51a523677bcaa665af0362494c0bd1b2658"
         },
         {
-          "line_end": 6111,
-          "line_start": 6084,
+          "line_end": 6467,
+          "line_start": 6433,
           "path": "cited publication",
-          "quoted_text": "\fD.12\n\nStan source code for the Zero-inflated Spatial Poisson regression model\n\nfunctions { // Using r e d u c e sum f o r w i t h i n −c h a i n p a r a l l e l p r o c e s s i n g .\n// f u n c t i o n f o r c a l c u l a t i n g t h e l o g −l i k e l i h o o d\nr e a l p a r t i a l s u m l p m f ( int [ ] y s l i c e ,\nint s t a r t , int end ,\nmatrix X t o t a l ,\nvector l o g d u r a t i o n ,\nvector b e t a t o t a l , r e a l t h e t a z e r o i n f l a t i o n ) {\nint Nloc = end − s t a r t ;\nreal l o c a l t a r g e t = 0 ;\n// two c a s e s f o r c a l c u l a t i o n r e f l e c t i n g z er o −i n f l a t i o n\nfor ( n in 1 : Nloc +1) {\nint i n d = s t a r t + n − 1 ;\ni f ( y s l i c e [ n ] == 0 ) {\nl o c a l t a r g e t +=\nlog sum exp ( bernoulli lpmf ( 1 | t h e t a z e r o i n f l a t i o n ) ,\nbernoulli lpmf ( 0 | t h e t a z e r o i n f l a t i o n )\n+ p o i s s o n l o g g l m l p m f ( y s l i c e [ n ] | X t o t a l [ i n d : ind , : ] ,\nl o g d u r a t i o n [ ind : ind ] , b e t a t o t a l )\n);\n} else {\nl o c a l t a r g e t +=\nbernoulli lpmf ( 0 | t h e t a z e r o i n f l a t i o n )\n+ p o i s s o n l o g g l m l p m f ( y s l i c e [ n ] | X t o t a l [ i n d : ind , : ] ,\nogduration [ ind : ind ] , b e t a t o t a l",
-          "quoted_text_sha256": "1465b8a871d9f14f4561a00bdf06c4f65d527ac87684164861feb2dcd319cf1b"
+          "quoted_text": "D.12\nStan source code for the Zero-inflated Spatial Poisson regression model\n\nfunctions {// Using reduce sum for\nwithin−chain\np a r a l l e l\nprocessing .\n// function\nfor\nc a l c u l a t i n g\nthe\nlog−l i k e l i h o o d\nreal\npartial sum lpmf ( int [ ]\ny s l i c e ,\nint\nstart ,\nint end ,\nmatrix X total ,\nvector logduration ,\nvector\nbeta total ,\nreal\nt h e t a z e r o i n f l a t i o n ) {\nint Nloc = end −s t a r t ;\nreal\nl o c a l t a r g e t = 0;\n// two cases\nfor\nc a l c u l a t i o n\nr e f l e c t i n g\nzero−i n f l a t i o n\nfor\n(n in\n1: Nloc+1) {",
+          "quoted_text_sha256": "377a5e5f3772b7d198ae87fc6a3632eabe3f6f0020c2b708e8ceefa7be6ceb63"
         },
         {
-          "line_end": 6188,
-          "line_start": 6173,
+          "line_end": 6715,
+          "line_start": 6684,
           "path": "cited publication",
-          "quoted_text": "model { // P r i o r p a r t o f Bayesian i n f e r e n c e\nb e t a t r a c t ˜ normal ( 0 , 1 ) ;\nb e t a c a t e g o r y ˜ normal ( 0 , 2∗ inv ( sqrt ( 1 − inv ( N c a t e g o r y ) ) ) ) ;\nbeta ˜ normal ( 0 , 1 ) ;\ni n t e r c e p t ˜ normal ( 0 , 5 ) ;\n68\n\n\f// Use r e d u c e sum t o c a l c u l a t e t h e t a r g e t l i k e l i h o o d\nint g r a i n s i z e = 1 ;\ntarget += reduce sum (\npartial sum lpmf , y , grainsize , X total ,\nlogduration , beta total , t h e t a z e r o i n f l a t i o n\n);\n// add a d j a c e n c y p r i o r s t o b e t a t r a c t\ntarget += −5 ∗ d o t s e l f ( b e t a t r a c t [ node1 ] − b e t a t r a c t [ node2 ] ) ;\n}",
-          "quoted_text_sha256": "cdf6e7851fbe69b3450587a12267709323befac4a7a1cdb93c5e9ba795926491"
+          "quoted_text": "model {// Prior\npart\nof\nBayesian\ninference\nbeta tract ˜ normal(0 ,\n1 ) ;\nbeta category ˜ normal(0 , 2∗inv ( sqrt (1 −inv ( N category ) ) ) ) ;\nbeta ˜ normal(0 ,\n1 ) ;\ni n t e r c e p t ˜ normal(0 ,\n5 ) ;\n\n68\n\n\f\n// Use reduce sum to\nc a l c u l a t e\nthe\nt a r g e t\nl i k e l i h o o d\nint\ng r a i n s i z e = 1;\ntarget += reduce sum (\npartial sum lpmf , y ,\ngrainsize ,\nX total ,\nlogduration ,\nbeta total ,\nt h e t a z e r o i n f l a t i o n\n) ;\n// add adjacency",
+          "quoted_text_sha256": "5560df2ef33291e4c460c3206359bb630de7ca604d0f0feb8cd5b537a1587add"
         }
       ],
       "source_kind": "empirical_model_and_implementation",
-      "source_location": "cited publication:1195-1199; cited publication:1209-1213; cited publication:6084-6111; cited publication:6173-6188",
+      "source_location": "cited publication:1314-1318; cited publication:1330-1334; cited publication:6433-6467; cited publication:6684-6715",
       "statement": "The paper specifies Bayesian priors, an ICAR spatial model, and the concrete zero-inflated spatial Poisson Stan implementation."
     },
     "inspection_selection_ignorability_identity": {
       "formalization_disposition": "empirical robustness assumption; outside the paper's named theorem core",
       "source_anchor_evidence": [
         {
-          "line_end": 2066,
-          "line_start": 2051,
+          "line_end": 2414,
+          "line_start": 2394,
           "path": "cited publication",
-          "quoted_text": "There is a second reason we believe that the censoring is relatively acceptable. In particular,\nwe measure reporting rates as a function of incident type θ, where the type includes characteristics\nsuch as report category and incident risk. If our models are correctly specified, and θ is rich enough\nto capture inspection decisions (there is no confounding), then this censoring does not affect our\nestimates.16 While a seemingly strong assumption, we note that the θ we have available is the\nWe aim to model P˜r(Y |θ), where Y is reporting behavior. However, with just data on inspected incidents, we can\nonly estimate P˜r(Y |θ, inspected). If Y is independent of the inspection decision given θ, then P˜r(Y |θ, inspected) =\nP˜r(Y |θ). One potential source of bias is if, even conditional on θ (which includes the content of the reports), NYC\nDPR is making decisions that strongly correlate with the number of reports. Then, all of our rate estimates would be\nbiased upwards, as we selectively observe data for incidents with many reports. However, as we primarily care about\n16\n\n31\n\n\fsame data that the NYC DPR sees about a report through their portal when making an inspection\ndecision; any confounding would have to come from another source.",
-          "quoted_text_sha256": "2d570836bac5341763a5ae1589d15f373b4cebf56868a6b8188764ff0be116ba"
+          "quoted_text": "There is a second reason we believe that the censoring is relatively acceptable. In particular,\nwe measure reporting rates as a function of incident type θ, where the type includes characteristics\nsuch as report category and incident risk. If our models are correctly specified, and θ is rich enough\nto capture inspection decisions (there is no confounding), then this censoring does not affect our\nestimates.16 While a seemingly strong assumption, we note that the θ we have available is the\n\n16We aim to model ˜\nPr(Y |θ), where Y is reporting behavior. However, with just data on inspected incidents, we can\nonly estimate ˜\nPr(Y |θ, inspected). If Y is independent of the inspection decision given θ, then ˜\nPr(Y |θ, inspected) =\n˜\nPr(Y |θ). One potential source of bias is if, even conditional on θ (which includes the content of the reports), NYC\nDPR is making decisions that strongly correlate with the number of reports. Then, all of our rate estimates would be\nbiased upwards, as we selectively observe data for incidents with many reports. However, as we primarily care about\n\n31\n\n\f\nsame data that the NYC DPR sees about a report through their portal when making an inspection\ndecision; any confounding would have to come from another source.",
+          "quoted_text_sha256": "82f063e984213d69cee829b52dde01dcbcdea5c9e0c4af2145bd5d053eb866b3"
         }
       ],
       "source_kind": "empirical_identification_assumption",
-      "source_location": "cited publication:2051-2066",
+      "source_location": "cited publication:2394-2414",
       "statement": "The empirical censoring discussion invokes Y conditionally independent of inspection given theta so that Pr(Y|theta, inspected)=Pr(Y|theta)."
     },
     "qualitative_computational_tractability": {
       "formalization_disposition": "descriptive implementation claim; no formal complexity target",
       "source_anchor_evidence": [
         {
-          "line_end": 831,
-          "line_start": 828,
+          "line_end": 919,
+          "line_start": 916,
           "path": "cited publication",
-          "quoted_text": "Theorem 1 transforms our setting into a standard Poisson rate estimation task. However, that\ndoes not mean that the estimation is computationally or statistically tractable. In particular, in\nour setting, incident type θ is high-dimensional, but incidents of similar types may have similar\nrates λθ . We adopt a tractable Bayesian Poisson regression approach.",
-          "quoted_text_sha256": "77592b2e21ed9e0279aa413296666b442c9f1c0066e889f15377849889a77ac2"
+          "quoted_text": "Theorem 1 transforms our setting into a standard Poisson rate estimation task. However, that\ndoes not mean that the estimation is computationally or statistically tractable. In particular, in\nour setting, incident type θ is high-dimensional, but incidents of similar types may have similar\nrates λθ. We adopt a tractable Bayesian Poisson regression approach.",
+          "quoted_text_sha256": "5bf3d70906a719aa8ad62bc903b30b7568a3880757760bb7804fa6b931ef4d52"
         },
         {
-          "line_end": 5441,
-          "line_start": 5440,
+          "line_end": 5818,
+          "line_start": 5816,
           "path": "cited publication",
-          "quoted_text": "Sampling the dataset for tractability Due to computational constraints, when training the\nStan models on Chicago data, we randomly sample 100,000 incidents for each model run.",
-          "quoted_text_sha256": "1eacf3d2a58a1d859a51184c7985d515b5efa99e01e14a29086fb179928ca4f8"
+          "quoted_text": "Sampling the dataset for tractability\nDue to computational constraints, when training the\nStan models on Chicago data, we randomly sample 100,000 incidents for each model run.",
+          "quoted_text_sha256": "f5be66b68e0f7b51fe46b4461b9f86ce1599ace0d9986818c832e8e7a33bb8c5"
         }
       ],
       "source_kind": "qualitative_complexity_claim",
-      "source_location": "cited publication:828-831; cited publication:5440-5441",
+      "source_location": "cited publication:916-919; cited publication:5816-5818",
       "statement": "The method is described qualitatively as tractable, and the Chicago implementation samples 100,000 incidents because of computational constraints; no asymptotic complexity theorem is stated."
     },
     "simulation_algorithm_and_data_efficiency": {
       "formalization_disposition": "empirical validation; not a proved mathematical result",
       "source_anchor_evidence": [
         {
-          "line_end": 1905,
-          "line_start": 1887,
+          "line_end": 2222,
+          "line_start": 2197,
           "path": "cited publication",
-          "quoted_text": "Comparing estimation methods via simulation\n\nBefore applying our methods to real-world 311 data, we demonstrate the effectiveness of our methods via simulated data—in such simulations, we have full control over the data-generating process\nand thus can compare the estimation results with the true parameters. In particular, we use\nthe simulator to illustrate (a) Proposition 1, that attempting to recover reporting rates λθ from\nNθobserved (T ) is prone to bias; (b), that in Theorem 1, the conditions on S and E are essential,\n(c), that in a correctly-specified model setting, i.e., following the assumptions in Theorem 1, both\nthe MLE in Equation (3) and the homogeneous Poisson regression recover the ground truth; and\n(d), that the regression approach is more data-efficient than the MLE, leading to tighter parameter\nestimates.\nSimulator setup We simulate a basic time-homogeneous system, as follows. We set the incident\ntype to be a two-dimensional vector θ ∈ R2 . Our simulator needs parameters for three processes:\nthe incident birth process governed by homogeneous Poisson rate Λθ , the reporting process governed\nby homogeneous Poisson rate λθ , and a lifetime Ti of each incident, generated in the following way:\nafter each report, we sample two competing exponential clocks, one representing incident death\nand another the next report; the incident death rate can depend on the number of reports so far,\nreflecting, for example, that the agency prioritizes inspections for incidents with more reports. If\nthe report happens before death, we increment the number of reports for the incident and repeat;\notherwise, the incident has “died” and no more reports are logged.",
-          "quoted_text_sha256": "664cc8e09a052c2aa8ad7aba478f1a6bda781e08d18fedcec1a8e830250b2a7b"
+          "quoted_text": "C\nComparing estimation methods via simulation\n\nBefore applying our methods to real-world 311 data, we demonstrate the effectiveness of our meth-\nods via simulated data—in such simulations, we have full control over the data-generating process\nand thus can compare the estimation results with the true parameters.\nIn particular, we use\nthe simulator to illustrate (a) Proposition 1, that attempting to recover reporting rates λθ from\nNobserved\nθ\n(T) is prone to bias; (b), that in Theorem 1, the conditions on S and E are essential,\n(c), that in a correctly-specified model setting, i.e., following the assumptions in Theorem 1, both\nthe MLE in Equation (3) and the homogeneous Poisson regression recover the ground truth; and\n(d), that the regression approach is more data-efficient than the MLE, leading to tighter parameter\nestimates.\n\nSimulator setup\nWe simulate a basic time-homogeneous system, as follows. We set the incident\ntype to be a two-dimensional vector θ ∈R2. Our simulator needs parameters for three processes:\nthe incident birth process governed by homogeneous Poisson rate Λθ, the reporting process governed\nby homogeneous Poisson rate λθ, and a lifetime Ti of each incident, generated in the following way:\nafter each report, we sample two competing exponential clocks, one representing incident death\nand another the next report; the incident death rate can depend on the number of reports so far,\nreflecting, for example, that the agency prioritizes inspections for incidents with more reports. If\nthe report happens before death, we increment the number of reports for the incident and repeat;\notherwise, the incident has “died” and no more reports are logged.",
+          "quoted_text_sha256": "dc351630b4b3b3dcd77862c8a289e741ff821894aa3517ae0c2d0024427e9e1a"
         },
         {
-          "line_end": 2007,
-          "line_start": 1992,
+          "line_end": 2347,
+          "line_start": 2322,
           "path": "cited publication",
-          "quoted_text": "Simulator results We compare five estimators: a “naive” estimator, that calculates θ T\n,\nthe ratio between the observed number of reports and the observation period; the MLE as derived in Equation (3) with correctly specified stopping times; the MLE with incorrectly specified\nobservation ending times; a Poisson regression with correctly specified stopping times, and finally,\na Poisson regression with incorrectly specified observation ending times. The regression methods\nwere implemented using Scikit-learn [32]. We run each of the methods on the same simulated\ndatasets and iterated 300 times. Table 4 summarizes our results: showing, for each distinct type\nwith a differing incident rate, the estimates for λθ for each of the methods.\nThese results indeed illustrate Proposition 1, that attempting to recover reporting rates λθ\nfrom Nθobserved (T ) is prone to bias: the naive method of counting the number of observed incidents\nconflates the incident rate with the reporting rate. Second, the stopping times assumption in\nTheorem 1 is indeed crucial to a valid result, and in a correctly specified model setting, both the\nMLE in Equation (3) and the homogeneous Poisson regression recover the ground truth reporting\nrate λθ , regardless of the incident rate. However, third, the regression approach is more dataefficient than the MLE, leading to tighter parameter estimates – especially as the incident rate\ndecreases, i.e., as the sample size in terms of the number of incidents decreases. This data efficiency\nis important in high dimensions, as in our real-world data application in the next section.",
-          "quoted_text_sha256": "dcaa6efc11b161de4acbe9b731ba76eb49349f131172635232ee1e43ecfd9b42"
+          "quoted_text": "Simulator results\nWe compare five estimators: a “naive” estimator, that calculates Nobserved\nθ\n(T)\nT\n,\nthe ratio between the observed number of reports and the observation period; the MLE as de-\nrived in Equation (3) with correctly specified stopping times; the MLE with incorrectly specified\nobservation ending times; a Poisson regression with correctly specified stopping times, and finally,\na Poisson regression with incorrectly specified observation ending times. The regression methods\nwere implemented using Scikit-learn [32].\nWe run each of the methods on the same simulated\ndatasets and iterated 300 times. Table 4 summarizes our results: showing, for each distinct type\nwith a differing incident rate, the estimates for λθ for each of the methods.\nThese results indeed illustrate Proposition 1, that attempting to recover reporting rates λθ\nfrom Nobserved\nθ\n(T) is prone to bias: the naive method of counting the number of observed incidents\nconflates the incident rate with the reporting rate.\nSecond, the stopping times assumption in\nTheorem 1 is indeed crucial to a valid result, and in a correctly specified model setting, both the\nMLE in Equation (3) and the homogeneous Poisson regression recover the ground truth reporting\nrate λθ, regardless of the incident rate. However, third, the regression approach is more data-\nefficient than the MLE, leading to tighter parameter estimates – especially as the incident rate\ndecreases, i.e., as the sample size in terms of the number of incidents decreases. This data efficiency\nis important in high dimensions, as in our real-world data application in the next section.",
+          "quoted_text_sha256": "67d3b525584dadcefadba1735c30a504187d1b3440c76d29a61ef170ccb5809f"
         }
       ],
       "source_kind": "simulation_algorithm_and_empirical_result",
-      "source_location": "cited publication:1887-1905; cited publication:1992-2007",
+      "source_location": "cited publication:2197-2222; cited publication:2322-2347",
       "statement": "Appendix C specifies the competing-clock simulator and reports simulation-based recovery and data-efficiency comparisons."
     }
   },
@@ -4507,7 +4551,7 @@
     "LBG24SpatialUnderreporting.Lemma1CalendarTimeDurationSourceModel": "source_lemma1_reporting_duration_primitives",
     "LBG24SpatialUnderreporting.Lemma1ReportingIntensitySourceCondition": "source_lemma1_reporting_duration_primitives",
     "LBG24SpatialUnderreporting.Proposition1CalendarTimeDurationSourceModel": "source_lemma1_reporting_duration_primitives",
-    "LBG24SpatialUnderreporting.Theorem2ConditionOneSelection": "condition1_selected_start",
+    "LBG24SpatialUnderreporting.Theorem2ConditionOneFixedHistoryDensityPresentation": "condition1_selected_start",
     "LBG24SpatialUnderreporting.equation33_nyc_observation_end": "equation33_nyc_observation_end",
     "LBG24SpatialUnderreporting.equation34_chicago_observation_end": "equation34_chicago_observation_end",
     "LBG24SpatialUnderreporting.poissonRegressionRate": "equation4_equation5_poisson_regression_rate_formula",
@@ -4520,9 +4564,10 @@
   },
   "schema": 1,
   "semantic_contract_schema": 1,
+  "semantic_preflight_import_module": "LBG24SpatialUnderreporting.ProofInterface",
   "semantic_route_schema": 2,
   "source_anchor_evidence_required": true,
-  "source_artifact_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
+  "source_artifact_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
   "source_claim_atoms_schema": 1,
   "source_coverage_mode": "named_theoretical_statements",
   "source_curated": true,
@@ -4553,27 +4598,27 @@
         "scope_disposition": "material_named_claim",
         "semantic_basis": "This is an unlabelled mathematical consequence of the homogeneous Poisson reporting model that independently identifies the reporting-delay quantity as the reciprocal of the reporting rate.",
         "source_anchor": {
-          "line_end": 224,
-          "line_start": 221,
+          "line_end": 254,
+          "line_start": 247,
           "publication_locator": "cited publication",
-          "quoted_text": "Research question. We are interested in auditing the efficiency and equity of the reporting\nprocess: how quickly are incidents reported, and how does that reporting rate λθ vary with the\nincident type θ? Estimating this value directly reveals heterogeneous reporting delays, as the\nexpected time between incident occurrence and first report in the model is λ1θ . The primary",
-          "quoted_text_sha256": "e1885fa334b2908c2235d6d823c7c60296987b6fb764d1955f73a07aff28d996"
+          "quoted_text": "Research question.\nWe are interested in auditing the efficiency and equity of the reporting\nprocess: how quickly are incidents reported, and how does that reporting rate λθ vary with the\nincident type θ?\nEstimating this value directly reveals heterogeneous reporting delays, as the\nexpected time between incident occurrence and first report in the model is\n1\nλθ .",
+          "quoted_text_sha256": "c941fa69d15b0bffb4037bf35b147032a681cee96eb3ae91def547970d306893"
         },
         "visible_kind": "holistic"
       },
       {
         "discovery_basis": "holistic_full_text_review",
         "id": "candidate_002",
-        "presentation_label": "the maximum likelihood estimate for λ",
+        "presentation_label": "the maximum likelihood estimate for lambda",
         "schema": 1,
         "scope_disposition": "material_named_claim",
         "semantic_basis": "This is an unlabelled estimator result derived from the likelihood decomposition and independently states the maximum-likelihood estimator for the reporting rate.",
         "source_anchor": {
-          "line_end": 288,
-          "line_start": 279,
+          "line_end": 334,
+          "line_start": 325,
           "publication_locator": "cited publication",
-          "quoted_text": "The decomposition in Equation (1) enables standard Poisson rate estimation methods to be\napplied. For example, the maximum likelihood estimate for λ is:\nP\nM̃i\nM LE\nλ̂\n=P i\n.\n(3)\ni (ei − si )",
-          "quoted_text_sha256": "9b7bcbbce177f5ba2e5d9cf5b7e383dc19a57b95a049f2c327c50dfe0ce19f75"
+          "quoted_text": "The decomposition in Equation (1) enables standard Poisson rate estimation methods to be\napplied. For example, the maximum likelihood estimate for λ is:\n\nˆλMLE =\n�\ni ˜\nMi\n�\ni(ei −si).\n(3)",
+          "quoted_text_sha256": "841be8aaa8e8dd3ec68729fd369287a467424daed79e9311801624aeb4116489"
         },
         "visible_kind": "holistic"
       },
@@ -4585,27 +4630,27 @@
         "scope_disposition": "material_named_claim",
         "semantic_basis": "This unlabelled extension claim materially broadens the preceding likelihood result from the ordinary Poisson model to the source's zero-inflated model.",
         "source_anchor": {
-          "line_end": 291,
-          "line_start": 291,
+          "line_end": 339,
+          "line_start": 336,
           "publication_locator": "cited publication",
-          "quoted_text": "within the period.5 The result extends to the zero-inflated model we use in our empirical estimation.",
-          "quoted_text_sha256": "39bd0701583dc0bbb6d15b8d03f24287617ee2c7432ef44ea8d0e537d870a428"
+          "quoted_text": "The proof is in Appendix B.2 and follows from decomposing the likelihood function into full\nconditional probabilities. The key step is to find the conditions under which one can use data-\ndependent observation period length Ei −Si, while maintaining a Poisson likelihood for reports\nwithin the period.5 The result extends to the zero-inflated model we use in our empirical estimation.",
+          "quoted_text_sha256": "c8218f9af7865933269578e2adf03278a87fde6531fd5dbf822ce86aaf84415f"
         },
         "visible_kind": "holistic"
       },
       {
         "discovery_basis": "holistic_full_text_review",
         "id": "candidate_004",
-        "presentation_label": "If Y is independent of the inspection decision given θ",
+        "presentation_label": "If Y is independent of the inspection decision given theta",
         "schema": 1,
         "scope_disposition": "deep_audit_material",
         "semantic_basis": "This is a source-visible conditional-independence assumption used to discuss censoring in the empirical application, not a separately asserted normal-scope theoretical result.",
         "source_anchor": {
-          "line_end": 2066,
-          "line_start": 2053,
+          "line_end": 2414,
+          "line_start": 2394,
           "publication_locator": "cited publication",
-          "quoted_text": "such as report category and incident risk. If our models are correctly specified, and θ is rich enough\nto capture inspection decisions (there is no confounding), then this censoring does not affect our\nestimates.16 While a seemingly strong assumption, we note that the θ we have available is the\nWe aim to model P˜r(Y |θ), where Y is reporting behavior. However, with just data on inspected incidents, we can\nonly estimate P˜r(Y |θ, inspected). If Y is independent of the inspection decision given θ, then P˜r(Y |θ, inspected) =\nP˜r(Y |θ). One potential source of bias is if, even conditional on θ (which includes the content of the reports), NYC\nDPR is making decisions that strongly correlate with the number of reports. Then, all of our rate estimates would be\nbiased upwards, as we selectively observe data for incidents with many reports. However, as we primarily care about\n16\n\n31\n\n\fsame data that the NYC DPR sees about a report through their portal when making an inspection\ndecision; any confounding would have to come from another source.",
-          "quoted_text_sha256": "c892ccb2c7fae7025d4fad4c9cd83a1f893804e59984d02e4afa5c6d2e044a2b"
+          "quoted_text": "There is a second reason we believe that the censoring is relatively acceptable. In particular,\nwe measure reporting rates as a function of incident type θ, where the type includes characteristics\nsuch as report category and incident risk. If our models are correctly specified, and θ is rich enough\nto capture inspection decisions (there is no confounding), then this censoring does not affect our\nestimates.16 While a seemingly strong assumption, we note that the θ we have available is the\n\n16We aim to model ˜\nPr(Y |θ), where Y is reporting behavior. However, with just data on inspected incidents, we can\nonly estimate ˜\nPr(Y |θ, inspected). If Y is independent of the inspection decision given θ, then ˜\nPr(Y |θ, inspected) =\n˜\nPr(Y |θ). One potential source of bias is if, even conditional on θ (which includes the content of the reports), NYC\nDPR is making decisions that strongly correlate with the number of reports. Then, all of our rate estimates would be\nbiased upwards, as we selectively observe data for incidents with many reports. However, as we primarily care about\n\n31\n\n\f\nsame data that the NYC DPR sees about a report through their portal when making an inspection\ndecision; any confounding would have to come from another source.",
+          "quoted_text_sha256": "82f063e984213d69cee829b52dde01dcbcdea5c9e0c4af2145bd5d053eb866b3"
         },
         "visible_kind": "holistic"
       },
@@ -4617,11 +4662,11 @@
         "scope_disposition": "deep_audit_material",
         "semantic_basis": "This is an empirical plausibility condition for applying the theorem to agency response times; the source presents it as likely rather than as an independently proved normal-scope claim.",
         "source_anchor": {
-          "line_end": 2125,
-          "line_start": 2108,
+          "line_end": 2471,
+          "line_start": 2461,
           "publication_locator": "cited publication",
-          "quoted_text": "our estimates downward. Equation (33) requires that inspection and work order times are stopping\ntimes; that they do not depend on the future trivially holds, and it is likely that they do not depend\non the reporting rate except through the type θ and the sample path number of reports received\nheterogeneous reporting rates across types, such a bias matters to the extent that it heterogeneously affects different\ntypes of incidents or geographic locations. Furthermore, according to NYC DPR, the primary drivers of inspection\ndecisions are the report characteristics, which are included in θ. Nevertheless, an important direction for future work\nis directly addressing this censoring challenge.\n17\nWhile the exploratory data was used to filter variables for ultimate analysis, and to develop and fine-tune our\nmodels, we note that we did not hold out a separate test set at the outset of the project; it was not clear how to\ncluster assign reports to test and train before developing our empirical strategy, and there were initial (ultimately\nresolved) data errors on how reports were tagged to unique incidents. Thus, our overall approach was selected and\ndeveloped using the NYC DPR data on which we ultimately report results, but not using the Chicago dataset. The\nexploratory dataset was ultimately composed of 4463 unique incidents, after filtering.\n\n32\n\n\fup to that time.18 (It is not a problem that incidents with more reports are inspected sooner).",
-          "quoted_text_sha256": "f7fc26dec94a1d3e21e3b640ab1a40a4f9350ff2c6e4d980adad05ac646d45d1"
+          "quoted_text": "The maximum duration of 100 is a design choice, for which we perform robustness checks (with 30\nand 200 days); a maximum mitigates – for incidents not inspected for a long time – the inclusion\nof a time period in which an issue might have been resolved before an inspection, which would bias\nour estimates downward. Equation (33) requires that inspection and work order times are stopping\ntimes; that they do not depend on the future trivially holds, and it is likely that they do not depend\non the reporting rate except through the type θ and the sample path number of reports received\n\nheterogeneous reporting rates across types, such a bias matters to the extent that it heterogeneously affects different\ntypes of incidents or geographic locations. Furthermore, according to NYC DPR, the primary drivers of inspection\ndecisions are the report characteristics, which are included in θ. Nevertheless, an important direction for future work\nis directly addressing this censoring challenge.",
+          "quoted_text_sha256": "6ff235beaa1a3bd0a8d00647b434943c3dd62a892949f90ef9808302dcb6bb20"
         },
         "visible_kind": "holistic"
       },
@@ -4633,28 +4678,28 @@
         "scope_disposition": "material_named_claim",
         "semantic_basis": "This is an unlabelled stochastic-process lemma asserting that the post-first-jump shifted process remains Poisson with the same rate, independently supporting the second-report construction.",
         "source_anchor": {
-          "line_end": 4144,
-          "line_start": 4129,
+          "line_end": 4420,
+          "line_start": 4406,
           "publication_locator": "cited publication",
-          "quoted_text": "However, our theoretical analysis also holds if we instead use as the Poisson interval the time\nstarting after the second report – if we split a Poisson process on the time of the first jump, and start\ncounting subsequent jumps at that time, the resulting counting process would still be a Poisson\nprocess with the same rate. Thus, we can estimate the Poisson process rate using our methods,\nstarting with the second report time.25 However, crucially, we as researchers know for the incident\nthe time between the first and second report, which was not used to train the model (but which the\nmodel is trying to predict). Intuitively, this procedure evaluates our methods in a setting in which\nthe ground truth is known.\n25\n\nFormally, consider a Poisson process with rate λ, denoted as {X(t), t ≥ 0}, with the first jump time denoted as\nT1 . Based on the memoryless property of Poisson process jump times, the process {X(t) − 1, t ≥ T1 } is still a Poisson\nprocess with the same rate parameter (see e.g., [34]). Thus in our context, for an incident with type θ, if we treat\nthe first report as the start of a Poisson process, treat the second report as equivalent to the first report, and count\nduplicates starting at the third report, this reporting process is still a Poisson process with rate λθ , but now the start\nof this process is observed.",
-          "quoted_text_sha256": "03fd1c1c5ae3fd2fe4967e9ff2f1813c7b1a84acb229dd6564a77b974d7c213c"
+          "quoted_text": "However, our theoretical analysis also holds if we instead use as the Poisson interval the time\nstarting after the second report – if we split a Poisson process on the time of the first jump, and start\ncounting subsequent jumps at that time, the resulting counting process would still be a Poisson\nprocess with the same rate. Thus, we can estimate the Poisson process rate using our methods,\nstarting with the second report time.25 However, crucially, we as researchers know for the incident\nthe time between the first and second report, which was not used to train the model (but which the\nmodel is trying to predict). Intuitively, this procedure evaluates our methods in a setting in which\nthe ground truth is known.\n\n25Formally, consider a Poisson process with rate λ, denoted as {X(t), t ≥0}, with the first jump time denoted as\nT1. Based on the memoryless property of Poisson process jump times, the process {X(t)−1, t ≥T1} is still a Poisson\nprocess with the same rate parameter (see e.g., [34]). Thus in our context, for an incident with type θ, if we treat\nthe first report as the start of a Poisson process, treat the second report as equivalent to the first report, and count\nduplicates starting at the third report, this reporting process is still a Poisson process with rate λθ, but now the start\nof this process is observed.",
+          "quoted_text_sha256": "dbccdfe089e20568552386b25c2def72c51e32334450a89312d0b5cbcb4c311d"
         },
         "visible_kind": "holistic"
       }
     ],
     "complete": true,
-    "discovered_candidate_presentation_sha256": "a59d5cfc313d5fa9d38bd11ecfe42f568a47395c7bd09213c10f534d24f93e70",
-    "discovered_named_result_sha256": "5cea6e8978331ff0de159f7686c0ed2beda1b0a5cb54100130e85f8ecb633067",
+    "discovered_candidate_presentation_sha256": "a5b3d74c0c6c88357b844bfabd32a5be8ed2758942373238b9f2a529910d77fd",
+    "discovered_named_result_sha256": "2cb8f5a710308601c4acc9eafd767375d9afbad6e121a766974d2675d7b4e22d",
     "discovered_prose_definition_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
     "heading_kinds": {
       "condition": "assumption"
     },
-    "method": "Read the complete SHA-256-pinned cited publication line by line without consulting Lean, the statement map, status, reports, DAGs, packets, prior judgments, or campaign notes; reconciled the deterministic seven-presentation floor and recorded every additional independently reviewable mathematical presentation with an exact source-only disposition.",
+    "method": "The context-isolated source-only review recorded the current named-theory ledger in audit/INDEPENDENT_SOURCE_INVENTORY_REVIEW_2026-09-09.md after reading the pinned source text without Lean, the map, audits, plans, or reports. The six pre-existing source-only holistic candidate dispositions are re-anchored here to exact spans in the recovered same-paper canonical extraction. This inventory does not assess Lean, source-to-Lean semantics, proof acceptance, or closeout.",
     "prose_definition_presentations": [],
     "schema": 1,
-    "source_artifact_sha256": "2754d60d3304f72257c80a82c1bebbe416ff297ae27ddd13f4af9a0e114e3a6a",
-    "validated_at": "2026-09-01T05:47:28Z",
-    "validator": "fresh-lbg-source-inventory-2026-09-01"
+    "source_artifact_sha256": "1190631ec27bcdbd1a067d75813538e9411ccd02fef5d10d2876348d80f5f9e5",
+    "validated_at": "2026-09-09T01:17:26Z",
+    "validator": "context-isolated LBG24 named-theory inventory review (2026-09-09), with source-recovery anchor reconciliation"
   },
   "source_spec_correspondence_schema": 1,
   "source_url": "https://arxiv.org/pdf/2204.08620; published article: https://doi.org/10.1038/s43588-023-00572-6",

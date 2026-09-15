@@ -1,0 +1,153 @@
+{
+  "deep_audit_observations": [
+    {
+      "affected_source_locators": [
+        "cited publication:310-319",
+        "cited publication:348-355"
+      ],
+      "finding": "The formula and footnote are prose-only redistricting and optimization context. Neither Lemma C.1 nor Proposition 1 depends on population balance, so this material is outside the selected named-result surface and creates no theorem, semantic-prerequisite review row, caveat, or closeout blocker.",
+      "id": "GGRS26-POPULATION-TOLERANCE-PROSE-01",
+      "normal_scope_disposition": "unnumbered_prose_outside_named_theory",
+      "scope_note": "Retain the exact byte-pinned source spans as deep-audit context. Do not promote them into a Spec, theorem, semantic-review row, or human review denominator without an explicitly selected result that materially depends on them.",
+      "source_claim": "Section 2.1 states the population-ratio band exactly as (N_k - epsilon)/N to (N_k + epsilon)/N, and its footnote specifies P_ideal = P_total/N, P_k in [N_k P_ideal +/- tau P_ideal/L], and delta_k = tau/(L N_k).",
+      "source_locator": "cited publication:310-319; cited publication:348-355"
+    },
+    {
+      "affected_source_locators": [
+        "cited publication:492-498"
+      ],
+      "finding": "The paragraph has no visible source result label and therefore does not enter the normal named-theory denominator. Its arbitrary-policy ballot-routed Spec and proof remain typed deep-audit support and include nonvacuity, D-favoring cross-party ties, the complete support of the source's random within-party choices without probability weights, all reachable terminals, and y_R = 0.",
+      "id": "GGRS26-P1-TRANSFER-PARAGRAPH-01",
+      "normal_scope_disposition": "unnumbered_prose_outside_named_theory",
+      "scope_note": "Retain the byte-pinned source span and typed support, but do not give this paragraph an independent normal result row or source-to-Spec review target under named-theoretical-statements mode.",
+      "source_claim": "The unlabelled paragraph says that other transfer rules preserving the number of surplus votes induce the same party seat-share formula.",
+      "source_locator": "cited publication:492-498"
+    },
+    {
+      "affected_source_locators": [
+        "cited publication:527-532",
+        "cited publication:2414-2433"
+      ],
+      "finding": "The expanded semantic identity is the same as the labelled Lemma C.1 claim. Footnote 10 is retained as an earlier byte-pinned presentation of the canonical lemma item and owns no second Spec, proof endpoint, or normal denominator row.",
+      "id": "GGRS26-FOOTNOTE10-PRESENTATION-01",
+      "normal_scope_disposition": "unnumbered_prose_outside_named_theory",
+      "scope_note": "Route semantic review and proof credit through the canonical Lemma C.1 Spec and endpoint while retaining this source presentation as deep-audit provenance.",
+      "source_claim": "Footnote 10 presents the exact unique-integer characterization of the selected PAV party seat count later stated as Lemma C.1.",
+      "source_locator": "cited publication:527-532"
+    },
+    {
+      "affected_source_locators": [
+        "cited publication:830-832"
+      ],
+      "finding": "The paragraph has no visible source result label and therefore does not enter the normal named-theory denominator. Its weighted-average, threshold, and PAV-seat theorem remains typed deep-audit support.",
+      "id": "GGRS26-MAP-LEVEL-PARAGRAPH-01",
+      "normal_scope_disposition": "unnumbered_prose_outside_named_theory",
+      "scope_note": "Retain the byte-pinned source span and typed support, but do not give this paragraph an independent normal result row or source-to-Spec review target under named-theoretical-statements mode.",
+      "source_claim": "The unlabelled map-level discussion combines a district-share pigeonhole statement, the decreasing first-seat PAV threshold, and a minority-seat consequence.",
+      "source_locator": "cited publication:830-832"
+    },
+    {
+      "affected_source_locators": [
+        "cited publication:481-483",
+        "cited publication:499-505"
+      ],
+      "finding": "This is not a named theoretical presentation, so it is outside the normal named-theory closeout surface. The reachable ballot-routed Proposition 1 theorem establishes the per-district rounded STV/PAV outcome. The checked vote-share selector theorem separately proves only a per-query rounded-pair refinement and a five-operation arithmetic certificate. Neither result proves the paper's empirical whole-map implementation, its data pipeline, or a runtime bound for the stated optimization workload.",
+      "id": "GGRS26-P1-EFFICIENT-CALCULATION-01",
+      "normal_scope_disposition": "unnumbered_prose_outside_named_theory",
+      "scope_note": "Do not award named-result credit for this prose. A future deep-paper review of the computational claim must state the map-search algorithm, input representation, number and construction of district queries, cost model, and the exact relationship between the per-query selector and the implementation. It must then prove any claimed aggregate complexity or validate it as an empirical measurement. The existing rounded outcome theorem and per-query selector certificate may be reused only after that interface is specified.",
+      "source_claim": "The unnumbered prose around Proposition 1 says that party seat shares can be calculated up to rounding from vote shares without voter rankings, and says the resulting shortcut is used while optimizing about 10^12 maps for one state.",
+      "source_locator": "cited publication:481-483; cited publication:499-505"
+    }
+  ],
+  "defects": [
+    {
+      "acceptance_condition": "Lean derives the quota-fit and rounded-seat bounds for every natural V satisfying the source's V at least M(M+1) hypothesis, including nondivisible V.",
+      "affected_source_locators": [
+        "cited publication:485-490",
+        "cited publication:2478-2579"
+      ],
+      "defect_kind": "index_or_integrality",
+      "id": "GGRS26-P1-DIVISIBILITY-PROOF-01",
+      "repair_obligation": "Prove the quota capacity and party lower-bound arithmetic for Q = floor(V/(M+1)) + 1 without assuming divisibility of V by M+1.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "The current Proposition 1 proof route uses the exact floor Droop quota and quantifies over arbitrary natural turnout under the source lower bound; no divisibility premise appears in the selected Spec or its proof endpoint.",
+      "source_claim": "Proposition 1 covers every integer electorate size V at least M(M+1), but its appendix proof temporarily assumes V is divisible by M+1 and says without derivation that the same arguments extend.",
+      "source_locator": "cited publication:2478-2528",
+      "statement_impact": "proof_only",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "This is a minor omitted arithmetic case in the source proof, not a changed theorem. Lean proves the general floor-Droop-quota arithmetic over the full stated integer domain."
+    },
+    {
+      "acceptance_condition": "A source-facing Proposition 1 theorem starts from the source ballot/candidate/transfer-rule model and derives the actual terminal STV run and global-to-party refinement internally for every admitted transfer rule. It may not accept rawRun, refinement, projected party paths, party tally conservation, or party winner counts as theorem-facing premises. A checked fractional-run specialization remains support rather than source-wide credit.",
+      "affected_source_locators": [
+        "cited publication:485-498",
+        "cited publication:2490-2553",
+        "cited publication:2554-2581"
+      ],
+      "defect_kind": "quantifier_or_uniformity",
+      "id": "GGRS26-P1-TRANSFER-GENERALITY-01",
+      "repair_obligation": "Define the source-admitted class of surplus-preserving STV transfer rules operationally on complete ranked ballots, then derive a terminal global execution and its complete two-party refinement from the source candidate sets, solid-coalition rankings, quota rule, and transfer semantics. In particular derive the party candidate partition, projected initial tallies, pre-exhaustion mass conservation, transition serialization, and winner-update coherence instead of receiving them in a raw-run record.",
+      "resolution": "repaired_in_lean",
+      "resolution_evidence": "The ballot-routed policy layer encodes the source transfer condition at aggregate ballot mass: after electing a quota-reaching candidate, non-supporting ballots are unchanged, the winner's total remaining support is exactly its prior tally minus one quota, and remaining ballot weights are nonnegative. Removing the elected candidate from the active set then routes that remaining mass through each ballot's next active preference. Eliminations remove the candidate while leaving weights unchanged. The carrier imposes no per-supporter upper bound or fixed fractional/random distribution, so it includes both named examples and every nonnegative distribution of the preserved surplus among winner-supporting ballots. The D-favoring transition layer retains the complete support of the source's random within-party tie choices and constructs terminal executions without asserting probability weights. The current Proposition 1 Spec quantifies over every such policy, asserts a terminal execution, and states the rounded conclusion for every reachable supported terminal; the paired endpoint proves that target for 0 <= y_R <= 1, including y_R = 0.",
+      "source_claim": "The rounded STV conclusion of Proposition 1 is independent of the surplus-preserving transfer rule, including transfer rules other than the fractional implementation used in simulations.",
+      "source_locator": "cited publication:403-410; cited publication:492-498; cited publication:2497-2553",
+      "statement_impact": "source_statement",
+      "status_impact": "formalized_note",
+      "status_impact_rationale": "The selected replacement quantifies over each admitted ballot-routed surplus-preserving transfer policy and derives terminal existence and rounded outcomes from actual transitions. The proof defect is repaired rather than reclassified as a source assumption."
+    }
+  ],
+  "model_conventions": [
+    {
+      "checked_scope": "GGRS26CombattingGerrymanderingRCV.paper_lemma_c1_pav_selector_eq_unique_integer_intervalSpec and GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pavSpec both take 1 <= seats, and their ProofInterface endpoints take and pass the same premise. The underlying already-proved arithmetic and STV results are unchanged.",
+      "classification": "literal_source_domain",
+      "formal_meaning": "Every district magnitude N_k is a natural number satisfying N_k >= 1. The two selected single-district result Specs and their paired proof endpoints therefore assume 1 <= seats.",
+      "id": "GGRS26-POSITIVE-DISTRICT-MAGNITUDE-01",
+      "source_locator": "cited publication:310-316; cited publication:485-490; cited publication:2414-2433",
+      "why_needed": "The displayed result statements use a district with M seats inside the Section 2.1 governing model. Recording the inherited positive-magnitude premise prevents Lean's natural-number value zero and its totalized divisions or zero-seat selectors from silently enlarging the source domain."
+    },
+    {
+      "checked_scope": "The source context source.txt:377-393 is attached to both selected result items. The only Lean value outside the source's positive index domain is pavWeight 0 = 0, which is the empty-sum base convention; every marginal used at index i >= 1 unfolds to (i : Real)^-1.",
+      "classification": "literal_source_definition",
+      "formal_meaning": "The paper defines the positive-index PAV marginal weight by lambda_PAV(i) = 1/i. Lean's paper_pav_thiele_weights uses pavWeight, whose value is the real reciprocal 1/i for every positive natural i, and accumulates those marginals through pavHarmonicSum.",
+      "id": "GGRS26-PAV-HARMONIC-WEIGHT-01",
+      "source_locator": "cited publication:377-393",
+      "why_needed": "Lemma C.1 and Proposition 1 name lambda_PAV but their displayed result blocks do not repeat its formula. Their raw review bundles therefore include the exact byte-pinned Section 2.2 definition rather than asking a reviewer to infer the harmonic convention from a Lean name or a map paraphrase."
+    },
+    {
+      "checked_scope": "The convention applies only to the STV prerequisite surface and Proposition 1's STV conjunct. It does not affect PAV, Lemma C.1, empirical tie frequencies, expected outcomes, or any claimed probability law.",
+      "classification": "source_faithful_support_boundary",
+      "formal_meaning": "The source breaks cross-party ties in party D's favor and resolves ties randomly within the selected party. Lean formalizes the complete support of those within-party random choices as a relation and proves Proposition 1 for every reachable terminal in that support. It does not formalize or claim equality of probability weights, a joint tie-breaking law, or any distributional conclusion.",
+      "id": "GGRS26-RANDOM-WITHIN-PARTY-SUPPORT-01",
+      "report_summary": "The Proposition 1 proof is pathwise over the full support of the source's random within-party tie rule; no tie-breaking probability distribution is formalized or claimed.",
+      "source_locator": "cited publication:394-408; cited publication:485-490",
+      "why_needed": "Replacing the source's random rule by unexplained unrestricted nondeterminism would misstate the algorithm. The support-level interpretation is sufficient for the pathwise rounded-seat conclusion, while explicitly preserving the unformalized distributional boundary."
+    },
+    {
+      "checked_scope": "Only GGRS26CombattingGerrymanderingRCV.paper_lemma_c1_pav_selector_eq_unique_integer_intervalSpec and its paired endpoint use this recorded positive-share domain. GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pavSpec and its paired endpoint instead cover 0 <= partyShare <= 1, including partyShare = 0.",
+      "classification": "literal_source_domain",
+      "formal_meaning": "Lemma C.1 explicitly states y_R in (0,1], and its Lean Spec has the matching premises 0 < partyShare and partyShare <= 1. Proposition 1 does not use this positive-share domain: its separate Spec assumes 0 <= partyShare and proves the y_R = 0 boundary.",
+      "id": "GGRS26-POSITIVE-PARTY-SHARE-CONVENTION-01",
+      "source_locator": "cited publication:485-490; cited publication:2414-2433",
+      "why_needed": "The ledger distinguishes Lemma C.1's literal positive-share domain from Proposition 1's nonnegative party-share domain so that the lemma premise cannot be mistaken for a Proposition 1 narrowing."
+    },
+    {
+      "checked_scope": "Only GGRS26CombattingGerrymanderingRCV.paper_proposition1_source_selected_stv_and_pavSpec and its paired endpoint use this source-supported model interpretation. It is not represented as a literal displayed Proposition 1 antecedent, and it does not apply to Lemma C.1 or to a general multi-party STV statement.",
+      "classification": "source_supported_model_interpretation",
+      "formal_meaning": "For the Proposition 1 STV route, every initially active candidate belongs to exactly one of the Republican or Democratic candidate rosters: the two rosters are disjoint and their union contains the initial active roster. No third-party active candidate is present in the theorem's two-party district model.",
+      "id": "GGRS26-TWO-PARTY-ACTIVE-CANDIDATE-UNIVERSE-01",
+      "source_locator": "cited publication:303-305; cited publication:332-335; cited publication:415-426; cited publication:485-490; cited publication:2490-2505",
+      "why_needed": "The Lean operational model represents the active candidate universe separately from the two party rosters. The source proof's party-exhaustion and two separate-process argument is valid only when no additional active party/candidate can receive a transfer. The displayed proposition says parties range over {R,D}, while the surrounding model and appendix make the two-party restriction and its importance explicit; recording the exact candidate-universe condition prevents a third-party-free inference from being hidden in the proof."
+    }
+  ],
+  "paper": "GGRS26CombattingGerrymanderingRCV",
+  "review_status": "defects_recorded",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "defect_recorded",
+      "semantic_scope": "The selected named-result surface contains Lemma C.1 and Proposition 1. Their material PAV, STV, solid-coalition, and party-seat-selector definitions remain source-connected semantic prerequisites rather than extra denominator rows. Proposition 1 uses generic ballot-routed surplus-preserving STV semantics with D-favoring cross-party ties and the complete support of the source's random within-party tie rule; the Lean relation does not claim a probability distribution. Section 2.1 redistricting, population-scaling, election, and metric prose is retained only as deep-audit context because neither selected result materially depends on it. Changed source-to-Spec and prerequisite judgments remain queued for independent semantic re-review.",
+      "source_locator": "cited publication:377-498; cited publication:2414-2581"
+    }
+  ],
+  "schema": 2,
+  "source_artifact_sha256": "57762234dc7b4a41d10b7f05110551853ab717136eca7b9216da9425cfb8bce5"
+}

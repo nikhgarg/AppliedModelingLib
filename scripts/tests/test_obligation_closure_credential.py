@@ -945,7 +945,7 @@ class ObligationClosureCredentialTests(unittest.TestCase):
             },
         )
 
-    def test_recorded_card_surface_rejects_ambiguous_unrouted_prerequisite(
+    def test_recorded_card_surface_preserves_all_exact_shared_atom_cards(
         self,
     ) -> None:
         shared_atom = sha("1")
@@ -977,13 +977,27 @@ class ObligationClosureCredentialTests(unittest.TestCase):
             )
         )
 
+        projected = credential._recorded_card_review_declarations_by_source_item(
+            current, preflight
+        )
+        self.assertEqual(projected, {
+            "definition_left": ("Fixture.left", "Fixture.recursive_helper"),
+            "definition_right": ("Fixture.recursive_helper", "Fixture.right"),
+        })
+        self.assertEqual(
+            credential._recorded_review_declarations_by_source_item(preflight),
+            {"definition_left": ("Fixture.left",), "definition_right": ("Fixture.right",)},
+        )
+
+        # A missing exact atom owner remains invalid; a similar excerpt or a
+        # convenient display key cannot supply an unrecorded source binding.
+        current.paper_index.prerequisite_leaf_sha256s_by_declaration[
+            "Fixture.recursive_helper"
+        ] = {"source_atom": (sha("2"),)}
         with self.assertRaisesRegex(
-            credential.ObligationClosureCredentialError,
-            "do not resolve to one source item",
+            credential.ObligationClosureCredentialError, "do not resolve to a source item"
         ):
-            credential._recorded_card_review_declarations_by_source_item(
-                current, preflight
-            )
+            credential._recorded_card_review_declarations_by_source_item(current, preflight)
 
     def test_recorded_card_surface_uses_authenticated_owner_before_atom_fallback(
         self,

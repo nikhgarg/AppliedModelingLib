@@ -1,0 +1,14 @@
+BibTeX source: Crossref DOI transform endpoint.
+
+Downloaded from:
+https://api.crossref.org/works/10.1613/jair.1.11358/transform/application/x-bibtex
+
+Canonical article page:
+https://www.jair.org/index.php/jair/article/view/11358
+
+Canonical DOI:
+https://doi.org/10.1613/jair.1.11358
+
+Auxiliary source used for theorem labels and exact TeX snippets:
+arXiv:1702.07984v3, submitted 2017-02-26, last revised 2018-10-28.
+https://arxiv.org/abs/1702.07984

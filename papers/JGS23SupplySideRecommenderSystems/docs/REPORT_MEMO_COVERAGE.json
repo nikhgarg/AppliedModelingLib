@@ -1,0 +1,1669 @@
+{
+  "schema": 2,
+  "paper": "JGS23SupplySideRecommenderSystems",
+  "report_sha256": "9cfd8567d6c3d28882c5ca7a468932ca234fdf8a2a3bf2fd48cab34213036195",
+  "source_items_sha256": "29ffef1d71ac7abc8c2b57cd70d34b94ecdb00b5a507066c60af56cee882ba3c",
+  "all_selected_semantic_review_sha256": "971e83d2f3209ce4b16b008689948b4e68affa95d4ff5bfb4c3747d92b90e3d6",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/JGS23-ONEPOPULATION-CDF-EXPONENT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "The one-population corollary gives support through N^(1/beta) but prints F(q) = (q/N)^(beta/(P-1)).",
+      "report_home": 4,
+      "memo_heading": "One-dimensional law and genre convention",
+      "memo_anchor": "one-dimensional-law-and-genre-convention"
+    },
+    "defect/JGS23-ONE-DIMENSIONAL-UNIQUENESS-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "The labelled one-dimensional example asserts that its displayed power-law distribution is the unique symmetric equilibrium.",
+      "report_home": 4,
+      "memo_heading": "One-dimensional law and genre convention",
+      "memo_anchor": "one-dimensional-law-and-genre-convention"
+    },
+    "defect/JGS23-ZERO-GENRE-NORMALIZATION-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "Genre is defined as p / ||p|| for every p in topological support, without excluding zero.",
+      "report_home": 10,
+      "memo_heading": "One-dimensional law and genre convention",
+      "memo_anchor": "one-dimensional-law-and-genre-convention"
+    },
+    "defect/JGS23-NECESSARYSUFF-TIE-NULLNESS-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "The necessary-and-sufficient characterization replaces expected winner mass by marginal maximum CDFs without a score-tie nullness condition.",
+      "report_home": 4,
+      "memo_heading": "Two-user characterization, phase results, and profit",
+      "memo_anchor": "two-user-characterization-phase-results-and-profit"
+    },
+    "defect/JGS23-PHASE-TRANSITION-REGULARITY-01": {
+      "disposition": "not_material",
+      "reason": "The score-law, CDF, and conditional radial regularity used by Theorem 2 are stated in the paper, so restating them does not narrow its economic domain."
+    },
+    "defect/JGS23-INFINITE-GENRE-LIMIT-MODEL-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "The infinite-producer limiting discussion uses inconsistent indices and the named theorem assumes an angle arccos(...) < 0 and weights alpha_1 = alpha_2 = 2 while requiring weights to sum to one.",
+      "report_home": 4,
+      "memo_heading": "Infinite-producer limit",
+      "memo_anchor": "infinite-producer-limit"
+    },
+    "defect/JGS23-INDUCED-COST-GENERAL-DIMENSION-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "The induced-cost display is stated for two linearly independent users in arbitrary dimension as though the score pair determines the Euclidean production cost.",
+      "report_home": 10,
+      "memo_heading": "Two-user characterization, phase results, and profit",
+      "memo_anchor": "two-user-characterization-phase-results-and-profit"
+    },
+    "defect/JGS23-NONZERO-SPAN-IMPLICATION-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "Lemma nonzero says that a singleton genre lies in the span of the users, parenthetically treating that as implying strictly positive score against every user.",
+      "report_home": 4,
+      "memo_heading": "One-dimensional law and genre convention",
+      "memo_anchor": "one-dimensional-law-and-genre-convention"
+    },
+    "defect/JGS23-SINGLE-GENRE-PROFIT-REGULARITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "Proposition zeroutilitysinglegenre states that every single-genre equilibrium has zero expected profit.",
+      "report_home": 4,
+      "memo_heading": "Two-user characterization, phase results, and profit",
+      "memo_anchor": "two-user-characterization-phase-results-and-profit"
+    },
+    "defect/JGS23-SUPPORT-RESTRICTION-NORMALIZATION-01": {
+      "disposition": "not_material",
+      "reason": "Positive rescaling of each user preserves score rankings and ties, so unit-score normalization preserves Proposition 4's mathematical content."
+    },
+    "defect/JGS23-UTILITY-PROFIT-BRIDGE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "Proposition utility concludes that every symmetric equilibrium has strictly positive profit from the displayed geometric condition.",
+      "report_home": 4,
+      "memo_heading": "Two-user characterization, phase results, and profit",
+      "memo_anchor": "two-user-characterization-phase-results-and-profit"
+    },
+    "defect/JGS23-TWO-USER-CALCULUS-DOMAIN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "The FOC, secondderiv, and regionscolor lemmas state derivative, sign, and support-curve conclusions for arbitrary-dimensional nonnegative users using C1--C3 without stating derivative-base, graph, density, or SOC hypotheses.",
+      "report_home": 10,
+      "memo_heading": "Two-user characterization, phase results, and profit",
+      "memo_anchor": "two-user-characterization-phase-results-and-profit"
+    },
+    "defect/JGS23-SUPINF-ATTAINMENT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "Lemma supinf claims the ratio sup-inf identity for every subset of the strictly positive orthant, including a proof sketch that treats a product argmax as available or approximable without compactness.",
+      "report_home": 4,
+      "memo_heading": "Single-genre optimization and thresholds",
+      "memo_anchor": "single-genre-optimization-and-thresholds"
+    },
+    "defect/JGS23-OPTIMIZATION-MINIMAX-DOMAIN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "The informal optimization-program lemma equates a single-genre equilibrium condition with an inf-sup equals sup-inf ratio expression; its appendix restatement parameterizes the same display by Ball_m.",
+      "report_home": 4,
+      "memo_heading": "Single-genre optimization and thresholds",
+      "memo_anchor": "single-genre-optimization-and-thresholds"
+    },
+    "defect/JGS23-OPT-SINGLE-DIRECTION-IDENTIFICATION-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "Lemma optsingledirection identifies the existence of a symmetric equilibrium with genre {p*} with a ratio bound, then argues through the CDF that the equilibrium must be the canonical ray law.",
+      "report_home": 4,
+      "memo_heading": "Single-genre optimization and thresholds",
+      "memo_anchor": "single-genre-optimization-and-thresholds"
+    },
+    "defect/JGS23-CONDITIONGEN-INFIMUM-ATTAINMENT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "Lemma conditiongen states an infimum-over-Ball_m ratio condition for single-genre equilibrium existence without separately stating a minimizer or the regularity used by its fixed-direction and CDF arguments.",
+      "report_home": 4,
+      "memo_heading": "Single-genre optimization and thresholds",
+      "memo_anchor": "single-genre-optimization-and-thresholds"
+    },
+    "defect/JGS23-BETASTAR-COROLLARY-ENDPOINT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "The beta-one, beta-p, and beta corollaries package their conclusions through beta-star even though the source defines beta-star only as a supremum and does not separately establish endpoint attainment or the regularity used by the single-genre route.",
+      "report_home": 4,
+      "memo_heading": "Single-genre optimization and thresholds",
+      "memo_anchor": "single-genre-optimization-and-thresholds"
+    },
+    "convention/JGS23-FINITE-DIMENSIONAL-NORM-REGULARITY-01": {
+      "disposition": "not_material",
+      "reason": "A finite-dimensional norm has continuous, measurable, compact bounded sublevels and convex balls; recording these norm properties does not add an economic hypothesis."
+    },
+    "source/claim_necessarysuff/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "claim_necessarysuff",
+      "report_home": 4,
+      "memo_heading": "Two-user characterization, phase results, and profit",
+      "memo_anchor": "two-user-characterization-phase-results-and-profit"
+    },
+    "source/corollary_beta/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "corollary_beta",
+      "report_home": 4,
+      "memo_heading": "Single-genre optimization and thresholds",
+      "memo_anchor": "single-genre-optimization-and-thresholds"
+    },
+    "source/corollary_betaone/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "corollary_betaone",
+      "report_home": 4,
+      "memo_heading": "Single-genre optimization and thresholds",
+      "memo_anchor": "single-genre-optimization-and-thresholds"
+    },
+    "source/corollary_betap/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "corollary_betap",
+      "report_home": 4,
+      "memo_heading": "Single-genre optimization and thresholds",
+      "memo_anchor": "single-genre-optimization-and-thresholds"
+    },
+    "source/corollary_onepopulation/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "corollary_onepopulation",
+      "report_home": 4,
+      "memo_heading": "One-dimensional law and genre convention",
+      "memo_anchor": "one-dimensional-law-and-genre-convention"
+    },
+    "source/corollary_singlegenrestructure/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "corollary_singlegenrestructure",
+      "report_home": 4,
+      "memo_heading": "Single-genre optimization and thresholds",
+      "memo_anchor": "single-genre-optimization-and-thresholds"
+    },
+    "source/corollary_twousers/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "corollary_twousers",
+      "report_home": 4,
+      "memo_heading": "Single-genre optimization and thresholds",
+      "memo_anchor": "single-genre-optimization-and-thresholds"
+    },
+    "source/definition_infinitegenre/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "definition_infinitegenre",
+      "report_home": 4,
+      "memo_heading": "Infinite-producer limit",
+      "memo_anchor": "infinite-producer-limit"
+    },
+    "source/example_one_dimensional_setup/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "example_one_dimensional_setup",
+      "report_home": 4,
+      "memo_heading": "One-dimensional law and genre convention",
+      "memo_anchor": "one-dimensional-law-and-genre-convention"
+    },
+    "source/infinite_producer_model/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "infinite_producer_model",
+      "report_home": 4,
+      "memo_heading": "Infinite-producer limit",
+      "memo_anchor": "infinite-producer-limit"
+    },
+    "source/lemma_cdf/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "lemma_cdf",
+      "report_home": 4,
+      "memo_heading": "One-dimensional law and genre convention",
+      "memo_anchor": "one-dimensional-law-and-genre-convention"
+    },
+    "source/lemma_conditiongen/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "lemma_conditiongen",
+      "report_home": 4,
+      "memo_heading": "Single-genre optimization and thresholds",
+      "memo_anchor": "single-genre-optimization-and-thresholds"
+    },
+    "source/lemma_foc/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "lemma_foc",
+      "report_home": 4,
+      "memo_heading": "Two-user characterization, phase results, and profit",
+      "memo_anchor": "two-user-characterization-phase-results-and-profit"
+    },
+    "source/lemma_inducedcost/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "lemma_inducedcost",
+      "report_home": 4,
+      "memo_heading": "Two-user characterization, phase results, and profit",
+      "memo_anchor": "two-user-characterization-phase-results-and-profit"
+    },
+    "source/lemma_nonzero/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "lemma_nonzero",
+      "report_home": 4,
+      "memo_heading": "One-dimensional law and genre convention",
+      "memo_anchor": "one-dimensional-law-and-genre-convention"
+    },
+    "source/lemma_optimizationprogram/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "lemma_optimizationprogram",
+      "report_home": 4,
+      "memo_heading": "Single-genre optimization and thresholds",
+      "memo_anchor": "single-genre-optimization-and-thresholds"
+    },
+    "source/lemma_optimizationprogramrestated/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "lemma_optimizationprogramrestated",
+      "report_home": 4,
+      "memo_heading": "Single-genre optimization and thresholds",
+      "memo_anchor": "single-genre-optimization-and-thresholds"
+    },
+    "source/lemma_optsingledirection/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "lemma_optsingledirection",
+      "report_home": 4,
+      "memo_heading": "Single-genre optimization and thresholds",
+      "memo_anchor": "single-genre-optimization-and-thresholds"
+    },
+    "source/lemma_regionscolor/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "lemma_regionscolor",
+      "report_home": 4,
+      "memo_heading": "Two-user characterization, phase results, and profit",
+      "memo_anchor": "two-user-characterization-phase-results-and-profit"
+    },
+    "source/lemma_secondderiv/corrected_target": {
+      "disposition": "not_material",
+      "reason": "Lemma 11's positive-radius domain is already required for the polar derivatives in the source statement."
+    },
+    "source/lemma_supinf/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "lemma_supinf",
+      "report_home": 4,
+      "memo_heading": "Single-genre optimization and thresholds",
+      "memo_anchor": "single-genre-optimization-and-thresholds"
+    },
+    "source/proposition_finitegenre/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "proposition_finitegenre",
+      "report_home": 4,
+      "memo_heading": "Two-user characterization, phase results, and profit",
+      "memo_anchor": "two-user-characterization-phase-results-and-profit"
+    },
+    "source/proposition_supportrestriction/corrected_target": {
+      "disposition": "not_material",
+      "reason": "Positive rescaling of each user preserves score rankings and ties, so the normalized Proposition 4 target is source-faithful."
+    },
+    "source/proposition_uniqueness/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "proposition_uniqueness",
+      "report_home": 4,
+      "memo_heading": "Two-user characterization, phase results, and profit",
+      "memo_anchor": "two-user-characterization-phase-results-and-profit"
+    },
+    "source/proposition_utility/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "proposition_utility",
+      "report_home": 4,
+      "memo_heading": "Two-user characterization, phase results, and profit",
+      "memo_anchor": "two-user-characterization-phase-results-and-profit"
+    },
+    "source/proposition_zeroutilitysinglegenre/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "proposition_zeroutilitysinglegenre",
+      "report_home": 4,
+      "memo_heading": "Two-user characterization, phase results, and profit",
+      "memo_anchor": "two-user-characterization-phase-results-and-profit"
+    },
+    "source/quality_and_genre_model/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "quality_and_genre_model",
+      "report_home": 4,
+      "memo_heading": "One-dimensional law and genre convention",
+      "memo_anchor": "one-dimensional-law-and-genre-convention"
+    },
+    "source/reparameterized_equilibrium_model/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "reparameterized_equilibrium_model",
+      "report_home": 4,
+      "memo_heading": "Two-user characterization, phase results, and profit",
+      "memo_anchor": "two-user-characterization-phase-results-and-profit"
+    },
+    "source/single_and_multi_genre_regimes/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "single_and_multi_genre_regimes",
+      "report_home": 4,
+      "memo_heading": "One-dimensional law and genre convention",
+      "memo_anchor": "one-dimensional-law-and-genre-convention"
+    },
+    "source/theorem_infinitegenre/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "theorem_infinitegenre",
+      "report_home": 4,
+      "memo_heading": "Infinite-producer limit",
+      "memo_anchor": "infinite-producer-limit"
+    },
+    "source/theorem_infinitegenreformal/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "theorem_infinitegenreformal",
+      "report_home": 4,
+      "memo_heading": "Infinite-producer limit",
+      "memo_anchor": "infinite-producer-limit"
+    },
+    "source/theorem_phasetransition/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "theorem_phasetransition",
+      "report_home": 4,
+      "memo_heading": "Two-user characterization, phase results, and profit",
+      "memo_anchor": "two-user-characterization-phase-results-and-profit"
+    },
+    "source/theorem_singlegenre/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "theorem_singlegenre",
+      "report_home": 7,
+      "memo_heading": "Single-genre optimization and thresholds",
+      "memo_anchor": "single-genre-optimization-and-thresholds"
+    },
+    "report/corrected-target-scope": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "source_reading": "report/corrected-target-scope",
+      "report_home": 10,
+      "memo_heading": "Source Clarifications",
+      "memo_anchor": "source-clarifications"
+    },
+    "report/betastar-unbounded-domain": {
+      "disposition": "not_material",
+      "reason": "The threshold now uses the extended supremum of the same source exponent set. The implementation-only zero value for an unbounded set is repaired without a source restriction or change to the selected theorem statements."
+    },
+    "report/theorem2-equilibrium-reduction": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "449e8ad9993a5680a6a2f187f75ff6f3d19421e5041967fa0f859be158a87d0b",
+      "memo_heading": "Theorem 2: reduction to the two-user plane",
+      "memo_anchor": "theorem-2-reduction-to-the-two-user-plane",
+      "report_home": 7,
+      "source_reading": "Theorem 2 is proved through Propositions 9–10, whose Appendix D.4 arguments use the induced-cost and support calculations of Lemmas 9–12; Appendix D.1.2 gives the equilibrium cone restriction from C1."
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "45345cf8797d89765df4c45c0b33b36c87ef8b095f753e6408a7a416f137180a",
+      "discovered_named_result_sha256": "d12347fdabf1e32f7951813cb2e3e4194068d004097c4c7a64a7fc166556b839",
+      "source_format": "tex",
+      "results": {
+        "claim_equivalence": {
+          "kind": "claim",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 1282,
+              "line_start": 1279,
+              "presentation": "tex_environment",
+              "presentation_sha256": "4408196bbef713f86911890f6573d725ae893c537a5dc1b158bfd05e86127e70",
+              "source_item_id": "claim_equivalence",
+              "source_label": "claim:equivalence"
+            }
+          ],
+          "source_item_ids": [
+            "claim_equivalence"
+          ]
+        },
+        "claim_necessarysuff": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 693,
+              "line_start": 679,
+              "presentation": "tex_environment",
+              "presentation_sha256": "c7671746c8b185a1e4c4cc40f3f49acb810ba16f58844e7b93520f5a48ca8e04",
+              "source_item_id": "claim_necessarysuff",
+              "source_label": "claim:necessarysuff"
+            }
+          ],
+          "source_item_ids": [
+            "claim_necessarysuff",
+            "reparameterized_equilibrium_model"
+          ]
+        },
+        "corollary_beta": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 493,
+              "line_start": 486,
+              "presentation": "tex_environment",
+              "presentation_sha256": "38f919cf49eea11728d68810f6a8bec797c60f9781ff9031c556f0d7f8794ab0",
+              "source_item_id": "corollary_beta",
+              "source_label": "cor:beta"
+            }
+          ],
+          "source_item_ids": [
+            "corollary_beta"
+          ]
+        },
+        "corollary_betaone": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 462,
+              "line_start": 459,
+              "presentation": "tex_environment",
+              "presentation_sha256": "8405176ce60f91e483f9065e15a3e156cbcd4b2cb23e2c0fd6b9a99123b79fdf",
+              "source_item_id": "corollary_betaone",
+              "source_label": "cor:beta1"
+            }
+          ],
+          "source_item_ids": [
+            "corollary_betaone"
+          ]
+        },
+        "corollary_betap": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 473,
+              "line_start": 470,
+              "presentation": "tex_environment",
+              "presentation_sha256": "8e42ec12163a5f73c0d36c94eb5f411b07b6bcb8b7c8d37a720ac5480a2da4f8",
+              "source_item_id": "corollary_betap",
+              "source_label": "cor:betap"
+            }
+          ],
+          "source_item_ids": [
+            "corollary_betap"
+          ]
+        },
+        "corollary_onepopulation": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 361,
+              "line_start": 358,
+              "presentation": "tex_environment",
+              "presentation_sha256": "5b6cf01e6655039ed3b4725a90a5dbf65b2baa90ce20b2d563e5064e49ec1f2a",
+              "source_item_id": "corollary_onepopulation",
+              "source_label": "cor:onepopulation"
+            }
+          ],
+          "source_item_ids": [
+            "corollary_onepopulation"
+          ]
+        },
+        "corollary_singlegenrestructure": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 508,
+              "line_start": 501,
+              "presentation": "tex_environment",
+              "presentation_sha256": "172346d6cc8c7081e1e29f169caf30619f217bcfb400e89ba7eccaf335e6a04e",
+              "source_item_id": "corollary_singlegenrestructure",
+              "source_label": "cor:singlegenrestructure"
+            }
+          ],
+          "source_item_ids": [
+            "corollary_singlegenrestructure"
+          ]
+        },
+        "corollary_twousers": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 481,
+              "line_start": 477,
+              "presentation": "tex_environment",
+              "presentation_sha256": "e4c0c80ad631e364933b3d94b4febf032df3cefd813bce520f3ed0c59e329c73",
+              "source_item_id": "corollary_twousers",
+              "source_label": "cor:2users"
+            }
+          ],
+          "source_item_ids": [
+            "corollary_twousers"
+          ]
+        },
+        "corollary_twousersprofit": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 730,
+              "line_start": 727,
+              "presentation": "tex_environment",
+              "presentation_sha256": "d2530536171ca01ccb1608c5dd513a0ed7940d5463671156149daaa8d86be49a",
+              "source_item_id": "corollary_twousersprofit",
+              "source_label": "cor:2usersprofit"
+            }
+          ],
+          "source_item_ids": [
+            "corollary_twousersprofit"
+          ]
+        },
+        "lemma_cdf": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 937,
+              "line_start": 931,
+              "presentation": "tex_environment",
+              "presentation_sha256": "2ab7adb47b9ff25856e330f65893d6a77d92e6a6ef6b3c842bd55f788cace145",
+              "source_item_id": "lemma_cdf",
+              "source_label": "lemma:cdf"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_cdf"
+          ]
+        },
+        "lemma_conditiongen": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1019,
+              "line_start": 1012,
+              "presentation": "tex_environment",
+              "presentation_sha256": "ad87d57410a659d7d87083f29f10c173834032979729f7807a579c31a0628900",
+              "source_item_id": "lemma_conditiongen",
+              "source_label": "lemma:conditiongen"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_conditiongen"
+          ]
+        },
+        "lemma_foc": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1343,
+              "line_start": 1318,
+              "presentation": "tex_environment",
+              "presentation_sha256": "683240f91c4371666e3d7932ee01c0bfdfe4e7b9e66578d2ad536921d39746aa",
+              "source_item_id": "lemma_foc",
+              "source_label": "lemma:FOC"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_foc"
+          ]
+        },
+        "lemma_inducedcost": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1315,
+              "line_start": 1311,
+              "presentation": "tex_environment",
+              "presentation_sha256": "9531e97cc04a7e4a8854262da340c3cd5e968015185041f011bbfc19ddc76c3c",
+              "source_item_id": "lemma_inducedcost",
+              "source_label": "lemma:inducedcost"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_inducedcost"
+          ]
+        },
+        "lemma_nonzero": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 961,
+              "line_start": 958,
+              "presentation": "tex_environment",
+              "presentation_sha256": "ea25d40286e7c1e05ae0424b697a5fab533ce8ba9de2309370c50dfb1187f3dc",
+              "source_item_id": "lemma_nonzero",
+              "source_label": "lemma:nonzero"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_nonzero"
+          ]
+        },
+        "lemma_optimizationprogram": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 449,
+              "line_start": 442,
+              "presentation": "tex_environment",
+              "presentation_sha256": "60f7c1dc6d97bcf385dc287d9e7e3e8229a8d1568d0620f9385991b9a2ecfdbe",
+              "source_item_id": "lemma_optimizationprogram",
+              "source_label": "lemma:optimizationprogram"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_optimizationprogram"
+          ]
+        },
+        "lemma_optimizationprogramrestated": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1009,
+              "line_start": 1002,
+              "presentation": "tex_environment",
+              "presentation_sha256": "b0eede886cae916c1441fe6f93a3d171357fb32152e371b1764db86680735835",
+              "source_item_id": "lemma_optimizationprogramrestated",
+              "source_label": "lemma:optimizationprogramrestated"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_optimizationprogramrestated"
+          ]
+        },
+        "lemma_optsingledirection": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1030,
+              "line_start": 1023,
+              "presentation": "tex_environment",
+              "presentation_sha256": "21db8ebc7ebf71bf73262d3326121beb82d249ac0c506effb460151743437bd7",
+              "source_item_id": "lemma_optsingledirection",
+              "source_label": "lemma:optsingledirection"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_optsingledirection"
+          ]
+        },
+        "lemma_regionscolor": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1355,
+              "line_start": 1351,
+              "presentation": "tex_environment",
+              "presentation_sha256": "4b17d6c496102e8aae6897499a4a881bb5b01e562ceef784373e44228a63046f",
+              "source_item_id": "lemma_regionscolor",
+              "source_label": "lemma:regionscolor"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_regionscolor"
+          ]
+        },
+        "lemma_secondderiv": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1350,
+              "line_start": 1346,
+              "presentation": "tex_environment",
+              "presentation_sha256": "a5a8747c10dfb32c09dcb8776f1074e24e41f3e8286fa8bf4abcac3d4700bf2c",
+              "source_item_id": "lemma_secondderiv",
+              "source_label": "lemma:secondderiv"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_secondderiv"
+          ]
+        },
+        "lemma_standardbasismax": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1911,
+              "line_start": 1906,
+              "presentation": "tex_environment",
+              "presentation_sha256": "e41f1fee419fc05613d983620e8e9851f38fa6fc9b1759e15c2f221bc67d8ea3",
+              "source_item_id": "lemma_standardbasismax",
+              "source_label": "lemma:standardbasismax"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_standardbasismax"
+          ]
+        },
+        "lemma_supinf": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1087,
+              "line_start": 1083,
+              "presentation": "tex_environment",
+              "presentation_sha256": "6d145d32ee08249297a86a7e771666b36f9d95d26b1915051a2fbf4707f82d90",
+              "source_item_id": "lemma_supinf",
+              "source_label": "lemma:supinf"
+            }
+          ],
+          "source_item_ids": [
+            "lemma_supinf"
+          ]
+        },
+        "proposition_atom": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 314,
+              "line_start": 311,
+              "presentation": "tex_environment",
+              "presentation_sha256": "032f79a98c19281ac99869ff42031357ac10f4d9ef336b9eb9b5bcc52f9ecd96",
+              "source_item_id": "proposition_atom",
+              "source_label": "prop:atom"
+            }
+          ],
+          "source_item_ids": [
+            "proposition_atom"
+          ]
+        },
+        "proposition_existence": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 308,
+              "line_start": 305,
+              "presentation": "tex_environment",
+              "presentation_sha256": "22fecfba9b36f60af07a68337243a46f7744f5a0916dd55b246689e0bcf22ab7",
+              "source_item_id": "proposition_existence",
+              "source_label": "prop:existence"
+            }
+          ],
+          "source_item_ids": [
+            "proposition_existence"
+          ]
+        },
+        "proposition_finitegenre": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 1465,
+              "line_start": 1462,
+              "presentation": "tex_environment",
+              "presentation_sha256": "280962b1394e00f05c57e9d3a34cfaa586957457fdc2684106f06ed9ce4551ad",
+              "source_item_id": "proposition_finitegenre",
+              "source_label": "prop:finitegenre"
+            }
+          ],
+          "source_item_ids": [
+            "proposition_finitegenre"
+          ]
+        },
+        "proposition_finitep": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 642,
+              "line_start": 635,
+              "presentation": "tex_environment",
+              "presentation_sha256": "bfb065cfa6dae0e3af15c3f42490d7062c60989a3beca959824231fa4cf74ddc",
+              "source_item_id": "proposition_finitep",
+              "source_label": "prop:finiteP"
+            }
+          ],
+          "source_item_ids": [
+            "proposition_finitep"
+          ]
+        },
+        "proposition_ptwo": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 619,
+              "line_start": 616,
+              "presentation": "tex_environment",
+              "presentation_sha256": "442b0789a4d89ce721e7c754b1884551e51f371509e5de7b497e099db281a209",
+              "source_item_id": "proposition_ptwo",
+              "source_label": "prop:P2"
+            }
+          ],
+          "source_item_ids": [
+            "proposition_ptwo"
+          ]
+        },
+        "proposition_pure": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 299,
+              "line_start": 296,
+              "presentation": "tex_environment",
+              "presentation_sha256": "bc34438ccca74858cb4da1c52f82fc00310667a179f7e53aa505e069b486634e",
+              "source_item_id": "proposition_pure",
+              "source_label": "prop:pure"
+            }
+          ],
+          "source_item_ids": [
+            "proposition_pure"
+          ]
+        },
+        "proposition_supportrestriction": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 584,
+              "line_start": 581,
+              "presentation": "tex_environment",
+              "presentation_sha256": "2834015893340a54e233dee7f81da41ebbdfe814ee22cdf40a92965cda22d07c",
+              "source_item_id": "proposition_supportrestriction",
+              "source_label": "prop:supportrestriction"
+            }
+          ],
+          "source_item_ids": [
+            "proposition_supportrestriction"
+          ]
+        },
+        "proposition_uniqueness": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 1461,
+              "line_start": 1458,
+              "presentation": "tex_environment",
+              "presentation_sha256": "993adbc49969ce9c62d75dcac8b8b6f7e6eb39154150f7ef498bdeadb5e69782",
+              "source_item_id": "proposition_uniqueness",
+              "source_label": "prop:uniqueness"
+            }
+          ],
+          "source_item_ids": [
+            "proposition_uniqueness"
+          ]
+        },
+        "proposition_utility": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 742,
+              "line_start": 734,
+              "presentation": "tex_environment",
+              "presentation_sha256": "7e9ca1e0f325924839bb53f7d50d7a2063bccc968f96c418b2f5e6083e8f81f9",
+              "source_item_id": "proposition_utility",
+              "source_label": "thm:utility"
+            }
+          ],
+          "source_item_ids": [
+            "proposition_utility"
+          ]
+        },
+        "proposition_zeroutilitysinglegenre": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 752,
+              "line_start": 749,
+              "presentation": "tex_environment",
+              "presentation_sha256": "41131f2a26b77b88e894a5536acfde9a8c33eec927c53fe4d292b08bdfda45e2",
+              "source_item_id": "proposition_zeroutilitysinglegenre",
+              "source_label": "prop:zeroutilitysinglegenre"
+            }
+          ],
+          "source_item_ids": [
+            "proposition_zeroutilitysinglegenre"
+          ]
+        },
+        "theorem_infinitegenre": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 666,
+              "line_start": 659,
+              "presentation": "tex_environment",
+              "presentation_sha256": "a9f45cdba78af6514e0a1c761a917c537bc2cb00be153e669b6156772d6a806b",
+              "source_item_id": "theorem_infinitegenre",
+              "source_label": "thm:infinitegenre"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_infinitegenre"
+          ]
+        },
+        "theorem_infinitegenreformal": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1771,
+              "line_start": 1759,
+              "presentation": "tex_environment",
+              "presentation_sha256": "72245a5e36520dbd183b3663c2ee119f3bbfefbd3d25c153f9df86f1d4c593e0",
+              "source_item_id": "theorem_infinitegenreformal",
+              "source_label": "thm:infinitegenreformal"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_infinitegenreformal"
+          ]
+        },
+        "theorem_phasetransition": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 597,
+              "line_start": 590,
+              "presentation": "tex_environment",
+              "presentation_sha256": "53ee8509a8d8da2dcc8cf4cd6f1b2fe02aea32eacd48deb9d85e980261808393",
+              "source_item_id": "theorem_phasetransition",
+              "source_label": "thm:phasetransitionformal"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_phasetransition"
+          ]
+        },
+        "theorem_singlegenre": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 423,
+              "line_start": 415,
+              "presentation": "tex_environment",
+              "presentation_sha256": "ae79d06894f4e2c248799d5cc37037a0f1c5bb4cd571e55cd8372a7cb447362d",
+              "source_item_id": "theorem_singlegenre",
+              "source_label": "thm:singlegenre"
+            }
+          ],
+          "source_item_ids": [
+            "theorem_singlegenre"
+          ]
+        },
+        "example_one_dimensional_setup": {
+          "kind": "example",
+          "presentations": [
+            {
+              "kind": "claim",
+              "line_end": 349,
+              "line_start": 346,
+              "presentation": "tex_environment",
+              "presentation_sha256": "a1697a2d801a1c143eeefb3b359d95e4b2d05c0dbb5d023a28980f9a825b34ae",
+              "source_item_id": "example_one_dimensional_setup",
+              "source_label": "example:1d"
+            }
+          ],
+          "source_item_ids": [
+            "example_one_dimensional_setup"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "94f05b78eb0bdefea5676f1982daa545550b303e59f68beb72c0d843ecbfb3f5",
+    "results": {
+      "claim_equivalence": {
+        "numbering": "numbered",
+        "printed_label": "Claim 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Claim 1 and Proposition 4",
+            "row_sha256": "0e7b9aa84e91f5337c50fd53eafa2c6c55844bbea648b3b39b93fd86e114c619"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "claim_necessarysuff": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 2",
+            "row_sha256": "39767c0ff72e79eed634ce6b760c37669a15c2eaa256cfe8c19f391e73ffeca1"
+          }
+        ]
+      },
+      "corollary_beta": {
+        "numbering": "numbered",
+        "printed_label": "Corollary 5",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Corollary 5",
+            "row_sha256": "b78442a8355ef752d03b8835a4591d22bed39a21029445709bee5b71e7b42a79"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "corollary_betaone": {
+        "numbering": "numbered",
+        "printed_label": "Corollary 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Corollary 2",
+            "row_sha256": "0bd1292b2ab290bb8cebed1142738445bd3571a119e16df23d36c08d3f2fe562"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "corollary_betap": {
+        "numbering": "numbered",
+        "printed_label": "Corollary 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Corollary 3",
+            "row_sha256": "8e91525b951b0ea7d773b1ca720e50ebe6bd5f7a58aa2a9cdb36716f4b427485"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "corollary_onepopulation": {
+        "numbering": "numbered",
+        "printed_label": "Corollary 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Corollary 1 and Lemma 3",
+            "row_sha256": "660a1ed90eb4505c12613d197c32be7d77b737217bbee55043ab175df5bb9fa6"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "corollary_singlegenrestructure": {
+        "numbering": "numbered",
+        "printed_label": "Corollary 6",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Corollary 6",
+            "row_sha256": "e860f1f1ec71e8cf3c7403c342ea3ff07171c7fc100c78ee4f8e54639286528a"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "corollary_twousers": {
+        "numbering": "numbered",
+        "printed_label": "Corollary 4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Corollary 4",
+            "row_sha256": "bc69805c78850db9b16fad9d79a043b31f6a45f97b9e6d322d563c4d423b786d"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "corollary_twousersprofit": {
+        "numbering": "numbered",
+        "printed_label": "Corollary 7",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 5--6, Corollary 7, and Lemma 13",
+            "row_sha256": "e47d40cd482f238aff863b48dc6659bffc1cd37af2cc430d221fa211e4a968c7"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "example_one_dimensional_setup": {
+        "numbering": "numbered",
+        "printed_label": "Example 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Example 1",
+            "row_sha256": "3fbe6841edfd9d3da842abab5d34a7b2dcc2185eefc041ae55e5d0271e9424e7"
+          }
+        ]
+      },
+      "lemma_cdf": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Corollary 1 and Lemma 3",
+            "row_sha256": "660a1ed90eb4505c12613d197c32be7d77b737217bbee55043ab175df5bb9fa6"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "lemma_conditiongen": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 6",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1 and 5--8",
+            "row_sha256": "17cf60a2340a8181caef79403d759987b72d7056cbe2fea2a8960ae4708736b0"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "lemma_foc": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 10",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 10",
+            "row_sha256": "d40c4a7a5d4644804d11fe36ea75c00c6aac6aa76390eadaa9e582e603c1aa79"
+          }
+        ]
+      },
+      "lemma_inducedcost": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 9",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 9",
+            "row_sha256": "ef1d7eca94df7006b61dbcefe70ecca2c859aaff640f670abcb3eaf344293af4"
+          }
+        ]
+      },
+      "lemma_nonzero": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 4",
+            "row_sha256": "22294e0fab13a107e0cbf619f0c5c50b02bd838d3cce623befca6cec4b2cfb4a"
+          }
+        ]
+      },
+      "lemma_optimizationprogram": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1 and 5--8",
+            "row_sha256": "17cf60a2340a8181caef79403d759987b72d7056cbe2fea2a8960ae4708736b0"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "lemma_optimizationprogramrestated": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 5",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1 and 5--8",
+            "row_sha256": "17cf60a2340a8181caef79403d759987b72d7056cbe2fea2a8960ae4708736b0"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "lemma_optsingledirection": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 7",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1 and 5--8",
+            "row_sha256": "17cf60a2340a8181caef79403d759987b72d7056cbe2fea2a8960ae4708736b0"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "lemma_regionscolor": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 12",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 12",
+            "row_sha256": "027808b1d835d7c5e1a4725bd25426b3234581d7612ba8e504e0b7e0ef1fc98a"
+          }
+        ]
+      },
+      "lemma_secondderiv": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 11",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma 11",
+            "row_sha256": "f13fdaa21bab19ef4054d8b9e5c7a9527b0ac5e224e6e593cabd5cc20dc49fad"
+          }
+        ]
+      },
+      "lemma_standardbasismax": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 13",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 5--6, Corollary 7, and Lemma 13",
+            "row_sha256": "e47d40cd482f238aff863b48dc6659bffc1cd37af2cc430d221fa211e4a968c7"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "lemma_supinf": {
+        "numbering": "numbered",
+        "printed_label": "Lemma 8",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemmas 1 and 5--8",
+            "row_sha256": "17cf60a2340a8181caef79403d759987b72d7056cbe2fea2a8960ae4708736b0"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "proposition_atom": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 1--3",
+            "row_sha256": "c061022abd6cbe1909b2c0e935d8a2ca92e43251e3cfeaf48d0afe6f7e0014cf"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "proposition_existence": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 1--3",
+            "row_sha256": "c061022abd6cbe1909b2c0e935d8a2ca92e43251e3cfeaf48d0afe6f7e0014cf"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "proposition_finitegenre": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 10",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2 and Propositions 9--10",
+            "row_sha256": "467c532a3a031c52d42f19e9ff12445b796720d4bbeb851e9ad191f7c4f17578"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "proposition_finitep": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 6",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 5--6, Corollary 7, and Lemma 13",
+            "row_sha256": "e47d40cd482f238aff863b48dc6659bffc1cd37af2cc430d221fa211e4a968c7"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "proposition_ptwo": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 5",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 5--6, Corollary 7, and Lemma 13",
+            "row_sha256": "e47d40cd482f238aff863b48dc6659bffc1cd37af2cc430d221fa211e4a968c7"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "proposition_pure": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 1--3",
+            "row_sha256": "c061022abd6cbe1909b2c0e935d8a2ca92e43251e3cfeaf48d0afe6f7e0014cf"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "proposition_supportrestriction": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Claim 1 and Proposition 4",
+            "row_sha256": "0e7b9aa84e91f5337c50fd53eafa2c6c55844bbea648b3b39b93fd86e114c619"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "proposition_uniqueness": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 9",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2 and Propositions 9--10",
+            "row_sha256": "467c532a3a031c52d42f19e9ff12445b796720d4bbeb851e9ad191f7c4f17578"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "proposition_utility": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 7",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 7--8",
+            "row_sha256": "231a0b8692972453881951cc1237db084284080126f149e273745288a9458c53"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "proposition_zeroutilitysinglegenre": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 8",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Propositions 7--8",
+            "row_sha256": "231a0b8692972453881951cc1237db084284080126f149e273745288a9458c53"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "theorem_infinitegenre": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Definition 1 and Theorems 3--4",
+            "row_sha256": "19756a5daed4cd50ab4aad1691e9f38c06c13f96f0fd51b3dc08cd29daf6602f"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "theorem_infinitegenreformal": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Definition 1 and Theorems 3--4",
+            "row_sha256": "19756a5daed4cd50ab4aad1691e9f38c06c13f96f0fd51b3dc08cd29daf6602f"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "theorem_phasetransition": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2 and Propositions 9--10",
+            "row_sha256": "467c532a3a031c52d42f19e9ff12445b796720d4bbeb851e9ad191f7c4f17578"
+          }
+        ],
+        "grouping_reason": "The report groups adjacent numbered source results under one shared comparison."
+      },
+      "theorem_singlegenre": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1",
+            "row_sha256": "67288c3692f56533405671c6e3206c3eeab4fb2372ef4e648d72902e41656c29"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "c061022abd6cbe1909b2c0e935d8a2ca92e43251e3cfeaf48d0afe6f7e0014cf": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "660a1ed90eb4505c12613d197c32be7d77b737217bbee55043ab175df5bb9fa6": {
+        "explanation_keys": [
+          "defect/JGS23-ONEPOPULATION-CDF-EXPONENT-01",
+          "source/corollary_onepopulation/corrected_target",
+          "source/lemma_cdf/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "3fbe6841edfd9d3da842abab5d34a7b2dcc2185eefc041ae55e5d0271e9424e7": {
+        "explanation_keys": [
+          "defect/JGS23-ONE-DIMENSIONAL-UNIQUENESS-01",
+          "defect/JGS23-ONEPOPULATION-CDF-EXPONENT-01",
+          "source/example_one_dimensional_setup/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "67288c3692f56533405671c6e3206c3eeab4fb2372ef4e648d72902e41656c29": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "22294e0fab13a107e0cbf619f0c5c50b02bd838d3cce623befca6cec4b2cfb4a": {
+        "explanation_keys": [
+          "defect/JGS23-NONZERO-SPAN-IMPLICATION-01",
+          "source/lemma_nonzero/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "17cf60a2340a8181caef79403d759987b72d7056cbe2fea2a8960ae4708736b0": {
+        "explanation_keys": [
+          "defect/JGS23-CONDITIONGEN-INFIMUM-ATTAINMENT-01",
+          "source/lemma_conditiongen/corrected_target",
+          "defect/JGS23-OPTIMIZATION-MINIMAX-DOMAIN-01",
+          "defect/JGS23-SUPINF-ATTAINMENT-01",
+          "source/lemma_optimizationprogram/corrected_target",
+          "source/lemma_optimizationprogramrestated/corrected_target",
+          "defect/JGS23-OPT-SINGLE-DIRECTION-IDENTIFICATION-01",
+          "source/lemma_optsingledirection/corrected_target",
+          "source/lemma_supinf/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "0bd1292b2ab290bb8cebed1142738445bd3571a119e16df23d36c08d3f2fe562": {
+        "explanation_keys": [
+          "defect/JGS23-BETASTAR-COROLLARY-ENDPOINT-01",
+          "source/corollary_beta/corrected_target",
+          "source/corollary_betaone/corrected_target",
+          "source/corollary_betap/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "8e91525b951b0ea7d773b1ca720e50ebe6bd5f7a58aa2a9cdb36716f4b427485": {
+        "explanation_keys": [
+          "defect/JGS23-BETASTAR-COROLLARY-ENDPOINT-01",
+          "source/corollary_beta/corrected_target",
+          "source/corollary_betaone/corrected_target",
+          "source/corollary_betap/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "b78442a8355ef752d03b8835a4591d22bed39a21029445709bee5b71e7b42a79": {
+        "explanation_keys": [
+          "defect/JGS23-BETASTAR-COROLLARY-ENDPOINT-01",
+          "source/corollary_beta/corrected_target",
+          "source/corollary_betaone/corrected_target",
+          "source/corollary_betap/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "bc69805c78850db9b16fad9d79a043b31f6a45f97b9e6d322d563c4d423b786d": {
+        "explanation_keys": [
+          "source/corollary_singlegenrestructure/corrected_target",
+          "source/corollary_twousers/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "e860f1f1ec71e8cf3c7403c342ea3ff07171c7fc100c78ee4f8e54639286528a": {
+        "explanation_keys": [
+          "source/corollary_singlegenrestructure/corrected_target",
+          "source/corollary_twousers/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "0e7b9aa84e91f5337c50fd53eafa2c6c55844bbea648b3b39b93fd86e114c619": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "467c532a3a031c52d42f19e9ff12445b796720d4bbeb851e9ad191f7c4f17578": {
+        "explanation_keys": [
+          "source/proposition_finitegenre/corrected_target",
+          "source/proposition_uniqueness/corrected_target",
+          "source/theorem_phasetransition/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "e47d40cd482f238aff863b48dc6659bffc1cd37af2cc430d221fa211e4a968c7": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "39767c0ff72e79eed634ce6b760c37669a15c2eaa256cfe8c19f391e73ffeca1": {
+        "explanation_keys": [
+          "defect/JGS23-NECESSARYSUFF-TIE-NULLNESS-01",
+          "source/claim_necessarysuff/corrected_target",
+          "source/reparameterized_equilibrium_model/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "ef1d7eca94df7006b61dbcefe70ecca2c859aaff640f670abcb3eaf344293af4": {
+        "explanation_keys": [
+          "source/lemma_inducedcost/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "d40c4a7a5d4644804d11fe36ea75c00c6aac6aa76390eadaa9e582e603c1aa79": {
+        "explanation_keys": [
+          "source/lemma_foc/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "f13fdaa21bab19ef4054d8b9e5c7a9527b0ac5e224e6e593cabd5cc20dc49fad": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "027808b1d835d7c5e1a4725bd25426b3234581d7612ba8e504e0b7e0ef1fc98a": {
+        "explanation_keys": [
+          "source/lemma_regionscolor/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "231a0b8692972453881951cc1237db084284080126f149e273745288a9458c53": {
+        "explanation_keys": [
+          "defect/JGS23-UTILITY-PROFIT-BRIDGE-01",
+          "source/proposition_utility/corrected_target",
+          "defect/JGS23-SINGLE-GENRE-PROFIT-REGULARITY-01",
+          "source/proposition_zeroutilitysinglegenre/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "19756a5daed4cd50ab4aad1691e9f38c06c13f96f0fd51b3dc08cd29daf6602f": {
+        "explanation_keys": [
+          "defect/JGS23-INFINITE-GENRE-LIMIT-MODEL-01",
+          "source/theorem_infinitegenre/corrected_target",
+          "source/theorem_infinitegenreformal/corrected_target"
+        ],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

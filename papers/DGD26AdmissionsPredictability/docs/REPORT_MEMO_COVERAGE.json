@@ -1,0 +1,1122 @@
+{
+  "schema": 2,
+  "paper": "DGD26AdmissionsPredictability",
+  "report_sha256": "b158dd1261e51db173c7dafde5197c71d78521762df4388751a89c6ae8227c68",
+  "source_items_sha256": "4bfb88532bbe5908d7d7de731b3378c525a1f5e9cd5ca3ba247b844cf4555a57",
+  "all_selected_semantic_review_sha256": "d2a4d05e77eac45049310310dead17ae519af9e6f414db85a2073bff42a80322",
+  "report_inventory_complete": true,
+  "items": {
+    "defect/DGD26-NOZERO-NONTRIVIAL-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "The printed no-zero-instability clause omits q>0 and a nontrivial universe with more than q applicants.",
+      "memo_heading": "Capacity, variability, and queue representation",
+      "memo_anchor": "capacity-variability-and-queue-representation",
+      "report_home": 4
+    },
+    "defect/DGD26-INCOMPATIBILITY-DISJOINT-SETS-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "The proof assumes two disjoint q-element sets although |U|>q alone does not imply |U|\u22652q.",
+      "memo_heading": "Capacity, variability, and queue representation",
+      "memo_anchor": "capacity-variability-and-queue-representation",
+      "report_home": 7
+    },
+    "defect/DGD26-REMOVABLE-SELF-EQUALITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "The lemma conclusion prints V_C(X\u2081)=V_C(X\u2081), while the proof and use require V_C(X\u2081)=V_C(X\u2082).",
+      "memo_heading": "Exact appendix corrections",
+      "memo_anchor": "exact-appendix-corrections",
+      "report_home": 4
+    },
+    "defect/DGD26-TIGHT-DK-TYPO-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "The corollary says tightly dk-unstable although d is the even instability parameter and k is not part of the statement.",
+      "memo_heading": "Exact appendix corrections",
+      "memo_anchor": "exact-appendix-corrections",
+      "report_home": 4
+    },
+    "defect/DGD26-APPEND-REMOVE-SLASH-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "The union expression contains the stray token /X'_i instead of X'_i.",
+      "memo_heading": "Exact appendix corrections",
+      "memo_anchor": "exact-appendix-corrections",
+      "report_home": 7
+    },
+    "defect/DGD26-RANKING-M-PAREN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "The proof prints X'\\{x'})=X with an unmatched closing parenthesis.",
+      "memo_heading": "Exact appendix corrections",
+      "memo_anchor": "exact-appendix-corrections",
+      "report_home": 7
+    },
+    "defect/DGD26-LAP-SELF-CARDINALITY-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "The LAP instability proof ends with |C(X')|>|C(X')|, an impossible self-comparison; the intended comparison is |C(X')|>|C(X)|=q.",
+      "memo_heading": "Exact appendix corrections",
+      "memo_anchor": "exact-appendix-corrections",
+      "report_home": 7
+    },
+    "defect/DGD26-EVEN-MEMBERSHIP-TYPO-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "The proof writes x'\u2260C(X') where the required assertion is x'\u2209C(X').",
+      "memo_heading": "Exact appendix corrections",
+      "memo_anchor": "exact-appendix-corrections",
+      "report_home": 7
+    },
+    "defect/DGD26-LAP-REPEATED-INDEX-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "The proof says one of x_{s_j} or x_{s_j} is excluded; the first occurrence should be x_{s_i}.",
+      "memo_heading": "Exact appendix corrections",
+      "memo_anchor": "exact-appendix-corrections",
+      "report_home": 7
+    },
+    "defect/DGD26-TOTAL-ORDER-DISTINCT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "Completeness is printed for all x\u2081,x\u2082, which conflicts with asymmetry when x\u2081=x\u2082; the standard strict-order condition compares distinct pairs.",
+      "memo_heading": "Scores, strict orders, and assignment choices",
+      "memo_anchor": "scores-strict-orders-and-assignment-choices",
+      "report_home": 10
+    },
+    "defect/DGD26-ML-FIXED-THRESHOLD-ROUTE-01": {
+      "disposition": "not_material",
+      "reason": "The current fixed-threshold construction derives independence and zero instability from the source score formula. The earlier abstract-premise boundary is closed, with no changed source result."
+    },
+    "defect/DGD26-ML-RANK-EMBEDDING-ROUTE-01": {
+      "disposition": "not_material",
+      "reason": "The current rank-threshold construction supplies the score embedding and q-representativeness. The earlier missing construction is closed; the separate tie convention remains documented."
+    },
+    "defect/DGD26-QREP-DISPLACEMENT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "Exact variability one for a q-representative rule requires a nondegenerate displacement witness in Lean, while the source theorem omits that condition.",
+      "memo_heading": "Capacity, variability, and queue representation",
+      "memo_anchor": "capacity-variability-and-queue-representation",
+      "report_home": 7
+    },
+    "defect/DGD26-THEOREM2-LOWER-QUEUE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "Theorem 2 states 1\u2264m\u2264n and identifies m=1 with n=1, but the lower bound and n=1 language require a nondegenerate/minimal queue representation that is not specified.",
+      "memo_heading": "Capacity, variability, and queue representation",
+      "memo_anchor": "capacity-variability-and-queue-representation",
+      "report_home": 4
+    },
+    "defect/DGD26-RANKING-M-CARDINALITY-01": {
+      "disposition": "not_material",
+      "reason": "The q-th rank threshold uses its source-defined domain q <= |X|. The current removable-set equality also covers smaller pools, so the former domain restriction is not a remaining extra premise."
+    },
+    "defect/DGD26-EVEN-PARITY-BRIDGE-01": {
+      "disposition": "not_material",
+      "reason": "Inserted-applicant nonselection is derived from positive even choice distance in the current proof. It is no longer an additional premise or source-proof deviation."
+    },
+    "defect/DGD26-LAP-SEMANTIC-WORLD-01": {
+      "disposition": "not_material",
+      "reason": "The current linear-assignment model exposes real weights, all feasible assignments, and the exact quotient of induced orders. The former representation gap is closed; the selected tie refinement is documented separately."
+    },
+    "convention/DGD26-ML-POOL-CONTEXT-01": {
+      "disposition": "not_material",
+      "reason": "The general predictor already describes pool-dependent choice; making its ambient pool an explicit argument changes no prediction claim."
+    },
+    "convention/DGD26-ML-REAL-SCORE-NORMALIZATION-01": {
+      "disposition": "not_material",
+      "reason": "Real scores and order-preserving normalization represent the stated score model; the fixed-threshold source domain remains explicit."
+    },
+    "convention/DGD26-RANK-ORDER-STATISTIC-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "The displayed cohort threshold `t_q(X)` is used only on pools with positive capacity `0 < q` and `q \u2264 |X|`. Equal raw scores are resolved by a fixed generic ex-ante order; Lean's injective `operationalScore` represents that refinement, so exactly `q` offered applicants weakly exceed the q-th operational score.",
+      "memo_heading": "Scores, strict orders, and assignment choices",
+      "memo_anchor": "scores-strict-orders-and-assignment-choices",
+      "report_home": 4
+    },
+    "convention/DGD26-LAP-DETERMINATE-TIEFREE-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "The source LAP model is a feasible maximum-real-weight matching, with its objective compared against every feasible matching, and its slot orders are real-weight orders with no within-slot ties. Its q-acceptant assignment convention selects every offered applicant below slot capacity and one applicant per slot at or above capacity; Lean's `CapacityFilling` states exactly those two cases. The displayed choice rule uses a fixed generic objective refinement for primary-score ties. Lean's `operationalWeight` is that refined score, and its unique globally optimal chosen set is asserted only for that operational objective\u2014not for the unrepresented raw-primary optimum correspondence.",
+      "memo_heading": "Scores, strict orders, and assignment choices",
+      "memo_anchor": "scores-strict-orders-and-assignment-choices",
+      "report_home": 4
+    },
+    "convention/DGD26-QREP-NONDEGENERATE-DOMAIN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "The exact-variability-one q-representative equivalence is scoped to positive, nontrivial capacity: `0 < q` and `q < Fintype.card \u03b1`. The zero-capacity and capacity-at-least-universe cases are excluded because no displacement witness exists there.",
+      "memo_heading": "Capacity, variability, and queue representation",
+      "memo_anchor": "capacity-variability-and-queue-representation",
+      "report_home": 4
+    },
+    "convention/DGD26-TIGHT-POSITIVE-DOMAIN-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "The phrase 'not (d-1)-unstable' is interpreted only for positive integer d. The source-facing tight-instability contract therefore states the defining equivalence under `0 < d`; the reusable predicate remains available at zero but is not asserted to be the paper's tightly-zero notion.",
+      "memo_heading": "Exact appendix corrections",
+      "memo_anchor": "exact-appendix-corrections",
+      "report_home": 4
+    },
+    "convention/DGD26-SEQUENTIAL-RECURSIVE-MODEL-01": {
+      "disposition": "not_material",
+      "reason": "The residual-pool recursion is the source sequential-composition definition, not a changed hypothesis."
+    },
+    "convention/DGD26-PROGRAM-QUEUE-PROCEDURES-01": {
+      "disposition": "not_material",
+      "reason": "The finite queue runner instantiates the source abstract procedures, whose empirical implementation is already excluded in the report scope."
+    },
+    "convention/DGD26-FINITE-UNIVERSE-01": {
+      "disposition": "not_material",
+      "reason": "Finiteness is the source domain for the displayed maxima over applicant pools, not a new theorem restriction."
+    },
+    "convention/DGD26-THEOREM1-NONDEGENERATE-EXACT-01": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "Theorem 1's phrase 'exactly 1-unstable' is stated on positive, nontrivial capacity: `0 < q` and some offered pool has cardinality greater than `q`. Its direct target is the conjunction of the one-step `1` bound and non-zero instability, so the source's separate no-zero bullet supplies the exactness component.",
+      "memo_heading": "Capacity, variability, and queue representation",
+      "memo_anchor": "capacity-variability-and-queue-representation",
+      "report_home": 4
+    },
+    "source/definition_total_order/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "definition_total_order",
+      "memo_heading": "Scores, strict orders, and assignment choices",
+      "memo_anchor": "scores-strict-orders-and-assignment-choices",
+      "report_home": 10
+    },
+    "source/result_corrected_removable_sets/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "result_corrected_removable_sets",
+      "memo_heading": "Exact appendix corrections",
+      "memo_anchor": "exact-appendix-corrections",
+      "report_home": 4
+    },
+    "source/result_no_consistent_tightly_even/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "result_no_consistent_tightly_even",
+      "memo_heading": "Exact appendix corrections",
+      "memo_anchor": "exact-appendix-corrections",
+      "report_home": 4
+    },
+    "source/result_no_qacceptant_zero_instability_corollary/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "result_no_qacceptant_zero_instability_corollary",
+      "memo_heading": "Capacity, variability, and queue representation",
+      "memo_anchor": "capacity-variability-and-queue-representation",
+      "report_home": 4
+    },
+    "source/result_theorem1_no_zero/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "result_theorem1_no_zero",
+      "memo_heading": "Capacity, variability, and queue representation",
+      "memo_anchor": "capacity-variability-and-queue-representation",
+      "report_home": 4
+    },
+    "source/result_theorem2_one_iff_single_order/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "result_theorem2_one_iff_single_order",
+      "memo_heading": "Capacity, variability, and queue representation",
+      "memo_anchor": "capacity-variability-and-queue-representation",
+      "report_home": 4
+    },
+    "source/result_theorem2_variability_range/corrected_target": {
+      "disposition": "memo",
+      "memo": "docs/SOURCE_CLARIFICATIONS.md",
+      "memo_sha256": "d80bb384be09c82cdf60f87a924a2e17312560ef7788961832991301f367f325",
+      "source_reading": "result_theorem2_variability_range",
+      "memo_heading": "Capacity, variability, and queue representation",
+      "memo_anchor": "capacity-variability-and-queue-representation",
+      "report_home": 4
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "e550e1a07d28f2b59bd55f1733964d0a5b7db85bdff60e3b20b788e3a842130d",
+      "discovered_named_result_sha256": "c6b6b4c3b06bc3674524591d5c19af7410f227c05d22485aeadba9812d44826a",
+      "source_format": "tex",
+      "results": {
+        "result_additive_variability_bound": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1001,
+              "line_start": 998,
+              "presentation": "tex_environment",
+              "presentation_sha256": "1ac24e032bc195661537d35ae73e0406452ac185c92a035dfe2cd526a795b74e",
+              "source_item_id": "result_additive_variability_bound",
+              "source_label": "thm:additive-variability"
+            }
+          ],
+          "source_item_ids": [
+            "result_additive_variability_bound"
+          ]
+        },
+        "result_append_remove_max_equality": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 856,
+              "line_start": 850,
+              "presentation": "tex_environment",
+              "presentation_sha256": "d4387112da95948a0577685adb107ff310c5faee7dd9a291913e3ec38cf24b32",
+              "source_item_id": "result_append_remove_max_equality",
+              "source_label": "thm:append-remove-size"
+            }
+          ],
+          "source_item_ids": [
+            "result_append_remove_max_equality"
+          ]
+        },
+        "result_calculating_instability": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 750,
+              "line_start": 746,
+              "presentation": "tex_environment",
+              "presentation_sha256": "444da048c52755c7a335e0e68c67bd988ce597f0b2507b220ec132a478bb0ff3",
+              "source_item_id": "result_calculating_instability",
+              "source_label": "lem:unstable-calc"
+            }
+          ],
+          "source_item_ids": [
+            "result_calculating_instability"
+          ]
+        },
+        "result_choice_distance_triangle": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 580,
+              "line_start": 576,
+              "presentation": "tex_environment",
+              "presentation_sha256": "5d6b8095ed879bd85ca41be0f55e78ba09bcea044424f2d132f089eb0cbdd08e",
+              "source_item_id": "result_choice_distance_triangle",
+              "source_label": "thm:triangle-ineq"
+            }
+          ],
+          "source_item_ids": [
+            "result_choice_distance_triangle"
+          ]
+        },
+        "result_corrected_removable_sets": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 888,
+              "line_start": 885,
+              "presentation": "tex_environment",
+              "presentation_sha256": "4a09da69f54b98f36a17008f8b820c32bc6f99953cf06886af1f0541e46200f7",
+              "source_item_id": "result_corrected_removable_sets",
+              "source_label": "lem:consistent-remove"
+            }
+          ],
+          "source_item_ids": [
+            "result_corrected_removable_sets"
+          ]
+        },
+        "result_edopt_dia_variability_six": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 358,
+              "line_start": 347,
+              "presentation": "tex_environment",
+              "presentation_sha256": "8e812491a2f727fc96c318adcb42f369249b9cd704e901622426810bfb7728d5",
+              "source_item_id": "result_edopt_dia_variability_six",
+              "source_label": "prop:program-variability"
+            }
+          ],
+          "source_item_ids": [
+            "result_edopt_dia_variability_six",
+            "result_edopt_variability_three",
+            "result_program_classes_one_instability",
+            "result_screened_open_dia_variability_two",
+            "result_screened_open_variability_one"
+          ]
+        },
+        "result_even_distance_iff_inconsistent": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 780,
+              "line_start": 777,
+              "presentation": "tex_environment",
+              "presentation_sha256": "cd7074d4459a77712850b28c0bdbbe75f8d6c4e5c102dc75bb0a2ccf2fb88b21",
+              "source_item_id": "result_even_distance_iff_inconsistent",
+              "source_label": "thm:even-inconsistency"
+            }
+          ],
+          "source_item_ids": [
+            "result_even_distance_iff_inconsistent"
+          ]
+        },
+        "result_independence_iff_substitutable_monotonic": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 686,
+              "line_start": 683,
+              "presentation": "tex_environment",
+              "presentation_sha256": "7da0cca716105443395dc770880e2772ffad53d21cd9dbf41009c4a64ea3b52c",
+              "source_item_id": "result_independence_iff_substitutable_monotonic",
+              "source_label": "thm:independent-sub-mon"
+            }
+          ],
+          "source_item_ids": [
+            "result_independence_iff_substitutable_monotonic"
+          ]
+        },
+        "result_independence_iff_zero_instability": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 707,
+              "line_start": 704,
+              "presentation": "tex_environment",
+              "presentation_sha256": "ccf668eb67a8bd31ffb4b98272395b2732a390e988d1e84a4675c6d448cff949",
+              "source_item_id": "result_independence_iff_zero_instability",
+              "source_label": "thm:independent-zero-unstable"
+            }
+          ],
+          "source_item_ids": [
+            "result_independence_iff_zero_instability",
+            "result_no_qacceptant_zero_instability_corollary"
+          ]
+        },
+        "result_lap_assigned_outranks_rejected": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 1089,
+              "line_start": 1086,
+              "presentation": "tex_environment",
+              "presentation_sha256": "7fd5843c896e7b7211c8c2a38de607a7794fd7d832887b20ea066e6682546b7e",
+              "source_item_id": "result_lap_assigned_outranks_rejected",
+              "source_label": "lem:lap-ordering"
+            }
+          ],
+          "source_item_ids": [
+            "definition_lap_assignment_choice",
+            "result_lap_assigned_outranks_rejected",
+            "result_lap_higher_applicant_chosen"
+          ]
+        },
+        "result_lap_distinct_order_variability": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1114,
+              "line_start": 1111,
+              "presentation": "tex_environment",
+              "presentation_sha256": "79315f974e5e01e542bf00c886872b283428a62e646ad0f8b2b6463b851ca8ac",
+              "source_item_id": "result_lap_distinct_order_variability",
+              "source_label": "thm:lap-variability"
+            }
+          ],
+          "source_item_ids": [
+            "result_lap_distinct_order_variability"
+          ]
+        },
+        "result_lap_one_instability": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 1100,
+              "line_start": 1097,
+              "presentation": "tex_environment",
+              "presentation_sha256": "b5bb3cf0c078483e2c6a7e966b79aedb00ccb5aadb15a5dc85fb1cf7dedb5e51",
+              "source_item_id": "result_lap_one_instability",
+              "source_label": "thm:lap-unstable"
+            }
+          ],
+          "source_item_ids": [
+            "result_lap_one_instability"
+          ]
+        },
+        "result_ml_independent_only_zero": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 265,
+              "line_start": 261,
+              "presentation": "tex_environment",
+              "presentation_sha256": "af7cfa87310ecb5f596f4697abf0f4b975336fbbcf520f24a6c690dd2a6c1db7",
+              "source_item_id": "result_ml_independent_only_zero",
+              "source_label": "prop:ml-representation"
+            }
+          ],
+          "source_item_ids": [
+            "result_ml_independent_only_zero",
+            "result_ml_rank_can_represent_one_one",
+            "result_ml_rank_cannot_instability_gt_one",
+            "result_ml_rank_cannot_variability_gt_one"
+          ]
+        },
+        "result_monotonicity_distance_term": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 567,
+              "line_start": 564,
+              "presentation": "tex_environment",
+              "presentation_sha256": "942e04bab6b94842c0b0843eeea9125e6a086d41b6d989b8f24045eb1bf4b1f7",
+              "source_item_id": "result_monotonicity_distance_term",
+              "source_label": "lem:monotonicity-term"
+            }
+          ],
+          "source_item_ids": [
+            "result_monotonicity_distance_term"
+          ]
+        },
+        "result_monotonicity_qacceptance_incompatibility": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 520,
+              "line_start": 517,
+              "presentation": "tex_environment",
+              "presentation_sha256": "4e9e27b953c1a5d3d159e97444cf7e31cdff63c20679a622ace0505a04c07b44",
+              "source_item_id": "result_monotonicity_qacceptance_incompatibility",
+              "source_label": "thm:mono-accept-mutex"
+            }
+          ],
+          "source_item_ids": [
+            "result_monotonicity_qacceptance_incompatibility"
+          ]
+        },
+        "result_no_consistent_tightly_even": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 799,
+              "line_start": 796,
+              "presentation": "tex_environment",
+              "presentation_sha256": "98484408ef2614f54cf50ef3bb9f51f01c896ca5fb838c02b164ad17ae5191e0",
+              "source_item_id": "result_no_consistent_tightly_even",
+              "source_label": "cor:even-inconsistency"
+            }
+          ],
+          "source_item_ids": [
+            "result_no_consistent_tightly_even"
+          ]
+        },
+        "result_non_substitutable_single_add": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 535,
+              "line_start": 532,
+              "presentation": "tex_environment",
+              "presentation_sha256": "b067e5397c74bb3102a6e4f48221f62b047b6e3e4955ea8e3eb31b4bfa439c14",
+              "source_item_id": "result_non_substitutable_single_add",
+              "source_label": "lem:unsubstitutable"
+            }
+          ],
+          "source_item_ids": [
+            "result_non_substitutable_single_add"
+          ]
+        },
+        "result_qacceptant_substitutable_consistent": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 736,
+              "line_start": 733,
+              "presentation": "tex_environment",
+              "presentation_sha256": "8ae3541e0c558ec376c660909d723948d704681be356dfff4609d3fc180910de",
+              "source_item_id": "result_qacceptant_substitutable_consistent",
+              "source_label": "thm:sub-accept-consistent"
+            }
+          ],
+          "source_item_ids": [
+            "result_qacceptant_substitutable_consistent"
+          ]
+        },
+        "result_qacceptant_substitutable_iff_one": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 718,
+              "line_start": 715,
+              "presentation": "tex_environment",
+              "presentation_sha256": "540ea2ed19f5437fe27b4a850fa85fc5fd27ddec2e9e7d7e9291f68984be56a0",
+              "source_item_id": "result_qacceptant_substitutable_iff_one",
+              "source_label": "thm:sub-unstable-equiv"
+            }
+          ],
+          "source_item_ids": [
+            "result_qacceptant_substitutable_iff_one"
+          ]
+        },
+        "result_qrepresentative_converse": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 913,
+              "line_start": 910,
+              "presentation": "tex_environment",
+              "presentation_sha256": "e123dc5a9703499a0a1bb3d7bf121044be2810b3a0b6ffdeb058a41b5dc68ad4",
+              "source_item_id": "result_qrepresentative_converse",
+              "source_label": "thm:ranking-variability"
+            }
+          ],
+          "source_item_ids": [
+            "result_qrepresentative_converse",
+            "result_qrepresentative_forward"
+          ]
+        },
+        "result_ranking_m_borderline_waitlisted": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 901,
+              "line_start": 898,
+              "presentation": "tex_environment",
+              "presentation_sha256": "e5697ed8b2755baa0d6bf3570165e40223c0f3de800385864f6567904b4ffc65",
+              "source_item_id": "result_ranking_m_borderline_waitlisted",
+              "source_label": "lem:a-v-equal"
+            }
+          ],
+          "source_item_ids": [
+            "result_ranking_m_borderline_waitlisted"
+          ]
+        },
+        "result_sequential_preserves_substitutability": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 967,
+              "line_start": 964,
+              "presentation": "tex_environment",
+              "presentation_sha256": "b351430c94e5861e9d0c394ab23a80783063425148944941b1907d7c02d81c09",
+              "source_item_id": "result_sequential_preserves_substitutability",
+              "source_label": "thm:composition-substitutable"
+            }
+          ],
+          "source_item_ids": [
+            "result_sequential_preserves_substitutability"
+          ]
+        },
+        "result_substitutability_distance_term": {
+          "kind": "lemma",
+          "presentations": [
+            {
+              "kind": "lemma",
+              "line_end": 555,
+              "line_start": 552,
+              "presentation": "tex_environment",
+              "presentation_sha256": "c1cdf0db893a0ca6b5045ff139d017d2083303131a7a2ceff9c303de95027fb6",
+              "source_item_id": "result_substitutability_distance_term",
+              "source_label": "lem:substitutability-term"
+            }
+          ],
+          "source_item_ids": [
+            "result_substitutability_distance_term"
+          ]
+        },
+        "result_theorem1_no_zero": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 289,
+              "line_start": 280,
+              "presentation": "tex_environment",
+              "presentation_sha256": "3f22ff0d7b6923a6604f1c6974bbf540aaea8fec9b0ad21c3f5998f6e2b563cc",
+              "source_item_id": "result_theorem1_no_zero",
+              "source_label": "thm:instability"
+            }
+          ],
+          "source_item_ids": [
+            "result_theorem1_no_zero",
+            "result_theorem1_substitutability_iff_one",
+            "result_theorem1_tight_all_d"
+          ]
+        },
+        "result_theorem2_one_iff_single_order": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 320,
+              "line_start": 315,
+              "presentation": "tex_environment",
+              "presentation_sha256": "b380ba0af7680d900723505e41743fa3d558630e6c97ef21e78e05f6941b0523",
+              "source_item_id": "result_theorem2_one_iff_single_order",
+              "source_label": "thm:variability"
+            }
+          ],
+          "source_item_ids": [
+            "result_theorem2_one_iff_single_order",
+            "result_theorem2_variability_range"
+          ]
+        },
+        "result_zero_iff_substitutable_monotonic": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 664,
+              "line_start": 661,
+              "presentation": "tex_environment",
+              "presentation_sha256": "de4dbbeb5f69d3f4fc7a450b995082c1b2cab63faddd121a5f2f25aa21745551",
+              "source_item_id": "result_zero_iff_substitutable_monotonic",
+              "source_label": "thm:sub-mon-zero"
+            }
+          ],
+          "source_item_ids": [
+            "result_zero_iff_substitutable_monotonic"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "9b76ed50bac4da527bc9d202a8054d748d6d07a82a4890ff47cc7210a6546f42",
+    "results": {
+      "result_additive_variability_bound": {
+        "numbering": "numbered",
+        "printed_label": "Theorem A.9",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      },
+      "result_append_remove_max_equality": {
+        "numbering": "numbered",
+        "printed_label": "Theorem A.6",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      },
+      "result_calculating_instability": {
+        "numbering": "numbered",
+        "printed_label": "Lemma A.5",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      },
+      "result_choice_distance_triangle": {
+        "numbering": "numbered",
+        "printed_label": "Theorem A.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      },
+      "result_corrected_removable_sets": {
+        "numbering": "numbered",
+        "printed_label": "Lemma A.6",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma A.6",
+            "row_sha256": "eac51eb646b622e3c8c4dcf310564e9cd9ef74edfd2ddb08fc6e8686a18385be"
+          }
+        ],
+        "grouping_reason": "The report isolates corrected Lemma A.6 from the otherwise exact appendix group."
+      },
+      "result_edopt_dia_variability_six": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 2",
+            "row_sha256": "43e2f545181e29f72ca51197a2c5f1343cadc46e5c2f98d8733a9491ef7b65c1"
+          }
+        ]
+      },
+      "result_even_distance_iff_inconsistent": {
+        "numbering": "numbered",
+        "printed_label": "Theorem A.5",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      },
+      "result_independence_iff_substitutable_monotonic": {
+        "numbering": "numbered",
+        "printed_label": "Theorem A.2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      },
+      "result_independence_iff_zero_instability": {
+        "numbering": "numbered",
+        "printed_label": "Corollary A.2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      },
+      "result_lap_assigned_outranks_rejected": {
+        "numbering": "numbered",
+        "printed_label": "Lemma A.8",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma A.8 and Theorems A.10\u2013A.11, linear-assignment admissions",
+            "row_sha256": "6ea53114ee108c96f43b27ee40dd9b72616e74d29b978981fa8a63775287fb57"
+          }
+        ],
+        "grouping_reason": "The report groups the linear-assignment choice lemma with its instability and variability theorems because they share the same real-weight assignment and tie-refinement model."
+      },
+      "result_lap_distinct_order_variability": {
+        "numbering": "numbered",
+        "printed_label": "Theorem A.11",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma A.8 and Theorems A.10\u2013A.11, linear-assignment admissions",
+            "row_sha256": "6ea53114ee108c96f43b27ee40dd9b72616e74d29b978981fa8a63775287fb57"
+          }
+        ],
+        "grouping_reason": "The report groups the linear-assignment choice lemma with its instability and variability theorems because they share the same real-weight assignment and tie-refinement model."
+      },
+      "result_lap_one_instability": {
+        "numbering": "numbered",
+        "printed_label": "Theorem A.10",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Lemma A.8 and Theorems A.10\u2013A.11, linear-assignment admissions",
+            "row_sha256": "6ea53114ee108c96f43b27ee40dd9b72616e74d29b978981fa8a63775287fb57"
+          }
+        ],
+        "grouping_reason": "The report groups the linear-assignment choice lemma with its instability and variability theorems because they share the same real-weight assignment and tie-refinement model."
+      },
+      "result_ml_independent_only_zero": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 1",
+            "row_sha256": "0bb6fe96f6fe1fef89c89086a4ad1c27ce3182c705f7ca9e537bbea81eb51415"
+          },
+          {
+            "report_label": "Proposition 1",
+            "row_sha256": "b074d1d65a7259db9b89087f7840a22e93a2b974e7caee5e2f02007dfdb77c91"
+          }
+        ],
+        "split_reason": "The report assesses Proposition 1\u2019s fixed-threshold clause separately from its rank-threshold clauses because only the latter require a specified tie order."
+      },
+      "result_monotonicity_distance_term": {
+        "numbering": "numbered",
+        "printed_label": "Lemma A.4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      },
+      "result_monotonicity_qacceptance_incompatibility": {
+        "numbering": "numbered",
+        "printed_label": "Lemma A.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      },
+      "result_no_consistent_tightly_even": {
+        "numbering": "numbered",
+        "printed_label": "Corollary A.3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Corollary A.3",
+            "row_sha256": "71eddefd682feab1a8d19865176953ddab00e188ef806c6b07f30ed2e5ce08af"
+          }
+        ],
+        "grouping_reason": "The report isolates corrected Corollary A.3 from the otherwise exact appendix group."
+      },
+      "result_non_substitutable_single_add": {
+        "numbering": "numbered",
+        "printed_label": "Lemma A.2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      },
+      "result_qacceptant_substitutable_consistent": {
+        "numbering": "numbered",
+        "printed_label": "Theorem A.4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      },
+      "result_qacceptant_substitutable_iff_one": {
+        "numbering": "numbered",
+        "printed_label": "Theorem A.3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      },
+      "result_qrepresentative_converse": {
+        "numbering": "numbered",
+        "printed_label": "Theorem A.7",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      },
+      "result_ranking_m_borderline_waitlisted": {
+        "numbering": "numbered",
+        "printed_label": "Lemma A.7",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      },
+      "result_sequential_preserves_substitutability": {
+        "numbering": "numbered",
+        "printed_label": "Theorem A.8",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      },
+      "result_substitutability_distance_term": {
+        "numbering": "numbered",
+        "printed_label": "Lemma A.3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      },
+      "result_theorem1_no_zero": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1",
+            "row_sha256": "a84f55ef59ed18155ccbc9b02b9cc1e793b4c81c906f4fe3f2374960172051c1"
+          },
+          {
+            "report_label": "Theorem 1",
+            "row_sha256": "c67b4b2b849b97ac15296a62e4efe8d31cf9b5292eb6def51d7f6f855ccfc902"
+          }
+        ],
+        "split_reason": "The report separates Theorem 1\u2019s exact substitutability/instability clauses from its no-zero and exact-one clauses, whose nondegenerate capacity domain is necessary."
+      },
+      "result_theorem2_one_iff_single_order": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2",
+            "row_sha256": "53a690a0ee2732c30c2896c195049bb314c40a10b5c050c5bb2e9019ccf1cd3a"
+          }
+        ]
+      },
+      "result_zero_iff_substitutable_monotonic": {
+        "numbering": "numbered",
+        "printed_label": "Corollary A.1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorems A.1\u2013A.9; Lemmas A.1\u2013A.5 and A.7; Corollaries A.1\u2013A.2",
+            "row_sha256": "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674"
+          }
+        ],
+        "grouping_reason": "The report groups the exact Appendix Theorems A.1\u2013A.9, Lemmas A.1\u2013A.5 and A.7, and Corollaries A.1\u2013A.2 under their shared capacity conditions."
+      }
+    },
+    "rows": {
+      "a84f55ef59ed18155ccbc9b02b9cc1e793b4c81c906f4fe3f2374960172051c1": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "c67b4b2b849b97ac15296a62e4efe8d31cf9b5292eb6def51d7f6f855ccfc902": {
+        "explanation_keys": [
+          "defect/DGD26-NOZERO-NONTRIVIAL-01",
+          "convention/DGD26-THEOREM1-NONDEGENERATE-EXACT-01",
+          "source/result_theorem1_no_zero/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "0bb6fe96f6fe1fef89c89086a4ad1c27ce3182c705f7ca9e537bbea81eb51415": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "b074d1d65a7259db9b89087f7840a22e93a2b974e7caee5e2f02007dfdb77c91": {
+        "explanation_keys": [
+          "convention/DGD26-RANK-ORDER-STATISTIC-01"
+        ],
+        "supplemental_reason": ""
+      },
+      "53a690a0ee2732c30c2896c195049bb314c40a10b5c050c5bb2e9019ccf1cd3a": {
+        "explanation_keys": [
+          "defect/DGD26-THEOREM2-LOWER-QUEUE-01",
+          "source/result_theorem2_one_iff_single_order/corrected_target",
+          "source/result_theorem2_variability_range/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "43e2f545181e29f72ca51197a2c5f1343cadc46e5c2f98d8733a9491ef7b65c1": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "eac51eb646b622e3c8c4dcf310564e9cd9ef74edfd2ddb08fc6e8686a18385be": {
+        "explanation_keys": [
+          "defect/DGD26-REMOVABLE-SELF-EQUALITY-01",
+          "source/result_corrected_removable_sets/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "71eddefd682feab1a8d19865176953ddab00e188ef806c6b07f30ed2e5ce08af": {
+        "explanation_keys": [
+          "defect/DGD26-TIGHT-DK-TYPO-01",
+          "convention/DGD26-TIGHT-POSITIVE-DOMAIN-01",
+          "source/result_no_consistent_tightly_even/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "c24f7d28046735e905e2d074e9e398d7ff26910ddd381a99c2dfcb82ff5cb674": {
+        "explanation_keys": [
+          "defect/DGD26-NOZERO-NONTRIVIAL-01",
+          "convention/DGD26-THEOREM1-NONDEGENERATE-EXACT-01",
+          "convention/DGD26-QREP-NONDEGENERATE-DOMAIN-01",
+          "defect/DGD26-THEOREM2-LOWER-QUEUE-01",
+          "source/result_no_qacceptant_zero_instability_corollary/corrected_target"
+        ],
+        "supplemental_reason": ""
+      },
+      "6ea53114ee108c96f43b27ee40dd9b72616e74d29b978981fa8a63775287fb57": {
+        "explanation_keys": [
+          "convention/DGD26-LAP-DETERMINATE-TIEFREE-01"
+        ],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

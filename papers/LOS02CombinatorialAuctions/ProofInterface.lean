@@ -1,4 +1,8 @@
 import LOS02CombinatorialAuctions.MainTheorems
+import LOS02CombinatorialAuctions.FiniteGraphTableEncoding
+import LOS02CombinatorialAuctions.ApproximationExponent
+import LOS02CombinatorialAuctions.EdgeListNativeSemantics
+import LOS02CombinatorialAuctions.TableComplementNativeMachine
 
 /-!
 # Proof Interface: Truth Revelation in Approximately Efficient Combinatorial Auctions
@@ -12,6 +16,86 @@ namespace LOS02CombinatorialAuctions
 namespace ProofInterface
 
 open AppliedModelingLib.Auction
+
+/-! ## Native edge-list complexity bridge -/
+
+/-- The streamed edge-list implementation of the Theorem 6.1 construction
+preserves the fixed independent-set threshold question exactly. -/
+theorem theorem6_1_native_edge_list_decision_correct
+    (threshold : Nat) (input : UnaryEdgeListGraphInput) :
+    unaryEdgeListGraphIndependentDecision threshold input ↔
+      unaryEdgeListAuctionDecision threshold
+        (unaryEdgeListGraphToAuction input) := by
+  exact unaryEdgeListGraphToAuction_decision_correct threshold input
+
+/-- The preceding native edge-list decision bridge is implemented by the
+checked finite TM2 transducer.  This is a map-level Theorem 6.1 prerequisite,
+not the paper's unproved Karp/Håstad hardness consequence. -/
+noncomputable def theorem6_1_native_edge_list_tm2_reduction
+    (threshold : Nat) :
+    AppliedModelingLib.Complexity.TM2PolynomialTimeReduction
+      unaryEdgeListGraphInputEncoding unaryEdgeListAuctionInputEncoding
+      (unaryEdgeListGraphIndependentDecision threshold)
+      (unaryEdgeListAuctionDecision threshold) :=
+  unaryEdgeListGraphToAuctionTM2PolynomialReduction threshold
+
+/-- The native edge-list map also preserves a varying, encoded natural
+threshold, carried together with the vertex count in its copied unary header. -/
+theorem theorem6_1_native_variable_threshold_decision_correct
+    (input : UnaryEdgeListGraphThresholdInput) :
+    unaryEdgeListGraphThresholdDecision input ↔
+      unaryEdgeListAuctionThresholdDecision
+        (unaryEdgeListGraphThresholdToAuction input) := by
+  exact unaryEdgeListGraphThresholdToAuction_decision_correct input
+
+/-- The variable-threshold direct reduction is implemented by the same finite
+TM2 program; later clique-complement and hardness bridges remain separate. -/
+noncomputable def theorem6_1_native_variable_threshold_tm2_reduction :
+    AppliedModelingLib.Complexity.TM2PolynomialTimeReduction
+      unaryEdgeListGraphThresholdInputEncoding
+      unaryEdgeListAuctionThresholdInputEncoding
+      unaryEdgeListGraphThresholdDecision
+      unaryEdgeListAuctionThresholdDecision :=
+  unaryEdgeListGraphThresholdToAuctionTM2PolynomialReduction
+
+/-- The clique-to-independent-set complement step implicit in the printed
+Theorem 6.1 proof is a genuine finite-TM2 reduction on the uniform Boolean
+table representation. Its raw graph-table target is not yet the source's
+explicit unit-weight auction encoding. -/
+theorem theorem6_1_native_table_clique_complement_decision_correct
+    (input : UniformSimpleGraphInput) (threshold : Nat) :
+    uniformSimpleGraphCliqueDecision input threshold ↔
+      uniformGraphInputIndependentDecision
+        (uniformGraphInputBitwiseComplement input.1) threshold := by
+  exact
+    uniformSimpleGraphCliqueDecision_iff_bitwiseComplement_independentDecision
+      input threshold
+
+/-- The preceding source complement step, with its varying encoded graph
+instance and threshold, is realized by the checked header-preserving Boolean
+TM2 transducer. -/
+noncomputable def theorem6_1_native_table_clique_complement_tm2_reduction
+    (threshold : Nat) :
+    AppliedModelingLib.Complexity.TM2PolynomialTimeReduction
+      uniformSimpleGraphInputEncoding uniformGraphInputEncoding
+      (fun input => uniformSimpleGraphCliqueDecision input threshold)
+      (fun input => uniformGraphInputIndependentDecision input threshold) :=
+  uniformSimpleGraphCliqueToRawIndependentTM2PolynomialReduction threshold
+
+/-- The paper's explicit unit-weight incidence auction has the same threshold
+solutions as the complemented source graph table.  This compiles the entire
+source-level decision equivalence, including the harmless complemented
+diagonal convention; the table-to-bid expansion is presently an abstract
+polynomial map rather than a separately checked TM2 machine. -/
+theorem theorem6_1_table_clique_to_unit_weight_auction_decision_correct
+    (input : UniformSimpleGraphInput) (threshold : Nat) :
+    uniformSimpleGraphCliqueDecision input threshold ↔
+      uniformUnitWeightAuctionDecision
+        (uniformGraphToUnitWeightAuctionInput
+          (uniformGraphInputBitwiseComplement input.1)) threshold := by
+  exact
+    uniformSimpleGraphCliqueDecision_iff_bitwiseComplement_unitWeightAuctionDecision
+      input threshold
 
 /-! ## Paper Definitions -/
 
@@ -702,11 +786,295 @@ theorem theorem6_1_independent_set_allocation_reduction
     (selected : Finset Vertex) :
     maximumIndependentSelection G selected ↔
       singleMindedOptimalAcceptedSet
-        (setPackingSingleMindedBids
+      (setPackingSingleMindedBids
           (graphIncidentSets G) (graphUnitWeights Vertex)) selected := by
   exact
     LOS02CombinatorialAuctions.paper_theorem6_1_independent_set_allocation_reduction
       G selected
+
+/-- Paper-facing export of the executable ordered-incidence map semantics.
+The hypotheses are the exact symmetry and loop-freeness conditions for a
+Boolean adjacency table to represent a simple graph. -/
+theorem theorem6_1_boolean_table_ordered_incidence_entry_semantics
+    {n : Nat} (adjacency : Fin (n * n) → Bool)
+    (i : Fin (n * (n * n))) :
+    orderedIncidenceTableMap adjacency i =
+      (FiniteGraphTable.ofEncodedAdjacency adjacency).orderedIncidenceEntry
+        (finTripleOfIndex i).1 (finTripleOfIndex i).2.1
+        (finTripleOfIndex i).2.2 := by
+  exact orderedIncidenceTableMap_eq_encoded_orderedIncidenceEntry adjacency i
+
+/-- The encoded Boolean-table instance is feasible exactly when its recovered
+simple graph admits the selected independent set. -/
+theorem theorem6_1_boolean_table_feasibility_iff_graph_independent_selection
+    {n : Nat} (adjacency : Fin (n * n) → Bool)
+    (hsymm : ∀ v w, adjacency (finPairIndex (v, w)) =
+      adjacency (finPairIndex (w, v)))
+    (hloop : ∀ v, adjacency (finPairIndex (v, v)) = false)
+    (selected : Finset (Fin n)) :
+    FiniteGraphTable.encodedOrderedSetPackingFeasible adjacency selected ↔
+      AppliedModelingLib.Auction.GraphIndependentSelection
+        (FiniteGraphTable.ofEncodedAdjacency adjacency).toSimpleGraph selected := by
+  exact FiniteGraphTable.encodedOrderedSetPackingFeasible_iff_graphIndependentSelection
+    adjacency hsymm hloop selected
+
+/-- Each row of the flattened typed map is exactly the corresponding
+ordered-incidence set. -/
+theorem theorem6_1_boolean_table_map_row_membership_semantics
+    {n : Nat} (adjacency : Fin (n * n) → Bool)
+    (v : Fin n) (p : Fin n × Fin n) :
+    p ∈ FiniteGraphTable.orderedIncidentSetFromMap adjacency v ↔
+      p ∈ (FiniteGraphTable.ofEncodedAdjacency adjacency).orderedIncidentSet v := by
+  exact FiniteGraphTable.mem_orderedIncidentSetFromMap_iff adjacency v p
+
+/-- Feasibility computed directly from the flattened map rows is equivalent to
+the encoded ordered-incidence feasibility predicate. -/
+theorem theorem6_1_boolean_table_map_feasibility_iff_encoded
+    {n : Nat} (adjacency : Fin (n * n) → Bool)
+    (selected : Finset (Fin n)) :
+    FiniteGraphTable.mapOrderedSetPackingFeasible adjacency selected ↔
+      FiniteGraphTable.encodedOrderedSetPackingFeasible adjacency selected := by
+  exact FiniteGraphTable.mapOrderedSetPackingFeasible_iff_encoded adjacency selected
+
+/-- Exact emitted-cell work count of the typed incidence map. -/
+theorem theorem6_1_boolean_table_map_steps_eq
+    {n : Nat} (adjacency : Fin (n * n) → Bool) :
+    (orderedIncidenceTablePolynomialTimeMap n).steps adjacency =
+      n * (n * n) := by
+  exact orderedIncidenceTablePolynomialTimeMap_steps_eq adjacency
+
+/-! The typed incidence map also carries explicit polynomial witnesses.  These
+    are exported separately from the exact work-count theorem so a downstream
+    machine model can consume the cost and output certificates without
+    treating the paper's remaining bid/arithmetic semantics as proved. -/
+
+theorem theorem6_1_boolean_table_map_steps_polynomial
+    {n : Nat} :
+    ∃ c d : Nat, ∀ adjacency : Fin (n * n) → Bool,
+      (orderedIncidenceTablePolynomialTimeMap n).steps adjacency ≤
+        c * ((AppliedModelingLib.Complexity.boolTableEncoding (n * n)).size adjacency + 1) ^ d := by
+  exact (orderedIncidenceTablePolynomialTimeMap n).steps_bound
+
+theorem theorem6_1_boolean_table_map_output_polynomial
+    {n : Nat} :
+    ∃ c d : Nat, ∀ adjacency : Fin (n * n) → Bool,
+      (AppliedModelingLib.Complexity.boolTableEncoding (n * (n * n))).size
+          ((orderedIncidenceTablePolynomialTimeMap n).map adjacency) ≤
+        c * ((AppliedModelingLib.Complexity.boolTableEncoding (n * n)).size adjacency + 1) ^ d := by
+  exact (orderedIncidenceTablePolynomialTimeMap n).output_bound
+
+theorem theorem6_1_boolean_table_list_map_steps_polynomial
+    {n : Nat} :
+    ∃ c d : Nat, ∀ adjacency : Fin (n * n) → Bool,
+      (orderedIncidenceListPolynomialTimeMap n).steps adjacency ≤
+        c * ((AppliedModelingLib.Complexity.boolTableEncoding (n * n)).size adjacency + 1) ^ d := by
+  exact (orderedIncidenceListPolynomialTimeMap n).steps_bound
+
+theorem theorem6_1_boolean_table_list_map_output_polynomial
+    {n : Nat} :
+    ∃ c d : Nat, ∀ adjacency : Fin (n * n) → Bool,
+      AppliedModelingLib.Complexity.listBoolEncoding.size
+          ((orderedIncidenceListPolynomialTimeMap n).map adjacency) ≤
+        c * ((AppliedModelingLib.Complexity.boolTableEncoding (n * n)).size adjacency + 1) ^ d := by
+  exact (orderedIncidenceListPolynomialTimeMap n).output_bound
+
+theorem theorem6_1_boolean_table_unit_weight_map_steps_polynomial
+    {n : Nat} :
+    ∃ c d : Nat, ∀ adjacency : Fin (n * n) → Bool,
+      (orderedIncidenceUnitWeightListPolynomialTimeMap n).steps adjacency ≤
+        c * ((AppliedModelingLib.Complexity.boolTableEncoding (n * n)).size adjacency + 1) ^ d := by
+  exact (orderedIncidenceUnitWeightListPolynomialTimeMap n).steps_bound
+
+theorem theorem6_1_boolean_table_unit_weight_map_output_polynomial
+    {n : Nat} :
+    ∃ c d : Nat, ∀ adjacency : Fin (n * n) → Bool,
+      AppliedModelingLib.Complexity.listBoolEncoding.size
+          ((orderedIncidenceUnitWeightListPolynomialTimeMap n).map adjacency) ≤
+        c * ((AppliedModelingLib.Complexity.boolTableEncoding (n * n)).size adjacency + 1) ^ d := by
+  exact (orderedIncidenceUnitWeightListPolynomialTimeMap n).output_bound
+
+theorem theorem6_1_boolean_table_unit_weight_map_output_size_eq
+    {n : Nat} (adjacency : Fin (n * n) → Bool) :
+    AppliedModelingLib.Complexity.listBoolEncoding.size
+        ((orderedIncidenceUnitWeightListPolynomialTimeMap n).map adjacency) =
+      n * (n * n) + n * 2 := by
+  exact orderedIncidenceUnitWeightListPolynomialTimeMap_output_size_eq adjacency
+
+/-- Uniform varying-size input code for the unit-weight graph reduction. -/
+theorem theorem6_1_uniform_graph_input_encoding_size
+    (input : UniformGraphInput) :
+    uniformGraphInputEncoding.size input =
+      input.1 + 1 + input.1 * input.1 := by
+  exact uniformGraphInputEncoding_size input
+
+/-- The uniform graph-to-incidence/unit-weight output has a concrete
+    polynomially bounded binary map.  This is the machine-facing encoding
+    seam; complexity-class hardness is intentionally a separate boundary. -/
+theorem theorem6_1_uniform_graph_reduction_output_size
+    (input : UniformGraphInput) :
+    (uniformGraphReductionOutput input).length =
+      input.1 * (input.1 * input.1) + input.1 * 2 := by
+  exact uniformGraphReductionOutput_size input
+
+theorem theorem6_1_uniform_graph_reduction_steps_eq
+    (input : UniformGraphInput) :
+    uniformGraphReductionPolynomialTimeMap.steps input =
+      (uniformGraphReductionOutput input).length := by
+  exact uniformGraphReductionPolynomialTimeMap_steps_eq input
+
+theorem theorem6_1_uniform_graph_reduction_steps_polynomial :
+    ∃ c d : Nat, ∀ input : UniformGraphInput,
+      uniformGraphReductionPolynomialTimeMap.steps input ≤
+        c * (uniformGraphInputEncoding.size input + 1) ^ d := by
+  exact uniformGraphReductionPolynomialTimeMap.steps_bound
+
+theorem theorem6_1_uniform_graph_reduction_output_polynomial :
+    ∃ c d : Nat, ∀ input : UniformGraphInput,
+      AppliedModelingLib.Complexity.listBoolEncoding.size
+          (uniformGraphReductionPolynomialTimeMap.map input) ≤
+        c * (uniformGraphInputEncoding.size input + 1) ^ d := by
+  exact uniformGraphReductionPolynomialTimeMap.output_bound
+
+theorem theorem6_1_uniform_graph_independent_set_welfare_correct
+    (input : UniformGraphInput) (threshold : ℝ) :
+    AppliedModelingLib.Auction.GraphIndependentSetDecisionProblem
+        (uniformGraphInputIndependentSetDecision input threshold) ↔
+      AppliedModelingLib.Auction.WeightedSetPackingDecisionProblem
+        (uniformGraphInputWeightedSetPackingDecision input threshold) := by
+  exact uniformGraphInput_independentSet_iff_weightedSetPacking input threshold
+
+theorem theorem6_1_uniform_graph_ordered_map_feasibility_correct
+    (input : UniformGraphInput)
+    (hsymm : ∀ v w, input.2 (finPairIndex (v, w)) =
+      input.2 (finPairIndex (w, v)))
+    (hloop : ∀ v, input.2 (finPairIndex (v, v)) = false)
+    (selected : Finset (Fin input.1)) :
+    FiniteGraphTable.mapOrderedSetPackingFeasible input.2 selected ↔
+      AppliedModelingLib.Auction.GraphIndependentSelection
+        (uniformGraphInputSimpleGraph input) selected := by
+  exact uniformGraphInput_ordered_map_feasibility_iff input hsymm hloop selected
+
+theorem theorem6_1_uniform_unit_weight_auction_encoding_size
+    (input : UniformUnitWeightAuctionInput) :
+    uniformUnitWeightAuctionInputEncoding.size input =
+      input.1 + 1 + input.1 * (input.1 * input.1) := by
+  exact uniformUnitWeightAuctionInputEncoding_size input
+
+theorem theorem6_1_uniform_graph_to_unit_weight_auction_steps_eq
+    (input : UniformGraphInput) :
+    uniformGraphToUnitWeightAuctionPolynomialTimeMap.steps input =
+      input.1 * (input.1 * input.1) := by
+  exact uniformGraphToUnitWeightAuctionPolynomialTimeMap_steps_eq input
+
+theorem theorem6_1_uniform_graph_to_unit_weight_auction_steps_polynomial :
+    ∃ c d : Nat, ∀ input : UniformGraphInput,
+      uniformGraphToUnitWeightAuctionPolynomialTimeMap.steps input ≤
+        c * (uniformGraphInputEncoding.size input + 1) ^ d := by
+  exact uniformGraphToUnitWeightAuctionPolynomialTimeMap.steps_bound
+
+theorem theorem6_1_uniform_graph_to_unit_weight_auction_output_polynomial :
+    ∃ c d : Nat, ∀ input : UniformGraphInput,
+      uniformUnitWeightAuctionInputEncoding.size
+          (uniformGraphToUnitWeightAuctionPolynomialTimeMap.map input) ≤
+        c * (uniformGraphInputEncoding.size input + 1) ^ d := by
+  exact uniformGraphToUnitWeightAuctionPolynomialTimeMap.output_bound
+
+noncomputable def theorem6_1_source_valid_uniform_input_decision_reduction
+    (threshold : Nat) :
+    AppliedModelingLib.Complexity.PolynomialTimeReduction
+      (fun input => uniformSimpleGraphIndependentDecision input threshold)
+      (fun input => uniformUnitWeightAuctionDecision input threshold) := by
+  exact uniformSimpleGraphInputPolynomialReduction threshold
+
+theorem theorem6_1_source_valid_uniform_input_decision_correct
+    (input : UniformSimpleGraphInput) (threshold : Nat) :
+    uniformSimpleGraphIndependentDecision input threshold ↔
+      uniformUnitWeightAuctionDecision
+        (uniformSimpleGraphToUnitWeightAuctionInput input) threshold := by
+  exact uniformSimpleGraphInput_decision_correct input threshold
+
+theorem theorem6_1_uniform_complement_adjacency_correct
+    (input : UniformSimpleGraphInput) (v w : Fin input.1.1) :
+    (uniformGraphInputSimpleGraph
+        (uniformSimpleGraphComplement input).1).Adj v w ↔
+      v ≠ w ∧ ¬(uniformGraphInputSimpleGraph input.1).Adj v w := by
+  exact uniformSimpleGraphComplement_adj_iff input v w
+
+noncomputable def theorem6_1_uniform_complement_polynomial_time_map :
+    AppliedModelingLib.Complexity.PolynomialTimeMap
+      UniformSimpleGraphInput UniformSimpleGraphInput
+      uniformSimpleGraphInputEncoding uniformSimpleGraphInputEncoding :=
+  uniformSimpleGraphComplementPolynomialTimeMap
+
+theorem theorem6_1_uniform_complement_steps_polynomial :
+    ∃ c d : Nat, ∀ input : UniformSimpleGraphInput,
+      uniformSimpleGraphComplementPolynomialTimeMap.steps input ≤
+        c * (uniformSimpleGraphInputEncoding.size input + 1) ^ d := by
+  exact uniformSimpleGraphComplementPolynomialTimeMap.steps_bound
+
+theorem theorem6_1_uniform_complement_output_polynomial :
+    ∃ c d : Nat, ∀ input : UniformSimpleGraphInput,
+      uniformSimpleGraphInputEncoding.size
+          (uniformSimpleGraphComplementPolynomialTimeMap.map input) ≤
+        c * (uniformSimpleGraphInputEncoding.size input + 1) ^ d := by
+  exact uniformSimpleGraphComplementPolynomialTimeMap.output_bound
+
+/-- Concrete encoded transformation for the clique-complement-to-auction
+route in Theorem 6.1. -/
+noncomputable def theorem6_1_uniform_clique_to_auction_polynomial_time_map :
+    AppliedModelingLib.Complexity.PolynomialTimeMap
+      UniformSimpleGraphInput UniformUnitWeightAuctionInput
+      uniformSimpleGraphInputEncoding uniformUnitWeightAuctionInputEncoding :=
+  uniformSimpleGraphCliqueToUnitWeightAuctionPolynomialTimeMap
+
+theorem theorem6_1_uniform_clique_to_auction_steps_polynomial :
+    ∃ c d : Nat, ∀ input : UniformSimpleGraphInput,
+      uniformSimpleGraphCliqueToUnitWeightAuctionPolynomialTimeMap.steps input ≤
+        c * (uniformSimpleGraphInputEncoding.size input + 1) ^ d := by
+  exact uniformSimpleGraphCliqueToUnitWeightAuctionPolynomialTimeMap.steps_bound
+
+theorem theorem6_1_uniform_clique_to_auction_output_polynomial :
+    ∃ c d : Nat, ∀ input : UniformSimpleGraphInput,
+      uniformUnitWeightAuctionInputEncoding.size
+          (uniformSimpleGraphCliqueToUnitWeightAuctionPolynomialTimeMap.map input) ≤
+        c * (uniformSimpleGraphInputEncoding.size input + 1) ^ d := by
+  exact uniformSimpleGraphCliqueToUnitWeightAuctionPolynomialTimeMap.output_bound
+
+theorem theorem6_1_uniform_clique_to_auction_decision_correct
+    (input : UniformSimpleGraphInput) (threshold : Nat) :
+    uniformSimpleGraphCliqueDecision input threshold ↔
+      uniformUnitWeightAuctionDecision
+        (uniformSimpleGraphToUnitWeightAuctionInput
+          (uniformSimpleGraphComplement input)) threshold := by
+  rw [uniformSimpleGraphCliqueDecision_iff_complement_independentDecision]
+  exact uniformSimpleGraphInput_decision_correct
+    (uniformSimpleGraphComplement input) threshold
+
+/-- The elementary exponent transport in the source's Håstad reduction:
+quadratically many goods turn the clique ratio with parameter `2 * epsilon`
+into the stated goods-count ratio.  The cited inapproximability theorem and
+native complexity-class bridge remain separate obligations. -/
+theorem theorem6_1_clique_ratio_le_goods_ratio
+    (vertexCount goodsCount : Nat)
+    (hgoods : 1 ≤ goodsCount)
+    (hgoods_le : goodsCount ≤ vertexCount * vertexCount)
+    (epsilon : ℝ)
+    (hepsilon : epsilon ≤ 1 / 2) :
+    (vertexCount : ℝ) ^ (-1 + 2 * epsilon) ≤
+      (goodsCount : ℝ) ^ (-1 / 2 + epsilon) := by
+  exact LOS02CombinatorialAuctions.clique_ratio_le_goods_ratio
+    vertexCount goodsCount hgoods hgoods_le epsilon hepsilon
+
+/-- The source-valid, fully encoded clique-threshold reduction to the
+unit-weight single-minded welfare decision problem.  Its `PolynomialTime`
+field is the project's explicit encoding/work-counter predicate, rather than
+an unmodeled Turing-machine assertion. -/
+noncomputable def theorem6_1_source_valid_uniform_clique_decision_reduction
+    (threshold : Nat) :
+    AppliedModelingLib.Complexity.PolynomialTimeReduction
+      (fun input => uniformSimpleGraphCliqueDecision input threshold)
+      (fun input => uniformUnitWeightAuctionDecision input threshold) :=
+  uniformSimpleGraphCliquePolynomialReduction threshold
 
 /--
 Theorem 6.1 clique-complement layer: cliques in a graph are exactly
@@ -863,6 +1231,47 @@ noncomputable def theorem6_1_clique_decision_single_minded_polynomial_time_reduc
         (Bidder := Vertex) (Item := Sym2 Vertex)) :=
   LOS02CombinatorialAuctions.paper_theorem6_1_clique_decision_single_minded_polynomial_time_reduction
     PolynomialTime hpoly
+
+/-! Runtime-composed variant: the two component certificates and the runtime
+model's composition law remain explicit inputs. -/
+
+noncomputable def theorem6_1_clique_decision_single_minded_polynomial_time_reduction_via_set_packing
+    {Vertex : Type*} [Fintype Vertex] [DecidableEq Vertex]
+    (FirstPolynomialTime :
+      (graphCliqueDecisionInstance Vertex →
+        weightedSetPackingDecisionInstance Vertex (Sym2 Vertex)) → Prop)
+    (SecondPolynomialTime :
+      (weightedSetPackingDecisionInstance Vertex (Sym2 Vertex) →
+        singleMindedWelfareDecisionInstance Vertex (Sym2 Vertex)) → Prop)
+    (ComposedPolynomialTime :
+      (graphCliqueDecisionInstance Vertex →
+        singleMindedWelfareDecisionInstance Vertex (Sym2 Vertex)) → Prop)
+    (hpoly_clique :
+      FirstPolynomialTime
+        (theorem6_1_clique_decision_set_packing_many_one_reduction
+          (Vertex := Vertex)).map)
+    (hpoly_set :
+      SecondPolynomialTime
+        (theorem6_1_decision_problem_reduction
+          (Bidder := Vertex) (Item := Sym2 Vertex)).map)
+    (hcomp : FirstPolynomialTime
+        (theorem6_1_clique_decision_set_packing_many_one_reduction
+          (Vertex := Vertex)).map →
+      SecondPolynomialTime
+        (theorem6_1_decision_problem_reduction
+          (Bidder := Vertex) (Item := Sym2 Vertex)).map →
+      ComposedPolynomialTime (fun x =>
+        (theorem6_1_decision_problem_reduction
+          (Bidder := Vertex) (Item := Sym2 Vertex)).map
+          ((theorem6_1_clique_decision_set_packing_many_one_reduction
+            (Vertex := Vertex)).map x))) :
+    AppliedModelingLib.Complexity.PolynomialTimeReduction
+      (graphCliqueDecisionProblem (Vertex := Vertex))
+      (singleMindedWelfareDecisionProblem
+        (Bidder := Vertex) (Item := Sym2 Vertex)) :=
+  LOS02CombinatorialAuctions.paper_theorem6_1_clique_decision_single_minded_polynomial_time_reduction_via_set_packing
+    FirstPolynomialTime SecondPolynomialTime ComposedPolynomialTime
+    hpoly_clique hpoly_set hcomp
 
 /--
 External reduction-consequence form of Theorem 6.1 for the classic clique

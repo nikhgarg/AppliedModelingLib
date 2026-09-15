@@ -40,6 +40,36 @@ ledgers are maintenance records rather than human-facing release artifacts.
   reader label as the website, including the designated partial exceptions.
   Keep pending review and closeout explicit without changing technical status
   or accepted evidence to make the reader labels agree.
+- Title each report `# Final Validation Report: <full paper title>`, including
+  any subtitle. Verify the complete title against the governing source or
+  publication record, rather than relying on repository IDs, author-year
+  shorthand, or shortened catalog titles.
+- Before the reader pass, compare the complete final checked statements and
+  linked mathematical notes with the report, conclusion by conclusion. Account
+  for materially distinct clauses, directions, parameter regimes, constrained
+  alternatives, and proved extensions; a row bearing the theorem's name does not
+  establish completeness. Record their report/memo locations in the existing
+  document-coverage assessment, using report-only entries where needed. Ask what
+  useful checked result a reader would miss from the report, as well as what it
+  overstates. Keep unchanged Exact results terse; this check must not create a
+  memo entry for every helper or repeat the theorem text. Mechanical row/link
+  checks supplement this comparison and cannot certify semantic completeness.
+- Preserve useful explanatory memos and their stable public URLs during a
+  concision pass. Do not replace a substantive mathematical explanation,
+  example, counterexample, or proof argument with a redirect or a short table
+  summary. Update superseded claims and remove history while retaining the
+  explanation. Link proof-route notes from Proof-Strategy Deviations and proved
+  extensions from the extension section; keep unchanged Exact cells terse and
+  do not add links for routine intended readings. Check previously linked
+  public memos before closing the reader pass.
+- An **Exact** comparison cell needs no “Details” link or repeated theorem
+  statement. Omit memo sections that only restate an unchanged result or say it
+  is exact. For a clarification, restriction, or gap, give one short sentence
+  identifying the actual conclusion and the condition or missing part; a label
+  plus a link is insufficient. Name mechanisms by the economic operation they
+  perform. Put representation choices in a model note instead of presenting
+  them as separate theorem results. Explain a proof deviation in its own section
+  when the source conclusion is exact, and remove accounts of earlier proof work.
 - For `FINAL_VALIDATION_REPORT.md`, keep Sections 1--11 as human-facing paper
   assessment. State only the paper result, actual theorem-level boundary,
   genuine beyond-paper assumption, material source-proof departure, or
@@ -57,7 +87,11 @@ ledgers are maintenance records rather than human-facing release artifacts.
   verdict; exclude raw source-paper text, private plans or handoffs, approval
   records, agent chronology, commands, and historical repair narratives.
   Every final report must include numbered Sections 1--21 from the report
-  template. Reorganize equivalent combined material without duplicating it;
+  template. Keep the Human Verdict brief and Completion status followed by a
+  one-sentence recap. Use source-comparison labels such as **Exact** in the
+  result table; an exact cell needs no repeated theorem statement. Put main
+  results before appendix support and explain cross-section groupings.
+  Reorganize equivalent combined material without duplicating it;
   give each technical section concise paper-specific content or an explicit,
   truthful empty/unreviewed disposition. Check the complete structure at the
   terminal document stage, not during source intake or semantic review.
@@ -204,6 +238,19 @@ ledgers are maintenance records rather than human-facing release artifacts.
   old/new parameter dependence and whether the difference concerns uniformity.
   Report endpoint restrictions separately. Do not put a long finite-bound
   derivation in a deviations memo when it only makes the existing rate explicit.
+  Label such results **Exact** and describe the explicit finite bounds outside
+  the table as an extension. A finite theorem whose parameter dependence has
+  not been shown to imply the source rate still needs that comparison.
+- Use the paper's printed result numbers, with descriptive names as optional
+  companions. Verify them from rendered source or its compiled label map; internal
+  TeX keys and counts of selected theorems can miss shared counters for definitions
+  and remarks. A cited theorem assumed by the Lean development is an external
+  proof boundary, not evidence of a problem in the paper.
+- When a checked normalization or algebra correction is local and preserves the
+  intended conclusion, use the typo classification and explain the finite change
+  once. Do not promote a vacuous parameter regime into a prominent counterexample
+  when the meaningful source domain resolves it. State the covered domain without
+  claiming that an unproved sharper formula has been refuted.
 - In a result-summary table, omit a restriction note when the condition is already
   stated or implied by the source; mark the result exact unless another material
   difference remains. For an actual added restriction, state briefly whether it

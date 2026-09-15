@@ -1,4 +1,5 @@
 import PG24NoisyMatchingMarkets.Theorem1LargeGapConditional
+import PG24NoisyMatchingMarkets.Theorem1LargeGapPolynomialRate
 import PG24NoisyMatchingMarkets.Theorem1LiteralAttenuationConclusion
 import PG24NoisyMatchingMarkets.Theorem1LiteralDenseSourceRoute
 import PG24NoisyMatchingMarkets.Theorem1LiteralSelectedDichotomy
@@ -499,6 +500,207 @@ theorem theorem1_literal_uniform_largeGap_low_matched_mass_eventually_small_cond
               value (inst C a).selectedCutoffVector) value
           ∂eta := hcomponents_C a
     _ < epsilon := by linarith [hcapacity_C, hupper_C a hlarge_gap]
+
+/-- Exact-rate counterpart of the uniform Case-2 literal matched-mass bound.
+It uses the one-draw finite-second-moment clarification needed by the printed
+Proposition 7(ii) Chebyshev step. -/
+theorem theorem1_literal_uniform_largeGap_low_matched_mass_eventually_le_source_rate_conditional
+    {Admissible : ℕ → Type w}
+    {StudentType : (C : ℕ) → Admissible C → Type u}
+    [∀ (C : ℕ) (a : Admissible C), MeasurableSpace (StudentType C a)]
+    {Cutoff : (C : ℕ) → Admissible C → Type v}
+    (noiseLaw eta : Measure ℝ) [IsProbabilityMeasure noiseLaw]
+    [IsProbabilityMeasure eta]
+    {maxVariance : ℕ → ℝ} {alpha beta gamma vS totalSupply : ℝ}
+    (inst : ∀ (C : ℕ) (a : Admissible C),
+      PG24LiteralBasicTwoScaleInstance C noiseLaw eta totalSupply alpha
+        (StudentType C a) (Cutoff C a))
+    (hbeta : betaMaxConcentratingVariance maxVariance beta)
+    (hgamma : 0 < gamma)
+    (hvariance : source_assumption_iid_beta_max_variance_bound
+      noiseLaw maxVariance)
+    (hone_draw : MemLp (fun x : ℝ => x) 2 noiseLaw)
+    (halpha_nonneg : 0 ≤ alpha)
+    (htail_normalization : eta.real (Set.Ioi vS) = totalSupply) :
+    ∃ A : ℝ, 0 ≤ A ∧
+      ∀ᶠ C : ℕ in atTop, ∀ a : Admissible C,
+        theorem3RankedCutoffNat C (inst C a).selectedCutoffVector 0 +
+            (theorem3DenseGapBlockCount C
+              (theorem1TailPhi2 beta gamma)
+              (theorem1TailPhi3 beta gamma) : ℝ) *
+              Real.rpow (C : ℝ) (theorem1TailPhi1 beta gamma) <
+          theorem3RankedCutoffNat C (inst C a).selectedCutoffVector
+            (theorem3EarlyPrefixRank C (theorem1TailPhi3 beta gamma)) →
+        eventMass
+          ((inst C a).studentLaw.prod
+            (Measure.pi (fun _ : Fin (C + 1) => noiseLaw)))
+          (fun outcome : StudentType C a × (Fin (C + 1) → ℝ) =>
+            (inst C a).value outcome.1 ∈ Set.Iic vS ∧
+              chosenInActive
+                ((inst C a).literal.demand.demandAt
+                  (inst C a).literal.selectedCutoff)
+                (Finset.univ : Finset (Fin (C + 1))) outcome) ≤
+          A * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) := by
+  have hfull_capacity : ∀ C : ℕ, ∀ a : Admissible C,
+      (∫ value : ℝ,
+        cutoffAffordanceProbability
+          (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+          (Finset.univ : Finset (Fin (C + 1))) value
+          (inst C a).selectedCutoffVector ∂eta) = totalSupply := by
+    intro C a
+    exact (inst C a).theorem1_selected_full_affordance_integral_eq_totalSupply
+  rcases theorem1_largeGap_upper_low_integral_uniform_eventually_le_source_rate_conditional_of_one_draw_second_moment
+      (Admissible := Admissible) noiseLaw eta hbeta hgamma hvariance hone_draw
+      (fun C a => (inst C a).selectedCutoffVector) hfull_capacity
+      htail_normalization with ⟨upperA, hupperA_nonneg, hupper_rate⟩
+  let A : ℝ := alpha + upperA
+  refine ⟨A, add_nonneg halpha_nonneg hupperA_nonneg, ?_⟩
+  have hcomponents : ∀ᶠ C : ℕ in atTop, ∀ a : Admissible C,
+      eventMass
+        ((inst C a).studentLaw.prod
+          (Measure.pi (fun _ : Fin (C + 1) => noiseLaw)))
+        (fun outcome : StudentType C a × (Fin (C + 1) → ℝ) =>
+          (inst C a).value outcome.1 ∈ Set.Iic vS ∧
+            chosenInActive
+              ((inst C a).literal.demand.demandAt
+                (inst C a).literal.selectedCutoff)
+              (Finset.univ : Finset (Fin (C + 1))) outcome) ≤
+        alpha * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) +
+          ∫ value : ℝ,
+            (Set.Iic vS).indicator
+              (fun value => cutoffAffordanceProbability
+                (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+                (theorem1CutoffAtOrAboveBlock
+                  (Finset.univ : Finset (Fin (C + 1)))
+                  (inst C a).selectedCutoffVector
+                  (theorem3RankedCutoffNat C (inst C a).selectedCutoffVector
+                    (theorem3EarlyPrefixRank C (theorem1TailPhi3 beta gamma))))
+                value (inst C a).selectedCutoffVector) value
+            ∂eta := by
+    filter_upwards [eventually_gt_atTop 0] with C hC_pos a
+    exact (inst C a).theorem1_selected_low_matched_mass_le_rankPrefix_components
+      hbeta.1 hgamma hC_pos halpha_nonneg measurableSet_Iic
+  filter_upwards [hcomponents, hupper_rate] with
+      C hcomponents_C hupper_C a hlarge_gap
+  calc
+    eventMass
+        ((inst C a).studentLaw.prod
+          (Measure.pi (fun _ : Fin (C + 1) => noiseLaw)))
+        (fun outcome : StudentType C a × (Fin (C + 1) → ℝ) =>
+          (inst C a).value outcome.1 ∈ Set.Iic vS ∧
+            chosenInActive
+              ((inst C a).literal.demand.demandAt
+                (inst C a).literal.selectedCutoff)
+              (Finset.univ : Finset (Fin (C + 1))) outcome) ≤
+        alpha * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) +
+          ∫ value : ℝ,
+            (Set.Iic vS).indicator
+              (fun value => cutoffAffordanceProbability
+                (Measure.pi (fun _ : Fin (C + 1) => noiseLaw))
+                (theorem1CutoffAtOrAboveBlock
+                  (Finset.univ : Finset (Fin (C + 1)))
+                  (inst C a).selectedCutoffVector
+                  (theorem3RankedCutoffNat C (inst C a).selectedCutoffVector
+                    (theorem3EarlyPrefixRank C (theorem1TailPhi3 beta gamma))))
+                value (inst C a).selectedCutoffVector) value
+            ∂eta := hcomponents_C a
+    _ ≤ alpha * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) +
+          upperA * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) := by
+        gcongr
+        exact hupper_C a hlarge_gap
+    _ = A * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) := by
+        dsimp [A]
+        ring
+
+/-- Corrected Appendix Proposition 1 at its printed polynomial rate.  The
+published display is repaired to the lower-value matched mass, and the
+one-draw second-moment clarification is made explicit for its Case-2 use of
+Proposition 7(ii). -/
+theorem theorem1_literal_uniform_low_matched_mass_eventually_le_source_rate_of_beta_holder
+    {Admissible : ℕ → Type w}
+    {StudentType : (C : ℕ) → Admissible C → Type u}
+    [∀ (C : ℕ) (a : Admissible C), MeasurableSpace (StudentType C a)]
+    {Cutoff : (C : ℕ) → Admissible C → Type v}
+    (noiseLaw eta : Measure ℝ) [IsProbabilityMeasure noiseLaw]
+    [IsProbabilityMeasure eta]
+    {maxVariance : ℕ → ℝ} {alpha beta totalSupply vS : ℝ}
+    (inst : ∀ (C : ℕ) (a : Admissible C),
+      PG24LiteralBasicTwoScaleInstance C noiseLaw eta totalSupply alpha
+        (StudentType C a) (Cutoff C a))
+    (hbeta : betaMaxConcentratingVariance maxVariance beta)
+    (hvariance : source_assumption_iid_beta_max_variance_bound
+      noiseLaw maxVariance)
+    (hone_draw : MemLp (fun x : ℝ => x) 2 noiseLaw)
+    (halpha_nonneg : 0 ≤ alpha)
+    (hregular : PG24HolderIntervalRegular eta)
+    (htail_normalization : eta.real (Set.Ioi vS) = totalSupply) :
+    ∃ holderConstant gamma A : ℝ,
+      0 < gamma ∧ 0 ≤ holderConstant ∧
+      (∀ (x delta : ℝ), 0 < delta →
+        eta.real (Set.Ioo x (x + delta)) ≤
+          holderConstant * Real.rpow delta gamma) ∧
+      0 ≤ A ∧ ∀ᶠ C : ℕ in atTop, ∀ a : Admissible C,
+        eventMass
+          ((inst C a).studentLaw.prod
+            (Measure.pi (fun _ : Fin (C + 1) => noiseLaw)))
+          (fun outcome : StudentType C a × (Fin (C + 1) → ℝ) =>
+            (inst C a).value outcome.1 ∈ Set.Iic vS ∧
+              chosenInActive
+                ((inst C a).literal.demand.demandAt
+                  (inst C a).literal.selectedCutoff)
+                (Finset.univ : Finset (Fin (C + 1))) outcome) ≤
+          A * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) := by
+  rcases theorem1_literal_selected_dense_branch_eventually_le_source_rate_of_holder
+      (Admissible := Admissible) noiseLaw eta inst hbeta hvariance
+      halpha_nonneg hregular htail_normalization with
+    ⟨holderConstant, gamma, denseA, hgamma, hholder_nonneg, hholder,
+      hdenseA_nonneg, hdense_rate⟩
+  rcases theorem1_literal_uniform_largeGap_low_matched_mass_eventually_le_source_rate_conditional
+      (Admissible := Admissible) noiseLaw eta inst hbeta hgamma hvariance hone_draw
+      halpha_nonneg htail_normalization with ⟨largeA, hlargeA_nonneg, hlarge_rate⟩
+  have hgeometry := theorem1_literal_uniform_denseWindow_or_large_gap_eventually
+    (Admissible := Admissible) noiseLaw eta inst hbeta.1 hgamma
+  let A : ℝ := denseA + largeA
+  refine ⟨holderConstant, gamma, A, hgamma, hholder_nonneg, hholder,
+    add_nonneg hdenseA_nonneg hlargeA_nonneg, ?_⟩
+  filter_upwards [hdense_rate, hlarge_rate, hgeometry] with
+      C hdense_C hlarge_C hgeometry_C a
+  rcases hgeometry_C a with hdense_case | hlarge_case
+  · rcases hdense_case with ⟨start, hstart, hwindow⟩
+    calc
+      eventMass
+          ((inst C a).studentLaw.prod
+            (Measure.pi (fun _ : Fin (C + 1) => noiseLaw)))
+          (fun outcome : StudentType C a × (Fin (C + 1) → ℝ) =>
+            (inst C a).value outcome.1 ∈ Set.Iic vS ∧
+              chosenInActive
+                ((inst C a).literal.demand.demandAt
+                  (inst C a).literal.selectedCutoff)
+                (Finset.univ : Finset (Fin (C + 1))) outcome) ≤
+          denseA * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) :=
+        hdense_C a start hstart hwindow
+      _ ≤ A * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) := by
+        dsimp [A]
+        exact mul_le_mul_of_nonneg_right
+          (le_add_of_nonneg_right hlargeA_nonneg)
+          (Real.rpow_nonneg (Nat.cast_nonneg C) _)
+  · calc
+      eventMass
+          ((inst C a).studentLaw.prod
+            (Measure.pi (fun _ : Fin (C + 1) => noiseLaw)))
+          (fun outcome : StudentType C a × (Fin (C + 1) → ℝ) =>
+            (inst C a).value outcome.1 ∈ Set.Iic vS ∧
+              chosenInActive
+                ((inst C a).literal.demand.demandAt
+                  (inst C a).literal.selectedCutoff)
+                (Finset.univ : Finset (Fin (C + 1))) outcome) ≤
+          largeA * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) :=
+        hlarge_C a hlarge_case
+      _ ≤ A * Real.rpow (C : ℝ) (-(theorem1TailK beta gamma)) := by
+        dsimp [A]
+        exact mul_le_mul_of_nonneg_right
+          (le_add_of_nonneg_left hdenseA_nonneg)
+          (Real.rpow_nonneg (Nat.cast_nonneg C) _)
 
 /-- The literal repaired lower-tail matched mass is uniformly small over all
 admissible selected stable instances. -/

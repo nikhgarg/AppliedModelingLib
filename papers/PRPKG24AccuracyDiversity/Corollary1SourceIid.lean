@@ -96,18 +96,22 @@ theorem paper_corollary1_finite_discrete_bernoulli_top_k_gamma_zero_sequence_for
 /--
 The four concrete source-iid families used to witness Corollary 1.
 
-Each constructor exposes the actual model expression, parameter bounds, and
-the equation connecting that branch's parameterization to `gamma`.  This is a
-semantic provenance predicate rather than a name-only label or certificate
-assumption.
+Each constructor exposes both the actual conditional-value law `D` and the
+consumption-model expression generated from that law, along with the parameter
+bounds and the equation connecting that branch's parameterization to `gamma`.
+This is a semantic provenance predicate rather than a name-only label or
+certificate assumption.
 -/
 inductive Corollary1SourceIidFamily {T : ℕ}
     (likelihood : ItemType T → ℝ) (gamma : ℝ) (k : ℕ) :
-    ConsumptionModel T → Prop where
+    MeasureTheory.Measure ℝ → ConsumptionModel T → Prop where
   | finiteTwoPointBernoulli
       (q : ℝ) (hq_pos : 0 < q) (hq_lt_one : q < 1)
       (hgamma : gamma = 0) :
       Corollary1SourceIidFamily likelihood gamma k
+        (MeasureTheory.Measure.map AppliedModelingLib.Probability.binaryRatingScore
+          (AppliedModelingLib.Probability.realBernoulliPMF q
+            hq_pos.le hq_lt_one.le).toMeasure)
         (corollary1FiniteTwoPointBernoulliSourceIidModel likelihood k q
           hq_pos.le hq_lt_one.le)
   | boundedReflectedPowerOrderStatistic
@@ -115,6 +119,7 @@ inductive Corollary1SourceIidFamily {T : ℕ}
       (hbeta_pos : 0 < beta) (hk_pos : 0 < k)
       (hgamma : beta / (beta + 1) = gamma) :
       Corollary1SourceIidFamily likelihood gamma k
+        (boundedReflectedPowerSourceMeasure beta)
         (boundedReflectedPowerSourceIidOrderStatisticConsumptionModel
           likelihood k beta)
   | exponentialOrderStatistic
@@ -122,6 +127,7 @@ inductive Corollary1SourceIidFamily {T : ℕ}
       (hlambda_pos : 0 < lambda) (hk_pos : 0 < k)
       (hgamma : gamma = 1) :
       Corollary1SourceIidFamily likelihood gamma k
+        ((exponentialDistributionModel lambda hlambda_pos).measure)
         ((exponentialTopKOrderStatisticOracle T lambda k).toConsumptionModel
           likelihood k)
   | paretoOrderStatistic
@@ -129,6 +135,7 @@ inductive Corollary1SourceIidFamily {T : ℕ}
       (halpha_gt_one : 1 < alpha) (hk_pos : 0 < k)
       (hgamma : alpha / (alpha - 1) = gamma) :
       Corollary1SourceIidFamily likelihood gamma k
+        (ProbabilityTheory.paretoMeasure 1 alpha)
         (paretoIidOrderStatisticConsumptionModel likelihood k alpha)
 
 /--
@@ -141,8 +148,9 @@ theorem paper_corollary1_any_nonnegative_gamma_source_iid_model_sequence_formula
     (likelihood : ItemType T → ℝ) (gamma : ℝ)
     (hk_pos : 0 < k) (hgamma_nonneg : 0 ≤ gamma)
     (hlike_pos : ∀ t : ItemType T, 0 < likelihood t) :
-    ∃ M : ConsumptionModel T,
-      Corollary1SourceIidFamily likelihood gamma k M ∧
+    ∃ (D : MeasureTheory.Measure ℝ) (M : ConsumptionModel T),
+      MeasureTheory.IsProbabilityMeasure D ∧
+      Corollary1SourceIidFamily likelihood gamma k D M ∧
         ∀ seq : OptimalAllocationSequence (fun _ => M),
           ∀ t : ItemType T,
             Filter.Tendsto
@@ -155,10 +163,15 @@ theorem paper_corollary1_any_nonnegative_gamma_source_iid_model_sequence_formula
     hgamma_zero | hrest
   · subst gamma
     refine
-      ⟨corollary1FiniteTwoPointBernoulliSourceIidModel likelihood k (1 / 2)
-          (by norm_num) (by norm_num), ?_, ?_⟩
+      ⟨MeasureTheory.Measure.map AppliedModelingLib.Probability.binaryRatingScore
+          (AppliedModelingLib.Probability.realBernoulliPMF (1 / 2)
+            (by norm_num) (by norm_num)).toMeasure,
+        corollary1FiniteTwoPointBernoulliSourceIidModel likelihood k (1 / 2)
+          (by norm_num) (by norm_num), ?_, ?_, ?_⟩
+    · exact MeasureTheory.Measure.isProbabilityMeasure_map
+        (measurable_of_finite _).aemeasurable
     · exact
-        Corollary1SourceIidFamily.finiteTwoPointBernoulli (k := k) (1 / 2)
+      Corollary1SourceIidFamily.finiteTwoPointBernoulli (k := k) (1 / 2)
           (by norm_num) (by norm_num) rfl
     · intro seq t
       exact
@@ -167,8 +180,9 @@ theorem paper_corollary1_any_nonnegative_gamma_source_iid_model_sequence_formula
   · rcases hrest with hbounded | hrest
     · rcases hbounded with ⟨beta, hbeta_pos, hbeta_eq⟩
       refine
-        ⟨boundedReflectedPowerSourceIidOrderStatisticConsumptionModel
-            likelihood k beta, ?_, ?_⟩
+        ⟨boundedReflectedPowerSourceMeasure beta,
+          boundedReflectedPowerSourceIidOrderStatisticConsumptionModel
+            likelihood k beta, by infer_instance, ?_, ?_⟩
       · exact
           Corollary1SourceIidFamily.boundedReflectedPowerOrderStatistic
             (k := k) beta hbeta_pos hk_pos hbeta_eq
@@ -180,8 +194,11 @@ theorem paper_corollary1_any_nonnegative_gamma_source_iid_model_sequence_formula
     · rcases hrest with hgamma_one | hpareto
       · subst gamma
         refine
-          ⟨(exponentialTopKOrderStatisticOracle T 1 k).toConsumptionModel
-              likelihood k, ?_, ?_⟩
+          ⟨(exponentialDistributionModel 1 (by norm_num)).measure,
+            (exponentialTopKOrderStatisticOracle T 1 k).toConsumptionModel
+              likelihood k,
+            (exponentialDistributionModel 1 (by norm_num)).isProbabilityMeasure_measure,
+            ?_, ?_⟩
         · exact
           Corollary1SourceIidFamily.exponentialOrderStatistic
               (k := k) 1 (by norm_num) hk_pos rfl
@@ -190,7 +207,10 @@ theorem paper_corollary1_any_nonnegative_gamma_source_iid_model_sequence_formula
             paper_corollary1_exponential_top_k_order_statistic_gamma_one_sequence_formula
               likelihood 1 k (by norm_num) hk_pos hlike_pos seq t
       · rcases hpareto with ⟨alpha, halpha_gt_one, halpha_eq⟩
-        refine ⟨paretoIidOrderStatisticConsumptionModel likelihood k alpha, ?_, ?_⟩
+        refine ⟨ProbabilityTheory.paretoMeasure 1 alpha,
+          paretoIidOrderStatisticConsumptionModel likelihood k alpha,
+          ProbabilityTheory.isProbabilityMeasure_paretoMeasure (by norm_num)
+            (lt_trans zero_lt_one halpha_gt_one), ?_, ?_⟩
         · exact
           Corollary1SourceIidFamily.paretoOrderStatistic
               (k := k) alpha halpha_gt_one hk_pos halpha_eq

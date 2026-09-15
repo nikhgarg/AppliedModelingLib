@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "paper": "MSVV07AdWords",
+  "summaries": {},
+  "omitted_conventions": [
+    "MSVV07-ADWORDS-FINITE-DOMAIN-09"
+  ]
+}

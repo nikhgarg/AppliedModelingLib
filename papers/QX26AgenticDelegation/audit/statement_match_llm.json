@@ -1,0 +1,424 @@
+{
+  "schema": 1,
+  "paper": "QX26AgenticDelegation",
+  "prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
+  "validator": "",
+  "validator_type": "",
+  "validated_at": "",
+  "comment": "Compare verbatim byte-pinned source-anchor text against the fully expanded transparent Lean Spec. The source-map statement is navigation metadata only and must not be used as semantic-review input.",
+  "prompt_summary": [
+    "A matches verdict requires semantic equivalence of the full source statement and Lean statement: same hypotheses, subparts, quantifiers, domains, constants, normalizations, signs, inequality directions, conclusions, and visible inputs.",
+    "The only permitted source-side semantic input is the exact concatenation of the source map item's byte-pinned source_anchor_evidence quoted_text slices followed by its semantic_context_requirements source_anchor_evidence slices, all in declared order. Do not use or rewrite the source-map statement, source_claim_atoms.semantic_claim, a curator summary, a theorem label, context explanation, or inferred surrounding context. If the displayed theorem needs surrounding assumptions, add those exact source slices as semantic_context_requirements before judging; otherwise return uncertain rather than reconstructing them.",
+    "Set source_input_protocol to verbatim_source_anchor_bundle_v1 and source_input_bundle_sha256 to the canonical digest of that exact quote sequence. Set paper_statement_sha256 equal to that source_input_bundle_sha256: it is the source-side semantic target, not the map statement digest. For every source_routes entry and every direct endpoint source_obligation, record source_anchor_quote_identity_sha256 for the cited item's displayed source anchor; direct endpoint obligations also record source_input_bundle_sha256. The auditor must be able to reconstruct the LLM source input solely from that digest and the byte-pinned source map.",
+    "The only permitted Lean-side semantic input is the exact expanded transparent Spec declaration. Set lean_target_protocol to expanded_paperinterface_spec_v1 and semantic_target_declaration to that Spec's fully qualified PaperInterface declaration. Set lean_statement_sha256 to the exact expanded Spec text digest. Do not use a Lean-to-TeX draft, agent paraphrase, declaration label, or thin proof wrapper as source or Lean semantic input.",
+    "When a source item has a transparent Spec plus a paired theorem/lemma, compare the verbatim source text only to the fully expanded Spec. Do not issue an independent semantic match for a thin proof wrapper of the form theorem T : TSpec; Lean Meta's exact proof-to-Spec check is the proof credential for that endpoint.",
+    "Do not approve by theorem label, phrase overlap, or source-looking Lean names. Expand or otherwise semantically inspect every named predicate/wrapper appearing as a Lean hypothesis or conclusion.",
+    "Every input premise must be one of: a paper primitive/source assumption, a Lean-derived consequence of paper primitives, an approved external boundary, or an explicit conditional boundary.",
+    "For a composite source result, audit premise scope atom by atom: map each source conclusion atom to the exact Lean implication or conjunction branch that proves it. A witness, endpoint, cardinality, typeclass, or other premise needed only by one sibling atom must not gate an independent atom. Treat an unseparated or unnecessarily narrowed atom as mismatch or partial coverage even when the composite theorem is otherwise true.",
+    "Mark mismatch or uncertain for omitted source subclaims, added non-source conditions, hidden strengthening inside named predicates, conditional wrappers, broad aggregate rows, source-row packages, certificate/replay/process/bridge packages, or weakened/strengthened statements.",
+    "A replay/certificate/process/bridge premise is an extra assumption unless the source statement explicitly assumes that object or the Lean statement also includes a checked derivation from source primitives.",
+    "Treat `check input = true` as caller-supplied proof debt when the check unfolds to `decide` over a result-bearing proposition, even if a reflection theorem exists. A total Option/match/dependent-if success/failure statement avoids a caller proof only as a conditional checker specification; expand the branch semantics, and never credit a noncomputable decision as executable or polynomial.",
+    "For formula-bearing rows, check the exact formula rather than only the theorem label or qualitative interpretation.",
+    "For every row, complete numeric_semantics_review and partition every source/Lean obligation between reviewed numeric items and the explicit nonnumeric lists. For each source/Lean formula pair, separately record both value domains, coercions, division convention, rounding or truncation, normalization, strictness, zero-denominator behavior, and the exact relation. Natural floor division is not rational or real division. A proved or witness-specific equivalence must point to an explicit equality/iff Lean conclusion and state that conclusion; a matching function name is never evidence.",
+    "For every row, enumerate source_obligations and lean_obligations as semantic parameter/assumption/conclusion atoms. Every Lean obligation must reference exactly one atom in the machine-generated elaborated declaration manifest through signature_ref and signature_atom_sha256, and all manifest atoms must be covered exactly once. Record the current lean_signature_sha256, give every alignment an explicit mathematical bridge_statement, and record exact unmatched_source_conclusions, unmatched_source_inputs, unjustified_lean_inputs, and unmatched_lean_conclusions lists. Names are routing, not evidence.",
+    "For every source_routes entry, pin source_item, source_statement_sha256, source_location, source_anchor_quote_identity_sha256, and route_kind. These route fields are locators and integrity pins only: their map statement digest or explanation must never be semantic LLM input. direct is only an exact equivalent paper-facing endpoint with an exact source-conclusion/Lean-conclusion equivalence. A source-map item marked corrected_source_statement is different: retain its archival statement, compare Lean only with corrected_target.statement, use route_kind approved_corrected_target and resolution approved_corrected_target, and pin the archival statement digest, corrected_target_sha256, governing_defect_ids, approval artifact hash, and archival_equivalence_claimed=false. It must never use direct or certify the archival statement. A corrected target has exactly one complete PaperInterface endpoint in lean_declarations; use one explicit conjunction when it has several clauses. Aliases, proof helpers, support declarations, and semantic bridges never receive corrected-target text, source-route credit, or coverage credit. Composite rows use source_component for each scoped source component and a Lean conclusion as evidence, not a fabricated full-theorem endpoint. source_model_convention is only an explicit model reading; defect_or_remark_support is only quarantined-defect or support-only prose; proof_support needs a substantive source_support_scope and never provides endpoint credit.",
+    "For each direct or approved-corrected-target route whose pinned source item is a definition or predicate vocabulary item, complete source_definition_semantics_review. When status.json review_surface.llm_statement_review.require_direct_expression_semantics_review is exactly v1, apply that same review to formula, equation, and algorithmic_formula items. Expand the source and Lean legal domains, their behavior outside the source domain (including any Lean totalization), and the actual operational object rather than relying on a source-looking function name. Explicitly classify every advertised definition property: for example, that revenue counts only winners, a formula defines a normalized probability law on its stated support, or a selected threshold attains the advertised optimum. A total Lean function, an unnormalised formula, or a bare selector is not equivalent merely because it has a convenient name. If the source definition has no additional advertised property, say why in no_advertised_properties_basis. A full source-definition endpoint cannot be routed only as a source_component to skip this review.",
+    "For every row, complete semantic_scope_review from expanded definitions. Record fixed-profile versus all-profile quantification; do not infer scope from generic parameters or declaration names.",
+    "For every row, complete the versioned fidelity_risk_review. Its five dimensions are semantic checks, not declaration-name heuristics: source output arity/shape and terminal projection; adversarial action-space carrier, capacity, nonvacuity, and duplicate interactions; coherent realization of candidatewise extrema with actual-runner/refinement evidence; syntactic-family cardinality versus nonempty realized fibers with surjectivity for equality; and execution scope across input domains, state transitions, termination, numeric representation, cost claims, and any bridge from local execution to the advertised global claim.",
+    "A matches verdict must bind each applicable fidelity dimension to source and elaborated-Lean obligation ids, record equivalent expanded semantics, and cite a Lean conclusion that exposes the evidence. An algorithmic row may not classify execution_claim_scope as absent.",
+    "For every named predicate, wrapper, structure, or inductive certificate, cite the definition or constructor expansion basis, bind it to the Lean obligations where it occurs, and enumerate the transitive result-bearing field/constructor dependencies. Put every other Lean obligation in non_definition_lean_obligation_ids. A matches verdict requires recursive_expansion_complete=true; describing a type by its name is not semantic review.",
+    "Complete discrete_semantics_review and partition every source/Lean obligation between reviewed discrete-operation items and the explicit nondiscrete lists. Immediate list successor, next active choice, eventual occurrence, support under a restricted carrier, and first occurrence are different operations unless an explicit equality/iff Lean conclusion proves equivalence on the reviewed domain.",
+    "Unfold every result-bearing predicate or iff. If an output, feasibility, or optimality characterization unfolds to the same fact about an independently supplied object, classify it self_characterizing and never use it as source-conclusion evidence.",
+    "For an algorithmic row, distinguish existence, noncomputable existence, executable output, and polynomial time. The advertised result must be derived from the formalized source runner or connected across distinct semantic worlds by an exposed refinement/preservation proposition; conjoining runner success with an independent characterization is not such a bridge.",
+    "A polynomial-time match requires an explicit complexity conclusion and arithmetic/representation model. A generic selector, termination fact, or finite enumeration does not establish the source runtime claim.",
+    "Audit complexity from the transitive semantic operational dependency graph over every reachable branch in the stated input domain, not from one trace or from function/declaration names. Extensional equality, refinement, simulation, or result preservation establishes correctness, not runtime; a cached or memoized recursive executor must not evaluate the old semantic closure or oracle after materialization.",
+    "For each matches polynomial-time row, complete operational_complexity_review as a row-level sibling of semantic_scope_review. Give a worst-case recurrence and bound. Charge traversal and enumeration length (including duplicates), materialization and rebuilding, representation/container primitives, and exact-rational bit growth. A missing or excluded_by_claim item cannot support a matches polynomial-time verdict. When closure elimination is material, pin the evidence artifact and audited source by SHA-256 and bind the generated IR/C call graph or cost-threaded executor to the eliminated dependency semantically; symbol names are routing only."
+  ],
+  "semantic_scope_review_schema": {
+    "required": [
+      "source_quantification",
+      "lean_quantification",
+      "quantification_relation",
+      "source_quantification_basis",
+      "lean_quantification_basis",
+      "named_definition_review",
+      "numeric_semantics_review",
+      "discrete_semantics_review",
+      "algorithm_review",
+      "fidelity_risk_review",
+      "semantic_worlds",
+      "world_bridges"
+    ],
+    "profile_quantification_values": [
+      "not_profile_based",
+      "fixed_profile",
+      "all_profiles",
+      "existential_profile",
+      "mixed_profile_scope"
+    ],
+    "named_definition_item_required": [
+      "lean_obligation_ids",
+      "surface_expression",
+      "unfolded_semantics",
+      "expansion_basis",
+      "recursive_result_dependencies",
+      "recursive_expansion_complete",
+      "classification",
+      "used_as_source_conclusion_evidence"
+    ],
+    "named_definition_coverage_required": [
+      "non_definition_lean_obligation_ids"
+    ],
+    "recursive_named_definition_dependency_required": [
+      "surface_expression",
+      "unfolded_semantics",
+      "expansion_basis"
+    ],
+    "named_definition_recursive_rule": "recursive_result_dependencies is the transitive result-bearing constructor/field/definition closure. A matches verdict requires recursive_expansion_complete=true.",
+    "named_definition_absence_rule": "When definitions_present is false, items must be empty and absence_basis must explain why no result-bearing wrapper occurs. Every Lean obligation must occur in one item or in the explicit non_definition_lean_obligation_ids list.",
+    "named_definition_classification_values": [
+      "substantive",
+      "self_characterizing",
+      "routing_only"
+    ],
+    "source_definition_semantics_review_required_when": "A direct or approved-corrected-target source route pins an item whose source_kind is definition or predicate_vocabulary; when status.json review_surface.llm_statement_review.require_direct_expression_semantics_review is exactly v1, this also includes formula, equation, and algorithmic_formula.",
+    "source_definition_semantics_review_required": [
+      "source_obligation_ids",
+      "lean_obligation_ids",
+      "source_legal_domain",
+      "lean_legal_domain",
+      "domain_relation",
+      "source_outside_domain_behavior",
+      "lean_outside_domain_behavior",
+      "outside_domain_relation",
+      "source_operational_semantics",
+      "lean_operational_semantics",
+      "operational_relation",
+      "advertised_property_status",
+      "advertised_properties"
+    ],
+    "source_definition_semantic_relation_values": [
+      "equivalent",
+      "source_stronger",
+      "lean_stronger",
+      "incomparable",
+      "uncertain"
+    ],
+    "source_definition_advertised_property_status_values": [
+      "properties_reviewed",
+      "no_advertised_properties"
+    ],
+    "source_definition_property_required": [
+      "id",
+      "source_property",
+      "lean_realization",
+      "source_obligation_ids",
+      "lean_obligation_ids",
+      "relation",
+      "lean_evidence_kind",
+      "evidence_basis"
+    ],
+    "source_definition_property_evidence_kind_values": [
+      "expanded_definition_body",
+      "paper_interface_equivalence",
+      "paper_interface_conclusion",
+      "missing"
+    ],
+    "source_definition_semantics_rule": "The review covers every visible source and Lean obligation. For a matches verdict, legal domain, outside-domain/totalization behavior, operational meaning, and every advertised property are equivalent. A paper_interface_equivalence property must cite a Lean equality or iff conclusion; paper_interface_conclusion must cite its exact audited conclusion; expanded_definition_body evidence must bind a definition-valued Lean conclusion.",
+    "numeric_semantics_item_required": [
+      "id",
+      "source_obligation_ids",
+      "lean_obligation_ids",
+      "source_expression",
+      "lean_expression",
+      "source_domain",
+      "lean_domain",
+      "source_operations",
+      "lean_operations",
+      "source_coercions",
+      "lean_coercions",
+      "source_division",
+      "lean_division",
+      "source_rounding",
+      "lean_rounding",
+      "source_normalization",
+      "lean_normalization",
+      "source_strictness",
+      "lean_strictness",
+      "source_zero_denominator",
+      "lean_zero_denominator",
+      "relation",
+      "relation_basis"
+    ],
+    "numeric_semantics_coverage_required": [
+      "non_numeric_source_obligation_ids",
+      "non_numeric_lean_obligation_ids"
+    ],
+    "numeric_semantics_equivalence_rule": "proved_equivalent and witness_specific_equivalent items must name a Lean conclusion containing equality or iff in lean_equivalence_conclusion_id and state it in lean_equivalence_statement. A matches verdict allows only definitionally_equal or proved_equivalent numeric relations.",
+    "numeric_semantics_relation_values": [
+      "definitionally_equal",
+      "proved_equivalent",
+      "witness_specific_equivalent",
+      "different",
+      "uncertain"
+    ],
+    "discrete_semantics_item_required": [
+      "id",
+      "source_obligation_ids",
+      "lean_obligation_ids",
+      "source_expression",
+      "lean_expression",
+      "source_domain",
+      "lean_domain",
+      "source_operation",
+      "lean_operation",
+      "source_order_sensitivity",
+      "lean_order_sensitivity",
+      "relation",
+      "relation_basis"
+    ],
+    "discrete_semantics_coverage_required": [
+      "non_discrete_source_obligation_ids",
+      "non_discrete_lean_obligation_ids"
+    ],
+    "discrete_semantics_equivalence_rule": "proved_equivalent and witness_specific_equivalent items must name a Lean conclusion containing equality or iff in lean_equivalence_conclusion_id and state it in lean_equivalence_statement. A matches verdict allows only definitionally_equal or proved_equivalent discrete relations.",
+    "discrete_semantics_relation_values": [
+      "definitionally_equal",
+      "proved_equivalent",
+      "witness_specific_equivalent",
+      "different",
+      "uncertain"
+    ],
+    "source_claim_level_values": [
+      "not_algorithmic",
+      "existence",
+      "executable",
+      "polynomial_time"
+    ],
+    "algorithm_review_basis_required": [
+      "source_claim_basis",
+      "lean_claim_basis"
+    ],
+    "lean_claim_level_values": [
+      "not_algorithmic",
+      "existence",
+      "noncomputable_existence",
+      "executable",
+      "polynomial_time"
+    ],
+    "runner_provenance_values": [
+      "not_applicable",
+      "same_formalized_runner",
+      "proved_refinement",
+      "independent_characterization",
+      "missing"
+    ],
+    "result_provenance_values": [
+      "not_applicable",
+      "runner_derived",
+      "preservation_bridge",
+      "independent_characterization",
+      "missing"
+    ],
+    "world_bridge_relation_values": [
+      "definitionally_equal",
+      "equivalent",
+      "refines",
+      "simulates",
+      "preserves_result"
+    ],
+    "note": "World ids and surface expressions are routing only. Give each world expanded mathematical semantics and expose every required bridge through a Lean conclusion obligation."
+  },
+  "fidelity_risk_review_schema": {
+    "version": "fidelity-risk-review-v3-shape-action-witness-count-generic-execution",
+    "placement": "Every row stores fidelity_risk_review inside semantic_scope_review.",
+    "required_dimensions": [
+      "adversarial_action_space",
+      "cardinality_fibers",
+      "coherent_extrema_witness",
+      "execution_claim_scope",
+      "output_shape"
+    ],
+    "common_applicable_fields": [
+      "applicable",
+      "source_obligation_ids",
+      "lean_obligation_ids",
+      "source_semantics",
+      "lean_semantics",
+      "relation",
+      "relation_basis",
+      "lean_evidence_statement",
+      "lean_evidence_conclusion_id"
+    ],
+    "nonapplicable_fields": [
+      "applicable",
+      "absence_basis"
+    ],
+    "relation_values": [
+      "equivalent",
+      "incomparable",
+      "lean_stronger",
+      "source_stronger",
+      "uncertain"
+    ],
+    "matches_rule": "Every applicable dimension must have relation=equivalent and bind its semantic evidence to a Lean conclusion obligation included in that dimension's lean_obligation_ids.",
+    "output_shape_fields": [
+      "source_output_shape",
+      "lean_output_shape",
+      "projection_terminal_policy",
+      "arity_basis"
+    ],
+    "adversarial_action_space_fields": [
+      "source_action_space",
+      "lean_action_space",
+      "carrier_capacity_basis",
+      "duplicate_interaction_basis",
+      "nonvacuity_basis",
+      "source_nonvacuous",
+      "lean_nonvacuous"
+    ],
+    "coherent_extrema_witness_fields": [
+      "source_extrema_semantics",
+      "lean_extrema_semantics",
+      "coherent_witness_basis",
+      "runner_refinement_basis",
+      "source_combines_candidatewise_extrema",
+      "lean_combines_candidatewise_extrema",
+      "coherent_witness_status"
+    ],
+    "coherent_witness_status_values": [
+      "missing",
+      "not_required",
+      "proved_jointly_realizable",
+      "same_coherent_witness",
+      "separate_witnesses_only"
+    ],
+    "cardinality_fibers_fields": [
+      "source_counted_object",
+      "lean_counted_object",
+      "realized_fiber_semantics",
+      "surjectivity_basis",
+      "source_counting_semantics",
+      "lean_counting_semantics",
+      "source_claims_exact_cardinality",
+      "lean_claims_exact_cardinality",
+      "claims_syntactic_family_equals_realized_fibers",
+      "surjectivity_status"
+    ],
+    "counting_semantics_values": [
+      "nonempty_realized_fibers",
+      "other",
+      "syntactic_family_cardinality"
+    ],
+    "surjectivity_status_values": [
+      "definitionally_surjective",
+      "missing",
+      "not_required",
+      "proved_surjective"
+    ],
+    "surjectivity_rule": "Exact equality between a syntactic-family count and nonempty realized fibers requires surjectivity recorded as definitionally_surjective or proved_surjective evidence bound to a Lean conclusion.",
+    "execution_claim_scope_fields": [
+      "source_input_scope",
+      "lean_input_scope",
+      "source_state_transition_scope",
+      "lean_state_transition_scope",
+      "source_termination_scope",
+      "lean_termination_scope",
+      "source_numeric_representation",
+      "lean_numeric_representation",
+      "source_cost_scope",
+      "lean_cost_scope",
+      "global_claim_bridge_basis"
+    ],
+    "algorithmic_rule": "Every algorithmic source row must mark execution_claim_scope applicable. A local transition, partial execution, incompatible termination rule, or local cost count does not match an advertised complete or polynomial execution claim without a checked global bridge.",
+    "legacy_compatibility_rule": "Existing fidelity-risk-review-v2 records remain valid under their original execution-scope field set. New reviews must use this v3 domain-neutral field set.",
+    "name_independence_rule": "Dimension, declaration, and function names plus obligation ids only route evidence. Expanded source/Lean semantics and checked conclusions determine the verdict."
+  },
+  "operational_complexity_review_schema": {
+    "version": "operational-complexity-review-v1-transitive-work-accounting",
+    "required_when": "judgment=matches and source_claim_level=polynomial_time and lean_claim_level=polynomial_time",
+    "placement": "Each matching row stores operational_complexity_review as a sibling of semantic_scope_review.",
+    "required": [
+      "schema_version",
+      "executor_semantics",
+      "input_domain",
+      "input_size_measure",
+      "dependency_graph",
+      "worst_case_recurrence",
+      "worst_case_bound",
+      "complexity_lean_conclusion_id",
+      "complexity_statement_binding",
+      "work_accounting",
+      "closure_elimination"
+    ],
+    "dependency_graph_required": [
+      "nodes",
+      "edges",
+      "root_node_ids",
+      "transitive_closure_complete",
+      "all_reachable_branches_complete",
+      "coverage_basis"
+    ],
+    "dependency_node_required": [
+      "id",
+      "operation_semantics",
+      "reachable_branch_domain",
+      "work_accounting_categories"
+    ],
+    "dependency_edge_required": [
+      "from_node_id",
+      "to_node_id",
+      "invocation_semantics",
+      "branch_condition"
+    ],
+    "work_accounting_required_categories": [
+      "traversal_enumeration_length",
+      "duplicate_multiplicity",
+      "materialization_rebuilding",
+      "representation_container_primitives",
+      "exact_rational_bit_growth"
+    ],
+    "work_accounting_item_required": [
+      "category",
+      "status",
+      "operation_semantics",
+      "worst_case_charge_or_absence_basis",
+      "evidence_basis"
+    ],
+    "work_accounting_status_values": [
+      "charged",
+      "proved_absent",
+      "not_applicable",
+      "missing",
+      "excluded_by_claim"
+    ],
+    "full_runtime_match_status_values": [
+      "charged",
+      "proved_absent",
+      "not_applicable"
+    ],
+    "charged_category_rule": "Every charged category must occur in at least one dependency node's work_accounting_categories; proved_absent and not_applicable items must instead give their substantive absence basis.",
+    "closure_elimination_required": [
+      "material"
+    ],
+    "non_material_closure_elimination_required": [
+      "non_material_basis"
+    ],
+    "material_closure_elimination_required": [
+      "evidence_kind",
+      "evidence_artifact_sha256",
+      "audited_source_sha256",
+      "evidence_locator",
+      "old_dependency_semantics",
+      "semantic_binding",
+      "elimination_basis",
+      "symbol_names_used_as_evidence"
+    ],
+    "closure_evidence_kind_values": [
+      "generated_ir_call_graph",
+      "cost_threaded_executor"
+    ],
+    "note": "Node ids, edge endpoints, declaration names, and generated symbols are routing only. A full runtime match requires semantic coverage of every reachable operation and branch, a worst-case bound, and complete work accounting."
+  },
+  "items": {}
+}

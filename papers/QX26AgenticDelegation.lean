@@ -1,0 +1,1 @@
+import QX26AgenticDelegation.PaperInterface

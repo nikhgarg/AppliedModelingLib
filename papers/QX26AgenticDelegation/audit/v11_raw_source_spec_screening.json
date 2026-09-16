@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "paper": "QX26AgenticDelegation",
+  "audit_kind": "raw_source_to_expanded_spec_screening",
+  "prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
+  "validator": "",
+  "validated_at": "",
+  "comment": "Each row must compare only the exact byte-pinned source-anchor bundle and required source context with one direct expanded PaperInterface Spec. The paired proof endpoint is separate Lean evidence. Reissue with scripts/reissue_v11_raw_source_spec_screening.py after an explicit reviewer decision; do not enter a map summary, theorem name, wrapper, or Lean-to-TeX paraphrase as semantic input.",
+  "items": {}
+}

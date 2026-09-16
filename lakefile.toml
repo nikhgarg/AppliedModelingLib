@@ -243,3 +243,7 @@ srcDir = "papers"
 [[lean_lib]]
 name = "LBG22StrategicRanking"
 srcDir = "papers"
+
+[[lean_lib]]
+name = "QX26AgenticDelegation"
+srcDir = "papers"

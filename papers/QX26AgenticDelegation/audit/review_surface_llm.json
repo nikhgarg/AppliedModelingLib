@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "paper": "QX26AgenticDelegation",
+  "validator": "",
+  "validator_type": "",
+  "validated_at": "",
+  "prompt_version": "review-surface-v2-semantic-paper-facing",
+  "comment": "",
+  "prompt_summary": [
+    "Judge whether each dashboard row is genuinely paper-facing, not just source-sounding.",
+    "Rows should expose source definitions, formulas, named statements, explicit source conditions, or documented boundaries.",
+    "Reject or mark needs_curation for rows that are merely proof plumbing, broad packages, replay/certificate/process/bridge internals, or theorem-label paraphrases without source-facing mathematical content.",
+    "Do not approve by Lean declaration name, phrase overlap, or source-looking terminology."
+  ],
+  "judgment": "",
+  "reason": "",
+  "review_rows": 0,
+  "review_surface_sha256": "",
+  "items": {}
+}

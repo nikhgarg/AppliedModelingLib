@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "paper": "QX26AgenticDelegation",
+  "prompt_version": "library-statement-match-v1-verbatim-source-anchor-expanded-definition",
+  "target_protocol": "expanded_library_definition_v1",
+  "comment": "For every material reusable EconCSLib definition used by a source-facing Spec, record the exact declaration and a source-map item. Compare only that item's byte-pinned verbatim source bundle with the exact bounded library Lean definition. A name, docstring, glossary, Lean-to-TeX prose, or theorem label is not semantic input. Leave a primitive absent until an exact source connection is identified; do not manufacture a matches judgment.",
+  "items": {}
+}

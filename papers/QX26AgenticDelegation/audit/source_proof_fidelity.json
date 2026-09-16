@@ -1,0 +1,84 @@
+{
+  "schema": 1,
+  "paper": "QX26AgenticDelegation",
+  "source_artifact_path": "papers/QX26AgenticDelegation/source-audited.pdf",
+  "source_artifact_sha256": "cddc048711c43022d5fd01b995bfb1114c728c8c879b809b5fdc354a391d3c35",
+  "review_status": "not_started",
+  "reviewed_proof_scopes": [],
+  "model_conventions": [],
+  "checked_proof_steps": [],
+  "model_convention_entry_schema": {
+    "required": [
+      "id",
+      "source_locator",
+      "classification",
+      "formal_meaning",
+      "why_needed",
+      "checked_scope"
+    ],
+    "optional": [
+      "unresolved_relation_to_literal_source"
+    ]
+  },
+  "checked_proof_step_entry_schema": {
+    "required": [
+      "id",
+      "source_locator",
+      "source_step",
+      "checked_conclusion",
+      "scope"
+    ]
+  },
+  "defects": [],
+  "defect_entry_schema": {
+    "required": [
+      "id",
+      "source_locator",
+      "source_claim",
+      "defect_kind",
+      "affected_source_locators",
+      "statement_impact",
+      "repair_obligation",
+      "acceptance_condition",
+      "resolution",
+      "resolution_evidence"
+    ],
+    "defect_kind_values": [
+      "algebra_or_sign",
+      "inequality_direction",
+      "quantifier_or_uniformity",
+      "domain_or_endpoint",
+      "index_or_integrality",
+      "event_or_measure",
+      "normalization_or_scaling",
+      "logical_dependency",
+      "other"
+    ],
+    "statement_impact_values": [
+      "proof_only",
+      "source_statement",
+      "uncertain"
+    ],
+    "status_impact_values": [
+      "formalized_note",
+      "formalized_with_caveat",
+      "partially_formalized"
+    ],
+    "resolution_values": [
+      "repaired_in_lean",
+      "open_proof_obligation",
+      "corrected_source_statement",
+      "resolved_in_current_source"
+    ]
+  },
+  "policy": [
+    "Review source proof text by exact source locator and mathematical claim; Lean declaration names are navigation only and are not evidence.",
+    "Give every defect a stable unique id using letters, digits, dot, underscore, or hyphen so source-map contracts can route its repair without depending on Lean names.",
+    "A source proof defect is not a paper/model assumption. Do not classify its repaired conclusion as validated_source_assumption.",
+    "Record every explicit formalization convention that resolves a source-model ambiguity in model_conventions, with the literal source relation and checked scope. A convention is not a literal source theorem without a source-side semantic bridge.",
+    "Record every source proof step independently checked by Lean in checked_proof_steps, including its exact source step, checked conclusion, and scope. A finite/event-level step does not silently establish an arbitrary-space, pointwise-conditioning, or arbitrary-partition claim.",
+    "For every defect, record the mathematical repair obligation and acceptance condition. Resolve it by a Lean derivation, leave it as an explicit open proof obligation, or record an explicit corrected source statement.",
+    "For every defect, separately record status_impact and status_impact_rationale. statement_impact says which source text changed; status_impact says whether the issue is a formalized note, a substantial source-paper caveat with a fully proved correction, or a partial-formalization boundary.",
+    "A proof-only defect may coexist with a source-faithful final theorem only after the replacement derivation is proved. A minor source-statement repair may also be formalized_note when the substantive advertised endpoint is unchanged. Only a substantial central source-paper error with a fully proved corrected endpoint justifies formalized_with_caveat."
+  ]
+}

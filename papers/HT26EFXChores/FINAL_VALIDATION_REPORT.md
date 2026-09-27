@@ -1,6 +1,6 @@
 # Final Validation Report: EFX for Additive Chores: Nonexistence, Pareto Incompatibility, and Bi-Valued Existence
 
-Updated: 2026-09-08
+Updated: 2026-09-27
 
 ## 1. Human Verdict
 
@@ -126,6 +126,10 @@ rendered DAG was visually inspected for legibility, clipping, and node-edge
 overlap.
 
 ## 17. Validation Checks
+
+Xiaohui Bei confirmed that the Lean statements of Theorems 1–3 and the EFX,
+feasibility, and Pareto-optimality definitions match the paper. His review
+covered statement correspondence and mathematical meaning. [Review record](docs/HUMAN_REVIEW.md).
 
 The [focused-build receipt](FINAL_CLOSURE_RECEIPT.md) records a passing
 paper build. The [import-closure receipt](FINAL_CLOSURE_RECEIPT.md)

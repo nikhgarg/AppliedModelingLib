@@ -774,20 +774,7 @@
       ],
       "audit_note": "The source-facing limiting regime records explicit finite-error/small-bids conditions used for the Theorem 8 limit; it must not be read as assumed convergence of the theorem conclusion.",
       "claim_bearing": false,
-      "corrected_target": {
-        "archival_equivalence_claimed": false,
-        "archival_source_locator": "cited publication:718-773",
-        "archival_source_quote_sha256": "6ef939cbe600a3647ff45735199a85c0646cea4846db728bed3e4c51b8cc2bfc",
-        "corrected_target_review_sha256": "8ca09b4470be7859a14c51c5e52ecdd1c3fe9abb8b363de7196df725f6543c21",
-        "corrected_target_sha256": "db9dcce5001ef6a9a2ffa42ee312960c4713a1568ead2719789456ce3b15fd1c",
-        "governing_defect_ids": [
-          "MSVV07-T8-TYPED-LIMIT-REGIME-04"
-        ],
-        "schema": 1,
-        "statement": "The approved small-bids regime is a typed family of finite instances with nonnegative bids, positive budgets, a parameter in [0,1], small bids, and a proved accounting error tending to zero."
-      },
-      "coverage_status": "corrected_source_statement",
-      "inventory_role": "source_semantic_declaration",
+      "inventory_role": "auxiliary_generalization",
       "lean_declarations": [
         "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.paperSmallBidsLimitFamily_fields"
       ],
@@ -807,13 +794,10 @@
           "quoted_text_sha256": "f5f5fa5821761a55fdad52752800788738c1cc010a366ac7db0b9161ed2fa558"
         }
       ],
-      "source_defect_ids": [
-        "MSVV07-T8-TYPED-LIMIT-REGIME-04"
-      ],
       "source_kind": "assumption",
       "source_location": "cited publication:718-773; cited publication:785-819",
-      "source_note": "This visible strengthening supplies a typed limit regime without assuming OPT, revenue, or competitive-ratio convergence.",
-      "source_status": "corrected",
+      "source_note": "This typed family is retained as a useful generic finite-error corollary. It is not the source Theorem 8 route and receives no source-theorem credit; the source-normalized slab-limit theorem is reviewed separately.",
+      "source_status": "auxiliary_generalization",
       "source_url": "https://doi.org/10.1145/1284320.1284321",
       "statement": "Theorem 8 takes its finite discretization/small-bids parameter to infinity without a typed varying-instance family definition."
     },
@@ -822,7 +806,6 @@
         "paperSmallBids_iff"
       ],
       "claim_bearing": false,
-      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
         "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.paperSmallBids_iff"
       ],
@@ -1308,29 +1291,16 @@
     },
     "section4_balance_exact_tightness_instance": {
       "aliases": [],
-      "audit_note": "The direct row now supplies a dedicated cohort-fluid BALANCE realization of the geometric factor-LP witness rather than pairing the LP algebra with the unrelated Section 7 bound. Its active bidder mass decays geometrically; each mass drop is exactly the corresponding final-type count; active bidders share the displayed slab state and increment; every slab accounts for its full active allocation mass; the realized type masses partition total budget and make every displayed LP row tight; and revenue computed from those final types is exactly N minus the tight LP objective. MSVV07 cites KP00 rather than printing the external finite incidence construction, so the provenance label is retained and the row claims the internally derived fluid realization, not unprinted KP00 incidence data.",
+      "audit_note": "The direct row now supplies an explicit finite nested-cohort BALANCE family for the geometric factor-LP value: for each m it has unit budgets, equal bid 1/(m+1), a deterministic Balance tie rule, a history covering every query, an explicit offline assignment of value (m+1)^m, and an actual online/offline ratio equal to the factor-LP value and converging to 1-1/e. MSVV07 cites KP00 rather than printing that external incidence construction, so the source map records a source-compatible existential witness and makes neither an identification with KP00 nor a correction claim.",
       "claim_bearing": true,
-      "corrected_target": {
-        "archival_equivalence_claimed": false,
-        "archival_source_locator": "cited publication:247-493",
-        "archival_source_quote_sha256": "b231bdfab975359863f636ed154877fdaae672775c24fb9665d1d0cfc07854d0",
-        "corrected_target_review_sha256": "66fcc2d634f8b426410ec98650392a64e436180af2029372e68d15e0efbe9c4b",
-        "corrected_target_sha256": "7c685b1623e7b7d0516c282ba38fec02fcd30cd70392470ea9b49d566d8c26f4",
-        "governing_defect_ids": [
-          "MSVV07-S4-EXTERNAL-TIGHTNESS-WITNESS-06"
-        ],
-        "schema": 1,
-        "statement": "The approved target is the fully specified factor-LP tight fluid execution with exact slab, LP-row, and revenue identities, together with its unit-budget limiting ratio of 1-1/e."
-      },
-      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
-        "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section4_balance_exact_tightness_instance"
+        "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section4_finite_balance_tightness_instance"
       ],
       "semantic_contract": {
-        "evidence_declaration": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section4_balance_exact_tightness_instance",
+        "evidence_declaration": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section4_finite_balance_tightness_instance",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
-        "spec_declaration": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section4_balance_exact_tightness_instanceSpec"
+        "spec_declaration": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section4_finite_balance_tightness_instanceSpec"
       },
       "source_anchor_evidence": [
         {
@@ -1344,23 +1314,20 @@
       "source_claim_atoms": [
         {
           "id": "section4.balance.exact.tightness.instance",
-          "reviewed_lean_route": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section4_balance_exact_tightness_instance",
+          "reviewed_lean_route": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section4_finite_balance_tightness_instance",
           "semantic_claim": "After Lemma 3, Section 4 claims there is an instance whose factor-LP inequalities are all tight, so Balance's competitive ratio is exactly 1-1/e rather than only at least that value.",
           "source_locator": "cited publication:488-495",
           "source_quote_sha256": "403632d0ca1479488ba68b16cc8d50e7d7db59070f5115b50d1ed3bb0bdee6a0"
         }
       ],
-      "source_defect_ids": [
-        "MSVV07-S4-EXTERNAL-TIGHTNESS-WITNESS-06"
-      ],
       "source_kind": "claim",
       "source_location": "cited publication:488-495",
-      "source_note": "This is an explicit internal asymptotic fluid witness model, not a claim to have recovered the omitted finite KP00 instance.",
-      "source_status": "corrected",
+      "source_note": "MSVV's claim is existential. The formalization proves it with an explicit finite nested-cohort family, without claiming to reconstruct KP00's unprinted incidence data or to correct the source.",
+      "source_status": "direct_source_statement",
       "source_url": "https://doi.org/10.1145/1284320.1284321",
-      "statement": "Section 4 cites an external KP00 tight finite BALANCE instance of factor 1-1/e without printing the construction.",
+      "statement": "Section 4 cites KP00 as an example of a tight finite BALANCE instance, without printing its incidence construction.",
       "support_lean_declarations": [
-        "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section4_balance_exact_tightness_instanceSpec"
+        "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section4_finite_balance_tightness_instanceSpec"
       ]
     },
     "section4_balance_revenue_factor_lp_bridge_formula": {
@@ -1588,9 +1555,26 @@
       "aliases": [
         "section4_lemma2_factor_revealing_lp_constraint"
       ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "The Section 4 idealized factor-revealing route: the local BALANCE score rule gives Lemma 1, its finite event sum gives the prefix inequality, and exact endpoint/no-straddling accounting gives the beta identity. The fully finite main competitive route is checked independently through occurrence-run Theorem 8 accounting.",
+          "classification": "source_supported_representation_convention",
+          "formal_meaning": "Section 4 explicitly assumes that type-j bidders finish exactly at j/k and that payments do not straddle slabs. The finite idealized execution records each OPT-assigned query, its common equal bid, its Balance and OPT slabs, the source score comparison, exhausted unit budgets, and the per-slab payment identity.",
+          "id": "MSVV07-SECTION4-SLAB-APPROXIMATION-11",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "1ff84f94f130bda96126c73c4d468683cf22bc1188cfd9d5dc7ee141be86fc9f",
+          "source_locator": "cited publication:273-284",
+          "why_needed": "The source calls this an N/k negligible-error simplification before using the beta formula exactly. The selected Lemma 2 endpoint sums the proved per-query Lemma 1 order relation over this ledger and derives the beta prefix from its local slab accounting."
+        }
+      ],
       "claim_bearing": true,
       "lean_declarations": [
         "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section4_lemma2_factor_revealing_lp_constraint"
+      ],
+      "model_convention_ids": [
+        "MSVV07-SECTION4-SLAB-APPROXIMATION-11"
       ],
       "semantic_contract": {
         "evidence_declaration": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section4_lemma2_factor_revealing_lp_constraint",
@@ -1611,7 +1595,7 @@
         {
           "id": "section4.lemma2.factor.revealing.lp.constraint",
           "reviewed_lean_route": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section4_lemma2_factor_revealing_lp_constraint",
-          "semantic_claim": "- Section 4 Lemma 2: Lemma 1's prefix accounting yields the factor-revealing LP row constraint.",
+          "semantic_claim": "- Section 4 Lemma 2: the source's idealized equal-bid BALANCE execution derives the factor-revealing LP row from its local allocation rule, exhausted-OPT normalization, and exact-type/no-straddling slab accounting.",
           "source_locator": "cited publication:273-330",
           "source_quote_sha256": "273edcf2810af2a90847123b311d1f7e3a8496b48e4b975c23e4e5779ee9932f"
         }
@@ -1619,7 +1603,7 @@
       "source_kind": "lemma",
       "source_location": "cited publication:273-330",
       "source_url": "https://doi.org/10.1145/1284320.1284321",
-      "statement": "- Section 4 Lemma 2: Lemma 1's prefix accounting yields the factor-revealing LP row constraint.",
+      "statement": "- Section 4 Lemma 2: the source's idealized equal-bid BALANCE execution derives the factor-revealing LP row from its local allocation rule, exhausted-OPT normalization, and exact-type/no-straddling slab accounting.",
       "support_lean_declarations": [
         "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section4_lemma2_factor_revealing_lp_constraintSpec"
       ]
@@ -2130,9 +2114,26 @@
       "aliases": [
         "section5_lemma5_tradeoff_rhs_eq_base_add_delta"
       ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only Lemmas 5 and 6. Lemma 5 is exact for the source idealization; Lemma 6 is the actual dual-induced runner comparison with its explicit endpoint term. The aggregate 2N/k accounting is separately recorded under MSVV07-SECTION5-SLAB-APPROXIMATION-10.",
+          "classification": "source_supported_representation_convention",
+          "formal_meaning": "Section 5 repeats the source's exact-type/no-straddling idealization before defining alpha and beta. The selected Lemma 5 derives beta from that definition, while the selected actual-run Lemma 6 at Theorem 8's dual tradeoff exposes its finite right-endpoint term.",
+          "id": "MSVV07-SECTION5-LEMMA5-6-SLAB-READING-12",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "a8fe04b07af09bf719173a49e8615466f45b318a15842d83a592b19f2cc86d94",
+          "source_locator": "cited publication:550-593",
+          "why_needed": "The source's displayed Lemma 5 identity and pointwise Lemma 6 wording suppress the difference between right-closed final types and an actual finite payment crossing a slab boundary. The checked interfaces do not accept beta or the maximizing-score inequality as caller certificates."
+        }
+      ],
       "claim_bearing": true,
       "lean_declarations": [
         "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section5_lemma5_tradeoff_rhs_eq_base_add_delta"
+      ],
+      "model_convention_ids": [
+        "MSVV07-SECTION5-LEMMA5-6-SLAB-READING-12"
       ],
       "semantic_contract": {
         "evidence_declaration": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section5_lemma5_tradeoff_rhs_eq_base_add_delta",
@@ -2153,7 +2154,7 @@
         {
           "id": "section5.lemma5.tradeoff.rhs.eq.base.add.delta",
           "reviewed_lean_route": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section5_lemma5_tradeoff_rhs_eq_base_add_delta",
-          "semantic_claim": "- Section 5 Lemma 5: the perturbed tradeoff-revealing LP right-hand side equals the base LP right-hand side plus the paper delta term.",
+          "semantic_claim": "- Section 5 Lemma 5: under the source's stated idealized slab accounting, the perturbed tradeoff-revealing LP right-hand side equals the base LP right-hand side plus the paper delta term.",
           "source_locator": "cited publication:560-577",
           "source_quote_sha256": "771814742be9191bc66676777fb9ff92386490ea78e0698fea25e562c53ca118"
         }
@@ -2161,7 +2162,7 @@
       "source_kind": "lemma",
       "source_location": "cited publication:560-577",
       "source_url": "https://doi.org/10.1145/1284320.1284321",
-      "statement": "- Section 5 Lemma 5: the perturbed tradeoff-revealing LP right-hand side equals the base LP right-hand side plus the paper delta term.",
+      "statement": "- Section 5 Lemma 5: under the source's stated idealized slab accounting, the perturbed tradeoff-revealing LP right-hand side equals the base LP right-hand side plus the paper delta term.",
       "support_lean_declarations": [
         "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section5_lemma5_tradeoff_rhs_eq_base_add_deltaSpec"
       ]
@@ -2170,9 +2171,38 @@
       "aliases": [
         "section5_lemma6_per_query_tradeoff"
       ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Section 5 Lemma 4 and the actual-run alpha construction only. This convention fixes the input domain; it supplies neither the monotonicity of psi, the LP feasibility/value identities, nor the dual optimality conclusion.",
+          "classification": "source_supported_representation_convention",
+          "formal_meaning": "The Section 5 AdWords input is represented by a PaperInstance with entrywise nonnegative bids and strictly positive daily budgets: I.NonnegativeBids and I.PositiveBudgets.",
+          "id": "MSVV07-ADWORDS-FINITE-DOMAIN-09",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "6fd41d48d22aada66749343e55bcccc30fcbeff48b10686ceee416c6364883a3",
+          "source_locator": "cited publication:198-210",
+          "why_needed": "The source speaks of bids, revenue, and daily budgets, then defines final type by spent budget fraction. PaperInstance totalizes those fields as arbitrary reals, so the ordinary AdWords domain must be explicit at the endpoint that constructs type counts from spent/budget fractions."
+        },
+        {
+          "checked_scope": "Only Lemmas 5 and 6. Lemma 5 is exact for the source idealization; Lemma 6 is the actual dual-induced runner comparison with its explicit endpoint term. The aggregate 2N/k accounting is separately recorded under MSVV07-SECTION5-SLAB-APPROXIMATION-10.",
+          "classification": "source_supported_representation_convention",
+          "formal_meaning": "Section 5 repeats the source's exact-type/no-straddling idealization before defining alpha and beta. The selected Lemma 5 derives beta from that definition, while the selected actual-run Lemma 6 at Theorem 8's dual tradeoff exposes its finite right-endpoint term.",
+          "id": "MSVV07-SECTION5-LEMMA5-6-SLAB-READING-12",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "a8fe04b07af09bf719173a49e8615466f45b318a15842d83a592b19f2cc86d94",
+          "source_locator": "cited publication:550-593",
+          "why_needed": "The source's displayed Lemma 5 identity and pointwise Lemma 6 wording suppress the difference between right-closed final types and an actual finite payment crossing a slab boundary. The checked interfaces do not accept beta or the maximizing-score inequality as caller certificates."
+        }
+      ],
       "claim_bearing": true,
       "lean_declarations": [
         "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section5_lemma6_per_query_tradeoff"
+      ],
+      "model_convention_ids": [
+        "MSVV07-ADWORDS-FINITE-DOMAIN-09",
+        "MSVV07-SECTION5-LEMMA5-6-SLAB-READING-12"
       ],
       "semantic_contract": {
         "evidence_declaration": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section5_lemma6_per_query_tradeoff",
@@ -2193,7 +2223,7 @@
         {
           "id": "section5.lemma6.per.query.tradeoff",
           "reviewed_lean_route": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section5_lemma6_per_query_tradeoff",
-          "semantic_claim": "- Section 5 Lemma 6: each query satisfies the pointwise tradeoff inequality used in the perturbation argument.",
+          "semantic_claim": "- Section 5 Lemma 6 at Theorem 8's dual-induced tradeoff: the actual occurrence runner proves each finite query comparison with its explicit right-endpoint slab term.",
           "source_locator": "cited publication:583-593",
           "source_quote_sha256": "25b1cd4c1b7cba8de60a50491a6165adf315eeddd4e2476095da3708c70b58fa"
         }
@@ -2201,7 +2231,7 @@
       "source_kind": "lemma",
       "source_location": "cited publication:583-593",
       "source_url": "https://doi.org/10.1145/1284320.1284321",
-      "statement": "- Section 5 Lemma 6: each query satisfies the pointwise tradeoff inequality used in the perturbation argument.",
+      "statement": "- Section 5 Lemma 6 at Theorem 8's dual-induced tradeoff: the actual occurrence runner proves each finite query comparison with its explicit right-endpoint slab term.",
       "support_lean_declarations": [
         "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section5_lemma6_per_query_tradeoffSpec"
       ]
@@ -2210,9 +2240,39 @@
       "aliases": [
         "section5_lemma7_weighted_perturbation_bound"
       ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Section 5 Lemma 4 and the actual-run alpha construction only. This convention fixes the input domain; it supplies neither the monotonicity of psi, the LP feasibility/value identities, nor the dual optimality conclusion.",
+          "classification": "source_supported_representation_convention",
+          "formal_meaning": "The Section 5 AdWords input is represented by a PaperInstance with entrywise nonnegative bids and strictly positive daily budgets: I.NonnegativeBids and I.PositiveBudgets.",
+          "id": "MSVV07-ADWORDS-FINITE-DOMAIN-09",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "6fd41d48d22aada66749343e55bcccc30fcbeff48b10686ceee416c6364883a3",
+          "source_locator": "cited publication:198-210",
+          "why_needed": "The source speaks of bids, revenue, and daily budgets, then defines final type by spent budget fraction. PaperInstance totalizes those fields as arbitrary reals, so the ordinary AdWords domain must be explicit at the endpoint that constructs type counts from spent/budget fractions."
+        },
+        {
+          "checked_scope": "Only the selected actual-run Section 5 Lemma 7 endpoint at Theorem 8's dual-induced psi_k, and the finite Theorem 8 route that consumes it. The generic idealized summation lemma remains a conditional reusable helper; this convention does not claim a checked actual-run theorem for arbitrary psi. The limiting 1-1/e conclusion is unchanged because 2N/k tends to zero.",
+          "classification": "source_supported_representation_convention",
+          "formal_meaning": "For the Section 5 Lemma 7 use at Theorem 8's dual-induced tradeoff, the source's stated exact-type/no-straddling simplification is made finite by the occurrence runner's checked right-endpoint and boundary-crossing accounting. The resulting actual-run weighted perturbation is at most 2N/k, where k is the number of slabs.",
+          "id": "MSVV07-SECTION5-SLAB-APPROXIMATION-10",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "964c64c01450e0ac408be4ed6780a2c607112d63c118271a96e9d94eb6c43089",
+          "source_locator": "cited publication:597-713",
+          "why_needed": "The source explicitly calls the exact-type simplification a negligible-error convention, while its displayed Lemma 7 proof then treats the type and slab accounting as exact. The selected endpoint must construct that accounting from the actual run instead of taking pointwise and aggregate accounting facts as caller-supplied certificates."
+        }
+      ],
+      "audit_note": "Formalized under the source's stated finite-slab clarification: the selected Theorem 8 psi_k route derives final types, pointwise comparison, and slab accounting from the occurrence runner, giving 2N/k for the right-endpoint and boundary-crossing errors. The generic idealized Lemma 7 summation helper is retained only as a conditional internal result, not credited as the source endpoint.",
       "claim_bearing": true,
       "lean_declarations": [
         "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section5_lemma7_weighted_perturbation_bound"
+      ],
+      "model_convention_ids": [
+        "MSVV07-ADWORDS-FINITE-DOMAIN-09",
+        "MSVV07-SECTION5-SLAB-APPROXIMATION-10"
       ],
       "semantic_contract": {
         "evidence_declaration": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section5_lemma7_weighted_perturbation_bound",
@@ -2233,7 +2293,7 @@
         {
           "id": "section5.lemma7.weighted.perturbation.bound",
           "reviewed_lean_route": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section5_lemma7_weighted_perturbation_bound",
-          "semantic_claim": "- Section 5 Lemma 7: summing the pointwise tradeoff inequalities yields the weighted perturbation bound, including the paper-shaped N/k form.",
+          "semantic_claim": "- Section 5 Lemma 7 at Theorem 8's dual-induced tradeoff: the actual occurrence runner constructs the weighted perturbation accounting, with explicit finite 2N/k slab error for the source's stated negligible approximation.",
           "source_locator": "cited publication:597-699",
           "source_quote_sha256": "6e9b259a93747fa2d0a784392b53aca1b1d97a936e51ebeae258442a86350476"
         }
@@ -2241,7 +2301,7 @@
       "source_kind": "lemma",
       "source_location": "cited publication:597-699",
       "source_url": "https://doi.org/10.1145/1284320.1284321",
-      "statement": "- Section 5 Lemma 7: summing the pointwise tradeoff inequalities yields the weighted perturbation bound, including the paper-shaped N/k form.",
+      "statement": "- Section 5 Lemma 7 at Theorem 8's dual-induced tradeoff: the actual occurrence runner constructs the weighted perturbation accounting, with explicit finite 2N/k slab error for the source's stated negligible approximation.",
       "support_lean_declarations": [
         "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section5_lemma7_weighted_perturbation_boundSpec"
       ]
@@ -3727,72 +3787,6 @@
         "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section8_weighted_effective_bid_formulaSpec"
       ]
     },
-    "theorem8_balance_msvv_competitive_of_small_bids_limit_family": {
-      "aliases": [
-        "theorem8_balance_msvv_competitive_of_small_bids_limit_family"
-      ],
-      "claim_bearing": true,
-      "corrected_target": {
-        "archival_equivalence_claimed": false,
-        "archival_source_locator": "cited publication:718-773",
-        "archival_source_quote_sha256": "6ef939cbe600a3647ff45735199a85c0646cea4846db728bed3e4c51b8cc2bfc",
-        "corrected_target_review_sha256": "f80efc73da136744b2d4c38ee35dc4a29661964617b52c8fe9f2ef93dcfc5ebd",
-        "corrected_target_sha256": "8dc8e213771e54b4bf7e1415686bb63e54b23f0779a4bea061db61d3aee239d8",
-        "governing_defect_ids": [
-          "MSVV07-T8-TYPED-LIMIT-REGIME-04"
-        ],
-        "schema": 1,
-        "statement": "For every positive additive tolerance, the Balance/MSVV 1 - 1/e competitive inequality holds eventually for the approved typed small-bids family when its proved finite accounting error tends to zero."
-      },
-      "coverage_status": "corrected_source_statement",
-      "lean_declarations": [
-        "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem8_balance_msvv_competitive_of_small_bids_limit_family"
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem8_balance_msvv_competitive_of_small_bids_limit_family",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem8_balance_msvv_competitive_of_small_bids_limit_familySpec"
-      },
-      "source_anchor_evidence": [
-        {
-          "line_end": 773,
-          "line_start": 718,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 8 For function ψk defined as\nψk (i) :=\n\nk−1\nX\nj=i\n\n1\nyj∗ = 1 − (1 − )k−i+1\nk\n\nthe competitive ratio of the algorithm is (1 − 1e ), as k tends to infinity.\nProof :\nBy Lemma 4, the optimal solution to L(π, ψ) and D(π, ψ) has value l · y ∗ . By\nLemma 5 this equals (b + ∆) · y ∗ ≤ N/e + ∆ · y ∗ (since b · y ∗ ≤ N/e, from Section 4).\nNow,\n∗\n\n∆·y =\n\nk−1\nX\n\ny ∗i ((α1 − β1 ) + . . . + (αi − βi )\n\nk−1\nX\n\n∗\n(αi − βi )(yi∗ + . . . + yk−1\n)\n\nk−1\nX\n\n(αi − βi )ψ(i)\n\ni=1\n\n=\n\ni=1\n\n=\n\ni=1\n\n≤\n\nN\n,\nk\n\nwhere the last equality follows from our choice of the function ψ, and the inequality follows\nfrom Lemma 7. As k tends to infinity, we get that the competitive ratio of our algorithm is\n(1 − 1e ).",
-          "quoted_text_sha256": "6ef939cbe600a3647ff45735199a85c0646cea4846db728bed3e4c51b8cc2bfc"
-        },
-        {
-          "line_end": 819,
-          "line_start": 785,
-          "publication_locator": "cited publication",
-          "quoted_text": "Lemma 7 gives us\nX\n\nψ(i)αi ≤\n\ni\n\nwhere the choice of ψ is:\n\nX\n\nψ(i)βi\n\ni\n\n1\nψ(i) = 1 − (1 − )k−i+1\nk\n\nCombining these relations we get:\nk\nX\n\nαi\n\ni=1\n\nk−i+1\nN\n≤\nk\ne\n\nBut the left side of the inequality above is precisely the amount of money left unspent at the\nend of the algorithm. This establishes that the competitive ratio is 1 − 1/e.",
-          "quoted_text_sha256": "f5f5fa5821761a55fdad52752800788738c1cc010a366ac7db0b9161ed2fa558"
-        }
-      ],
-      "source_claim_atoms": [
-        {
-          "id": "theorem8.balance.msvv.competitive.small.bids.limit",
-          "identity_schema": 2,
-          "reviewed_lean_route": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem8_balance_msvv_competitive_of_small_bids_limit_family",
-          "semantic_claim": "Theorem 8 states that the Balance/MSVV competitive ratio tends to 1-1/e as the finite small-bids discretization parameter tends to infinity.",
-          "source_locator": "cited publication:718-773",
-          "source_quote_sha256": "6ef939cbe600a3647ff45735199a85c0646cea4846db728bed3e4c51b8cc2bfc"
-        }
-      ],
-      "source_defect_ids": [
-        "MSVV07-T8-TYPED-LIMIT-REGIME-04"
-      ],
-      "source_kind": "theorem",
-      "source_location": "cited publication:718-773; cited publication:785-819",
-      "source_note": "The conclusion is the source's asymptotic competitive claim; the visible typed family and exact vanishing finite-error premise are the approved non-equivalent formalization repair.",
-      "source_status": "corrected",
-      "source_url": "https://doi.org/10.1145/1284320.1284321",
-      "statement": "Theorem 8 states that the algorithm's competitive ratio tends to 1-1/e as its discretization/small-bids parameter tends to infinity, without a typed varying-instance or error-convergence regime.",
-      "support_lean_declarations": [
-        "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem8_balance_msvv_competitive_of_small_bids_limit_familySpec"
-      ]
-    },
     "theorem8_corrected_unspent_fraction_formula": {
       "aliases": [
         "theorem8_corrected_unspent_fraction_formula",
@@ -4001,9 +3995,77 @@
         "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem8_simple_proof_weighted_alpha_beta_inequalitySpec"
       ]
     },
+    "theorem8_source_unit_budget_competitive_in_small_bids_limit": {
+      "aliases": [
+        "theorem8_source_unit_budget_competitive_in_small_bids_limit",
+        "theorem8_source_unit_budget_finite_competitive_with_explicit_slab_error"
+      ],
+      "claim_bearing": true,
+      "corrected_target": {
+        "archival_equivalence_claimed": false,
+        "archival_source_locator": "cited publication:718-773",
+        "archival_source_quote_sha256": "6ef939cbe600a3647ff45735199a85c0646cea4846db728bed3e4c51b8cc2bfc",
+        "corrected_target_review_sha256": "8e3d3f9bb17d150697a1139f8b12f7ba8f8c2c4c7e9730d0241f377532b77cc6",
+        "corrected_target_sha256": "28ad8c262c79990f530c376bf158f3fbabd538c398746697a992b0b9ffd83785",
+        "governing_defect_ids": [
+          "MSVV07-T8-TRADEOFF-EXPONENT-01"
+        ],
+        "schema": 1,
+        "statement": "Under the paper's stated temporary unit-budget and exhaustive-optimum normalization, after the documented finite suffix correction (exponent k-i and unspent coefficient (k-i)/k), Theorem 8's Balance/MSVV competitive ratio tends to 1-1/e as its discretization/small-bids parameter tends to infinity."
+      },
+      "coverage_status": "corrected_source_statement",
+      "lean_declarations": [
+        "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem8_source_unit_budget_competitive_in_small_bids_limit"
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem8_source_unit_budget_competitive_in_small_bids_limit",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem8_source_unit_budget_competitive_in_small_bids_limitSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 773,
+          "line_start": 718,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 8 For function ψk defined as\nψk (i) :=\n\nk−1\nX\nj=i\n\n1\nyj∗ = 1 − (1 − )k−i+1\nk\n\nthe competitive ratio of the algorithm is (1 − 1e ), as k tends to infinity.\nProof :\nBy Lemma 4, the optimal solution to L(π, ψ) and D(π, ψ) has value l · y ∗ . By\nLemma 5 this equals (b + ∆) · y ∗ ≤ N/e + ∆ · y ∗ (since b · y ∗ ≤ N/e, from Section 4).\nNow,\n∗\n\n∆·y =\n\nk−1\nX\n\ny ∗i ((α1 − β1 ) + . . . + (αi − βi )\n\nk−1\nX\n\n∗\n(αi − βi )(yi∗ + . . . + yk−1\n)\n\nk−1\nX\n\n(αi − βi )ψ(i)\n\ni=1\n\n=\n\ni=1\n\n=\n\ni=1\n\n≤\n\nN\n,\nk\n\nwhere the last equality follows from our choice of the function ψ, and the inequality follows\nfrom Lemma 7. As k tends to infinity, we get that the competitive ratio of our algorithm is\n(1 − 1e ).",
+          "quoted_text_sha256": "6ef939cbe600a3647ff45735199a85c0646cea4846db728bed3e4c51b8cc2bfc"
+        },
+        {
+          "line_end": 819,
+          "line_start": 785,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 7 gives us\nX\n\nψ(i)αi ≤\n\ni\n\nwhere the choice of ψ is:\n\nX\n\nψ(i)βi\n\ni\n\n1\nψ(i) = 1 − (1 − )k−i+1\nk\n\nCombining these relations we get:\nk\nX\n\nαi\n\ni=1\n\nk−i+1\nN\n≤\nk\ne\n\nBut the left side of the inequality above is precisely the amount of money left unspent at the\nend of the algorithm. This establishes that the competitive ratio is 1 − 1/e.",
+          "quoted_text_sha256": "f5f5fa5821761a55fdad52752800788738c1cc010a366ac7db0b9161ed2fa558"
+        }
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "theorem8.balance.msvv.competitive.small.bids.limit",
+          "identity_schema": 2,
+          "reviewed_lean_route": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem8_source_unit_budget_competitive_in_small_bids_limit",
+          "semantic_claim": "Under the paper's stated temporary unit-budget and exhaustive-optimum normalization, Theorem 8's Balance/MSVV competitive ratio tends to 1-1/e as the finite small-bids discretization parameter tends to infinity.",
+          "source_locator": "cited publication:718-773",
+          "source_quote_sha256": "6ef939cbe600a3647ff45735199a85c0646cea4846db728bed3e4c51b8cc2bfc"
+        }
+      ],
+      "source_defect_ids": [
+        "MSVV07-T8-TRADEOFF-EXPONENT-01"
+      ],
+      "source_kind": "theorem",
+      "source_location": "cited publication:718-773; cited publication:785-819",
+      "source_note": "The source states the unit-budget and exhaustive-optimum normalization at cited publication:208-210. Lean makes that stated normalization and the occurrence-indexed arrivals explicit, proves finite error 3N/(m+1), and derives its limit directly. The limiting conclusion is unchanged; its finite tradeoff route uses the documented off-by-one suffix correction rather than asserting archival equivalence of the printed coefficient.",
+      "source_status": "corrected",
+      "source_url": "https://doi.org/10.1145/1284320.1284321",
+      "statement": "Under the temporary unit-budget and exhaustive-optimum normalization stated before Sections 2--5, Theorem 8 concludes that Balance/MSVV has competitive ratio 1-1/e as its discretization/small-bids parameter tends to infinity.",
+      "support_lean_declarations": [
+        "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem8_source_unit_budget_competitive_in_small_bids_limitSpec",
+        "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem8_source_unit_budget_finite_competitive_with_explicit_slab_error"
+      ]
+    },
     "theorem8_unspent_budget_bound_formula": {
       "aliases": [],
-      "audit_note": "Lean proves the exact finite-error algebra. The limiting competitive endpoint is reviewed separately on theorem8_balance_msvv_competitive_of_small_bids_limit_family.",
+      "audit_note": "Lean proves the exact finite-error algebra. The source-normalized limiting competitive endpoint is reviewed separately on theorem8_source_unit_budget_competitive_in_small_bids_limit.",
       "claim_bearing": true,
       "lean_declarations": [
         "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem8_unspent_budget_bound_formula"
@@ -4284,9 +4346,26 @@
       "aliases": [
         "theorem9_no_randomized_online_algorithm_beats_msvv_ratio"
       ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only Theorem 9 on its permuted repeated-query hard family. The count model is the source proof's finite normal form: it permits every feasible within-round split, derives the fractional prefix rule used by the harmonic argument, and proves its capped expression equals the feasible policy's actual normalized revenue.",
+          "classification": "source_supported_representation_convention",
+          "formal_meaning": "For the finite hard b-matching family, a deterministic online policy is represented by its nonanticipating counts of the b identical queries allocated to each visible bidder in each round, with round and bidder capacities. A randomized policy is a distribution over these finite policies.",
+          "id": "MSVV07-T9-QUERY-SPLIT-NORMAL-FORM-13",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "2e986c0a40cb63402a9b927b6622c5f6dc6ac173bc0287e66387336f66b2dad3",
+          "source_locator": "cited publication:897-938",
+          "why_needed": "The source defines q_ij as the fraction of a round's identical queries allocated to bidder j and explicitly permits splitting a round among eligible bidders. The selected endpoint must range over that query-split normal form rather than a one-bidder choice for a collapsed round."
+        }
+      ],
       "claim_bearing": true,
       "lean_declarations": [
         "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem9_no_randomized_online_algorithm_beats_msvv_ratio"
+      ],
+      "model_convention_ids": [
+        "MSVV07-T9-QUERY-SPLIT-NORMAL-FORM-13"
       ],
       "semantic_contract": {
         "evidence_declaration": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem9_no_randomized_online_algorithm_beats_msvv_ratio",
@@ -4307,7 +4386,7 @@
         {
           "id": "theorem9.no.randomized.online.algorithm.beats.msvv.ratio",
           "reviewed_lean_route": "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem9_no_randomized_online_algorithm_beats_msvv_ratio",
-          "semantic_claim": "-\nTheorem 9, paper-facing randomized online algorithm endpoint in the finite\nprefix model.",
+          "semantic_claim": "Theorem 9: on the repeated-query hard b-matching family, no randomized nonanticipating feasible allocation-count policy can exceed the 1-1/e limit; the policy may split each round's b identical queries among all visible bidders, as in the source q_ij argument.",
           "source_locator": "cited publication:897-938",
           "source_quote_sha256": "30dcbe0b173508e184b8584f7b8c73d4dd92fea4dbe51d88c6265fe4e41002ec"
         }
@@ -4315,7 +4394,7 @@
       "source_kind": "theorem",
       "source_location": "cited publication:897-938",
       "source_url": "https://doi.org/10.1145/1284320.1284321",
-      "statement": "-\nTheorem 9, paper-facing randomized online algorithm endpoint in the finite\nprefix model.",
+      "statement": "Theorem 9: on the repeated-query hard b-matching family, no randomized nonanticipating feasible allocation-count policy can exceed the 1-1/e limit; the policy may split each round's b identical queries among all visible bidders, as in the source q_ij argument.",
       "support_lean_declarations": [
         "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.theorem9_no_randomized_online_algorithm_beats_msvv_ratioSpec"
       ]
@@ -4324,8 +4403,6 @@
   "paper": "MSVV07AdWords",
   "paper_interface_namespace": "AppliedModelingLib.Online.MSVV07PaperFacing",
   "paper_semantic_prerequisite_sources": {
-    "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.paperSmallBidsLimitFamily_fields": "paperSmallBidsLimitFamily_fields",
-    "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.paperSmallBids_iff": "paperSmallBids_iff",
     "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section2_equal_unit_budgets_simplifying_assumption": "section2_equal_unit_budgets_simplifying_assumption",
     "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section2_exhaustive_optimum_simplifying_assumption": "section2_exhaustive_optimum_simplifying_assumption",
     "AppliedModelingLib.Online.MSVV07PaperFacing.PaperInterface.section5_exact_type_spend_simplifying_assumption": "section5_exact_type_spend_simplifying_assumption",

@@ -42,6 +42,16 @@ noncomputable def paperRouteRhs {m : ℕ} (N : ℝ) (i : Fin m) : ℝ :=
 noncomputable def paperRouteLPRow {m : ℕ} (x : Fin m → ℝ) (i : Fin m) : ℝ :=
   ∑ j ∈ paperRoutePrefix i, paperRouteCoeff i j * x j
 
+/--
+The idealized Section 4 slab vector, written in the source-LP namespace.  It
+is definitionally the paper's `N / k` less the mass of strictly earlier final
+types, with `k = m + 1`.
+-/
+noncomputable def paperRouteIdealBeta {m : ℕ} (N : ℝ)
+    (alpha : Fin m → ℝ) (i : Fin m) : ℝ :=
+  N / ((m + 1 : ℕ) : ℝ) -
+    (∑ j ∈ Finset.Iio i, alpha j) / ((m + 1 : ℕ) : ℝ)
+
 /-- Matrix coefficient for the paper's factor/tradeoff revealing LP family. -/
 noncomputable def paperRouteMatrixCoeff {m : ℕ} (i j : Fin m) : ℝ :=
   if j.val ≤ i.val then paperRouteCoeff i j else 0
@@ -139,11 +149,130 @@ noncomputable def tradeoffRevealingLP {m : ℕ}
 noncomputable def factorRevealingLPValue (m : ℕ) (N : ℝ) : ℝ :=
   paperRouteCandidateValue N (m + 1)
 
+/--
+The exact finite factor-revealing value is bounded by its `N / e` limit.
+This is the elementary exponential bound needed to turn the runner's finite
+slab estimate into the paper's competitive-ratio statement.
+-/
+theorem factorRevealingLPValue_le_N_div_exp_one
+    (m : ℕ) (N : ℝ) (hN : 0 ≤ N) :
+    factorRevealingLPValue m N ≤ N / Real.exp 1 := by
+  unfold factorRevealingLPValue paperRouteCandidateValue
+  have hpow := Real.one_sub_div_pow_le_exp_neg (n := m + 1) (t := (1 : ℝ)) (by
+    exact_mod_cast (Nat.succ_le_succ (Nat.zero_le m)))
+  have hmul := mul_le_mul_of_nonneg_left hpow hN
+  calc
+    N * (1 - 1 / ((m + 1 : ℕ) : ℝ)) ^ (m + 1) ≤ N * Real.exp (-1) := hmul
+    _ = N / Real.exp 1 := by
+      rw [Real.exp_neg]
+      simp [div_eq_mul_inv]
+
 /-- The paper prefix set is the finite initial interval in Lean's `Fin` order. -/
 theorem paperRoutePrefix_eq_Iic {m : ℕ} (i : Fin m) :
-    paperRoutePrefix i = Finset.Iic i := by
+  paperRoutePrefix i = Finset.Iic i := by
   ext j
   simp [paperRoutePrefix]
+
+/--
+The idealized Section 4 slabs satisfy the exact prefix accounting identity
+used in the factor- and tradeoff-revealing LPs.  This is finite algebra (not
+an asymptotic approximation): a prefix of slabs contains its base budget
+share minus the triangular contribution of earlier final types.
+-/
+theorem paperRouteIdealBeta_prefix
+    {m : ℕ} (N : ℝ) (alpha : Fin m → ℝ) (i : Fin m) :
+    (∑ j ∈ paperRoutePrefix i, paperRouteIdealBeta N alpha j) =
+      paperRouteRhs N i -
+        ∑ j ∈ paperRoutePrefix i, paperRouteDeltaCoeff i j * alpha j := by
+  classical
+  cases m with
+  | zero => exact Fin.elim0 i
+  | succ n =>
+    induction i using Fin.induction with
+    | zero =>
+      have hprefix : paperRoutePrefix (0 : Fin (n + 1)) = {0} := by
+        ext j
+        simp only [paperRoutePrefix, Finset.mem_filter, Finset.mem_univ,
+          true_and, Finset.mem_singleton]
+        constructor
+        · intro hj
+          apply Fin.ext
+          exact Nat.eq_zero_of_le_zero (by simpa using hj)
+        · intro hj
+          subst j
+          simp
+      have hIio : Finset.Iio (0 : Fin (n + 1)) = ∅ := by
+        ext j
+        simp
+      rw [hprefix]
+      simp only [Finset.sum_singleton]
+      simp [paperRouteIdealBeta, hIio, paperRouteRhs, paperRouteDeltaCoeff]
+      ring
+    | succ i ih =>
+      have hIio : Finset.Iio i.succ = Finset.Iic i.castSucc := by
+        ext j
+        simp only [Finset.mem_Iio, Finset.mem_Iic]
+        change j.val < i.succ.val ↔ j.val ≤ i.castSucc.val
+        simp only [Fin.val_succ, Fin.val_castSucc]
+        omega
+      have hIic : Finset.Iic i.succ = insert i.succ (Finset.Iic i.castSucc) := by
+        ext j
+        simp only [Finset.mem_Iic, Finset.mem_insert]
+        change j.val ≤ i.succ.val ↔ j = i.succ ∨ j.val ≤ i.castSucc.val
+        simp only [Fin.val_succ, Fin.val_castSucc]
+        constructor
+        · intro hj
+          by_cases heq : j.val = i.val + 1
+          · left
+            apply Fin.ext
+            exact heq
+          · right
+            omega
+        · intro hj
+          rcases hj with hj | hj
+          · subst j
+            simp only [Fin.val_succ]
+            exact le_rfl
+          · omega
+      have hmem : i.succ ∉ Finset.Iic i.castSucc := by
+        simp only [Finset.mem_Iic]
+        change ¬ i.succ.val ≤ i.castSucc.val
+        simp only [Fin.val_succ, Fin.val_castSucc]
+        omega
+      have ih' :
+          (∑ j ∈ Finset.Iic i.castSucc, paperRouteIdealBeta N alpha j) =
+            paperRouteRhs N i.castSucc -
+              ∑ j ∈ Finset.Iic i.castSucc,
+                paperRouteDeltaCoeff i.castSucc j * alpha j := by
+        simpa only [paperRoutePrefix_eq_Iic] using ih
+      have hsuccVal : (i.succ.val : ℝ) = (i.castSucc.val : ℝ) + 1 := by
+        simp only [Fin.val_succ, Fin.val_castSucc]
+        norm_num
+      simp_rw [paperRoutePrefix_eq_Iic]
+      rw [hIic]
+      simp only [Finset.sum_insert hmem]
+      rw [ih']
+      rw [paperRouteIdealBeta, hIio]
+      have hdelta :
+          (∑ x ∈ Finset.Iic i.castSucc,
+            paperRouteDeltaCoeff i.succ x * alpha x) =
+            (∑ x ∈ Finset.Iic i.castSucc,
+              paperRouteDeltaCoeff i.castSucc x * alpha x) +
+              (∑ x ∈ Finset.Iic i.castSucc, alpha x) /
+                ((n + 1 + 1 : ℕ) : ℝ) := by
+        rw [Finset.sum_div]
+        rw [← Finset.sum_add_distrib]
+        apply Finset.sum_congr rfl
+        intro x _
+        simp only [paperRouteDeltaCoeff]
+        push_cast
+        rw [hsuccVal]
+        ring
+      rw [hdelta]
+      simp only [paperRouteRhs, paperRouteDeltaCoeff]
+      push_cast
+      rw [hsuccVal]
+      ring
 
 /-- The paper suffix set is the finite final interval in Lean's `Fin` order. -/
 theorem paperRouteSuffix_eq_Ici {m : ℕ} (i : Fin m) :
@@ -1385,6 +1514,27 @@ theorem theorem8_source_route_dual_candidate_value_bound_exact_base
   exact add_le_add le_rfl (by simpa [paperRoutePsiCandidate] using hperturb)
 
 /--
+The finite source-route dual bound with an explicit aggregate accounting error.
+This is the form needed when the runner resolves the paper's endpoint and
+crossing-boundary conventions directly: the error remains proportional to the
+total budget and can subsequently be sent to zero with the slab width.
+-/
+theorem theorem8_source_route_dual_candidate_value_bound_with_error
+    {m : ℕ} (N : ℝ)
+    (alpha beta l : Fin m → ℝ) (error : ℝ)
+    (hl :
+      ∀ i, l i = paperRouteRhs N i + paperRouteDelta alpha beta i)
+    (hperturb :
+      (∑ i : Fin m,
+        paperRoutePsiCandidate i * (alpha i - beta i)) ≤ error) :
+    (∑ i : Fin m, l i * paperRouteDualCandidate i) ≤
+      factorRevealingLPValue m N + error := by
+  rw [theorem8_source_route_dual_value_eq_base_add_perturb
+    N alpha beta paperRouteDualCandidate l hl]
+  rw [paperRouteDualCandidate_objective_value N]
+  exact add_le_add le_rfl (by simpa [paperRoutePsiCandidate] using hperturb)
+
+/--
 The displayed dual candidate `y*` is feasible for the tradeoff-revealing LP
 whenever the objective coefficients are the paper's factor-LP coefficients.
 -/
@@ -1466,6 +1616,43 @@ theorem theorem8_source_route_tradeoff_lp_upper_bound_exact_base
       _ ≤ factorRevealingLPValue m N + N / (k : ℝ) :=
           theorem8_source_route_dual_candidate_value_bound_exact_base
             N k alpha beta l hl hperturb
+  exact
+    ((tradeoffRevealingLP (m := m) paperRoutePrimalObjectiveCoeff l).weak_duality
+      hx hy).trans hdual
+
+/--
+The finite source-route tradeoff-LP bound with a directly stated aggregate
+accounting error.  The specialized `N / k` theorem above is its paper-shaped
+corollary; this variant keeps runner-derived finite errors visible.
+-/
+theorem theorem8_source_route_tradeoff_lp_upper_bound_with_error
+    {m : ℕ} (N : ℝ)
+    (alpha beta l : Fin m → ℝ) (error : ℝ)
+    (hl :
+      ∀ i, l i = paperRouteRhs N i + paperRouteDelta alpha beta i)
+    (hperturb :
+      (∑ i : Fin m,
+        paperRoutePsiCandidate i * (alpha i - beta i)) ≤ error)
+    {x : Fin m → ℝ}
+    (hx :
+      (tradeoffRevealingLP (m := m) paperRoutePrimalObjectiveCoeff l).PrimalFeasible
+        x) :
+    (tradeoffRevealingLP (m := m) paperRoutePrimalObjectiveCoeff l).primalObjective x ≤
+      factorRevealingLPValue m N + error := by
+  have hy := theorem8_source_route_dual_candidate_tradeoff_feasible (m := m) l
+  have hdual :
+      (tradeoffRevealingLP (m := m) paperRoutePrimalObjectiveCoeff l).dualObjective
+          paperRouteDualCandidate ≤
+        factorRevealingLPValue m N + error := by
+    calc
+      (tradeoffRevealingLP (m := m) paperRoutePrimalObjectiveCoeff l).dualObjective
+          paperRouteDualCandidate =
+          ∑ i : Fin m, l i * paperRouteDualCandidate i := by
+            simp [tradeoffRevealingLP, Optimization.StandardMaxLP.dualObjective,
+              mul_comm]
+      _ ≤ factorRevealingLPValue m N + error :=
+          theorem8_source_route_dual_candidate_value_bound_with_error
+            N alpha beta l error hl hperturb
   exact
     ((tradeoffRevealingLP (m := m) paperRoutePrimalObjectiveCoeff l).weak_duality
       hx hy).trans hdual

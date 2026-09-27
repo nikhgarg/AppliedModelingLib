@@ -15,9 +15,13 @@ import posixpath
 import re
 import shutil
 import subprocess
+import sys
 from urllib.parse import quote, unquote, urlsplit, urlunsplit
 
 from private_preview_server import render_markdown_artifact
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from scripts.public_release_external_references import load_references, render_index
 
 REPOSITORY = "https://github.com/nikhgarg/AppliedModelingLib"
 OLD_REPOSITORY = "https://github.com/nikhgarg/EconCSLib"
@@ -85,6 +89,8 @@ def build(repo: Path, output: Path, base_path: str = "/AppliedModelingLib") -> d
     tracked = set(subprocess.check_output(
         ["git", "-C", str(repo), "ls-files", "-z"], text=True
     ).split("\0")) - {""}
+    references = load_references(repo, tracked)
+    reference_folders = {reference["id"] for reference in references}
     public = set()
     for name in sorted(tracked):
         path = PurePosixPath(name)
@@ -95,7 +101,7 @@ def build(repo: Path, output: Path, base_path: str = "/AppliedModelingLib") -> d
     artifacts = {}
     for name in sorted(tracked):
         path = PurePosixPath(name)
-        if len(path.parts) < 3 or path.parts[0] != "papers" or path.parts[1] not in public:
+        if len(path.parts) < 3 or path.parts[0] != "papers" or path.parts[1] not in public | reference_folders:
             continue
         if path.suffix.lower() not in ASSET_SUFFIXES | {".md"}:
             continue
@@ -121,7 +127,7 @@ def build(repo: Path, output: Path, base_path: str = "/AppliedModelingLib") -> d
         elif not parsed.netloc and not parsed.scheme and path.startswith("/artifacts/"):
             name = path[len("/artifacts/"):]
             if name not in artifacts:
-                if name not in tracked or PurePosixPath(name).parts[1] not in public:
+                if name not in tracked or PurePosixPath(name).parts[1] not in public | reference_folders:
                     raise ValueError(f"Landing page links to an unpublished artifact: {name}")
         elif parsed.scheme or parsed.netloc or not path or path.startswith("/") or current is None:
             return url
@@ -141,7 +147,8 @@ def build(repo: Path, output: Path, base_path: str = "/AppliedModelingLib") -> d
             target = output / path.relative_to("site")
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source, target)
-    landing = rewrite_html((repo / "site/index.html").read_text(), rewrite, landing=True)
+    landing_source = render_index((repo / "site/index.html").read_text(), references, include_totals=True)
+    landing = rewrite_html(landing_source, rewrite, landing=True)
     (output / "index.html").write_text(landing)
     (output / ".nojekyll").touch()
 
@@ -175,6 +182,8 @@ def build(repo: Path, output: Path, base_path: str = "/AppliedModelingLib") -> d
         target.write_text(rendered)
     result = {"public_papers": len(public), "documents": sum(n.endswith(".md") for n in artifacts),
               "assets": sum(not n.endswith(".md") for n in artifacts)}
+    if references:
+        result["external_references"] = len(references)
     (output / "build-manifest.json").write_text(json.dumps(result, indent=2) + "\n")
     return result
 

@@ -1,5 +1,15 @@
 import PZMH20PerformativePrediction.MainTheorems
 import PZMH20PerformativePrediction.Assumptions
+import PZMH20PerformativePrediction.DomainRelativeRRM
+import PZMH20PerformativePrediction.DomainRelativeExistence
+import PZMH20PerformativePrediction.DomainRelativeCorollary
+import PZMH20PerformativePrediction.StrategicClassificationBridge
+import PZMH20PerformativePrediction.DomainRelativeRGD
+import PZMH20PerformativePrediction.EmpiricalRRMSamplingRecovery
+import PZMH20PerformativePrediction.EmpiricalRRMAllDimensionalRecovery
+import PZMH20PerformativePrediction.EmpiricalRRMCriticalDimensionRecovery
+import PZMH20PerformativePrediction.CriticalDimensionSampleCountRates
+import PZMH20PerformativePrediction.SubcriticalDimensionSampleCount
 
 /-!
 # Human-Facing Paper Interface: Performative Prediction
@@ -74,17 +84,15 @@ once rather than treating the two declarations as duplicate paper claims.
 - Proposition 3.6(c)'s real Dirac squared-loss counterexample.
 - Proposition 4.2's corrected finite Bernoulli witness for concave
   performative risk; its extra endpoint condition is explicit.
-- Theorem 3.5's contraction-to-convergence consequence, including a
-  whole-space general-measure W₁ bridge with its required analytic premises
-  explicit.  The closed-convex arbitrary-measure route now derives its
-  expected-gradient strong-monotonicity premise from A2; differentiation
-  under expectation remains explicit.
+- Theorem 3.5's domain-relative general-measure W₁ contraction, convergence,
+  and explicit logarithmic iteration threshold, without differentiation
+  under expectation.
 - Proposition 4.1's arbitrary-law compact-convex best-response fixed point,
   with an explicit joint-continuity/Berge boundary.
 - A candidate derivative-free Theorem 4.3 endpoint whose model is defined only
   on the source domain, pending source-fidelity review.
-- Corollary 5.1 for arbitrary probability laws under W₁ sensitivity, with
-  its current A1 differentiation bridge and A2/loss assumptions visible.
+- Corollary 5.1 for the general-measure strategic-classification model, with
+  the actual selected follower response and Stackelberg benchmark explicit.
 - Theorem 3.10's corrected compact/continuous exponential-moment bridge. It
   is an explicit additional route to the uniform moment envelope required by
   an adaptive schedule, not a claim that the printed pointwise assumption
@@ -101,6 +109,7 @@ namespace PZMH20PerformativePrediction
 
 open AppliedModelingLib
 open MeasureTheory
+open ProbabilityTheory
 open scoped InnerProductSpace
 
 /-- Definition 2.1's performative-optimality condition. -/
@@ -547,98 +556,105 @@ def measureWassersteinConvexRRMContractionSpec
     (sensitivity * (smoothness : ℝ) / modulus) * ‖first - second‖
 
 /--
-Arbitrary-probability-measure realization of both parts of Theorem 3.5 on the
-source's closed convex parameter set. Under A1, A2, and the explicit
-frozen-risk analytic conditions for dominated differentiation, it states the
-pairwise RRM contraction, unique domain-stable point, convergence, and the
-displayed geometric rate.
+Both parts of Theorem 3.5 for probability laws and losses defined only on the
+source's closed convex parameter set. The contraction, unique stable point,
+geometric rate, and explicit logarithmic threshold use A1/A2 on that set;
+no gradient-integrability or differentiation-under-expectation premise is needed.
 -/
 def measureWassersteinConvexRRMConvergesLinearlySpec
     {Parameter Data : Type*} [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter]
-    [CompleteSpace Parameter] [MeasurableSpace Data] [MetricSpace Data]
-    (model : MeasurePerformativeModel Parameter Data)
-    (gradient : Data → Parameter → Parameter) {smoothness : NNReal}
-    (hjoint : IsJointlySmoothGradient gradient smoothness)
-    (hintegrable : ∀ distributionParameter evaluatedParameter,
-      Integrable (fun datum => gradient datum evaluatedParameter)
-        (model.dataLaw distributionParameter : Measure Data))
+    [CompleteSpace Parameter] [FiniteDimensional ℝ Parameter]
+    [MeasurableSpace Data] [MetricSpace Data]
+    (domain : Set Parameter) (model : MeasurePerformativeModelOn Parameter Data domain)
+    (gradient : Data → domain → Parameter) {smoothness : NNReal}
+    (hjoint : (∀ datum first second,
+      ‖gradient datum first - gradient datum second‖ ≤
+        (smoothness : ℝ) * dist first second) ∧
+      ∀ first second parameter,
+        ‖gradient first parameter - gradient second parameter‖ ≤
+          (smoothness : ℝ) * dist first second)
     {sensitivity modulus : ℝ} (hsensitivity : 0 ≤ sensitivity) (hmodulus : 0 < modulus)
-    (hsensitive : IsMeasureWassersteinSensitive model sensitivity)
-    (domain : Set Parameter) (hclosed : IsClosed domain) (hconvex : Convex ℝ domain)
-    (update : Parameter → Parameter) (hrrm : IsMeasureRRMOn model domain update)
-    (hloss_meas : ∀ distributionParameter evaluatedParameter,
-      ∀ᶠ parameter in nhds evaluatedParameter,
-        AEStronglyMeasurable (fun datum => model.loss datum parameter)
-          (model.dataLaw distributionParameter : Measure Data))
-    (hpointwise : ∀ datum parameter,
-      HasGradientAt (fun theta => model.loss datum theta) (gradient datum parameter) parameter)
-    (hstrong : IsMeasurePointwiseGradientStronglyConvex model gradient modulus)
+    (hsensitive : model.IsWassersteinSensitive sensitivity)
+    (hclosed : IsClosed domain) (hconvex : Convex ℝ domain)
+    (update : domain → domain)
+    (hrrm : ∀ deployed candidate,
+      model.decoupledPerformativeRisk deployed (update deployed) ≤
+        model.decoupledPerformativeRisk deployed candidate)
+    (hstrong : model.IsPointwiseGradientStronglyConvex gradient modulus)
     (hfactor : sensitivity * (smoothness : ℝ) / modulus < 1)
-    (initial : Parameter) (hinitial : initial ∈ domain) : Prop :=
-  (∀ first ∈ domain, ∀ second ∈ domain,
-      ‖update first - update second‖ ≤
-        (sensitivity * (smoothness : ℝ) / modulus) * ‖first - second‖) ∧
-    ∃ stable ∈ domain, IsMeasureStableOn model domain stable ∧
-      (∀ other ∈ domain, IsMeasureStableOn model domain other → other = stable) ∧
+    (initial : domain) : Prop :=
+  (∀ first second,
+      ‖(update first : Parameter) - (update second : Parameter)‖ ≤
+        (sensitivity * (smoothness : ℝ) / modulus) *
+          ‖(first : Parameter) - (second : Parameter)‖) ∧
+    ∃ stable : domain, model.IsPerformativelyStable stable ∧
+      (∀ other, model.IsPerformativelyStable other → other = stable) ∧
       Filter.Tendsto (fun iteration => update^[iteration] initial) Filter.atTop (nhds stable) ∧
-      ∀ iteration, ‖update^[iteration] initial - stable‖ ≤
-        (sensitivity * (smoothness : ℝ) / modulus) ^ iteration * ‖initial - stable‖
+      (∀ iteration, dist (update^[iteration] initial) stable ≤
+        (sensitivity * (smoothness : ℝ) / modulus) ^ iteration * dist initial stable) ∧
+      ∀ radius > 0, ∀ iteration : ℕ,
+        Real.log (dist initial stable / radius) /
+            (1 - sensitivity * (smoothness : ℝ) / modulus) ≤ (iteration : ℝ) →
+          dist (update^[iteration] initial) stable ≤ radius
 
 /--
-Arbitrary-probability-measure realization of both parts of Theorem 3.8. Under
-A1, A2, general W₁ sensitivity, the paper's step-size/sensitivity
-restrictions, and the explicit local analytic conditions for differentiation
-under expectation, it states the pairwise projected-RGD contraction, unique
-domain-stable point, convergence, and the displayed linear rate.
+Domain-relative realization of both parts of Theorem 3.8. Under A1, A2,
+general W₁ sensitivity, and the source step-size and sensitivity restrictions,
+the actual Euclidean projection update contracts on an arbitrary nonempty
+closed convex finite-dimensional parameter domain. The conclusion includes its
+unique stable point, geometric convergence, and the displayed logarithmic
+entry bound. The expected pointwise gradient is assumed Bochner integrable at
+each feasible deployed/evaluated pair, which is exactly what makes the stated
+population update defined.
 -/
 def measureWassersteinConvexRGDConvergesLinearlySpec
     {Parameter Data : Type*} [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter]
-    [CompleteSpace Parameter] [MeasurableSpace Data] [MetricSpace Data]
-    (model : MeasurePerformativeModel Parameter Data)
-    (gradient : Data → Parameter → Parameter) {smoothness : NNReal}
-    (hjoint : IsJointlySmoothGradient gradient smoothness)
-    (hintegrable : ∀ distributionParameter evaluatedParameter,
-      Integrable (fun datum => gradient datum evaluatedParameter)
-        (model.dataLaw distributionParameter : Measure Data))
+    [CompleteSpace Parameter] [FiniteDimensional ℝ Parameter]
+    [MeasurableSpace Data] [MetricSpace Data] {domain : Set Parameter}
+    (model : MeasurePerformativeModelOn Parameter Data domain)
+    (gradient : Data → domain → Parameter) {smoothness : NNReal}
+    (hjoint : (∀ datum first second,
+      ‖gradient datum first - gradient datum second‖ ≤
+        (smoothness : ℝ) * ‖(first : Parameter) - (second : Parameter)‖) ∧
+      ∀ first second parameter,
+        ‖gradient first parameter - gradient second parameter‖ ≤
+          (smoothness : ℝ) * dist first second)
+    (hintegrable : ∀ deployed evaluated : domain,
+      Integrable (fun datum => gradient datum evaluated)
+        (model.dataLaw deployed : Measure Data))
     {sensitivity modulus : ℝ} (hsensitivity : 0 ≤ sensitivity)
-    (hsensitive : IsMeasureWassersteinSensitive model sensitivity)
-    (hmodulus : 0 < modulus) (hmodulus_le : modulus ≤ (smoothness : ℝ))
-    (hstrong : IsMeasurePointwiseGradientStronglyConvex model gradient modulus)
-    (domain : Set Parameter) (hclosed : IsClosed domain) (hnonempty : domain.Nonempty)
-    (hconvex : Convex ℝ domain) (project : Parameter → Parameter)
-    (hproject : IsVariationalEuclideanProjectionOn domain project)
-    (hproject_nonexpansive : LipschitzWith 1 project)
+    (hsensitive : model.IsWassersteinSensitive sensitivity)
+    (hmodulus : 0 < modulus)
+    (hstrong : model.IsPointwiseGradientStronglyConvex gradient modulus)
+    (hclosed : IsClosed domain) (hnonempty : domain.Nonempty) (hconvex : Convex ℝ domain)
     (stepSize : ℝ) (hstepSize : 0 < stepSize)
     (hstepSize_le : stepSize ≤ 2 / (modulus + (smoothness : ℝ)))
     (hsensitivity_small : sensitivity < modulus /
       ((modulus + (smoothness : ℝ)) * (1 + (3 / 2) * stepSize * (smoothness : ℝ))))
-    (hloss_meas : ∀ distributionParameter evaluatedParameter,
-      ∀ᶠ parameter in nhds evaluatedParameter,
-        AEStronglyMeasurable (fun datum => model.loss datum parameter)
-          (model.dataLaw distributionParameter : Measure Data))
-    (hpointwise : ∀ datum parameter,
-      HasGradientAt (fun theta => model.loss datum theta) (gradient datum parameter) parameter)
-    (initial : Parameter) (hinitial : initial ∈ domain) : Prop :=
-  (∀ first ∈ domain, ∀ second ∈ domain,
-      ‖measureRepeatedGradientDescentUpdate model gradient project stepSize first -
-          measureRepeatedGradientDescentUpdate model gradient project stepSize second‖ ≤
-        (1 - stepSize * (modulus * (smoothness : ℝ) /
-          (modulus + (smoothness : ℝ)) -
-            sensitivity * ((3 / 2) * stepSize * (smoothness : ℝ) ^ 2 +
-              (smoothness : ℝ)))) * ‖first - second‖) ∧
-    ∃ stable ∈ domain, IsMeasureStableOn model domain stable ∧
-      (∀ other ∈ domain, IsMeasureStableOn model domain other → other = stable) ∧
+    (initial : domain) : Prop :=
+  let factor := 1 - stepSize * (modulus * (smoothness : ℝ) /
+    (modulus + (smoothness : ℝ)) -
+      sensitivity * ((3 / 2) * stepSize * (smoothness : ℝ) ^ 2 + (smoothness : ℝ)))
+  (∀ first second,
+      dist (DomainRelative.rgdUpdateOn model gradient hnonempty hclosed hconvex stepSize first)
+          (DomainRelative.rgdUpdateOn model gradient hnonempty hclosed hconvex stepSize second) ≤
+        factor * dist first second) ∧
+    ∃ stable : domain, model.IsPerformativelyStable stable ∧
+      (∀ other, model.IsPerformativelyStable other → other = stable) ∧
       Filter.Tendsto
         (fun iteration =>
-          (measureRepeatedGradientDescentUpdate model gradient project stepSize)^[iteration] initial)
+          (DomainRelative.rgdUpdateOn model gradient hnonempty hclosed hconvex stepSize)^[iteration]
+            initial)
         Filter.atTop (nhds stable) ∧
-      ∀ iteration,
-        ‖(measureRepeatedGradientDescentUpdate model gradient project stepSize)^[iteration] initial -
-            stable‖ ≤
-          (1 - stepSize * (modulus * (smoothness : ℝ) /
-            (modulus + (smoothness : ℝ)) -
-              sensitivity * ((3 / 2) * stepSize * (smoothness : ℝ) ^ 2 +
-                (smoothness : ℝ)))) ^ iteration * ‖initial - stable‖
+      (∀ iteration,
+        dist
+          ((DomainRelative.rgdUpdateOn model gradient hnonempty hclosed hconvex stepSize)^[iteration]
+            initial) stable ≤ factor ^ iteration * dist initial stable) ∧
+      ∀ radius > 0, ∀ iteration : ℕ,
+        Real.log (dist initial stable / radius) / (1 - factor) ≤ (iteration : ℝ) →
+        dist
+          ((DomainRelative.rgdUpdateOn model gradient hnonempty hclosed hconvex stepSize)^[iteration]
+            initial) stable ≤ radius
 
 /--
 Finite-PMF, convex-domain specialization of Theorem 3.5(a).  The source's
@@ -860,22 +876,21 @@ def finiteWassersteinStableObjectiveGapSpec
       ((parameterConstant : ℝ) + (dataConstant : ℝ) * sensitivity) / modulus
 
 /--
-Arbitrary-law compact-convex realization of Proposition 4.1.  The compact
-convex parameter domain and pointwise convex loss are source-visible.  Lean
-derives frozen-risk convexity by integration; joint continuity of the
-decoupled risk remains the explicit Berge bridge. Deriving it from the paper's
-Wasserstein-continuous law map and analytic loss conventions remains a
-separately recorded obligation.
+Arbitrary-law compact-convex realization of Proposition 4.1. The model and
+joint continuity of decoupled risk are restricted to the feasible domain.
+Joint expected-risk continuity is the approved additional analytic premise; it
+does not follow from pointwise loss continuity and Wasserstein sensitivity
+alone without suitable control of the loss tails.
 -/
 def measureCompactConvexStablePointExistsSpec
     {Parameter Data : Type*} [NormedAddCommGroup Parameter] [NormedSpace ℝ Parameter]
     [FiniteDimensional ℝ Parameter] [MeasurableSpace Data]
-    (model : MeasurePerformativeModel Parameter Data) (domain : Set Parameter)
+    {domain : Set Parameter} (model : MeasurePerformativeModelOn Parameter Data domain)
     (hcompact : IsCompact domain) (hne : domain.Nonempty) (hconvex : Convex ℝ domain)
-    (hjoint : Continuous (fun point : Parameter × Parameter =>
-      measureDecoupledPerformativeRisk model point.1 point.2))
-    (hlossConvex : ∀ datum, ConvexOn ℝ domain (model.loss datum)) : Prop :=
-  ∃ parameter ∈ domain, IsMeasurePerformativelyStableOn model domain parameter
+    (hjoint : Continuous (fun point : domain × domain =>
+      model.decoupledPerformativeRisk point.1 point.2))
+    (hlossConvex : ∀ datum, ConvexOn ℝ domain (measureLossOnDomain model datum)) : Prop :=
+  ∃ parameter : domain, model.IsPerformativelyStable parameter
 
 /--
 Candidate arbitrary-law W₁ statement of Theorem 4.3 on the source parameter
@@ -900,45 +915,49 @@ def measureWassersteinOptimumStableDistanceSpec
     2 * (constant : ℝ) * sensitivity / modulus
 
 /--
-Arbitrary-law W₁ statement of the complete Corollary 5.1 conclusion. Under
-the source's A1/A2, Lipschitz, sensitivity, and strict-factor assumptions, RRM
-converges to its unique stable classifier and that classifier satisfies the
-displayed objective gap to a performative optimum (the Stackelberg
-equilibrium in the strategic-classification interpretation).
+General-measure strategic-classification statement of Corollary 5.1. The
+induced law is the baseline population pushed forward through the selected
+feature best response, preserving labels. The benchmark is a Stackelberg
+equilibrium for that same response selection. All loss and gradient
+conditions are restricted to the feasible parameter domain.
 -/
 def measureWassersteinStableObjectiveGapSpec
-    {Parameter Data : Type*} [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter]
-    [CompleteSpace Parameter] [MeasurableSpace Data] [MetricSpace Data]
-    (model : MeasurePerformativeModel Parameter Data)
-    (gradient : Data → Parameter → Parameter) {smoothness : NNReal}
-    (hjoint : IsJointlySmoothGradient gradient smoothness)
-    (hintegrable : ∀ distributionParameter evaluatedParameter,
-      Integrable (fun datum => gradient datum evaluatedParameter)
-        (model.dataLaw distributionParameter : Measure Data))
-    (hloss_meas : ∀ distributionParameter evaluatedParameter,
-      ∀ᶠ parameter in nhds evaluatedParameter,
-        AEStronglyMeasurable (fun datum => model.loss datum parameter)
-          (model.dataLaw distributionParameter : Measure Data))
-    (hpointwise : ∀ datum parameter,
-      HasGradientAt (fun theta => model.loss datum theta) (gradient datum parameter) parameter)
+    {Parameter Feature Label : Type*}
+    [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter]
+    [CompleteSpace Parameter] [FiniteDimensional ℝ Parameter]
+    [MeasurableSpace Feature] [MeasurableSpace Label]
+    [MetricSpace (Feature × Label)] {domain : Set Parameter}
+    (profile : MeasureStrategicClassificationProfile Parameter Feature Label domain)
+    (gradient : (Feature × Label) → domain → Parameter)
+    (hclosed : IsClosed domain) (hconvex : Convex ℝ domain) {smoothness : NNReal}
+    (hjoint :
+      (∀ datum first second,
+        ‖gradient datum first - gradient datum second‖ ≤
+          (smoothness : ℝ) * dist (first : Parameter) (second : Parameter)) ∧
+      (∀ first second parameter,
+        ‖gradient first parameter - gradient second parameter‖ ≤
+          (smoothness : ℝ) * dist first second))
     {modulus : ℝ} (hmodulus : 0 < modulus)
-    (hstrong : IsMeasurePointwiseGradientStronglyConvex model gradient modulus)
+    (hstrong : profile.performativeModelOn.IsPointwiseGradientStronglyConvex gradient modulus)
     {dataConstant parameterConstant : NNReal}
-    (hdataLoss : IsMeasureDataLossLipschitz model dataConstant)
-    (hparameterLoss : IsMeasureParameterLossLipschitz model parameterConstant)
+    (hdataLoss : profile.performativeModelOn.IsDataLossLipschitz dataConstant)
+    (hparameterLoss : ∀ datum, LipschitzWith parameterConstant (profile.loss datum))
     {sensitivity : ℝ} (hsensitivity : 0 ≤ sensitivity)
-    (hsensitive : IsMeasureWassersteinSensitive model sensitivity)
-    (update : Parameter → Parameter) (hrrm : IsMeasureRRM model update)
+    (hsensitive : profile.performativeModelOn.IsWassersteinSensitive sensitivity)
+    (update : domain → domain)
+    (hrrm : ∀ deployed candidate,
+      profile.performativeModelOn.decoupledPerformativeRisk deployed (update deployed) ≤
+        profile.performativeModelOn.decoupledPerformativeRisk deployed candidate)
     (hfactor : sensitivity * (smoothness : ℝ) / modulus < 1)
-    (initial optimal : Parameter)
-    (hoptimal : IsMeasurePerformativelyOptimal model optimal)
+    (initial optimal : domain)
+    (hoptimal : profile.IsStackelbergEquilibrium optimal)
     : Prop :=
-  ∃ stable, IsMeasureStable model stable ∧
-    (∀ other, IsMeasureStable model other → other = stable) ∧
+  ∃ stable : domain, profile.performativeModelOn.IsPerformativelyStable stable ∧
+    (∀ other, profile.performativeModelOn.IsPerformativelyStable other → other = stable) ∧
     Filter.Tendsto (fun iteration => update^[iteration] initial) Filter.atTop (nhds stable) ∧
-    (∀ iteration, ‖update^[iteration] initial - stable‖ ≤
-      (sensitivity * (smoothness : ℝ) / modulus) ^ iteration * ‖initial - stable‖) ∧
-    measurePerformativeRisk model stable - measurePerformativeRisk model optimal ≤
+    (∀ iteration, dist (update^[iteration] initial) stable ≤
+      (sensitivity * (smoothness : ℝ) / modulus) ^ iteration * dist initial stable) ∧
+    profile.leaderRisk stable - profile.leaderRisk optimal ≤
       2 * (dataConstant : ℝ) * sensitivity *
         ((parameterConstant : ℝ) + (dataConstant : ℝ) * sensitivity) / modulus
 
@@ -1564,5 +1583,391 @@ def theorem310CorrectedRERMAllRoundTrajectorySpec
         {trace | ∀ iteration, entryIteration ≤ iteration →
           dist (deployedOfHistory iteration
             (heterogeneousBatchTraceOfInfiniteTrace iteration trace)) stable ≤ radius} ≥ 1 - p
+
+/--
+Source-facing carrier for the direct empirical-`W₁` RERM recovery route.
+
+Unlike the historical selected-shell interface above, this route keeps the
+statistical input in its native form: a measurable raw `W₁` bad event, its
+finite-IID roundwise failure bound, and the threshold used by the empirical
+minimizer recurrence.  In particular it does not add a loss-Lipschitz bridge,
+gradient integrability, a pointwise first-order certificate, or a supplied
+selected-shell concentration certificate.
+-/
+structure Theorem310RERMRawWassersteinSamplingRecoveryData
+    (Parameter : Type*) [MeasurableSpace Parameter]
+    [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter] [CompleteSpace Parameter] where
+  dimension : ℕ
+  cutoff : ℕ
+  alpha : ℝ
+  gamma : ℝ
+  momentBound : ℝ
+  deviation : ℝ
+  model : MeasurePerformativeModel Parameter (EuclideanSpace ℝ (Fin dimension))
+  sampling : MeasurePerformativeSamplingKernel model
+  gradient : EuclideanSpace ℝ (Fin dimension) → Parameter → Parameter
+  domain : Set Parameter
+  hconvex : Convex ℝ domain
+  smoothness : NNReal
+  hgradient : ∀ datum parameter, parameter ∈ domain →
+    HasGradientWithinAt (model.loss datum) (gradient datum parameter) domain parameter
+  hdata : ∀ first second parameter, parameter ∈ domain →
+    ‖gradient first parameter - gradient second parameter‖ ≤
+      (smoothness : ℝ) * dist first second
+  modulus : ℝ
+  hmodulus : 0 < modulus
+  hstrong : EmpiricalMinimizerPerturbation.IsPointwiseGradientStronglyConvexOn
+    model.loss gradient domain modulus
+  confidence : ℕ → ℝ
+  countSchedule : ℕ → ℕ
+  hcountPositive : ∀ iteration, 0 < countSchedule iteration
+  deployedOfHistory : ∀ iteration,
+    HeterogeneousBatchTrace (fun round => Fin (countSchedule round))
+      (EuclideanSpace ℝ (Fin dimension)) iteration → Parameter
+  hmeasurableDeployed : ∀ iteration, Measurable (deployedOfHistory iteration)
+  hempirical : IsHeterogeneousMeasureRepeatedEmpiricalRiskMinimizationTrajectoryOn
+    model domain countSchedule hcountPositive deployedOfHistory
+  populationUpdate : Parameter → Parameter
+  hpopulation : IsMeasureRepeatedRiskMinimizationOn model domain populationUpdate
+  stable : Parameter
+  hstable : IsMeasurePerformativelyStableOn model domain stable
+  sensitivity : ℝ
+  radius : ℝ
+  p : ℝ
+  hsensitivityNonneg : 0 ≤ sensitivity
+  hsmoothnessPos : 0 < (smoothness : ℝ)
+  hsensitivitySmall : sensitivity < modulus / (2 * (smoothness : ℝ))
+  hsensitive : IsMeasureWassersteinSensitiveOn model domain sensitivity
+  hradius : 0 < radius
+  hinitial : ∀ history : HeterogeneousBatchTrace
+    (fun round => Fin (countSchedule round)) (EuclideanSpace ℝ (Fin dimension)) 0,
+    deployedOfHistory 0 history ∈ domain
+  hempiricalIntegrable : ∀ iteration
+    (batch : Fin (countSchedule iteration) → EuclideanSpace ℝ (Fin dimension))
+    candidate, candidate ∈ domain →
+    Integrable (fun datum => model.loss datum candidate)
+      (empiricalSampleProbabilityMeasureOfPos
+        (hcountPositive iteration) batch : Measure (EuclideanSpace ℝ (Fin dimension)))
+  entryIteration : ℕ
+  hentry : ∀ trace : (i : ℕ) → HeterogeneousBatchTraceCoordinate
+    (fun round => Fin (countSchedule round)) (EuclideanSpace ℝ (Fin dimension)) i,
+    Real.log
+        (dist (deployedOfHistory 0
+          (heterogeneousBatchTraceOfInfiniteTrace 0 trace)) stable / radius) /
+      (1 - 2 * (sensitivity * (smoothness : ℝ) / modulus)) ≤
+        (entryIteration : ℝ)
+  pnonneg : 0 ≤ p
+  hevent : ∀ iteration, MeasurableSet
+    (heterogeneousBatchTraceBadEventPair (fun round => Fin (countSchedule round))
+      (pOneFournierGuillinAdaptiveEuclideanWassersteinOneBadEvent
+        dimension cutoff alpha gamma momentBound deviation confidence countSchedule
+        hcountPositive
+        (measurePerformativeDeployedLaw model (fun round => Fin (countSchedule round))
+          deployedOfHistory)) iteration)
+  hfiniteIID : ∀ iteration history,
+    (Probability.finiteIIDSampleLaw
+      (measurePerformativeDeployedLaw model (fun round => Fin (countSchedule round))
+        deployedOfHistory iteration history :
+          Measure (EuclideanSpace ℝ (Fin dimension)))
+      (countSchedule iteration)).real
+      {batch |
+        pOneFournierGuillinAdaptiveEuclideanWassersteinOneBadEvent
+          dimension cutoff alpha gamma momentBound deviation confidence countSchedule
+          hcountPositive
+          (measurePerformativeDeployedLaw model (fun round => Fin (countSchedule round))
+            deployedOfHistory) iteration history batch} ≤ theorem310FailureBudget p iteration
+  hthreshold : ∀ iteration history,
+    pOneFournierGuillinAdaptiveEuclideanWassersteinOneThreshold
+      dimension cutoff alpha gamma momentBound deviation confidence countSchedule
+      (measurePerformativeDeployedLaw model (fun round => Fin (countSchedule round))
+        deployedOfHistory) iteration history ≤ ENNReal.ofReal (sensitivity * radius)
+
+/-- The direct raw-`W₁` sampling conclusion for the RERM branch of Theorem
+3.10.  The after-entry conclusion is almost-sure in the adaptive sampling
+trace up to the explicit total failure probability `p`. -/
+def theorem310RERMRawWassersteinSamplingRecoverySpec
+    {Parameter : Type*} [MeasurableSpace Parameter]
+    [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter] [CompleteSpace Parameter]
+    (data : Theorem310RERMRawWassersteinSamplingRecoveryData Parameter) : Prop :=
+    (measurePerformativeHeterogeneousBatchTraceInfiniteLaw data.model data.sampling
+      data.countSchedule data.deployedOfHistory data.hmeasurableDeployed).real
+      {trace | ∀ iteration, data.entryIteration ≤ iteration →
+        dist (data.deployedOfHistory iteration
+          (heterogeneousBatchTraceOfInfiniteTrace iteration trace)) data.stable ≤ data.radius} ≥
+        1 - data.p
+
+/-- Source-facing all-dimensional concrete-schedule version of the direct
+empirical-`W₁` RERM recovery.  The selected-shell concentration construction
+is used only to establish the raw `W₁` event budget and threshold internally;
+the RERM recurrence itself has no loss-Lipschitz transport bridge. -/
+private def theorem310RERMRawWassersteinAllDimensionalSamplingRecoveryImplementationSpec
+    {Parameter : Type*} [MeasurableSpace Parameter]
+    [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter]
+    [CompleteSpace Parameter]
+    (dimension cutoff : ℕ) (hdimension : 0 < dimension)
+    {eta alpha gamma momentBound deviation scaledDeviation tailBound : ℝ}
+    (heta_pos : 0 < eta) (heta_le_one : eta ≤ 1)
+    (halpha_pos : 0 < alpha) (hgamma_pos : 0 < gamma)
+    (halpha_gap : 1 + eta < alpha)
+    (hscaled : scaledDeviation = deviation * Real.rpow 2 (-(1 + eta)))
+    (hscaled_pos : 0 < scaledDeviation) (hscaled_le_one : scaledDeviation ≤ 1)
+    (htailBound_pos : 0 < tailBound)
+    (htailEnvelope : ∀ law : ProbabilityMeasure (EuclideanSpace ℝ (Fin dimension)),
+      Probability.HasBoundedExponentialRadialMoment law alpha gamma momentBound →
+        Probability.fifthOrderExponentialRadialTailConstant law alpha gamma ≤ tailBound)
+    (p headTolerance : ℝ) (hp : 0 < p) (hheadTolerance : 0 < headTolerance)
+    (htailBound_moment :
+      tailBound = (Nat.factorial 5 : ℝ) * gamma⁻¹ ^ 5 * momentBound)
+    (model : MeasurePerformativeModel Parameter (EuclideanSpace ℝ (Fin dimension)))
+    (sampling : MeasurePerformativeSamplingKernel model)
+    (gradient : EuclideanSpace ℝ (Fin dimension) → Parameter → Parameter)
+    (domain : Set Parameter) (hconvex : Convex ℝ domain) (smoothness : NNReal)
+    (hgradient : ∀ datum parameter, parameter ∈ domain →
+      HasGradientWithinAt (model.loss datum) (gradient datum parameter) domain parameter)
+    (hdata : ∀ first second parameter, parameter ∈ domain →
+      ‖gradient first parameter - gradient second parameter‖ ≤
+        (smoothness : ℝ) * dist first second)
+    {modulus : ℝ} (hmodulus : 0 < modulus)
+    (hstrong : EmpiricalMinimizerPerturbation.IsPointwiseGradientStronglyConvexOn
+      model.loss gradient domain modulus)
+    (deployedOfHistory : ∀ iteration,
+      HeterogeneousBatchTrace
+        (fun round => Fin
+          (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff
+            eta alpha gamma tailBound deviation scaledDeviation p headTolerance round))
+        (EuclideanSpace ℝ (Fin dimension)) iteration → Parameter)
+    (hmeasurableDeployed : ∀ iteration, Measurable (deployedOfHistory iteration))
+    (hempirical : IsHeterogeneousMeasureRepeatedEmpiricalRiskMinimizationTrajectoryOn model domain
+      (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff eta
+        alpha gamma tailBound deviation scaledDeviation p headTolerance)
+      (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule_pos dimension cutoff eta
+        alpha gamma tailBound deviation scaledDeviation p headTolerance)
+      deployedOfHistory)
+    (populationUpdate : Parameter → Parameter)
+    (hpopulation : IsMeasureRepeatedRiskMinimizationOn model domain populationUpdate)
+    (stable : Parameter) (hstable : IsMeasurePerformativelyStableOn model domain stable)
+    {sensitivity radius : ℝ} (hsensitivityNonneg : 0 ≤ sensitivity)
+    (hsmoothnessPos : 0 < (smoothness : ℝ))
+    (hsensitivitySmall : sensitivity < modulus / (2 * (smoothness : ℝ)))
+    (hsensitive : IsMeasureWassersteinSensitiveOn model domain sensitivity)
+    (hradius : 0 < radius)
+    (hinitial : ∀ history : HeterogeneousBatchTrace
+      (fun round => Fin
+        (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff eta
+          alpha gamma tailBound deviation scaledDeviation p headTolerance round))
+      (EuclideanSpace ℝ (Fin dimension)) 0,
+      deployedOfHistory 0 history ∈ domain)
+    (hempiricalIntegrable : ∀ iteration
+      (batch : Fin
+        (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff eta
+          alpha gamma tailBound deviation scaledDeviation p headTolerance iteration) →
+        EuclideanSpace ℝ (Fin dimension))
+      candidate, candidate ∈ domain →
+      Integrable (fun datum => model.loss datum candidate)
+        (empiricalSampleProbabilityMeasureOfPos
+          (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule_pos dimension cutoff
+            eta alpha gamma tailBound deviation scaledDeviation p headTolerance iteration)
+          batch : Measure (EuclideanSpace ℝ (Fin dimension))))
+    (entryIteration : ℕ)
+    (hentry : ∀ trace : (i : ℕ) → HeterogeneousBatchTraceCoordinate
+      (fun round => Fin
+        (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff eta
+          alpha gamma tailBound deviation scaledDeviation p headTolerance round))
+      (EuclideanSpace ℝ (Fin dimension)) i,
+      Real.log
+          (dist (deployedOfHistory 0
+            (heterogeneousBatchTraceOfInfiniteTrace 0 trace)) stable / radius) /
+        (1 - 2 * (sensitivity * (smoothness : ℝ) / modulus)) ≤
+          (entryIteration : ℝ))
+    (hmoment : ∀ iteration history,
+      Probability.HasBoundedExponentialRadialMoment
+        (model.dataLaw (deployedOfHistory iteration history)) alpha gamma momentBound)
+    (hbudget : Real.sqrt dimension * deviation +
+      (2 * Real.sqrt dimension) *
+        ((32 / 15 : ℝ) * tailBound / (16 : ℝ) ^ cutoff) + headTolerance ≤
+          sensitivity * radius)
+    (hevent : ∀ iteration, MeasurableSet
+      (heterogeneousBatchTraceBadEventPair
+        (fun round => Fin
+          (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff
+            eta alpha gamma tailBound deviation scaledDeviation p headTolerance round))
+        (pOneFournierGuillinAdaptiveEuclideanWassersteinOneBadEvent
+          dimension cutoff alpha gamma momentBound deviation
+          (pOneFournierGuillinTheorem310SupercriticalConfidenceSchedule p)
+          (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff eta
+            alpha gamma tailBound deviation scaledDeviation p headTolerance)
+          (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule_pos dimension cutoff
+            eta alpha gamma tailBound deviation scaledDeviation p headTolerance)
+          (measurePerformativeDeployedLaw model
+            (fun round => Fin
+              (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff
+                eta alpha gamma tailBound deviation scaledDeviation p headTolerance round))
+            deployedOfHistory)) iteration)) : Prop :=
+    ∃ gateScale : ℕ,
+      scaledDeviation ≤ Probability.pOneFournierGuillinHeadGateRadius eta gateScale →
+      (measurePerformativeHeterogeneousBatchTraceInfiniteLaw model sampling
+        (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff eta
+          alpha gamma tailBound deviation scaledDeviation p headTolerance)
+        deployedOfHistory hmeasurableDeployed).real
+        {trace | ∀ iteration, entryIteration ≤ iteration →
+          dist (deployedOfHistory iteration
+            (heterogeneousBatchTraceOfInfiniteTrace iteration trace)) stable ≤ radius} ≥
+        1 - p
+
+/--
+Concrete source-facing input for the all-dimensional raw-`W₁` RERM branch of
+Theorem 3.10.  This carrier deliberately fixes the selected-shell count and
+confidence schedules in its field types.  In particular, it does not expose a
+caller-supplied finite-IID failure certificate or transport threshold: the
+lower all-dimensional concentration theorem derives both from the moment and
+tail-envelope fields below.
+
+Keeping the complete theorem input in one named constructor makes the public
+Spec readable without hiding any premise: the semantic-prerequisite review
+surface displays every constructor field together with the source theorem's
+corrected premise bundle.
+-/
+structure Theorem310RERMRawWassersteinAllDimensionalSamplingRecoveryData
+    (Parameter : Type*) [MeasurableSpace Parameter]
+    [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter]
+    [CompleteSpace Parameter] where
+  dimension : ℕ
+  cutoff : ℕ
+  hdimension : 0 < dimension
+  eta : ℝ
+  alpha : ℝ
+  gamma : ℝ
+  momentBound : ℝ
+  deviation : ℝ
+  scaledDeviation : ℝ
+  tailBound : ℝ
+  heta_pos : 0 < eta
+  heta_le_one : eta ≤ 1
+  halpha_pos : 0 < alpha
+  hgamma_pos : 0 < gamma
+  halpha_gap : 1 + eta < alpha
+  hscaled : scaledDeviation = deviation * Real.rpow 2 (-(1 + eta))
+  hscaled_pos : 0 < scaledDeviation
+  hscaled_le_one : scaledDeviation ≤ 1
+  htailBound_pos : 0 < tailBound
+  htailEnvelope : ∀ law : ProbabilityMeasure (EuclideanSpace ℝ (Fin dimension)),
+    Probability.HasBoundedExponentialRadialMoment law alpha gamma momentBound →
+      Probability.fifthOrderExponentialRadialTailConstant law alpha gamma ≤ tailBound
+  p : ℝ
+  headTolerance : ℝ
+  hp : 0 < p
+  hheadTolerance : 0 < headTolerance
+  htailBound_moment :
+    tailBound = (Nat.factorial 5 : ℝ) * gamma⁻¹ ^ 5 * momentBound
+  model : MeasurePerformativeModel Parameter (EuclideanSpace ℝ (Fin dimension))
+  sampling : MeasurePerformativeSamplingKernel model
+  gradient : EuclideanSpace ℝ (Fin dimension) → Parameter → Parameter
+  domain : Set Parameter
+  hconvex : Convex ℝ domain
+  smoothness : NNReal
+  hgradient : ∀ datum parameter, parameter ∈ domain →
+    HasGradientWithinAt (model.loss datum) (gradient datum parameter) domain parameter
+  hdata : ∀ first second parameter, parameter ∈ domain →
+    ‖gradient first parameter - gradient second parameter‖ ≤
+      (smoothness : ℝ) * dist first second
+  modulus : ℝ
+  hmodulus : 0 < modulus
+  hstrong : EmpiricalMinimizerPerturbation.IsPointwiseGradientStronglyConvexOn
+    model.loss gradient domain modulus
+  deployedOfHistory : ∀ iteration,
+    HeterogeneousBatchTrace
+      (fun round => Fin
+        (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff
+          eta alpha gamma tailBound deviation scaledDeviation p headTolerance round))
+      (EuclideanSpace ℝ (Fin dimension)) iteration → Parameter
+  hmeasurableDeployed : ∀ iteration, Measurable (deployedOfHistory iteration)
+  hempirical : IsHeterogeneousMeasureRepeatedEmpiricalRiskMinimizationTrajectoryOn model domain
+    (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff eta
+      alpha gamma tailBound deviation scaledDeviation p headTolerance)
+    (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule_pos dimension cutoff eta
+      alpha gamma tailBound deviation scaledDeviation p headTolerance)
+    deployedOfHistory
+  populationUpdate : Parameter → Parameter
+  hpopulation : IsMeasureRepeatedRiskMinimizationOn model domain populationUpdate
+  stable : Parameter
+  hstable : IsMeasurePerformativelyStableOn model domain stable
+  sensitivity : ℝ
+  radius : ℝ
+  hsensitivityNonneg : 0 ≤ sensitivity
+  hsmoothnessPos : 0 < (smoothness : ℝ)
+  hsensitivitySmall : sensitivity < modulus / (2 * (smoothness : ℝ))
+  hsensitive : IsMeasureWassersteinSensitiveOn model domain sensitivity
+  hradius : 0 < radius
+  hinitial : ∀ history : HeterogeneousBatchTrace
+    (fun round => Fin
+      (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff eta
+        alpha gamma tailBound deviation scaledDeviation p headTolerance round))
+    (EuclideanSpace ℝ (Fin dimension)) 0,
+    deployedOfHistory 0 history ∈ domain
+  hempiricalIntegrable : ∀ iteration
+    (batch : Fin
+      (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff eta
+        alpha gamma tailBound deviation scaledDeviation p headTolerance iteration) →
+      EuclideanSpace ℝ (Fin dimension))
+    candidate, candidate ∈ domain →
+    Integrable (fun datum => model.loss datum candidate)
+      (empiricalSampleProbabilityMeasureOfPos
+        (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule_pos dimension cutoff
+          eta alpha gamma tailBound deviation scaledDeviation p headTolerance iteration)
+        batch : Measure (EuclideanSpace ℝ (Fin dimension)))
+  entryIteration : ℕ
+  hentry : ∀ trace : (i : ℕ) → HeterogeneousBatchTraceCoordinate
+    (fun round => Fin
+      (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff eta
+        alpha gamma tailBound deviation scaledDeviation p headTolerance round))
+    (EuclideanSpace ℝ (Fin dimension)) i,
+    Real.log
+        (dist (deployedOfHistory 0
+          (heterogeneousBatchTraceOfInfiniteTrace 0 trace)) stable / radius) /
+      (1 - 2 * (sensitivity * (smoothness : ℝ) / modulus)) ≤
+        (entryIteration : ℝ)
+  hmoment : ∀ iteration history,
+    Probability.HasBoundedExponentialRadialMoment
+      (model.dataLaw (deployedOfHistory iteration history)) alpha gamma momentBound
+  hbudget : Real.sqrt dimension * deviation +
+    (2 * Real.sqrt dimension) *
+      ((32 / 15 : ℝ) * tailBound / (16 : ℝ) ^ cutoff) + headTolerance ≤
+        sensitivity * radius
+  hevent : ∀ iteration, MeasurableSet
+    (heterogeneousBatchTraceBadEventPair
+      (fun round => Fin
+        (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff
+          eta alpha gamma tailBound deviation scaledDeviation p headTolerance round))
+      (pOneFournierGuillinAdaptiveEuclideanWassersteinOneBadEvent
+        dimension cutoff alpha gamma momentBound deviation
+        (pOneFournierGuillinTheorem310SupercriticalConfidenceSchedule p)
+        (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff eta
+          alpha gamma tailBound deviation scaledDeviation p headTolerance)
+        (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule_pos dimension cutoff
+          eta alpha gamma tailBound deviation scaledDeviation p headTolerance)
+        (measurePerformativeDeployedLaw model
+          (fun round => Fin
+            (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule dimension cutoff
+              eta alpha gamma tailBound deviation scaledDeviation p headTolerance round))
+          deployedOfHistory)) iteration)
+
+/-- The source-facing all-dimensional concrete-schedule raw-`W₁` conclusion
+for the RERM branch of Theorem 3.10. -/
+def theorem310RERMRawWassersteinAllDimensionalSamplingRecoverySpec
+    {Parameter : Type*} [MeasurableSpace Parameter]
+    [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter]
+    [CompleteSpace Parameter]
+    (data : Theorem310RERMRawWassersteinAllDimensionalSamplingRecoveryData Parameter) : Prop :=
+    ∃ gateScale : ℕ,
+      data.scaledDeviation ≤ Probability.pOneFournierGuillinHeadGateRadius data.eta gateScale →
+      (measurePerformativeHeterogeneousBatchTraceInfiniteLaw data.model data.sampling
+        (pOneFournierGuillinTheorem310AllDimensionalConstantHeadCountSchedule data.dimension data.cutoff
+          data.eta data.alpha data.gamma data.tailBound data.deviation data.scaledDeviation data.p
+          data.headTolerance)
+        data.deployedOfHistory data.hmeasurableDeployed).real
+        {trace | ∀ iteration, data.entryIteration ≤ iteration →
+          dist (data.deployedOfHistory iteration
+            (heterogeneousBatchTraceOfInfiniteTrace iteration trace)) data.stable ≤ data.radius} ≥
+        1 - data.p
 
 end PZMH20PerformativePrediction

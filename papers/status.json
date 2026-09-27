@@ -4018,90 +4018,146 @@
       "title": "College Admissions and the Stability of Marriage"
     },
     {
-      "schema": 1,
-      "id": "GeEtAl2024AlignmentAxioms",
-      "title": "Axioms for AI Alignment from Human Feedback",
-      "authors": "Luise Ge, Daniel Halpern, Evi Micha, Ariel D. Procaccia, Itai Shapira, Yevgeniy Vorobeychik, and Junlin Wu",
-      "source_version": "NeurIPS 2024 published conference version",
-      "source_inventory_review_required": true,
-      "repository_visibility": "public",
-      "build_target": "lake build +GeEtAl2024AlignmentAxioms",
-      "status": "formalized",
-      "main_caveat": "",
-      "human_summary": "The finite linear-social-choice model, all five numbered definitions, and every named result through Appendix C are formalized. The checked development proves the loss-based impossibility, majority-loss guarantee, C1 impossibility, LCPO guarantees, and all Appendix-C Kemeny, Copeland, and Leximax-Plurality results. Two intermediate perturbation lemmas are stated in corrected strict forms that preserve the complete Theorem 3.1 conclusion; the remaining recorded items are proof or deterministic-rule clarifications, not caveats or partial boundaries.",
-      "human_summary_review": {
-        "status": "draft",
-        "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
-      },
-      "review_entrypoint": "papers/GeEtAl2024AlignmentAxioms/FINAL_VALIDATION_REPORT.md",
-      "human_review": {
-        "reviewed_rows": 0,
-        "total_rows": 27,
-        "stale_rows": 0,
-        "mismatch_rows": 0,
-        "uncertain_rows": 0,
-        "source": "v11 PaperInterface claim surface; human entries are recorded after direct review"
-      },
-      "paper_interface": {
-        "path": "papers/GeEtAl2024AlignmentAxioms/PaperInterface.lean",
-        "line_count": 297,
-        "declaration_rows": 16,
-        "review_rows": 15,
-        "oversized": false,
-        "maintainability_issue": null
-      },
       "artifacts": {
-        "paper_interface": "papers/GeEtAl2024AlignmentAxioms/PaperInterface.lean",
-        "proof_interface": "papers/GeEtAl2024AlignmentAxioms/ProofInterface.lean",
         "assumptions": "papers/GeEtAl2024AlignmentAxioms/Assumptions.lean",
-        "final_validation_report": "papers/GeEtAl2024AlignmentAxioms/FINAL_VALIDATION_REPORT.md",
-        "dependency_dag_tex": "papers/GeEtAl2024AlignmentAxioms/docs/DependencyDAG.tex",
         "dependency_dag_pdf": "papers/GeEtAl2024AlignmentAxioms/docs/DependencyDAG.pdf",
-        "human_review_packet_tex": "papers/GeEtAl2024AlignmentAxioms/docs/HUMAN_REVIEW_PACKET.tex",
+        "dependency_dag_tex": "papers/GeEtAl2024AlignmentAxioms/docs/DependencyDAG.tex",
+        "final_validation_report": "papers/GeEtAl2024AlignmentAxioms/FINAL_VALIDATION_REPORT.md",
         "human_review_packet_pdf": "papers/GeEtAl2024AlignmentAxioms/docs/HUMAN_REVIEW_PACKET.pdf",
-        "source_proof_fidelity": "papers/GeEtAl2024AlignmentAxioms/audit/source_proof_fidelity.json",
-        "library_semantic_review": "papers/GeEtAl2024AlignmentAxioms/audit/library_semantic_review.json",
-        "v11_raw_source_spec_screening": "papers/GeEtAl2024AlignmentAxioms/audit/v11_raw_source_spec_screening.json"
+        "human_review_packet_tex": "papers/GeEtAl2024AlignmentAxioms/docs/HUMAN_REVIEW_PACKET.tex",
+        "paper_interface": "papers/GeEtAl2024AlignmentAxioms/PaperInterface.lean",
+        "proof_interface": "papers/GeEtAl2024AlignmentAxioms/ProofInterface.lean"
       },
+      "authors": "Luise Ge, Daniel Halpern, Evi Micha, Ariel D. Procaccia, Itai Shapira, Yevgeniy Vorobeychik, and Junlin Wu",
+      "build_target": "lake build +GeEtAl2024AlignmentAxioms",
+      "human_review": {
+        "mismatch_rows": 0,
+        "reviewed_rows": 0,
+        "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
+        "stale_rows": 0,
+        "total_rows": 27,
+        "uncertain_rows": 0
+      },
+      "human_summary": "The finite linear-social-choice model, all five numbered definitions, and every named result through Appendix C are formalized. The checked development proves the loss-based impossibility, majority-loss guarantee, C1 impossibility, LCPO guarantees, and all Appendix-C Kemeny, Copeland, and Leximax-Plurality results. Disclosed source corrections preserve the Theorem 3.1 conclusion. For source rules with unresolved score ties, the rule-level results make the required selection condition explicit: fixed profile-independent priority for LCPO and Leximax-Plurality, and contraction-consistent selection for linear Kemeny. Profile-dependent tie selection is formally refuted, so no broader underspecified-selector claim is credited; these are source corrections/clarifications rather than added economic assumptions.",
+      "human_summary_review": {
+        "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction.",
+        "status": "draft"
+      },
+      "id": "GeEtAl2024AlignmentAxioms",
+      "main_caveat": "",
+      "paper_interface": {
+        "declaration_rows": 16,
+        "line_count": 311,
+        "maintainability_issue": null,
+        "oversized": false,
+        "path": "papers/GeEtAl2024AlignmentAxioms/PaperInterface.lean",
+        "review_rows": 15
+      },
+      "repository_visibility": "public",
+      "review_entrypoint": "papers/GeEtAl2024AlignmentAxioms/FINAL_VALIDATION_REPORT.md",
       "review_surface": {
-        "source_file": "papers/GeEtAl2024AlignmentAxioms/PaperInterface.lean",
-        "proof_module": "GeEtAl2024AlignmentAxioms.ProofInterface",
-        "proof_file": "papers/GeEtAl2024AlignmentAxioms/ProofInterface.lean",
+        "assumption_names": [],
+        "assumption_policy": "strict",
         "assumption_source_file": "papers/GeEtAl2024AlignmentAxioms/Assumptions.lean",
-        "require_source_spec_correspondence": true,
-        "llm_statement_review": {
-          "lean_to_tex_file": "papers/GeEtAl2024AlignmentAxioms/audit/lean_to_tex_llm.json",
-          "match_judgment_file": "papers/GeEtAl2024AlignmentAxioms/audit/statement_match_llm.json",
-          "library_semantic_review_file": "papers/GeEtAl2024AlignmentAxioms/audit/library_semantic_review.json",
-          "v11_screening_file": "papers/GeEtAl2024AlignmentAxioms/audit/v11_raw_source_spec_screening.json",
-          "review_surface_audit_file": "papers/GeEtAl2024AlignmentAxioms/audit/review_surface_llm.json",
-          "paper_coverage_audit_file": "papers/GeEtAl2024AlignmentAxioms/audit/paper_coverage_llm.json",
-          "defect_support_judgment_file": "papers/GeEtAl2024AlignmentAxioms/audit/defect_support_match_llm.json",
-          "assumption_judgment_file": "papers/GeEtAl2024AlignmentAxioms/audit/assumption_match_llm.json",
-          "surface_audit_threshold": 30,
-          "surface_warning_threshold": 120,
-          "require_explicit_source_routes": true,
-          "require_source_claim_atoms": true,
-          "require_direct_expression_semantics_review": "v1",
-          "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
-          "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim."
-        },
-        "llm_paper_coverage_review": {
-          "paper_coverage_audit_file": "papers/GeEtAl2024AlignmentAxioms/audit/paper_coverage_llm.json",
-          "defect_support_judgment_file": "papers/GeEtAl2024AlignmentAxioms/audit/defect_support_match_llm.json",
-          "policy": "Maintain an audit/paper_statement_map.json inventory of source definitions, formulas, and named statements, then use a separate LLM pass to judge whether each source item is covered by one or more reviewed Lean targets. If coverage uses a reusable library declaration, route the source item to that exact declaration and require a current material-library source-to-Lean judgment over its complete semantics; code location and Lean/library/source names are not semantic evidence. Quarantined source defects require a separate exact-hash semantic judgment binding each candidate counterexample/refutation theorem to the validated defect record and every elaborated signature atom. This paper-level accounting is required before calling a full-paper formalization closed and is separate from row-local statement matching."
-        },
+        "include_names": [
+          "theorem3_1_lossBasedImpossibilitySpec",
+          "lemma3_2_unconstrainedCoreSeparationSpec",
+          "lemma3_3_coreMinimizersSpec",
+          "lemma3_4_literalZeroWeakInclusionSpec",
+          "lemma3_5_correctedPerturbationGapSpec",
+          "theorem3_6_majorityLossSpec",
+          "theorem4_3_constructedFixedTieLCPOSpec",
+          "theoremC_2_copelandAndLCPOFailSeparabilitySpec",
+          "theoremC_3_linearKemenySpec",
+          "theoremC_4_linearKemenyFailsParetoAndMajorityConsistencySpec",
+          "theoremC_5_paretoKemenyFailsSeparabilityAndMajorityConsistencySpec",
+          "theoremC_6_fixedTieLeximaxPluralitySpec",
+          "appendixBExplicitInfeasiblePMCSpec",
+          "pmcRankingUniquenessAndNonexistenceSpec",
+          "theorem3_7_C1FailsParetoAndConsequencesSpec"
+        ],
         "llm_assumption_review": {
           "assumption_judgment_file": "papers/GeEtAl2024AlignmentAxioms/audit/assumption_match_llm.json",
           "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
         },
-        "llm_source_record_review": {
-          "source_record_audit_file": "papers/GeEtAl2024AlignmentAxioms/audit/source_record_audit.json",
-          "source_record_judgment_file": "papers/GeEtAl2024AlignmentAxioms/audit/source_record_match_llm.json",
-          "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt."
+        "llm_paper_coverage_review": {
+          "defect_support_judgment_file": "papers/GeEtAl2024AlignmentAxioms/audit/defect_support_match_llm.json",
+          "paper_coverage_audit_file": "papers/GeEtAl2024AlignmentAxioms/audit/paper_coverage_llm.json",
+          "policy": "Maintain an audit/paper_statement_map.json inventory of source definitions, formulas, and named statements, then use a separate LLM pass to judge whether each source item is covered by one or more reviewed Lean targets. If coverage uses a reusable library declaration, route the source item to that exact declaration and require a current material-library source-to-Lean judgment over its complete semantics; code location and Lean/library/source names are not semantic evidence. Quarantined source defects require a separate exact-hash semantic judgment binding each candidate counterexample/refutation theorem to the validated defect record and every elaborated signature atom. This paper-level accounting is required before calling a full-paper formalization closed and is separate from row-local statement matching."
         },
+        "llm_source_record_review": {
+          "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt.",
+          "source_record_audit_file": "papers/GeEtAl2024AlignmentAxioms/audit/source_record_audit.json",
+          "source_record_judgment_file": "papers/GeEtAl2024AlignmentAxioms/audit/source_record_match_llm.json"
+        },
+        "llm_statement_review": {
+          "assumption_judgment_file": "papers/GeEtAl2024AlignmentAxioms/audit/assumption_match_llm.json",
+          "defect_support_judgment_file": "papers/GeEtAl2024AlignmentAxioms/audit/defect_support_match_llm.json",
+          "lean_to_tex_file": "papers/GeEtAl2024AlignmentAxioms/audit/lean_to_tex_llm.json",
+          "library_semantic_review_file": "papers/GeEtAl2024AlignmentAxioms/audit/library_semantic_review.json",
+          "match_judgment_file": "papers/GeEtAl2024AlignmentAxioms/audit/statement_match_llm.json",
+          "paper_coverage_audit_file": "papers/GeEtAl2024AlignmentAxioms/audit/paper_coverage_llm.json",
+          "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
+          "require_direct_expression_semantics_review": "v1",
+          "require_explicit_source_routes": true,
+          "require_source_claim_atoms": true,
+          "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
+          "review_surface_audit_file": "papers/GeEtAl2024AlignmentAxioms/audit/review_surface_llm.json",
+          "surface_audit_threshold": 30,
+          "surface_warning_threshold": 120,
+          "v11_screening_file": "papers/GeEtAl2024AlignmentAxioms/audit/v11_raw_source_spec_screening.json"
+        },
+        "paper_coverage_required": true,
+        "presentation_sections": [
+          {
+            "names": [
+              "pmcRankingUniquenessAndNonexistenceSpec",
+              "theorem3_1_lossBasedImpossibilitySpec",
+              "lemma3_2_unconstrainedCoreSeparationSpec",
+              "lemma3_3_coreMinimizersSpec",
+              "lemma3_4_literalZeroWeakInclusionSpec",
+              "lemma3_5_correctedPerturbationGapSpec",
+              "theorem3_6_majorityLossSpec",
+              "theorem3_7_C1FailsParetoAndConsequencesSpec",
+              "theorem4_3_constructedFixedTieLCPOSpec"
+            ],
+            "title": "Main-text results"
+          },
+          {
+            "names": [
+              "appendixBExplicitInfeasiblePMCSpec",
+              "theoremC_2_copelandAndLCPOFailSeparabilitySpec",
+              "theoremC_3_linearKemenySpec",
+              "theoremC_4_linearKemenyFailsParetoAndMajorityConsistencySpec",
+              "theoremC_5_paretoKemenyFailsSeparabilityAndMajorityConsistencySpec",
+              "theoremC_6_fixedTieLeximaxPluralitySpec"
+            ],
+            "title": "Appendix results"
+          }
+        ],
+        "proof_file": "papers/GeEtAl2024AlignmentAxioms/ProofInterface.lean",
+        "proof_module": "GeEtAl2024AlignmentAxioms.ProofInterface",
+        "proposition_spec_proofs": {
+          "appendixBExplicitInfeasiblePMCSpec": "appendixBExplicitInfeasiblePMC",
+          "lemma3_2_unconstrainedCoreSeparationSpec": "lemma3_2_unconstrainedCoreSeparation",
+          "lemma3_3_coreMinimizersSpec": "lemma3_3_coreMinimizers",
+          "lemma3_4_literalZeroWeakInclusionSpec": "lemma3_4_literalZeroWeakInclusion",
+          "lemma3_5_correctedPerturbationGapSpec": "lemma3_5_correctedPerturbationGap",
+          "pmcRankingUniquenessAndNonexistenceSpec": "pmcRankingUniquenessAndNonexistence",
+          "theorem3_1_lossBasedImpossibilitySpec": "theorem3_1_lossBasedImpossibility",
+          "theorem3_6_majorityLossSpec": "theorem3_6_majorityLoss",
+          "theorem3_7_C1FailsParetoAndConsequencesSpec": "theorem3_7_C1FailsParetoAndConsequences",
+          "theorem4_3_constructedFixedTieLCPOSpec": "theorem4_3_constructedFixedTieLCPO",
+          "theoremC_2_copelandAndLCPOFailSeparabilitySpec": "theoremC_2_copelandAndLCPOFailSeparability",
+          "theoremC_3_linearKemenySpec": "theoremC_3_linearKemeny",
+          "theoremC_4_linearKemenyFailsParetoAndMajorityConsistencySpec": "theoremC_4_linearKemenyFailsParetoAndMajorityConsistency",
+          "theoremC_5_paretoKemenyFailsSeparabilityAndMajorityConsistencySpec": "theoremC_5_paretoKemenyFailsSeparabilityAndMajorityConsistency",
+          "theoremC_6_fixedTieLeximaxPluralitySpec": "theoremC_6_fixedTieLeximaxPlurality"
+        },
+        "require_source_spec_correspondence": true,
+        "require_v11_raw_source_spec_screening": true,
         "semantic_model_review": {
-          "schema": 2,
+          "policy": "For every reviewed row, preserve an alpha-normalized expanded binder/domain surface, including transparent local type aliases, record parameter domains, and model records reached only in result quantifiers. An unexpanded local opaque/constant type requires a checked carrier/refinement bridge rather than being silently treated as an ordinary carrier. When an expanded finite carrier uses index arithmetic such as Fin (n + c), record the source cardinal parameter, the expanded Lean expression, and a proved parameter translation; then explicitly compare it with pinned source text. Review endpoint support/cutoffs, product or iid laws versus source state evolution, conditioning/calibration semantics, expectation definedness, null-cell totalization and finite/countable/arbitrary partition scope, and Real versus extended-rate codomains when the expanded model makes them relevant. For a probability-law surface, state whether conditioning is pointwise, a.e., positive-fiber, or event-calibrated; state measurability/integrability or extended-value conventions for every expectation; and expose every zero-mass-cell branch. Local declaration and binder names are routing only; detected probability/rate shapes need a checked bridge from source primitives. Because this scaffold enables explicit v10 source routes, every full closeout requires current source-record semantic-model judgments for every generated row; an unresolved model dimension blocks both full statuses.",
           "required_dimensions": [
             "expanded_binders_and_domain",
             "carrier_and_domain",
@@ -4112,55 +4168,48 @@
             "null_cell_totalization_and_partition_scope",
             "extended_rate_codomain"
           ],
-          "policy": "For every reviewed row, preserve an alpha-normalized expanded binder/domain surface, including transparent local type aliases, record parameter domains, and model records reached only in result quantifiers. An unexpanded local opaque/constant type requires a checked carrier/refinement bridge rather than being silently treated as an ordinary carrier. When an expanded finite carrier uses index arithmetic such as Fin (n + c), record the source cardinal parameter, the expanded Lean expression, and a proved parameter translation; then explicitly compare it with pinned source text. Review endpoint support/cutoffs, product or iid laws versus source state evolution, conditioning/calibration semantics, expectation definedness, null-cell totalization and finite/countable/arbitrary partition scope, and Real versus extended-rate codomains when the expanded model makes them relevant. For a probability-law surface, state whether conditioning is pointwise, a.e., positive-fiber, or event-calibrated; state measurability/integrability or extended-value conventions for every expectation; and expose every zero-mass-cell branch. Local declaration and binder names are routing only; detected probability/rate shapes need a checked bridge from source primitives. Because this scaffold enables explicit v10 source routes, every full closeout requires current source-record semantic-model judgments for every generated row; an unresolved model dimension blocks both full statuses."
+          "schema": 2
         },
-        "source_proof_fidelity_review": {
-          "ledger_file": "papers/GeEtAl2024AlignmentAxioms/audit/source_proof_fidelity.json",
-          "policy": "Audit source proof steps by source locator and mathematical claim, not by Lean declaration name. Completed papers use ledger schema 2. Every defect records status_impact as formalized_note, formalized_with_caveat, or partially_formalized plus a semantic rationale. Minor repairs with an unchanged substantive endpoint are notes; formalized with caveat is reserved for a substantial central source-paper error with a fully proved corrected endpoint; weaker Lean targets and added non-source assumptions are partial. Keep this configured ledger whenever explicit source routes or source-defect links are present; a formalized note cannot waive an added non-source assumption or a partial boundary."
-        },
-        "assumption_policy": "strict",
-        "assumption_names": [],
-        "source_definition_names": [
-          "AppliedModelingLib.Alignment.Axioms.ParetoOptimal",
-          "AppliedModelingLib.Alignment.Axioms.PairwiseMajorityConsistent",
-          "AppliedModelingLib.Alignment.Axioms.MajorityConsistent",
-          "AppliedModelingLib.Alignment.Axioms.WinnerMonotonic",
-          "AppliedModelingLib.Alignment.Axioms.RankingSeparability"
-        ],
-        "proposition_spec_proofs": {
-          "theorem3_1_lossBasedImpossibilitySpec": "theorem3_1_lossBasedImpossibility",
-          "lemma3_2_unconstrainedCoreSeparationSpec": "lemma3_2_unconstrainedCoreSeparation",
-          "lemma3_3_coreMinimizersSpec": "lemma3_3_coreMinimizers",
-          "lemma3_4_correctedCopyConeSpec": "lemma3_4_correctedCopyCone",
-          "lemma3_5_correctedPerturbationGapSpec": "lemma3_5_correctedPerturbationGap",
-          "theorem3_6_majorityLossSpec": "theorem3_6_majorityLoss",
-          "theorem4_3_constructedFixedTieLCPOSpec": "theorem4_3_constructedFixedTieLCPO",
-          "theoremC_2_copelandAndLCPOFailSeparabilitySpec": "theoremC_2_copelandAndLCPOFailSeparability",
-          "theoremC_3_linearKemenySpec": "theoremC_3_linearKemeny",
-          "theoremC_4_linearKemenyFailsParetoAndMajorityConsistencySpec": "theoremC_4_linearKemenyFailsParetoAndMajorityConsistency",
-          "theoremC_5_paretoKemenyFailsSeparabilityAndMajorityConsistencySpec": "theoremC_5_paretoKemenyFailsSeparabilityAndMajorityConsistency",
-          "theoremC_6_fixedTieLeximaxPluralitySpec": "theoremC_6_fixedTieLeximaxPlurality",
-          "appendixBExplicitInfeasiblePMCSpec": "appendixBExplicitInfeasiblePMC",
-          "definition2_2_pairwiseMajorityConsistencyAndConsequencesSpec": "definition2_2_pairwiseMajorityConsistencyAndConsequences",
-          "theorem3_7_C1FailsParetoAndConsequencesSpec": "theorem3_7_C1FailsParetoAndConsequences"
-        },
-        "paper_coverage_required": true,
-        "include_names": [
-          "definition2_2_pairwiseMajorityConsistencyAndConsequencesSpec",
-          "theorem3_1_lossBasedImpossibilitySpec",
-          "lemma3_2_unconstrainedCoreSeparationSpec",
-          "lemma3_3_coreMinimizersSpec",
-          "lemma3_4_correctedCopyConeSpec",
-          "lemma3_5_correctedPerturbationGapSpec",
-          "theorem3_6_majorityLossSpec",
-          "theorem3_7_C1FailsParetoAndConsequencesSpec",
-          "theorem4_3_constructedFixedTieLCPOSpec",
-          "appendixBExplicitInfeasiblePMCSpec",
-          "theoremC_2_copelandAndLCPOFailSeparabilitySpec",
-          "theoremC_3_linearKemenySpec",
-          "theoremC_4_linearKemenyFailsParetoAndMajorityConsistencySpec",
-          "theoremC_5_paretoKemenyFailsSeparabilityAndMajorityConsistencySpec",
-          "theoremC_6_fixedTieLeximaxPluralitySpec"
+        "slices": [
+          {
+            "id": "main_text",
+            "names": [
+              "theorem3_1_lossBasedImpossibilitySpec",
+              "lemma3_2_unconstrainedCoreSeparationSpec",
+              "lemma3_3_coreMinimizersSpec",
+              "lemma3_5_correctedPerturbationGapSpec",
+              "theorem3_6_majorityLossSpec",
+              "theorem3_7_C1FailsParetoAndConsequencesSpec",
+              "theorem4_3_constructedFixedTieLCPOSpec"
+            ],
+            "title": "Main-text results"
+          },
+          {
+            "id": "appendix",
+            "names": [
+              "appendixBExplicitInfeasiblePMCSpec",
+              "theoremC_2_copelandAndLCPOFailSeparabilitySpec",
+              "theoremC_3_linearKemenySpec",
+              "theoremC_4_linearKemenyFailsParetoAndMajorityConsistencySpec",
+              "theoremC_5_paretoKemenyFailsSeparabilityAndMajorityConsistencySpec",
+              "theoremC_6_fixedTieLeximaxPluralitySpec"
+            ],
+            "title": "Appendix results"
+          },
+          {
+            "id": "additional_source_results",
+            "names": [
+              "pmcRankingUniquenessAndNonexistenceSpec"
+            ],
+            "title": "Additional source results"
+          },
+          {
+            "id": "additional_source_results",
+            "names": [
+              "lemma3_4_literalZeroWeakInclusionSpec"
+            ],
+            "title": "Additional source results"
+          }
         ],
         "source_condition_items": [
           "linear_social_choice_model",
@@ -4176,154 +4225,141 @@
           "pareto_kemeny_rule_model",
           "leximax_plurality_rule_model"
         ],
-        "presentation_sections": [
-          {
-            "title": "Main-text results",
-            "names": [
-              "definition2_2_pairwiseMajorityConsistencyAndConsequencesSpec",
-              "theorem3_1_lossBasedImpossibilitySpec",
-              "lemma3_2_unconstrainedCoreSeparationSpec",
-              "lemma3_3_coreMinimizersSpec",
-              "lemma3_4_correctedCopyConeSpec",
-              "lemma3_5_correctedPerturbationGapSpec",
-              "theorem3_6_majorityLossSpec",
-              "theorem3_7_C1FailsParetoAndConsequencesSpec",
-              "theorem4_3_constructedFixedTieLCPOSpec"
-            ]
-          },
-          {
-            "title": "Appendix results",
-            "names": [
-              "appendixBExplicitInfeasiblePMCSpec",
-              "theoremC_2_copelandAndLCPOFailSeparabilitySpec",
-              "theoremC_3_linearKemenySpec",
-              "theoremC_4_linearKemenyFailsParetoAndMajorityConsistencySpec",
-              "theoremC_5_paretoKemenyFailsSeparabilityAndMajorityConsistencySpec",
-              "theoremC_6_fixedTieLeximaxPluralitySpec"
-            ]
-          }
+        "source_definition_names": [
+          "AppliedModelingLib.Alignment.Axioms.ParetoOptimal",
+          "AppliedModelingLib.Alignment.Axioms.PairwiseMajorityConsistent",
+          "AppliedModelingLib.Alignment.Axioms.MajorityConsistent",
+          "AppliedModelingLib.Alignment.Axioms.WinnerMonotonic",
+          "AppliedModelingLib.Alignment.Axioms.RankingSeparability"
         ],
-        "slices": [
-          {
-            "id": "main_text",
-            "title": "Main-text results",
-            "names": [
-              "definition2_2_pairwiseMajorityConsistencyAndConsequencesSpec",
-              "theorem3_1_lossBasedImpossibilitySpec",
-              "lemma3_2_unconstrainedCoreSeparationSpec",
-              "lemma3_3_coreMinimizersSpec",
-              "lemma3_4_correctedCopyConeSpec",
-              "lemma3_5_correctedPerturbationGapSpec",
-              "theorem3_6_majorityLossSpec",
-              "theorem3_7_C1FailsParetoAndConsequencesSpec",
-              "theorem4_3_constructedFixedTieLCPOSpec"
-            ]
-          },
-          {
-            "id": "appendix",
-            "title": "Appendix results",
-            "names": [
-              "appendixBExplicitInfeasiblePMCSpec",
-              "theoremC_2_copelandAndLCPOFailSeparabilitySpec",
-              "theoremC_3_linearKemenySpec",
-              "theoremC_4_linearKemenyFailsParetoAndMajorityConsistencySpec",
-              "theoremC_5_paretoKemenyFailsSeparabilityAndMajorityConsistencySpec",
-              "theoremC_6_fixedTieLeximaxPluralitySpec"
-            ]
-          }
-        ],
-        "require_v11_raw_source_spec_screening": true
-      }
+        "source_file": "papers/GeEtAl2024AlignmentAxioms/PaperInterface.lean",
+        "source_proof_fidelity_review": {
+          "ledger_file": "papers/GeEtAl2024AlignmentAxioms/audit/source_proof_fidelity.json",
+          "policy": "Audit source proof steps by source locator and mathematical claim, not by Lean declaration name. Completed papers use ledger schema 2. Every defect records status_impact as formalized_note, formalized_with_caveat, or partially_formalized plus a semantic rationale. Minor repairs with an unchanged substantive endpoint are notes; formalized with caveat is reserved for a substantial central source-paper error with a fully proved corrected endpoint; weaker Lean targets and added non-source assumptions are partial. Keep this configured ledger whenever explicit source routes or source-defect links are present; a formalized note cannot waive an added non-source assumption or a partial boundary."
+        }
+      },
+      "schema": 1,
+      "source_inventory_review_required": true,
+      "source_version": "NeurIPS 2024 published conference version",
+      "status": "formalized",
+      "title": "Axioms for AI Alignment from Human Feedback"
     },
     {
-      "schema": 1,
-      "id": "HT26EFXChores",
-      "title": "EFX for Additive Chores: Nonexistence, Pareto Incompatibility, and Bi-Valued Existence",
-      "authors": "Wentao He and Biaoshuai Tao",
-      "source_version": "arXiv v2 (2026-07-09)",
-      "intake_freeze_required": true,
-      "repository_visibility": "public",
-      "build_target": "lake build HT26EFXChores",
-      "status": "formalized",
-      "main_caveat": "None.",
-      "human_summary": "Draft summary: the three theorem routes, all named supporting results, the general-agent insertion remark, and the explicit Theorem 2 EFX witness are compiled against arXiv v2; the formalizer source audit found no additional paper-facing assumption or source correction.",
-      "human_summary_review": {
-        "status": "draft",
-        "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
-      },
-      "review_entrypoint": "papers/HT26EFXChores/FINAL_VALIDATION_REPORT.md",
-      "human_review": {
-        "reviewed_rows": 0,
-        "total_rows": 18,
-        "stale_rows": 0,
-        "mismatch_rows": 0,
-        "uncertain_rows": 0,
-        "source": "v11 PaperInterface claim surface; human entries are recorded after direct review"
-      },
-      "paper_interface": {
-        "path": "papers/HT26EFXChores/PaperInterface.lean",
-        "line_count": 682,
-        "declaration_rows": 24,
-        "review_rows": 18,
-        "oversized": false,
-        "maintainability_issue": null
-      },
       "artifacts": {
-        "paper_interface": "papers/HT26EFXChores/PaperInterface.lean",
-        "proof_interface": "papers/HT26EFXChores/ProofInterface.lean",
-        "assumptions": "papers/HT26EFXChores/Assumptions.lean",
-        "final_closure_receipt": "papers/HT26EFXChores/FINAL_CLOSURE_RECEIPT.md",
-        "final_validation_report": "papers/HT26EFXChores/FINAL_VALIDATION_REPORT.md",
-        "focused_build_receipt": "papers/HT26EFXChores/audit/FOCUSED_BUILD_RECEIPT.json",
-        "dependency_dag_tex": "papers/HT26EFXChores/docs/DependencyDAG.tex",
-        "dependency_dag_pdf": "papers/HT26EFXChores/docs/DependencyDAG.pdf",
-        "human_review_packet_tex": "papers/HT26EFXChores/docs/HUMAN_REVIEW_PACKET.tex",
-        "human_review_packet_pdf": "papers/HT26EFXChores/docs/HUMAN_REVIEW_PACKET.pdf",
-        "library_semantic_review": "papers/HT26EFXChores/audit/library_semantic_review.json",
-        "source_proof_fidelity": "papers/HT26EFXChores/audit/source_proof_fidelity.json",
-        "defect_support_match": "papers/HT26EFXChores/audit/defect_support_match_llm.json",
-        "v11_raw_source_spec_screening": "papers/HT26EFXChores/audit/v11_raw_source_spec_screening.json"
+        "assumptions": "papers/GolzHaghtalabYang2025Distortion/Assumptions.lean",
+        "dependency_dag_pdf": "papers/GolzHaghtalabYang2025Distortion/docs/DependencyDAG.pdf",
+        "dependency_dag_tex": "papers/GolzHaghtalabYang2025Distortion/docs/DependencyDAG.tex",
+        "final_validation_report": "papers/GolzHaghtalabYang2025Distortion/FINAL_VALIDATION_REPORT.md",
+        "human_review_packet_pdf": "papers/GolzHaghtalabYang2025Distortion/docs/HUMAN_REVIEW_PACKET.pdf",
+        "human_review_packet_tex": "papers/GolzHaghtalabYang2025Distortion/docs/HUMAN_REVIEW_PACKET.tex",
+        "paper_interface": "papers/GolzHaghtalabYang2025Distortion/PaperInterface.lean",
+        "proof_interface": "papers/GolzHaghtalabYang2025Distortion/ProofInterface.lean"
       },
+      "authors": "Paul Gölz, Nika Haghtalab, and Kunhe Yang",
+      "build_target": "lake build +GolzHaghtalabYang2025Distortion",
+      "human_review": {
+        "mismatch_rows": 0,
+        "reviewed_rows": 0,
+        "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
+        "stale_rows": 0,
+        "total_rows": 16,
+        "uncertain_rows": 0
+      },
+      "human_summary": "",
+      "human_summary_review": {
+        "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction.",
+        "status": "draft"
+      },
+      "id": "GolzHaghtalabYang2025Distortion",
+      "main_caveat": "",
+      "paper_interface": {
+        "declaration_rows": 26,
+        "line_count": 966,
+        "maintainability_issue": null,
+        "oversized": false,
+        "path": "papers/GolzHaghtalabYang2025Distortion/PaperInterface.lean",
+        "review_rows": 16
+      },
+      "repository_visibility": "public",
+      "review_entrypoint": "papers/GolzHaghtalabYang2025Distortion/FINAL_VALIDATION_REPORT.md",
       "review_surface": {
-        "source_file": "papers/HT26EFXChores/PaperInterface.lean",
-        "proof_module": "HT26EFXChores.ProofInterface",
-        "proof_file": "papers/HT26EFXChores/ProofInterface.lean",
-        "assumption_source_file": "papers/HT26EFXChores/Assumptions.lean",
-        "require_source_spec_correspondence": true,
-        "require_v11_raw_source_spec_screening": true,
-        "llm_statement_review": {
-          "lean_to_tex_file": "papers/HT26EFXChores/audit/lean_to_tex_llm.json",
-          "match_judgment_file": "papers/HT26EFXChores/audit/statement_match_llm.json",
-          "library_semantic_review_file": "papers/HT26EFXChores/audit/library_semantic_review.json",
-          "v11_screening_file": "papers/HT26EFXChores/audit/v11_raw_source_spec_screening.json",
-          "review_surface_audit_file": "papers/HT26EFXChores/audit/review_surface_llm.json",
-          "paper_coverage_audit_file": "papers/HT26EFXChores/audit/paper_coverage_llm.json",
-          "defect_support_judgment_file": "papers/HT26EFXChores/audit/defect_support_match_llm.json",
-          "assumption_judgment_file": "papers/HT26EFXChores/audit/assumption_match_llm.json",
-          "surface_audit_threshold": 30,
-          "surface_warning_threshold": 120,
-          "require_explicit_source_routes": true,
-          "require_source_claim_atoms": true,
-          "require_direct_expression_semantics_review": "v1",
-          "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
-          "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim."
-        },
-        "llm_paper_coverage_review": {
-          "paper_coverage_audit_file": "papers/HT26EFXChores/audit/paper_coverage_llm.json",
-          "defect_support_judgment_file": "papers/HT26EFXChores/audit/defect_support_match_llm.json",
-          "policy": "Maintain an audit/paper_statement_map.json inventory of source definitions, formulas, and named statements, then use a separate LLM pass to judge whether each source item is covered by one or more dashboard rows. If coverage uses a reusable library declaration, it must route through an audited paper-local semantic bridge/equivalence row; matching by Lean/library/source names is not semantic evidence. Quarantined source defects require a separate exact-hash semantic judgment binding each candidate counterexample/refutation theorem to the validated defect record and every elaborated signature atom. This paper-level accounting is required before calling a full-paper formalization closed and is separate from row-local statement matching."
-        },
+        "assumption_names": [],
+        "assumption_policy": "strict",
+        "assumption_source_file": "papers/GolzHaghtalabYang2025Distortion/Assumptions.lean",
+        "include_names": [
+          "lemma1Spec",
+          "theorem2Spec",
+          "theorem3Spec",
+          "corollary4Spec",
+          "theorem6Spec",
+          "theorem7Spec",
+          "corollary8Spec",
+          "theorem9Spec",
+          "lemma10Spec",
+          "lemma11Spec",
+          "proposition13Spec",
+          "proposition14Spec",
+          "lemma15Spec",
+          "theorem5Spec",
+          "theorem12Spec",
+          "appendixF3DpoRlhfEquivalenceSpec"
+        ],
         "llm_assumption_review": {
-          "assumption_judgment_file": "papers/HT26EFXChores/audit/assumption_match_llm.json",
+          "assumption_judgment_file": "papers/GolzHaghtalabYang2025Distortion/audit/assumption_match_llm.json",
           "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
         },
-        "llm_source_record_review": {
-          "source_record_audit_file": "papers/HT26EFXChores/audit/source_record_audit.json",
-          "source_record_judgment_file": "papers/HT26EFXChores/audit/source_record_match_llm.json",
-          "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt."
+        "llm_paper_coverage_review": {
+          "defect_support_judgment_file": "papers/GolzHaghtalabYang2025Distortion/audit/defect_support_match_llm.json",
+          "paper_coverage_audit_file": "papers/GolzHaghtalabYang2025Distortion/audit/paper_coverage_llm.json",
+          "policy": "Maintain an audit/paper_statement_map.json inventory of source definitions, formulas, and named statements, then use a separate LLM pass to judge whether each source item is covered by one or more dashboard rows. If coverage uses a reusable library declaration, it must route through an audited paper-local semantic bridge/equivalence row; matching by Lean/library/source names is not semantic evidence. Quarantined source defects require a separate exact-hash semantic judgment binding each candidate counterexample/refutation theorem to the validated defect record and every elaborated signature atom. This paper-level accounting is required before calling a full-paper formalization closed and is separate from row-local statement matching."
         },
+        "llm_source_record_review": {
+          "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt.",
+          "source_record_audit_file": "papers/GolzHaghtalabYang2025Distortion/audit/source_record_audit.json",
+          "source_record_judgment_file": "papers/GolzHaghtalabYang2025Distortion/audit/source_record_match_llm.json"
+        },
+        "llm_statement_review": {
+          "assumption_judgment_file": "papers/GolzHaghtalabYang2025Distortion/audit/assumption_match_llm.json",
+          "defect_support_judgment_file": "papers/GolzHaghtalabYang2025Distortion/audit/defect_support_match_llm.json",
+          "lean_to_tex_file": "papers/GolzHaghtalabYang2025Distortion/audit/lean_to_tex_llm.json",
+          "library_semantic_review_file": "papers/GolzHaghtalabYang2025Distortion/audit/library_semantic_review.json",
+          "match_judgment_file": "papers/GolzHaghtalabYang2025Distortion/audit/statement_match_llm.json",
+          "paper_coverage_audit_file": "papers/GolzHaghtalabYang2025Distortion/audit/paper_coverage_llm.json",
+          "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
+          "require_direct_expression_semantics_review": "v1",
+          "require_explicit_source_routes": true,
+          "require_source_claim_atoms": true,
+          "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
+          "review_surface_audit_file": "papers/GolzHaghtalabYang2025Distortion/audit/review_surface_llm.json",
+          "surface_audit_threshold": 30,
+          "surface_warning_threshold": 120,
+          "v11_screening_file": "papers/GolzHaghtalabYang2025Distortion/audit/v11_raw_source_spec_screening.json"
+        },
+        "paper_coverage_required": true,
+        "proof_file": "papers/GolzHaghtalabYang2025Distortion/ProofInterface.lean",
+        "proof_module": "GolzHaghtalabYang2025Distortion.ProofInterface",
+        "proposition_spec_proofs": {
+          "appendixF3DpoRlhfEquivalenceSpec": "appendixF3_dpo_rlhf_equivalence",
+          "corollary4Spec": "corollary4_maximal_lottery",
+          "corollary8Spec": "corollary8_regularized_nlhf",
+          "lemma10Spec": "lemma10_empirical_win_rate_concentration",
+          "lemma11Spec": "lemma11_borda_concentration",
+          "lemma15Spec": "lemma15_infinite_sequence",
+          "lemma1Spec": "lemma1_linearization",
+          "proposition13Spec": "proposition13_nlhf_equivalence",
+          "proposition14Spec": "proposition14_rlhf_equivalence",
+          "theorem12Spec": "theorem12_borda_lower_bound",
+          "theorem2Spec": "theorem2_borda_distortion",
+          "theorem3Spec": "theorem3_voting_rule_lower_bound",
+          "theorem5Spec": "theorem5_borda_lower_bound",
+          "theorem6Spec": "theorem6_rlhf_distortion",
+          "theorem7Spec": "theorem7_nlhf_distortion",
+          "theorem9Spec": "theorem9_correlated_sampling_unbounded"
+        },
+        "require_source_spec_correspondence": true,
+        "require_v11_raw_source_spec_screening": true,
         "semantic_model_review": {
-          "schema": 2,
+          "policy": "For every reviewed row, preserve an alpha-normalized expanded binder/domain surface, including transparent local type aliases, record parameter domains, and model records reached only in result quantifiers. An unexpanded local opaque/constant type requires a checked carrier/refinement bridge rather than being silently treated as an ordinary carrier. When an expanded finite carrier uses index arithmetic such as Fin (n + c), record the source cardinal parameter, the expanded Lean expression, and a proved parameter translation; then explicitly compare it with pinned source text. Review endpoint support/cutoffs, product or iid laws versus source state evolution, conditioning/calibration semantics, expectation definedness, null-cell totalization and finite/countable/arbitrary partition scope, and Real versus extended-rate codomains when the expanded model makes them relevant. For a probability-law surface, state whether conditioning is pointwise, a.e., positive-fiber, or event-calibrated; state measurability/integrability or extended-value conventions for every expectation; and expose every zero-mass-cell branch. Local declaration and binder names are routing only; detected probability/rate shapes need a checked bridge from source primitives. Because this scaffold enables explicit v10 source routes, every full closeout requires current source-record semantic-model judgments for every generated row; an unresolved model dimension blocks both full statuses.",
           "required_dimensions": [
             "expanded_binders_and_domain",
             "carrier_and_domain",
@@ -4334,36 +4370,134 @@
             "null_cell_totalization_and_partition_scope",
             "extended_rate_codomain"
           ],
-          "policy": "For every reviewed row, preserve an alpha-normalized expanded binder/domain surface, including transparent local type aliases, record parameter domains, and model records reached only in result quantifiers. An unexpanded local opaque/constant type requires a checked carrier/refinement bridge rather than being silently treated as an ordinary carrier. When an expanded finite carrier uses index arithmetic such as Fin (n + c), record the source cardinal parameter, the expanded Lean expression, and a proved parameter translation; then explicitly compare it with pinned source text. Review endpoint support/cutoffs, product or iid laws versus source state evolution, conditioning/calibration semantics, expectation definedness, null-cell totalization and finite/countable/arbitrary partition scope, and Real versus extended-rate codomains when the expanded model makes them relevant. For a probability-law surface, state whether conditioning is pointwise, a.e., positive-fiber, or event-calibrated; state measurability/integrability or extended-value conventions for every expectation; and expose every zero-mass-cell branch. Local declaration and binder names are routing only; detected probability/rate shapes need a checked bridge from source primitives. Because this scaffold enables explicit v10 source routes, every full closeout requires current source-record semantic-model judgments for every generated row; an unresolved model dimension blocks both full statuses."
+          "schema": 2
         },
+        "slices": [
+          {
+            "id": "main_text",
+            "names": [
+              "lemma1Spec",
+              "theorem2Spec",
+              "theorem3Spec",
+              "corollary4Spec",
+              "theorem5Spec",
+              "theorem6Spec",
+              "theorem7Spec",
+              "corollary8Spec",
+              "theorem9Spec"
+            ],
+            "title": "Main-text results"
+          },
+          {
+            "id": "appendix",
+            "names": [
+              "theorem12Spec",
+              "lemma10Spec",
+              "lemma11Spec",
+              "proposition13Spec",
+              "proposition14Spec",
+              "lemma15Spec"
+            ],
+            "title": "Appendix results"
+          },
+          {
+            "id": "additional_source_results",
+            "names": [
+              "appendixF3DpoRlhfEquivalenceSpec"
+            ],
+            "title": "Additional source results"
+          }
+        ],
+        "source_definition_names": [
+          "AppliedModelingLib.Alignment.Welfare.FiniteUtilityProfile",
+          "AppliedModelingLib.Alignment.Welfare.UnitIntervalUtilityProfile",
+          "AppliedModelingLib.Alignment.Welfare.populationAverageUtility",
+          "AppliedModelingLib.Alignment.Welfare.policyAverageUtility",
+          "AppliedModelingLib.Learning.HumanFeedback.PairwisePreference",
+          "AppliedModelingLib.Alignment.Welfare.ComparisonPairSampling",
+          "AppliedModelingLib.Alignment.Welfare.populationBradleyTerryPreference",
+          "AppliedModelingLib.Alignment.Welfare.pairwiseBordaScore",
+          "AppliedModelingLib.Alignment.Welfare.ReferenceAlternativePolicy",
+          "AppliedModelingLib.finiteKLDivergence",
+          "AppliedModelingLib.Alignment.Welfare.InFiniteKLBall",
+          "AppliedModelingLib.Learning.HumanFeedback.PairwiseCountDataset.isPairwiseMLE",
+          "AppliedModelingLib.Learning.HumanFeedback.IsConstrainedPolicyScoreMax",
+          "AppliedModelingLib.Learning.HumanFeedback.correlatedBradleyTerryFitObjective",
+          "AppliedModelingLib.Alignment.Welfare.populationBradleyTerryPolicyMargin",
+          "AppliedModelingLib.Alignment.Welfare.IsConstrainedPopulationBradleyTerryMaximin",
+          "GolzHaghtalabYang2025Distortion.IsEmpiricalMaximalLottery"
+        ],
+        "source_file": "papers/GolzHaghtalabYang2025Distortion/PaperInterface.lean",
         "source_proof_fidelity_review": {
-          "ledger_file": "papers/HT26EFXChores/audit/source_proof_fidelity.json",
+          "ledger_file": "papers/GolzHaghtalabYang2025Distortion/audit/source_proof_fidelity.json",
           "policy": "Audit source proof steps by source locator and mathematical claim, not by Lean declaration name. Completed papers use ledger schema 2. Every defect records status_impact as formalized_note, formalized_with_caveat, or partially_formalized plus a semantic rationale. Minor repairs with an unchanged substantive endpoint are notes; formalized with caveat is reserved for a substantial central source-paper error with a fully proved corrected endpoint; weaker Lean targets and added non-source assumptions are partial. Keep this configured ledger whenever explicit source routes or source-defect links are present; a formalized note cannot waive an added non-source assumption or a partial boundary."
-        },
-        "assumption_policy": "strict",
+        }
+      },
+      "schema": 1,
+      "source_inventory_review_required": true,
+      "source_version": "NeurIPS 2025 published conference version",
+      "status": "formalized",
+      "title": "Distortion of AI Alignment: Does Preference Optimization Optimize for Preferences?"
+    },
+    {
+      "artifacts": {
+        "assumptions": "papers/HT26EFXChores/Assumptions.lean",
+        "dependency_dag_pdf": "papers/HT26EFXChores/docs/DependencyDAG.pdf",
+        "dependency_dag_tex": "papers/HT26EFXChores/docs/DependencyDAG.tex",
+        "final_closure_receipt": "papers/HT26EFXChores/FINAL_CLOSURE_RECEIPT.md",
+        "final_validation_report": "papers/HT26EFXChores/FINAL_VALIDATION_REPORT.md",
+        "focused_build_receipt": "papers/HT26EFXChores/audit/FOCUSED_BUILD_RECEIPT.json",
+        "human_review": "papers/HT26EFXChores/docs/HUMAN_REVIEW.md",
+        "human_review_packet_pdf": "papers/HT26EFXChores/docs/HUMAN_REVIEW_PACKET.pdf",
+        "human_review_packet_tex": "papers/HT26EFXChores/docs/HUMAN_REVIEW_PACKET.tex",
+        "paper_interface": "papers/HT26EFXChores/PaperInterface.lean",
+        "proof_interface": "papers/HT26EFXChores/ProofInterface.lean"
+      },
+      "authors": "Wentao He and Biaoshuai Tao",
+      "build_target": "lake build HT26EFXChores",
+      "human_review": {
+        "mismatch_rows": 0,
+        "recorded_interface_sha256": "3614c2166c8d012953ea5f58145f47b8ca0b6288032433f251bb89885ba4b86c",
+        "reviewed_definitions": [
+          "EFX",
+          "feasibility",
+          "Pareto optimality"
+        ],
+        "reviewed_names": [
+          "tri_valued_nonexistenceSpec",
+          "efx_pareto_incompatibilitySpec",
+          "four_agent_bi_valued_efx_existsSpec"
+        ],
+        "reviewed_rows": 3,
+        "reviewer": "Xiaohui Bei",
+        "scope": "Lean statement correspondence and mathematical meaning",
+        "source": "docs/HUMAN_REVIEW.md: Xiaohui Bei email statement review, relayed by Nikhil Garg on 2026-09-27",
+        "stale_rows": 0,
+        "total_rows": 18,
+        "uncertain_rows": 0
+      },
+      "human_summary": "Draft summary: the three theorem routes, all named supporting results, the general-agent insertion remark, and the explicit Theorem 2 EFX witness are compiled against arXiv v2; the formalizer source audit found no additional paper-facing assumption or source correction.",
+      "human_summary_review": {
+        "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction.",
+        "status": "draft"
+      },
+      "id": "HT26EFXChores",
+      "intake_freeze_required": true,
+      "main_caveat": "None.",
+      "paper_interface": {
+        "declaration_rows": 24,
+        "line_count": 682,
+        "maintainability_issue": null,
+        "oversized": false,
+        "path": "papers/HT26EFXChores/PaperInterface.lean",
+        "review_rows": 18
+      },
+      "repository_visibility": "public",
+      "review_entrypoint": "papers/HT26EFXChores/FINAL_VALIDATION_REPORT.md",
+      "review_surface": {
         "assumption_names": [],
-        "source_definition_names": [],
-        "proposition_spec_proofs": {
-          "tri_valued_nonexistenceSpec": "tri_valued_nonexistence",
-          "tri_four_no_two_largeSpec": "tri_four_no_two_large",
-          "tri_four_no_a_bundle_expensiveSpec": "tri_four_no_a_bundle_expensive",
-          "efx_pareto_incompatibilitySpec": "efx_pareto_incompatibility",
-          "efx_pareto_construction_has_efxSpec": "efx_pareto_construction_has_efx",
-          "efx_po_every_agent_largeSpec": "efx_po_every_agent_large",
-          "efx_po_cost_lower_boundsSpec": "efx_po_cost_lower_bounds",
-          "four_agent_bi_valued_efx_existsSpec": "four_agent_bi_valued_efx_exists",
-          "m34_insertionSpec": "m34_insertion",
-          "m34_insertion_general_agentsSpec": "m34_insertion_general_agents",
-          "compositionSpec": "composition",
-          "canonical_allocation_propertiesSpec": "canonical_allocation_properties",
-          "balanced_orientationSpec": "balanced_orientation",
-          "m2_efx_allocationSpec": "m2_efx_allocation",
-          "m2_efx_allocation_propertiesSpec": "m2_efx_allocation_properties",
-          "exceptional_residue_combinationSpec": "exceptional_residue_combination",
-          "appendix_no_two_a_itemsSpec": "appendix_no_two_a_items",
-          "appendix_p1_p2_lower_boundsSpec": "appendix_p1_p2_lower_bounds"
-        },
-        "paper_coverage_required": false,
+        "assumption_policy": "strict",
+        "assumption_source_file": "papers/HT26EFXChores/Assumptions.lean",
         "include_names": [
           "tri_valued_nonexistenceSpec",
           "tri_four_no_two_largeSpec",
@@ -4384,9 +4518,40 @@
           "appendix_no_two_a_itemsSpec",
           "appendix_p1_p2_lower_boundsSpec"
         ],
+        "llm_assumption_review": {
+          "assumption_judgment_file": "papers/HT26EFXChores/audit/assumption_match_llm.json",
+          "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
+        },
+        "llm_paper_coverage_review": {
+          "defect_support_judgment_file": "papers/HT26EFXChores/audit/defect_support_match_llm.json",
+          "paper_coverage_audit_file": "papers/HT26EFXChores/audit/paper_coverage_llm.json",
+          "policy": "Maintain an audit/paper_statement_map.json inventory of source definitions, formulas, and named statements, then use a separate LLM pass to judge whether each source item is covered by one or more dashboard rows. If coverage uses a reusable library declaration, it must route through an audited paper-local semantic bridge/equivalence row; matching by Lean/library/source names is not semantic evidence. Quarantined source defects require a separate exact-hash semantic judgment binding each candidate counterexample/refutation theorem to the validated defect record and every elaborated signature atom. This paper-level accounting is required before calling a full-paper formalization closed and is separate from row-local statement matching."
+        },
+        "llm_source_record_review": {
+          "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt.",
+          "source_record_audit_file": "papers/HT26EFXChores/audit/source_record_audit.json",
+          "source_record_judgment_file": "papers/HT26EFXChores/audit/source_record_match_llm.json"
+        },
+        "llm_statement_review": {
+          "assumption_judgment_file": "papers/HT26EFXChores/audit/assumption_match_llm.json",
+          "defect_support_judgment_file": "papers/HT26EFXChores/audit/defect_support_match_llm.json",
+          "lean_to_tex_file": "papers/HT26EFXChores/audit/lean_to_tex_llm.json",
+          "library_semantic_review_file": "papers/HT26EFXChores/audit/library_semantic_review.json",
+          "match_judgment_file": "papers/HT26EFXChores/audit/statement_match_llm.json",
+          "paper_coverage_audit_file": "papers/HT26EFXChores/audit/paper_coverage_llm.json",
+          "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
+          "require_direct_expression_semantics_review": "v1",
+          "require_explicit_source_routes": true,
+          "require_source_claim_atoms": true,
+          "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
+          "review_surface_audit_file": "papers/HT26EFXChores/audit/review_surface_llm.json",
+          "surface_audit_threshold": 30,
+          "surface_warning_threshold": 120,
+          "v11_screening_file": "papers/HT26EFXChores/audit/v11_raw_source_spec_screening.json"
+        },
+        "paper_coverage_required": false,
         "presentation_sections": [
           {
-            "title": "Main-text source claims",
             "names": [
               "tri_valued_nonexistenceSpec",
               "tri_four_no_two_largeSpec",
@@ -4404,20 +4569,58 @@
               "m2_efx_allocationSpec",
               "m2_efx_allocation_propertiesSpec",
               "exceptional_residue_combinationSpec"
-            ]
+            ],
+            "title": "Main-text source claims"
           },
           {
-            "title": "Appendix and supplement source claims",
             "names": [
               "appendix_no_two_a_itemsSpec",
               "appendix_p1_p2_lower_boundsSpec"
-            ]
+            ],
+            "title": "Appendix and supplement source claims"
           }
         ],
+        "proof_file": "papers/HT26EFXChores/ProofInterface.lean",
+        "proof_module": "HT26EFXChores.ProofInterface",
+        "proposition_spec_proofs": {
+          "appendix_no_two_a_itemsSpec": "appendix_no_two_a_items",
+          "appendix_p1_p2_lower_boundsSpec": "appendix_p1_p2_lower_bounds",
+          "balanced_orientationSpec": "balanced_orientation",
+          "canonical_allocation_propertiesSpec": "canonical_allocation_properties",
+          "compositionSpec": "composition",
+          "efx_pareto_construction_has_efxSpec": "efx_pareto_construction_has_efx",
+          "efx_pareto_incompatibilitySpec": "efx_pareto_incompatibility",
+          "efx_po_cost_lower_boundsSpec": "efx_po_cost_lower_bounds",
+          "efx_po_every_agent_largeSpec": "efx_po_every_agent_large",
+          "exceptional_residue_combinationSpec": "exceptional_residue_combination",
+          "four_agent_bi_valued_efx_existsSpec": "four_agent_bi_valued_efx_exists",
+          "m2_efx_allocationSpec": "m2_efx_allocation",
+          "m2_efx_allocation_propertiesSpec": "m2_efx_allocation_properties",
+          "m34_insertionSpec": "m34_insertion",
+          "m34_insertion_general_agentsSpec": "m34_insertion_general_agents",
+          "tri_four_no_a_bundle_expensiveSpec": "tri_four_no_a_bundle_expensive",
+          "tri_four_no_two_largeSpec": "tri_four_no_two_large",
+          "tri_valued_nonexistenceSpec": "tri_valued_nonexistence"
+        },
+        "require_source_spec_correspondence": true,
+        "require_v11_raw_source_spec_screening": true,
+        "semantic_model_review": {
+          "policy": "For every reviewed row, preserve an alpha-normalized expanded binder/domain surface, including transparent local type aliases, record parameter domains, and model records reached only in result quantifiers. An unexpanded local opaque/constant type requires a checked carrier/refinement bridge rather than being silently treated as an ordinary carrier. When an expanded finite carrier uses index arithmetic such as Fin (n + c), record the source cardinal parameter, the expanded Lean expression, and a proved parameter translation; then explicitly compare it with pinned source text. Review endpoint support/cutoffs, product or iid laws versus source state evolution, conditioning/calibration semantics, expectation definedness, null-cell totalization and finite/countable/arbitrary partition scope, and Real versus extended-rate codomains when the expanded model makes them relevant. For a probability-law surface, state whether conditioning is pointwise, a.e., positive-fiber, or event-calibrated; state measurability/integrability or extended-value conventions for every expectation; and expose every zero-mass-cell branch. Local declaration and binder names are routing only; detected probability/rate shapes need a checked bridge from source primitives. Because this scaffold enables explicit v10 source routes, every full closeout requires current source-record semantic-model judgments for every generated row; an unresolved model dimension blocks both full statuses.",
+          "required_dimensions": [
+            "expanded_binders_and_domain",
+            "carrier_and_domain",
+            "probability_support_endpoints",
+            "joint_law_and_state_evolution",
+            "conditioning_and_calibration_semantics",
+            "expectation_definedness",
+            "null_cell_totalization_and_partition_scope",
+            "extended_rate_codomain"
+          ],
+          "schema": 2
+        },
         "slices": [
           {
             "id": "all",
-            "title": "All source-facing review rows",
             "names": [
               "tri_valued_nonexistenceSpec",
               "tri_four_no_two_largeSpec",
@@ -4437,10 +4640,21 @@
               "exceptional_residue_combinationSpec",
               "appendix_no_two_a_itemsSpec",
               "appendix_p1_p2_lower_boundsSpec"
-            ]
+            ],
+            "title": "All source-facing review rows"
           }
-        ]
-      }
+        ],
+        "source_definition_names": [],
+        "source_file": "papers/HT26EFXChores/PaperInterface.lean",
+        "source_proof_fidelity_review": {
+          "ledger_file": "papers/HT26EFXChores/audit/source_proof_fidelity.json",
+          "policy": "Audit source proof steps by source locator and mathematical claim, not by Lean declaration name. Completed papers use ledger schema 2. Every defect records status_impact as formalized_note, formalized_with_caveat, or partially_formalized plus a semantic rationale. Minor repairs with an unchanged substantive endpoint are notes; formalized with caveat is reserved for a substantial central source-paper error with a fully proved corrected endpoint; weaker Lean targets and added non-source assumptions are partial. Keep this configured ledger whenever explicit source routes or source-defect links are present; a formalized note cannot waive an added non-source assumption or a partial boundary."
+        }
+      },
+      "schema": 1,
+      "source_version": "arXiv v2 (2026-07-09)",
+      "status": "formalized",
+      "title": "EFX for Additive Chores: Nonexistence, Pareto Incompatibility, and Bi-Valued Existence"
     },
     {
       "schema": 1,
@@ -6989,7 +7203,6 @@
         "paper_interface": "papers/MSVV07AdWords/PaperInterface.lean",
         "proof_interface": "papers/MSVV07AdWords/ProofInterface.lean",
         "readme": "papers/MSVV07AdWords/README.md",
-        "source_proof_fidelity": "papers/MSVV07AdWords/audit/source_proof_fidelity.json",
         "source_runner": "papers/MSVV07AdWords/SourceRunner.lean",
         "source_text": "cited publication"
       },
@@ -7005,10 +7218,10 @@
       },
       "human_summary": "",
       "id": "MSVV07AdWords",
-      "main_caveat": "Theorem 8 has a proved finite additive-error bound, but its competitive-ratio limit has not been derived from the paper small-bid assumptions. Section 4 tightness is proved through a fluid construction; the finite instance remains open.",
+      "main_caveat": "Theorem 8 is formalized through the paper's stated temporary unit-budget/exhaustive-OPT normalization: the actual occurrence runner has explicit finite error 3N/(m+1), whose small-bids limit is automatic. This is a source clarification of the finite accounting, not a correction to the limiting theorem. Section 4 uses a source-compatible finite nested-cohort tightness construction; MSVV cites KP00 but does not print that construction's incidence data.",
       "paper_interface": {
         "declaration_rows": 113,
-        "line_count": 3433,
+        "line_count": 3898,
         "maintainability_issue": null,
         "oversized": false,
         "path": "papers/MSVV07AdWords/PaperInterface.lean",
@@ -7041,7 +7254,7 @@
           "section3_greedy_tight_half_exampleSpec",
           "section3_discrete_tradeoff_convergenceSpec",
           "section3_equal_bid_discrete_msvv_is_balanceSpec",
-          "theorem8_balance_msvv_competitive_of_small_bids_limit_familySpec",
+          "theorem8_source_unit_budget_competitive_in_small_bids_limitSpec",
           "section6_alpha_total_definitionSpec",
           "section6_beta_lower_bound_formulaSpec",
           "section6_weighted_alpha_beta_inequalitySpec",
@@ -7072,7 +7285,7 @@
           "section4_lemma1_balance_pays_no_later_slabSpec",
           "section4_lemma2_factor_revealing_lp_constraintSpec",
           "section4_lemma3_factor_revealing_lp_optimalitySpec",
-          "section4_balance_exact_tightness_instanceSpec",
+          "section4_finite_balance_tightness_instanceSpec",
           "section5_tradeoff_revealing_primal_dual_lp_formulasSpec",
           "section5_type_fiber_alpha_accounting_formulaSpec",
           "section5_slab_fiber_beta_accounting_formulaSpec",
@@ -7105,9 +7318,9 @@
           "section3_discrete_tradeoff_monotonicitySpec": "section3_discrete_tradeoff_monotonicity",
           "section3_equal_bid_discrete_msvv_is_balanceSpec": "section3_equal_bid_discrete_msvv_is_balance",
           "section3_greedy_tight_half_exampleSpec": "section3_greedy_tight_half_example",
-          "section4_balance_exact_tightness_instanceSpec": "section4_balance_exact_tightness_instance",
           "section4_discretization_error_boundSpec": "section4_discretization_error_bound",
           "section4_factor_revealing_primal_dual_lp_formulasSpec": "section4_factor_revealing_primal_dual_lp_formulas",
+          "section4_finite_balance_tightness_instanceSpec": "section4_finite_balance_tightness_instance",
           "section4_lemma1_balance_pays_no_later_slabSpec": "section4_lemma1_balance_pays_no_later_slab",
           "section4_lemma2_factor_revealing_lp_constraintSpec": "section4_lemma2_factor_revealing_lp_constraint",
           "section4_lemma3_factor_revealing_lp_optimalitySpec": "section4_lemma3_factor_revealing_lp_optimality",
@@ -7132,11 +7345,11 @@
           "section6_next_highest_bid_all_theorem8_finite_explicit_errorSpec": "section6_next_highest_bid_all_theorem8_finite_explicit_error",
           "section6_weighted_alpha_beta_inequalitySpec": "section6_weighted_alpha_beta_inequality",
           "section8_weighted_effective_bid_formulaSpec": "section8_weighted_effective_bid_formula",
-          "theorem8_balance_msvv_competitive_of_small_bids_limit_familySpec": "theorem8_balance_msvv_competitive_of_small_bids_limit_family",
           "theorem8_delta_dual_suffix_identitySpec": "theorem8_delta_dual_suffix_identity",
           "theorem8_dual_induced_tradeoff_formulaSpec": "theorem8_dual_induced_tradeoff_formula",
           "theorem8_simple_proof_beta_recurrence_formulaSpec": "theorem8_simple_proof_beta_recurrence_formula",
           "theorem8_simple_proof_weighted_alpha_beta_inequalitySpec": "theorem8_simple_proof_weighted_alpha_beta_inequality",
+          "theorem8_source_unit_budget_competitive_in_small_bids_limitSpec": "theorem8_source_unit_budget_competitive_in_small_bids_limit",
           "theorem8_unspent_budget_bound_formulaSpec": "theorem8_unspent_budget_bound_formula",
           "theorem9_base_instance_balance_revenue_claimSpec": "theorem9_base_instance_balance_revenue_claim",
           "theorem9_expected_round_allocation_boundSpec": "theorem9_expected_round_allocation_bound",
@@ -7184,7 +7397,7 @@
               "section4_lemma1_balance_pays_no_later_slabSpec",
               "section4_lemma2_factor_revealing_lp_constraintSpec",
               "section4_lemma3_factor_revealing_lp_optimalitySpec",
-              "section4_balance_exact_tightness_instanceSpec",
+              "section4_finite_balance_tightness_instanceSpec",
               "section5_tradeoff_revealing_primal_dual_lp_formulasSpec",
               "section5_type_fiber_alpha_accounting_formulaSpec",
               "section5_slab_fiber_beta_accounting_formulaSpec",
@@ -7209,7 +7422,7 @@
           {
             "id": "additional_source_results",
             "names": [
-              "theorem8_balance_msvv_competitive_of_small_bids_limit_familySpec"
+              "theorem8_source_unit_budget_competitive_in_small_bids_limitSpec"
             ],
             "title": "Additional source results"
           },
@@ -7229,7 +7442,7 @@
       },
       "schema": 1,
       "source_version": "Journal of the ACM, 2007",
-      "status": "partially formalized",
+      "status": "formalized",
       "title": "AdWords and Generalized Online Matching"
     },
     {
@@ -9094,132 +9307,54 @@
       "title": "Reconciling the Accuracy-Diversity Trade-off in Recommendations"
     },
     {
-      "schema": 1,
-      "id": "PZMH20PerformativePrediction",
-      "title": "Performative Prediction",
+      "artifacts": {
+        "assumptions": "papers/PZMH20PerformativePrediction/Assumptions.lean",
+        "dependency_dag_pdf": "papers/PZMH20PerformativePrediction/docs/DependencyDAG.pdf",
+        "dependency_dag_tex": "papers/PZMH20PerformativePrediction/docs/DependencyDAG.tex",
+        "final_validation_report": "papers/PZMH20PerformativePrediction/FINAL_VALIDATION_REPORT.md",
+        "human_review_packet_pdf": "papers/PZMH20PerformativePrediction/docs/HUMAN_REVIEW_PACKET.pdf",
+        "human_review_packet_tex": "papers/PZMH20PerformativePrediction/docs/HUMAN_REVIEW_PACKET.tex",
+        "paper_interface": "papers/PZMH20PerformativePrediction/PaperInterface.lean",
+        "proof_interface": "papers/PZMH20PerformativePrediction/ProofInterface.lean"
+      },
       "authors": "Juan C. Perdomo, Tijana Zrnic, Celestine Mendler-Dünner, and Moritz Hardt",
-      "source_version": "ICML 2020 / PMLR 119",
-      "source_inventory_review_required": true,
-      "repository_visibility": "public",
       "build_target": "lake build +PZMH20PerformativePrediction",
-      "status": "formalized",
-      "corrected_formalization_status": "formalized",
       "corrected_formalization_scope": "The completed corrected target uses a compact-convex domain and explicit decoupled-risk continuity in Proposition 4.1, adds |mu| <= 1/2 to the Proposition 4.2 witness, requires gamma <= beta in Proposition 3.6(c), and proves Theorem 3.10 through dimension > 2 concrete RERM/RGD concentration schedules with explicit bounded-moment, measurability, loss/integrability, numerical-budget, and entry premises.",
-      "infinite_adaptive_trace_scope": "The reusable `adaptiveFreshHeterogeneousInfiniteTraceLaw` now constructs one dependent-coordinate Ionescu--Tulcea probability law for all adaptive finite-PMF batches (dummy coordinate 0, then round t at coordinate t+1). Its history-conditional event theorem and the full inverse-square union bound yield literal all-rounds <= p results for PZ's RERM uniform-loss, RGD empirical-gradient-mass, and finite-alphabet primal-W1 events, and the finite-PMF schedule constructors instantiate all three. Measurable event cylinders plus the reusable prefix-complement bridge lift the finite-alphabet W1 complement to an all-rounds RGD absorbing-ball theorem. This does not identify the older fixed-horizon PMF types by marginal equality, nor does it prove the source's general empirical-Wasserstein/Fournier--Guillin theorem or its exact constants.",
-      "infinite_adaptive_trace_upstream": "Mathlib Ionescu--Tulcea trajectory implementation reused directly: https://leanprover-community.github.io/mathlib4_docs/Mathlib/Probability/Kernel/IonescuTulcea/Traj.html and https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Probability/Kernel/IonescuTulcea/Traj.lean.",
+      "corrected_formalization_status": "formalized",
       "finite_wasserstein_concentration_scope": "An explicit maximal finite coupling proves W₁(empirical, law) ≤ diameter * card(Data) * epsilon from coordinatewise empirical mass deviations. The corresponding finite-IID W₁ failure event is bounded by the existing mass-deviation event and its Hoeffding bound; the heterogeneous conditionally-IID Ionescu--Tulcea trace lifts that literal event to a countable-union inverse-square confidence bound. A selected positive finite batch schedule meets that bound for the literal W₁ event itself, uniformly over every history-dependent deployment rule. Measurable round cylinders and the direct no-W₁-bad-trace recurrence then give the RGD absorbing ball at every iteration with probability at least 1-p. This is a genuine primal-W₁ finite-alphabet specialization, not the source's Fournier--Guillin theorem or its constants/rate.",
-      "main_caveat": "",
       "hilbert_projection_scope": "The reusable `hilbertProjection` selects the nearest point on every nonempty closed convex subset of a complete real inner-product space, proves the variational characterization required by projected-gradient fixed-point arguments, and proves 1-Lipschitzness. It directly reuses Mathlib's Hilbert projection theorem: https://leanprover-community.github.io/mathlib4_docs/Mathlib/Analysis/InnerProductSpace/Projection/Minimal.html and https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Analysis/InnerProductSpace/Projection/Minimal.lean. Theorem 3.8's arbitrary-law A1/A2 endpoint instantiates it; this does not discharge the theorem's separate analytic or empirical-concentration boundaries.",
-      "latest_verified_progress": "The general measure layer formalizes Theorems 3.5(a)--(b) and 3.8(a)--(b) on a nonempty closed convex parameter domain, including arbitrary-law W1 sensitivity, frozen-risk interpolation, Appendix E.3's T2/T3 estimates, the projected-RGD Banach fixed point, and its geometric rate. The selected Euclidean projection is now constructed extensionally by direct reuse of Mathlib's Hilbert projection theorem and instantiated in the A1/A2 Theorem 3.8 endpoint. The reusable Mathlib-backed dominated parametric-integral bridge derives frozen-risk gradients from A1 together with explicit local loss measurability, integrable domination, and pointwise differentiability. That same bridge now supplies arbitrary-law W1 endpoints for Theorem 4.3's `2 Lz epsilon / gamma` distance bound and Corollary 5.1's `2 Lz epsilon (Ltheta + Lz epsilon) / gamma` objective gap. Proposition 3.6(a) now formalizes the source's arbitrary-positive-epsilon/beta real linear-loss/Dirac model, its exact decoupled risk and domain RRM update, W1 sensitivity via reusable Dirac transport, actual gradient, convexity, beta-joint smoothness, absence of positive strong convexity, unique stable point, and nonconvergent selected endpoint trajectory. Proposition 3.6(b) now formalizes its real regularized-hinge/Dirac model, exact frozen risk, W1 sensitivity, pointwise gamma-strong convexity, and hinge nondifferentiability, with the two source RRM steps certified on their divergent orbit. Proposition 3.6(c) now formalizes the source's real squared-loss/Dirac model, its exact decoupled risk and RRM update, W1 sensitivity via a reusable Dirac coupling, A1/A2 constants, fixed-point characterization, and the stated no-stability/divergence regimes. Proposition 4.1 has an arbitrary-law compact-convex best-response/Kakutani endpoint under explicit joint-risk continuity and pointwise loss convexity; a finite compact nonconvex counterexample proves that the source's compact-only statement needs this convex-domain correction. The general-law empirical interface realizes a nonempty finite sample as a probability measure and proves the deterministic W1 event-to-gradient/update step of Theorem 3.10. General empirical-Wasserstein concentration and the source Wasserstein/Berge continuity bridge remain open.",
+      "human_review": {
+        "mismatch_rows": 0,
+        "reviewed_rows": 0,
+        "source": "v11 PaperInterface claim surface; human entries are recorded after direct review",
+        "stale_rows": 0,
+        "total_rows": 11,
+        "uncertain_rows": 0
+      },
       "human_summary": "The shared game-theory library now formalizes finite performative risk, decoupled risk, stability, selected repeated-risk minimization over a domain, finite argmin existence, strategic induced laws, finite transport-coupling and finite-W₁ Lipschitz-test bounds, frozen-risk strong convexity, finite expected-loss differentiation, source-shaped primal and finite-W₁ convex-domain RRM and projected-RGD contraction/geometric-convergence theorems, finite-W₁ versions of Theorem 4.3 and Corollary 5.1, the finite-PMF compact-convex Proposition 4.1 route, and finite-IID support plus finite-horizon deterministic/union-bound bridges for Theorem 3.10. The arbitrary-measure Theorems 3.5 and 3.8 now match their W₁ contraction and Banach conclusions under explicit finite-first-moment coupling, integrability, and local analytic-differentiation premises. The source's Euclidean projection is constructed extensionally for the arbitrary-law Theorem 3.8 route by direct reuse of Mathlib's Hilbert projection theorem. Proposition 3.6(a) is now an exact real linear-loss/Dirac counterexample for all positive epsilon and beta: its decoupled risk, domain RRM update, W₁ sensitivity, actual gradient, convexity, beta-joint smoothness, lack of strong convexity, unique stable point, and selected nonconvergent cycle are compiled; its interface also retains the source proposition’s otherwise vacuous positive gamma quantifier. Proposition 3.6(b) is now an exact real regularized-hinge/Dirac counterexample: its frozen risk, W₁ sensitivity, pointwise gamma-strong convexity, hinge nondifferentiability, and the two domain-constrained RRM steps on the divergent orbit are compiled. Proposition 3.6(c) is likewise an exact real squared-loss/Dirac counterexample: its decoupled risk, RRM update, W₁ sensitivity, A1/A2 constants, stability fixed point, and the source’s equality/no-stability and divergence regimes are compiled. Proposition 4.1 derives compact nonempty and convex frozen-law argmin values plus a closed graph from a visible joint-risk-continuity bridge, then applies a source-attributed local Kakutani port; the printed compact-only statement is false, as a compiled compact nonconvex counterexample shows, and the source's arbitrary-distribution Wasserstein/Berge bridge remains open. Theorem 3.10 includes recursively defined deployed-state PMFs, including a heterogeneous batch-history law that uses a separate `n_t` at each round, with conditional IID event factorization and an exact finite-prefix inverse-square confidence bridge for both its RERM uniform-loss and RGD empirical-mass events. In the finite-PMF model, vanishing parameter-uniform failures now construct positive roundwise batch counts satisfying that bridge, whose no-bad-event consequences give the corresponding RERM/RGD absorbing-ball conclusion with probability at least `1-p` for every fixed horizon. A reused finite-family Hoeffding result gives a direct RERM budget condition when losses are `[0,1]`; neither finite route reproduces the source's quantitative Fournier--Guillin bound. Fournier--Guillin's official and arXiv sources are pinned; their theorem’s dimension/tail-dependent concentration assumptions and constants remain separate formal work. The library also constructs a corrected finite-PMF form of Proposition 4.2's Bernoulli example, checks its exact quadratic risk, concavity algebra, full loss-side joint-smoothness/strong-convexity calculation, and finite W₁ sensitivity by an explicit coupling, while identifying the source appendix's missing endpoint condition. The source paper's general Wasserstein concentration, exact empirical-Wasserstein/source-constant bridge, and arbitrary-distribution/primal-dual bridge are not yet formalized.",
       "human_summary_review": {
-        "status": "draft",
-        "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
+        "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction.",
+        "status": "draft"
       },
-      "review_entrypoint": "papers/PZMH20PerformativePrediction/FINAL_VALIDATION_REPORT.md",
-      "human_review": {
-        "reviewed_rows": 0,
-        "total_rows": 11,
-        "stale_rows": 0,
-        "mismatch_rows": 0,
-        "uncertain_rows": 0,
-        "source": "v11 PaperInterface claim surface; human entries are recorded after direct review"
-      },
+      "id": "PZMH20PerformativePrediction",
+      "infinite_adaptive_trace_scope": "The reusable `adaptiveFreshHeterogeneousInfiniteTraceLaw` now constructs one dependent-coordinate Ionescu--Tulcea probability law for all adaptive finite-PMF batches (dummy coordinate 0, then round t at coordinate t+1). Its history-conditional event theorem and the full inverse-square union bound yield literal all-rounds <= p results for PZ's RERM uniform-loss, RGD empirical-gradient-mass, and finite-alphabet primal-W1 events, and the finite-PMF schedule constructors instantiate all three. Measurable event cylinders plus the reusable prefix-complement bridge lift the finite-alphabet W1 complement to an all-rounds RGD absorbing-ball theorem. This does not identify the older fixed-horizon PMF types by marginal equality, nor does it prove the source's general empirical-Wasserstein/Fournier--Guillin theorem or its exact constants.",
+      "infinite_adaptive_trace_upstream": "Mathlib Ionescu--Tulcea trajectory implementation reused directly: https://leanprover-community.github.io/mathlib4_docs/Mathlib/Probability/Kernel/IonescuTulcea/Traj.html and https://github.com/leanprover-community/mathlib4/blob/master/Mathlib/Probability/Kernel/IonescuTulcea/Traj.lean.",
+      "latest_verified_progress": "The general measure layer formalizes Theorems 3.5(a)--(b) and 3.8(a)--(b) on a nonempty closed convex parameter domain, including arbitrary-law W1 sensitivity, frozen-risk interpolation, Appendix E.3's T2/T3 estimates, the projected-RGD Banach fixed point, and its geometric rate. The selected Euclidean projection is now constructed extensionally by direct reuse of Mathlib's Hilbert projection theorem and instantiated in the A1/A2 Theorem 3.8 endpoint. The reusable Mathlib-backed dominated parametric-integral bridge derives frozen-risk gradients from A1 together with explicit local loss measurability, integrable domination, and pointwise differentiability. That same bridge now supplies arbitrary-law W1 endpoints for Theorem 4.3's `2 Lz epsilon / gamma` distance bound and Corollary 5.1's `2 Lz epsilon (Ltheta + Lz epsilon) / gamma` objective gap. Proposition 3.6(a) now formalizes the source's arbitrary-positive-epsilon/beta real linear-loss/Dirac model, its exact decoupled risk and domain RRM update, W1 sensitivity via reusable Dirac transport, actual gradient, convexity, beta-joint smoothness, absence of positive strong convexity, unique stable point, and nonconvergent selected endpoint trajectory. Proposition 3.6(b) now formalizes its real regularized-hinge/Dirac model, exact frozen risk, W1 sensitivity, pointwise gamma-strong convexity, and hinge nondifferentiability, with the two source RRM steps certified on their divergent orbit. Proposition 3.6(c) now formalizes the source's real squared-loss/Dirac model, its exact decoupled risk and RRM update, W1 sensitivity via a reusable Dirac coupling, A1/A2 constants, fixed-point characterization, and the stated no-stability/divergence regimes. Proposition 4.1 has an arbitrary-law compact-convex best-response/Kakutani endpoint under explicit joint-risk continuity and pointwise loss convexity; a finite compact nonconvex counterexample proves that the source's compact-only statement needs this convex-domain correction. The general-law empirical interface realizes a nonempty finite sample as a probability measure and proves the deterministic W1 event-to-gradient/update step of Theorem 3.10. General empirical-Wasserstein concentration and the source Wasserstein/Berge continuity bridge remain open.",
+      "main_caveat": "",
       "paper_interface": {
-        "path": "papers/PZMH20PerformativePrediction/PaperInterface.lean",
-        "line_count": 1568,
         "declaration_rows": 11,
-        "review_rows": 11,
+        "line_count": 1973,
+        "maintainability_issue": null,
         "oversized": false,
-        "maintainability_issue": null
+        "path": "papers/PZMH20PerformativePrediction/PaperInterface.lean",
+        "review_rows": 11
       },
-      "artifacts": {
-        "paper_interface": "papers/PZMH20PerformativePrediction/PaperInterface.lean",
-        "proof_interface": "papers/PZMH20PerformativePrediction/ProofInterface.lean",
-        "assumptions": "papers/PZMH20PerformativePrediction/Assumptions.lean",
-        "final_validation_report": "papers/PZMH20PerformativePrediction/FINAL_VALIDATION_REPORT.md",
-        "dependency_dag_tex": "papers/PZMH20PerformativePrediction/docs/DependencyDAG.tex",
-        "dependency_dag_pdf": "papers/PZMH20PerformativePrediction/docs/DependencyDAG.pdf",
-        "source_proof_fidelity": "papers/PZMH20PerformativePrediction/audit/source_proof_fidelity.json",
-        "defect_support_match": "papers/PZMH20PerformativePrediction/audit/defect_support_match_llm.json",
-        "library_semantic_review": "papers/PZMH20PerformativePrediction/audit/library_semantic_review.json",
-        "v11_raw_source_spec_screening": "papers/PZMH20PerformativePrediction/audit/v11_raw_source_spec_screening.json",
-        "human_review_packet_pdf": "papers/PZMH20PerformativePrediction/docs/HUMAN_REVIEW_PACKET.pdf",
-        "human_review_packet_tex": "papers/PZMH20PerformativePrediction/docs/HUMAN_REVIEW_PACKET.tex"
-      },
+      "repository_visibility": "public",
+      "review_entrypoint": "papers/PZMH20PerformativePrediction/FINAL_VALIDATION_REPORT.md",
       "review_surface": {
-        "source_file": "papers/PZMH20PerformativePrediction/PaperInterface.lean",
-        "proof_module": "PZMH20PerformativePrediction.ProofInterface",
-        "proof_file": "papers/PZMH20PerformativePrediction/ProofInterface.lean",
-        "assumption_source_file": "papers/PZMH20PerformativePrediction/Assumptions.lean",
-        "require_source_spec_correspondence": true,
-        "llm_statement_review": {
-          "lean_to_tex_file": "papers/PZMH20PerformativePrediction/audit/lean_to_tex_llm.json",
-          "match_judgment_file": "papers/PZMH20PerformativePrediction/audit/statement_match_llm.json",
-          "library_semantic_review_file": "papers/PZMH20PerformativePrediction/audit/library_semantic_review.json",
-          "v11_screening_file": "papers/PZMH20PerformativePrediction/audit/v11_raw_source_spec_screening.json",
-          "review_surface_audit_file": "papers/PZMH20PerformativePrediction/audit/review_surface_llm.json",
-          "paper_coverage_audit_file": "papers/PZMH20PerformativePrediction/audit/paper_coverage_llm.json",
-          "defect_support_judgment_file": "papers/PZMH20PerformativePrediction/audit/defect_support_match_llm.json",
-          "assumption_judgment_file": "papers/PZMH20PerformativePrediction/audit/assumption_match_llm.json",
-          "surface_audit_threshold": 30,
-          "surface_warning_threshold": 120,
-          "require_explicit_source_routes": true,
-          "require_source_claim_atoms": true,
-          "require_direct_expression_semantics_review": "v1",
-          "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
-          "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim."
-        },
-        "llm_paper_coverage_review": {
-          "paper_coverage_audit_file": "papers/PZMH20PerformativePrediction/audit/paper_coverage_llm.json",
-          "defect_support_judgment_file": "papers/PZMH20PerformativePrediction/audit/defect_support_match_llm.json",
-          "policy": "Maintain an audit/paper_statement_map.json inventory of source definitions, formulas, and named statements, then use a separate LLM pass to judge whether each source item is covered by one or more dashboard rows. If coverage uses a reusable library declaration, it must route through an audited paper-local semantic bridge/equivalence row; matching by Lean/library/source names is not semantic evidence. Quarantined source defects require a separate exact-hash semantic judgment binding each candidate counterexample/refutation theorem to the validated defect record and every elaborated signature atom. This paper-level accounting is required before calling a full-paper formalization closed and is separate from row-local statement matching."
-        },
-        "llm_assumption_review": {
-          "assumption_judgment_file": "papers/PZMH20PerformativePrediction/audit/assumption_match_llm.json",
-          "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
-        },
-        "llm_source_record_review": {
-          "source_record_audit_file": "papers/PZMH20PerformativePrediction/audit/source_record_audit.json",
-          "source_record_judgment_file": "papers/PZMH20PerformativePrediction/audit/source_record_match_llm.json",
-          "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt."
-        },
-        "semantic_model_review": {
-          "schema": 2,
-          "required_dimensions": [
-            "expanded_binders_and_domain",
-            "carrier_and_domain",
-            "probability_support_endpoints",
-            "joint_law_and_state_evolution",
-            "conditioning_and_calibration_semantics",
-            "expectation_definedness",
-            "null_cell_totalization_and_partition_scope",
-            "extended_rate_codomain"
-          ],
-          "policy": "For every reviewed row, preserve an alpha-normalized expanded binder/domain surface, including transparent local type aliases, record parameter domains, and model records reached only in result quantifiers. An unexpanded local opaque/constant type requires a checked carrier/refinement bridge rather than being silently treated as an ordinary carrier. When an expanded finite carrier uses index arithmetic such as Fin (n + c), record the source cardinal parameter, the expanded Lean expression, and a proved parameter translation; then explicitly compare it with pinned source text. Review endpoint support/cutoffs, product or iid laws versus source state evolution, conditioning/calibration semantics, expectation definedness, null-cell totalization and finite/countable/arbitrary partition scope, and Real versus extended-rate codomains when the expanded model makes them relevant. For a probability-law surface, state whether conditioning is pointwise, a.e., positive-fiber, or event-calibrated; state measurability/integrability or extended-value conventions for every expectation; and expose every zero-mass-cell branch. Local declaration and binder names are routing only; detected probability/rate shapes need a checked bridge from source primitives. Because this scaffold enables explicit v10 source routes, every full closeout requires current source-record semantic-model judgments for every generated row; an unresolved model dimension blocks both full statuses."
-        },
-        "source_proof_fidelity_review": {
-          "ledger_file": "papers/PZMH20PerformativePrediction/audit/source_proof_fidelity.json",
-          "policy": "Audit source proof steps by source locator and mathematical claim, not by Lean declaration name. Completed papers use ledger schema 2. Every defect records status_impact as formalized_note, formalized_with_caveat, or partially_formalized plus a semantic rationale. Minor repairs with an unchanged substantive endpoint are notes; formalized with caveat is reserved for a substantial central source-paper error with a fully proved corrected endpoint; weaker Lean targets and added non-source assumptions are partial. Keep this configured ledger whenever explicit source routes or source-defect links are present; a formalized note cannot waive an added non-source assumption or a partial boundary."
-        },
-        "assumption_policy": "strict",
         "assumption_names": [],
-        "source_definition_names": [],
-        "proposition_spec_proofs": {
-          "measureWassersteinConvexRRMConvergesLinearlySpec": "measureWassersteinConvexRRMConvergesLinearlyProof",
-          "measureWassersteinConvexRGDConvergesLinearlySpec": "measureWassersteinConvexRGDConvergesLinearlyProof",
-          "measureCompactConvexStablePointExistsSpec": "measureCompactConvexStablePointExistsProof",
-          "proposition42CorrectedFiniteWitnessSpec": "proposition42CorrectedFiniteWitness",
-          "measureWassersteinOptimumStableDistanceSpec": "measureWassersteinOptimumStableDistanceProof",
-          "measureWassersteinStableObjectiveGapSpec": "measureWassersteinStableObjectiveGapProof",
-          "proposition36aExactDiracCounterexampleSpec": "proposition36aExactDiracCounterexample",
-          "proposition36bSourceUniformCounterexampleSpec": "proposition36bSourceUniformCounterexample",
-          "proposition36cFeasibleUniformCounterexampleSpec": "proposition36cFeasibleUniformCounterexample",
-          "theorem310CorrectedRERMAllRoundTrajectoryReviewSpec": "theorem310CorrectedRERMAllRoundTrajectoryReview",
-          "theorem310CorrectedRGDAllRoundTrajectoryReviewSpec": "theorem310CorrectedRGDAllRoundTrajectoryReview"
-        },
-        "paper_coverage_required": true,
-        "require_v11_raw_source_spec_screening": true,
+        "assumption_policy": "strict",
+        "assumption_source_file": "papers/PZMH20PerformativePrediction/Assumptions.lean",
         "include_names": [
           "measureWassersteinConvexRRMConvergesLinearlySpec",
           "measureWassersteinConvexRGDConvergesLinearlySpec",
@@ -9230,53 +9365,133 @@
           "proposition36aExactDiracCounterexampleSpec",
           "proposition36bSourceUniformCounterexampleSpec",
           "proposition36cFeasibleUniformCounterexampleSpec",
-          "theorem310CorrectedRERMAllRoundTrajectoryReviewSpec",
+          "theorem310RERMRawWassersteinAllDimensionalSamplingRecoverySpec",
           "theorem310CorrectedRGDAllRoundTrajectoryReviewSpec"
         ],
-        "slices": [
-          {
-            "id": "main_text",
-            "title": "Main-text source claims",
-            "names": [
-              "measureWassersteinConvexRRMConvergesLinearlySpec",
-              "measureWassersteinConvexRGDConvergesLinearlySpec",
-              "proposition36aExactDiracCounterexampleSpec",
-              "proposition36bSourceUniformCounterexampleSpec",
-              "proposition36cFeasibleUniformCounterexampleSpec",
-              "measureCompactConvexStablePointExistsSpec",
-              "proposition42CorrectedFiniteWitnessSpec",
-              "measureWassersteinOptimumStableDistanceSpec",
-              "measureWassersteinStableObjectiveGapSpec"
-            ]
-          },
-          {
-            "id": "additional_source_results",
-            "title": "Additional source results",
-            "names": [
-              "theorem310CorrectedRERMAllRoundTrajectoryReviewSpec",
-              "theorem310CorrectedRGDAllRoundTrajectoryReviewSpec"
-            ]
-          }
-        ],
+        "llm_assumption_review": {
+          "assumption_judgment_file": "papers/PZMH20PerformativePrediction/audit/assumption_match_llm.json",
+          "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
+        },
+        "llm_paper_coverage_review": {
+          "defect_support_judgment_file": "papers/PZMH20PerformativePrediction/audit/defect_support_match_llm.json",
+          "paper_coverage_audit_file": "papers/PZMH20PerformativePrediction/audit/paper_coverage_llm.json",
+          "policy": "Maintain an audit/paper_statement_map.json inventory of source definitions, formulas, and named statements, then use a separate LLM pass to judge whether each source item is covered by one or more dashboard rows. If coverage uses a reusable library declaration, it must route through an audited paper-local semantic bridge/equivalence row; matching by Lean/library/source names is not semantic evidence. Quarantined source defects require a separate exact-hash semantic judgment binding each candidate counterexample/refutation theorem to the validated defect record and every elaborated signature atom. This paper-level accounting is required before calling a full-paper formalization closed and is separate from row-local statement matching."
+        },
+        "llm_source_record_review": {
+          "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt.",
+          "source_record_audit_file": "papers/PZMH20PerformativePrediction/audit/source_record_audit.json",
+          "source_record_judgment_file": "papers/PZMH20PerformativePrediction/audit/source_record_match_llm.json"
+        },
+        "llm_statement_review": {
+          "assumption_judgment_file": "papers/PZMH20PerformativePrediction/audit/assumption_match_llm.json",
+          "defect_support_judgment_file": "papers/PZMH20PerformativePrediction/audit/defect_support_match_llm.json",
+          "lean_to_tex_file": "papers/PZMH20PerformativePrediction/audit/lean_to_tex_llm.json",
+          "library_semantic_review_file": "papers/PZMH20PerformativePrediction/audit/library_semantic_review.json",
+          "match_judgment_file": "papers/PZMH20PerformativePrediction/audit/statement_match_llm.json",
+          "paper_coverage_audit_file": "papers/PZMH20PerformativePrediction/audit/paper_coverage_llm.json",
+          "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim.",
+          "require_direct_expression_semantics_review": "v1",
+          "require_explicit_source_routes": true,
+          "require_source_claim_atoms": true,
+          "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
+          "review_surface_audit_file": "papers/PZMH20PerformativePrediction/audit/review_surface_llm.json",
+          "surface_audit_threshold": 30,
+          "surface_warning_threshold": 120,
+          "v11_screening_file": "papers/PZMH20PerformativePrediction/audit/v11_raw_source_spec_screening.json"
+        },
+        "paper_coverage_required": true,
         "presentation_sections": [
           {
-            "title": "Main-text source claims",
             "names": [
               "measureWassersteinConvexRRMConvergesLinearlySpec",
               "measureWassersteinConvexRGDConvergesLinearlySpec",
               "proposition36aExactDiracCounterexampleSpec",
               "proposition36bSourceUniformCounterexampleSpec",
               "proposition36cFeasibleUniformCounterexampleSpec",
-              "theorem310CorrectedRERMAllRoundTrajectoryReviewSpec",
+              "theorem310RERMRawWassersteinAllDimensionalSamplingRecoverySpec",
               "theorem310CorrectedRGDAllRoundTrajectoryReviewSpec",
               "measureCompactConvexStablePointExistsSpec",
               "proposition42CorrectedFiniteWitnessSpec",
               "measureWassersteinOptimumStableDistanceSpec",
               "measureWassersteinStableObjectiveGapSpec"
-            ]
+            ],
+            "title": "Main-text source claims"
           }
-        ]
-      }
+        ],
+        "proof_file": "papers/PZMH20PerformativePrediction/ProofInterface.lean",
+        "proof_module": "PZMH20PerformativePrediction.ProofInterface",
+        "proposition_spec_proofs": {
+          "measureCompactConvexStablePointExistsSpec": "measureCompactConvexStablePointExistsProof",
+          "measureWassersteinConvexRGDConvergesLinearlySpec": "measureWassersteinConvexRGDConvergesLinearlyProof",
+          "measureWassersteinConvexRRMConvergesLinearlySpec": "measureWassersteinConvexRRMConvergesLinearlyProof",
+          "measureWassersteinOptimumStableDistanceSpec": "measureWassersteinOptimumStableDistanceProof",
+          "measureWassersteinStableObjectiveGapSpec": "measureWassersteinStableObjectiveGapProof",
+          "proposition36aExactDiracCounterexampleSpec": "proposition36aExactDiracCounterexample",
+          "proposition36bSourceUniformCounterexampleSpec": "proposition36bSourceUniformCounterexample",
+          "proposition36cFeasibleUniformCounterexampleSpec": "proposition36cFeasibleUniformCounterexample",
+          "proposition42CorrectedFiniteWitnessSpec": "proposition42CorrectedFiniteWitness",
+          "theorem310CorrectedRGDAllRoundTrajectoryReviewSpec": "theorem310CorrectedRGDAllRoundTrajectoryReview",
+          "theorem310RERMRawWassersteinAllDimensionalSamplingRecoverySpec": "theorem310RERMRawWassersteinAllDimensionalSamplingRecovery"
+        },
+        "require_source_spec_correspondence": true,
+        "require_v11_raw_source_spec_screening": true,
+        "semantic_model_review": {
+          "policy": "For every reviewed row, preserve an alpha-normalized expanded binder/domain surface, including transparent local type aliases, record parameter domains, and model records reached only in result quantifiers. An unexpanded local opaque/constant type requires a checked carrier/refinement bridge rather than being silently treated as an ordinary carrier. When an expanded finite carrier uses index arithmetic such as Fin (n + c), record the source cardinal parameter, the expanded Lean expression, and a proved parameter translation; then explicitly compare it with pinned source text. Review endpoint support/cutoffs, product or iid laws versus source state evolution, conditioning/calibration semantics, expectation definedness, null-cell totalization and finite/countable/arbitrary partition scope, and Real versus extended-rate codomains when the expanded model makes them relevant. For a probability-law surface, state whether conditioning is pointwise, a.e., positive-fiber, or event-calibrated; state measurability/integrability or extended-value conventions for every expectation; and expose every zero-mass-cell branch. Local declaration and binder names are routing only; detected probability/rate shapes need a checked bridge from source primitives. Because this scaffold enables explicit v10 source routes, every full closeout requires current source-record semantic-model judgments for every generated row; an unresolved model dimension blocks both full statuses.",
+          "required_dimensions": [
+            "expanded_binders_and_domain",
+            "carrier_and_domain",
+            "probability_support_endpoints",
+            "joint_law_and_state_evolution",
+            "conditioning_and_calibration_semantics",
+            "expectation_definedness",
+            "null_cell_totalization_and_partition_scope",
+            "extended_rate_codomain"
+          ],
+          "schema": 2
+        },
+        "slices": [
+          {
+            "id": "main_text",
+            "names": [
+              "measureWassersteinConvexRRMConvergesLinearlySpec",
+              "measureWassersteinConvexRGDConvergesLinearlySpec",
+              "proposition36aExactDiracCounterexampleSpec",
+              "proposition36bSourceUniformCounterexampleSpec",
+              "proposition36cFeasibleUniformCounterexampleSpec",
+              "measureCompactConvexStablePointExistsSpec",
+              "proposition42CorrectedFiniteWitnessSpec",
+              "measureWassersteinOptimumStableDistanceSpec",
+              "measureWassersteinStableObjectiveGapSpec"
+            ],
+            "title": "Main-text source claims"
+          },
+          {
+            "id": "additional_source_results",
+            "names": [
+              "theorem310CorrectedRGDAllRoundTrajectoryReviewSpec"
+            ],
+            "title": "Additional source results"
+          },
+          {
+            "id": "additional_source_results",
+            "names": [
+              "theorem310RERMRawWassersteinAllDimensionalSamplingRecoverySpec"
+            ],
+            "title": "Additional source results"
+          }
+        ],
+        "source_definition_names": [],
+        "source_file": "papers/PZMH20PerformativePrediction/PaperInterface.lean",
+        "source_proof_fidelity_review": {
+          "ledger_file": "papers/PZMH20PerformativePrediction/audit/source_proof_fidelity.json",
+          "policy": "Audit source proof steps by source locator and mathematical claim, not by Lean declaration name. Completed papers use ledger schema 2. Every defect records status_impact as formalized_note, formalized_with_caveat, or partially_formalized plus a semantic rationale. Minor repairs with an unchanged substantive endpoint are notes; formalized with caveat is reserved for a substantial central source-paper error with a fully proved corrected endpoint; weaker Lean targets and added non-source assumptions are partial. Keep this configured ledger whenever explicit source routes or source-defect links are present; a formalized note cannot waive an added non-source assumption or a partial boundary."
+        }
+      },
+      "schema": 1,
+      "source_inventory_review_required": true,
+      "source_version": "ICML 2020 / PMLR 119",
+      "status": "formalized",
+      "title": "Performative Prediction"
     },
     {
       "artifacts": {

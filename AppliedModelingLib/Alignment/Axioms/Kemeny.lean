@@ -619,6 +619,103 @@ theorem isKemenyMinimizer_append {n leftCount rightCount : ℕ}
   exact Nat.add_le_add (hleft.2 contender hcontender) (hright.2 contender hcontender)
 
 /--
+A deterministic Kemeny tie selection is contraction-consistent when deleting
+other tied minimizers cannot change a selected minimizer that remains
+available.  This is the exact stability property used by the additive
+separability proof; it does not require a supplied global ranking priority.
+-/
+def IsContractionConsistentKemenySelector {n : ℕ} (feasible : Ranking n → Prop)
+    (rule : ∀ voterCount : ℕ, LinearRankAggregationRule (Fin voterCount) n feasible) : Prop :=
+  (∀ voterCount (profile : RankingProfile (Fin voterCount) n),
+    IsKemenyMinimizer feasible profile ((rule voterCount).run profile)) ∧
+    ∀ {outerCount innerCount : ℕ}
+      (outer : RankingProfile (Fin outerCount) n)
+      (inner : RankingProfile (Fin innerCount) n),
+      IsKemenyMinimizer feasible inner ((rule outerCount).run outer) →
+        (∀ contender, IsKemenyMinimizer feasible inner contender →
+          IsKemenyMinimizer feasible outer contender) →
+          (rule innerCount).run inner = (rule outerCount).run outer
+
+/--
+The combined Kemeny minimizers form a contraction of either component's
+minimizer set when one ranking minimizes both components.
+-/
+theorem isKemenyMinimizer_append_isKemenyMinimizer_left
+    {n leftCount rightCount : ℕ} (feasible : Ranking n → Prop)
+    (left : RankingProfile (Fin leftCount) n)
+    (right : RankingProfile (Fin rightCount) n) (output contender : Ranking n)
+    (hleft : IsKemenyMinimizer feasible left output)
+    (hright : IsKemenyMinimizer feasible right output)
+    (hcontender : IsKemenyMinimizer feasible (rankingProfileAppend left right) contender) :
+    IsKemenyMinimizer feasible left contender := by
+  refine ⟨hcontender.1, ?_⟩
+  intro alternative halternative
+  have hleft_output_le_contender :
+      kemenyDisagreement left output ≤ kemenyDisagreement left contender :=
+    hleft.2 contender hcontender.1
+  have hright_output_le_contender :
+      kemenyDisagreement right output ≤ kemenyDisagreement right contender :=
+    hright.2 contender hcontender.1
+  have hcontender_combined_le_output :
+      kemenyDisagreement (rankingProfileAppend left right) contender ≤
+        kemenyDisagreement (rankingProfileAppend left right) output :=
+    hcontender.2 output (isKemenyMinimizer_append feasible left right output hleft hright).1
+  have hleft_contender_le_output :
+      kemenyDisagreement left contender ≤ kemenyDisagreement left output := by
+    rw [kemenyDisagreement_append, kemenyDisagreement_append] at hcontender_combined_le_output
+    omega
+  exact hleft_contender_le_output.trans (hleft.2 alternative halternative)
+
+/--
+Contraction-consistent Kemeny selection is ranking separable.  Additivity
+makes the combined minimizer set a contraction of each component's minimizer
+set around their common selected output, so the tie-selection condition fixes
+the combined output.
+-/
+theorem contractionConsistentKemenySelector_rankingSeparability {n : ℕ}
+    (feasible : Ranking n → Prop)
+    (rule : ∀ voterCount : ℕ, LinearRankAggregationRule (Fin voterCount) n feasible)
+    (hselector : IsContractionConsistentKemenySelector feasible rule) :
+    RankingSeparability feasible rule := by
+  intro leftCount rightCount left right hequal
+  let output := (rule leftCount).run left
+  have hleft : IsKemenyMinimizer feasible left output :=
+    hselector.1 leftCount left
+  have hright : IsKemenyMinimizer feasible right output := by
+    simpa only [output] using hequal ▸ hselector.1 rightCount right
+  have houtputCombined : IsKemenyMinimizer feasible
+      (rankingProfileAppend left right) output :=
+    isKemenyMinimizer_append feasible left right output hleft hright
+  have hcontraction : ∀ contender,
+      IsKemenyMinimizer feasible (rankingProfileAppend left right) contender →
+        IsKemenyMinimizer feasible left contender := by
+    intro contender hcontender
+    exact isKemenyMinimizer_append_isKemenyMinimizer_left feasible left right output contender
+      hleft hright hcontender
+  exact hselector.2 left (rankingProfileAppend left right) houtputCombined hcontraction
+
+/--
+Every finite Kemeny-minimizing rule realizes a feasible strict
+pairwise-majority ranking whenever one exists.  Tie selection is irrelevant
+because the strict-majority ranking is the unique Kemeny minimizer.
+-/
+theorem kemenySelector_pairwiseMajorityConsistent {n : ℕ}
+    (feasible : Ranking n → Prop)
+    (rule : ∀ voterCount : ℕ, LinearRankAggregationRule (Fin voterCount) n feasible)
+    (hselector : ∀ voterCount (profile : RankingProfile (Fin voterCount) n),
+      IsKemenyMinimizer feasible profile ((rule voterCount).run profile)) :
+    ∀ voterCount : ℕ, PairwiseMajorityConsistent feasible (rule voterCount) := by
+  intro voterCount profile majorityRanking _ hfeasible hmajority
+  let output := (rule voterCount).run profile
+  have hminimum : IsKemenyMinimizer feasible profile output :=
+    hselector voterCount profile
+  change output = majorityRanking
+  by_contra hdifferent
+  have hstrict := pairwiseMajorityRanking_kemenyDisagreement_lt_of_ne
+    profile majorityRanking output hmajority (Ne.symm hdifferent)
+  exact (not_lt_of_ge (hminimum.2 majorityRanking hfeasible)) hstrict
+
+/--
 A Kemeny selector with one profile-independent injective tie key.  The source
 paper writes “under any consistent tie-breaking rule”; this predicate makes
 that consistency mathematically explicit.  The output minimizes Kemeny
@@ -632,6 +729,30 @@ def IsFixedTieKemenySelector {n : ℕ} (feasible : Ranking n → Prop)
       IsKemenyMinimizer feasible profile ((rule voterCount).run profile) ∧
         ∀ contender, IsKemenyMinimizer feasible profile contender →
           tieKey ((rule voterCount).run profile) ≤ tieKey contender
+
+/--
+A fixed injective ranking priority is a concrete contraction-consistent Kemeny
+tie rule.  This bridge retains the familiar canonical construction while
+allowing source-facing results to state only the stability they use.
+-/
+theorem fixedTieKemenySelector_isContractionConsistent {n : ℕ}
+    (feasible : Ranking n → Prop)
+    (rule : ∀ voterCount : ℕ, LinearRankAggregationRule (Fin voterCount) n feasible)
+    (tieKey : Ranking n → ℕ)
+    (hselector : IsFixedTieKemenySelector feasible rule tieKey) :
+    IsContractionConsistentKemenySelector feasible rule := by
+  refine ⟨fun voterCount profile => (hselector.2 voterCount profile).1, ?_⟩
+  intro outerCount innerCount outer inner houterAvailable hcontraction
+  have houter := hselector.2 outerCount outer
+  have hinner := hselector.2 innerCount inner
+  have houterKey_le : tieKey ((rule outerCount).run outer) ≤
+      tieKey ((rule innerCount).run inner) :=
+    houter.2 ((rule innerCount).run inner)
+      (hcontraction ((rule innerCount).run inner) hinner.1)
+  have hinnerKey_le : tieKey ((rule innerCount).run inner) ≤
+      tieKey ((rule outerCount).run outer) :=
+    hinner.2 ((rule outerCount).run outer) houterAvailable
+  exact hselector.1 (le_antisymm hinnerKey_le houterKey_le)
 
 /--
 Theorem C.3's separability conclusion for finite linear Kemeny, with the

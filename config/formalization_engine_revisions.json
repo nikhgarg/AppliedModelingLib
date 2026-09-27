@@ -1082,6 +1082,42 @@
       "verification": [
         "111 focused tests and source-only preflight for all 39 selected public papers passed; PR 58 approved the exact pending source-role hashes on canonical public main."
       ]
+    },
+    {
+      "engine_tree_sha256": "14365d908b10b1f6e5d84974d98c6254b1d0594aac3bcb175fd2242fde8d43b0",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Register the issuing verifier for the selected public paper closure graph.",
+      "sequence": 93,
+      "verification": [
+        "Canonical selected-graph transport and source-role projection validation."
+      ]
+    },
+    {
+      "engine_tree_sha256": "5bb50a654e6d5dec82a769ac9de8362e2b65123adccedda6bb7e91d444e83a5a",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Register the issuing verifier for the selected public paper closure graph.",
+      "sequence": 94,
+      "verification": [
+        "Canonical selected-graph transport and source-role projection validation."
+      ]
+    },
+    {
+      "engine_tree_sha256": "fcac1d922a5b34649f1f8f317fc44562e28f654373d61cffd394c7f2e8acbe85",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Register the issuing verifier for the selected public paper closure graph.",
+      "sequence": 95,
+      "verification": [
+        "Canonical selected-graph transport and source-role projection validation."
+      ]
+    },
+    {
+      "engine_tree_sha256": "547eec4fbff97e0c15b11ad7714451ce730f28968e717d743bb651eddb145c24",
+      "formalization_review_protocol_sha256": "ca5ffddd01335d26b9b44d361eeaea34261ea281d4fed0eb4f8d38d85a6c4e70",
+      "rationale": "Preserve preference glyphs in public review packets and register the selected paper graph issuers.",
+      "sequence": 96,
+      "verification": [
+        "MSVV accepted source-present receipt passes; existing export and packet regression checks passed."
+      ]
     }
   ],
   "schema": 2

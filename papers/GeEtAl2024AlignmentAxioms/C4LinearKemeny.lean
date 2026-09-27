@@ -1,5 +1,6 @@
 import AppliedModelingLib.Alignment.Axioms.Kemeny
 import AppliedModelingLib.Alignment.Axioms.LinearModel
+import AppliedModelingLib.SocialChoice.Ranking.Kendall
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
@@ -23,7 +24,40 @@ noncomputable section
 open AppliedModelingLib.Alignment.Axioms
 open AppliedModelingLib.SocialChoice.Ranking
 
+/--
+Every finite Kemeny selector realizes a feasible strict pairwise-majority
+ranking when one exists.  The tie convention is irrelevant because that
+ranking is the unique Kemeny minimizer.
+-/
+theorem fixedTieKemenySelector_pairwiseMajorityConsistent {n : ℕ}
+    (feasible : Ranking n → Prop)
+    (rule : ∀ voterCount : ℕ, LinearRankAggregationRule (Fin voterCount) n feasible)
+    (tieKey : Ranking n → ℕ)
+    (hselector : IsFixedTieKemenySelector feasible rule tieKey) :
+    ∀ voterCount : ℕ, PairwiseMajorityConsistent feasible (rule voterCount) := by
+  exact kemenySelector_pairwiseMajorityConsistent feasible rule
+    (fun voterCount profile => (hselector.2 voterCount profile).1)
+
 abbrev c4Candidate := Candidate 18
+
+/-- A forward output comparison rules out an inversion against any reference ranking. -/
+theorem not_invertedPair_of_strictlyPrefers {n : ℕ}
+    (reference output : Ranking n) (first second : Candidate n)
+    (hpreference : StrictlyPrefers output first second) :
+    ¬ invertedPair reference output (first, second) := by
+  intro hinverted
+  exact (lt_asymm hpreference) hinverted.2
+
+/-- Matching every adjacent comparison of a reference ranking determines that ranking. -/
+theorem ranking_eq_of_forall_adjacentStrictlyPrefers {n : ℕ}
+    (reference output : Ranking n)
+    (hpreference : ∀ index : Fin (n + 1),
+      StrictlyPrefers output (reference index.castSucc) (reference index.succ)) :
+    output = reference := by
+  apply eq_of_forall_not_adjacent_invertedPair reference output
+  intro index
+  exact not_invertedPair_of_strictlyPrefers reference output
+    (reference index.castSucc) (reference index.succ) (hpreference index)
 
 /-- The seven-dimensional feature table printed in the proof of Theorem C.4. -/
 def c4Features : c4Candidate → FeatureVector 7 :=
@@ -370,8 +404,68 @@ theorem c4TripleKemenyCost_eq_fifteen_of_fullReverse
       intro heq
       subst third
       simp at h23)
-      hthird_second,
+    hthird_second,
     h12, h13, h23]
+
+/--
+On a source 5--1 block, attaining its baseline cost forces the displayed
+forward adjacent comparisons.  This is the equality case used to recover the
+finite C.5 first-profile classification from Kemeny minimality.
+-/
+theorem c4Triple_forward_of_cost_eq_three
+    (output : Ranking 18) (first second third : c4Candidate)
+    (h12 : pairwiseSupport c4Profile first second = 5)
+    (h13 : pairwiseSupport c4Profile first third = 5)
+    (h23 : pairwiseSupport c4Profile second third = 5)
+    (hcost : c4TripleKemenyCost output first second third = 3) :
+    StrictlyPrefers output first second ∧ StrictlyPrefers output second third := by
+  have hne12 : first ≠ second := by
+    intro h
+    subst second
+    simp at h12
+  have hne13 : first ≠ third := by
+    intro h
+    subst third
+    simp at h13
+  have hne23 : second ≠ third := by
+    intro h
+    subst third
+    simp at h23
+  have h21 : pairwiseSupport c4Profile second first = 1 := by
+    have hsum := pairwiseSupport_add_reverse c4Profile hne12
+    norm_num at hsum
+    omega
+  have h31 : pairwiseSupport c4Profile third first = 1 := by
+    have hsum := pairwiseSupport_add_reverse c4Profile hne13
+    norm_num at hsum
+    omega
+  have h32 : pairwiseSupport c4Profile third second = 1 := by
+    have hsum := pairwiseSupport_add_reverse c4Profile hne23
+    norm_num at hsum
+    omega
+  constructor
+  · rcases strictlyPrefers_or_reverse_of_ne output hne12 with hforward | hreverse
+    · exact hforward
+    · have h12cost : c4PairKemenyCost output first second = 5 := by
+        rw [c4PairKemenyCost_eq_forwardSupport_of_reversePrefers output first second
+          hne12 hreverse, h12]
+      have h13cost := c4PairKemenyCost_ge_minSupport output first third hne13
+      have h23cost := c4PairKemenyCost_ge_minSupport output second third hne23
+      norm_num [h13, h31] at h13cost
+      norm_num [h23, h32] at h23cost
+      unfold c4TripleKemenyCost at hcost
+      omega
+  · rcases strictlyPrefers_or_reverse_of_ne output hne23 with hforward | hreverse
+    · exact hforward
+    · have h23cost : c4PairKemenyCost output second third = 5 := by
+        rw [c4PairKemenyCost_eq_forwardSupport_of_reversePrefers output second third
+          hne23 hreverse, h23]
+      have h12cost := c4PairKemenyCost_ge_minSupport output first second hne12
+      have h13cost := c4PairKemenyCost_ge_minSupport output first third hne13
+      norm_num [h12, h21] at h12cost
+      norm_num [h13, h31] at h13cost
+      unfold c4TripleKemenyCost at hcost
+      omega
 
 /--
 Every feature-linearly feasible output breaks the source's seven-coordinate
@@ -677,6 +771,47 @@ theorem c4CycleKemenyCost_le_kemenyDisagreement (output : Ranking 18) :
   rw [c4CycleKemenyCost_eq_onPairs]
   exact kemenyDisagreementOnPairs_le_kemenyDisagreement c4Profile output c4CycleOrderedPairs
 
+/--
+An unordered pair disjoint from the six cyclic blocks contributes in addition
+to the cyclic lower bound.  This makes equality at the C.5 optimum rigid on
+the inter-block comparisons.
+-/
+theorem c4CycleKemenyCost_add_pairCost_le_kemenyDisagreement
+    (output : Ranking 18) (first second : c4Candidate)
+    (hdisjoint : Disjoint c4CycleOrderedPairs (c4PairOrderedPairs first second)) :
+    c4CycleKemenyCost output + c4PairKemenyCost output first second ≤
+      kemenyDisagreement c4Profile output := by
+  rw [c4CycleKemenyCost_eq_onPairs]
+  unfold c4PairKemenyCost
+  rw [← kemenyDisagreementOnPairs_union c4Profile output
+    c4CycleOrderedPairs (c4PairOrderedPairs first second) hdisjoint]
+  exact kemenyDisagreementOnPairs_le_kemenyDisagreement c4Profile output
+    (c4CycleOrderedPairs ∪ c4PairOrderedPairs first second)
+
+/--
+At the exact Pareto-constrained C.5 objective value, every unanimous source
+comparison outside the cyclic blocks remains forward.
+-/
+theorem c4StrictlyPrefers_of_exactCycleAndObjective
+    (output : Ranking 18) (first second : c4Candidate)
+    (hcycle : c4CycleKemenyCost output = 30)
+    (hobjective : kemenyDisagreement c4Profile output ≤ 30)
+    (hdisjoint : Disjoint c4CycleOrderedPairs (c4PairOrderedPairs first second))
+    (hsupport : pairwiseSupport c4Profile first second = 6) :
+    StrictlyPrefers output first second := by
+  have hne : first ≠ second := by
+    intro h
+    subst second
+    simp at hsupport
+  rcases strictlyPrefers_or_reverse_of_ne output hne with hforward | hreverse
+  · exact hforward
+  · have hpair : c4PairKemenyCost output first second = 6 := by
+      rw [c4PairKemenyCost_eq_forwardSupport_of_reversePrefers output first second
+        hne hreverse, hsupport]
+    have hbound := c4CycleKemenyCost_add_pairCost_le_kemenyDisagreement
+      output first second hdisjoint
+    omega
+
 /-- Every feature-linearly feasible ranking has cyclic-block Kemeny cost at least 24. -/
 theorem c4CycleKemenyCost_ge_twentyFour (output : Ranking 18)
     (hfeasible : LinearFeasibleRanking c4Features output) :
@@ -847,6 +982,116 @@ theorem theoremC_4_linearKemeny_failsParetoAndMajorityConsistency
       (by rw [hfirst]; decide : (1 : c4Candidate) ≠ firstChoice (rule.run c4Profile))
     rw [hfirst] at honeAboveTwo
     exact (lt_asymm honeAboveTwo) htwoAboveOne
+
+/-!
+## Theorem C.3 selector boundary
+
+The C.3 proof's additive-objective step establishes only that a common
+component minimizer remains a minimizer after concatenation.  It does not
+force an arbitrary single-valued selector to choose that minimizer after
+concatenation.  This literal two-candidate witness records the resulting
+rule-level counterexample.
+-/
+
+def c3CounterexampleAllFeasible : Ranking 0 → Prop := fun _ => True
+def c3CounterexampleAB : Ranking 0 := Equiv.refl _
+def c3CounterexampleBA : Ranking 0 := Equiv.swap 0 1
+
+def c3CounterexampleProfile : RankingProfile (Fin 2) 0 :=
+  ![c3CounterexampleAB, c3CounterexampleBA]
+
+def c3CounterexampleCombined : RankingProfile (Fin 4) 0 :=
+  rankingProfileAppend c3CounterexampleProfile c3CounterexampleProfile
+
+theorem c3CounterexampleAB_isKemenyMinimizer :
+    IsKemenyMinimizer c3CounterexampleAllFeasible
+      c3CounterexampleProfile c3CounterexampleAB := by
+  refine ⟨trivial, ?_⟩
+  intro contender _
+  fin_cases contender <;> decide
+
+theorem c3CounterexampleBA_isKemenyMinimizer :
+    IsKemenyMinimizer c3CounterexampleAllFeasible
+      c3CounterexampleCombined c3CounterexampleBA := by
+  refine ⟨trivial, ?_⟩
+  intro contender _
+  fin_cases contender <;> decide
+
+/--
+An arbitrary profile-dependent Kemeny selector: it differs from the canonical
+fixed-key selector only on two tied finite profiles.
+-/
+noncomputable def c3ProfileDependentKemenyRule :
+    (voterCount : ℕ) →
+      LinearRankAggregationRule (Fin voterCount) 0 c3CounterexampleAllFeasible
+  | 0 => canonicalKemenyRule c3CounterexampleAllFeasible c3CounterexampleAB trivial 0
+  | 1 => canonicalKemenyRule c3CounterexampleAllFeasible c3CounterexampleAB trivial 1
+  | 2 =>
+      { run := fun profile => if profile = c3CounterexampleProfile then c3CounterexampleAB else
+          (canonicalKemenyRule c3CounterexampleAllFeasible c3CounterexampleAB trivial 2).run profile
+        output_feasible := fun _ => trivial }
+  | 3 => canonicalKemenyRule c3CounterexampleAllFeasible c3CounterexampleAB trivial 3
+  | 4 =>
+      { run := fun profile => if profile = c3CounterexampleCombined then c3CounterexampleBA else
+          (canonicalKemenyRule c3CounterexampleAllFeasible c3CounterexampleAB trivial 4).run profile
+        output_feasible := fun _ => trivial }
+  | voterCount =>
+      canonicalKemenyRule c3CounterexampleAllFeasible c3CounterexampleAB trivial voterCount
+
+theorem c3ProfileDependentKemenyRule_isKemenySelector :
+    ∀ voterCount, IsKemenySelector c3CounterexampleAllFeasible
+      (c3ProfileDependentKemenyRule voterCount) := by
+  intro voterCount
+  have hcanonical (count : ℕ) :
+      IsKemenySelector c3CounterexampleAllFeasible
+        (canonicalKemenyRule c3CounterexampleAllFeasible c3CounterexampleAB trivial count) := by
+    intro profile
+    exact (canonicalKemenyRule_isFixedTieKemenySelector
+      c3CounterexampleAllFeasible c3CounterexampleAB trivial).2 count profile |>.1
+  cases voterCount with
+  | zero => exact hcanonical 0
+  | succ voterCount =>
+    cases voterCount with
+    | zero => exact hcanonical 1
+    | succ voterCount =>
+      cases voterCount with
+      | zero =>
+        intro profile
+        by_cases hprofile : profile = c3CounterexampleProfile
+        · subst profile
+          simpa [c3ProfileDependentKemenyRule] using
+            c3CounterexampleAB_isKemenyMinimizer
+        · simp only [c3ProfileDependentKemenyRule, hprofile, if_false]
+          exact hcanonical 2 profile
+      | succ voterCount =>
+        cases voterCount with
+        | zero => exact hcanonical 3
+        | succ voterCount =>
+          cases voterCount with
+          | zero =>
+            intro profile
+            by_cases hprofile : profile = c3CounterexampleCombined
+            · subst profile
+              simpa [c3ProfileDependentKemenyRule] using
+                c3CounterexampleBA_isKemenyMinimizer
+            · simp only [c3ProfileDependentKemenyRule, hprofile, if_false]
+              exact hcanonical 4 profile
+          | succ voterCount => exact hcanonical (voterCount + 5)
+
+theorem c3CounterexampleBA_ne_AB : c3CounterexampleBA ≠ c3CounterexampleAB := by
+  decide
+
+/--
+Arbitrary profile-dependent selection among Kemeny minimizers does not imply
+the rule-level separability conclusion of source Theorem C.3.
+-/
+theorem c3ProfileDependentKemenyRule_not_rankingSeparability :
+    ¬ RankingSeparability c3CounterexampleAllFeasible c3ProfileDependentKemenyRule := by
+  intro hseparable
+  have hcombined := hseparable 2 2 c3CounterexampleProfile c3CounterexampleProfile rfl
+  have hBAeqAB : c3CounterexampleBA = c3CounterexampleAB := by
+    simpa [c3ProfileDependentKemenyRule, c3CounterexampleCombined] using hcombined
+  exact c3CounterexampleBA_ne_AB hBAeqAB
 
 /-- The cyclic-pair portion already accounts for all 24 disagreements of the witness. -/
 theorem c4TwoAboveOneRanking_cycleKemenyCost :

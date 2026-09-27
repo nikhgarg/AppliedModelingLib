@@ -1316,6 +1316,15 @@ def project_json_payload(
         # Superseded review surfaces are historical development artifacts;
         # current public evidence is selected by the accepted closure graph.
         projected["artifacts"].pop("legacy_review_surface", None)
+        # These reviews travel within the selected accepted graph. Their former
+        # standalone paths are not public entrypoints, just as in the report
+        # projection below. Keep configured review inputs and all claim/status
+        # fields intact; the release guard authenticates the graph separately.
+        for name in (
+            "source_proof_fidelity", "defect_support_match",
+            "library_semantic_review", "v11_raw_source_spec_screening",
+        ):
+            projected["artifacts"].pop(name, None)
     _assert_corrected_target_projection_preserved(
         projected,
         retained_corrected_targets,

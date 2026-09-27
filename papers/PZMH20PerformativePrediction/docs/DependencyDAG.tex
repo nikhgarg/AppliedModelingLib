@@ -13,9 +13,8 @@
   \node[dag_result, dag_template_legend] (legResult) at (5,0) {proved source\\result};
   \node[dag_corrected, dag_template_legend] (legCorrected) at (10,0) {source formula\\clarification};
   \node[dag_conditional, dag_template_legend] (legConditional) at (15,0) {proved with current\\analytic premises};
-  \node[dag_partial, dag_template_legend] (legPartial) at (20,0) {formalization gap\\remains};
 }
-\daglegend{(legModel)(legResult)(legCorrected)(legConditional)(legPartial)}{Legend}
+\daglegend{(legModel)(legResult)(legCorrected)(legConditional)}{Legend}
 
 \begin{dagPaperBody}
 \begin{scope}[xshift=0.5cm,yshift=-0.4cm]
@@ -58,11 +57,11 @@
   \textbf{Theorem 4.3}\\optimal--stable distance bound
 };
 
-\node[dag_partial, text width=5.0cm] (T310a) at (4,-10.0) {
-  \textbf{Theorem 3.10(a)}\\RERM all-round containment for $m>2$; printed sample/burn-in bounds unproved
+\node[dag_conditional, text width=5.0cm] (T310a) at (4,-10.0) {
+  \textbf{Theorem 3.10(a)}\\RERM all-round containment for $m>0$; regime-specific count and source log entry replace common printed sample formula
 };
-\node[dag_partial, text width=5.0cm] (T310b) at (12,-10.0) {
-  \textbf{Theorem 3.10(b)}\\REGD all-round containment for $m>2$; printed sample/burn-in bounds unproved
+\node[dag_conditional, text width=5.0cm] (T310b) at (12,-10.0) {
+  \textbf{Theorem 3.10(b)}\\REGD all-round containment for $m>2$; source log entry and supercritical count replace common printed sample formula
 };
 \node[dag_corrected, text width=5.0cm] (P42) at (20,-10.0) {
   \textbf{Proposition 4.2}\\concave performative risk with repaired witness

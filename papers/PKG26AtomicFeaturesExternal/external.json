@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "kind": "external_reference",
+  "id": "PKG26AtomicFeaturesExternal",
+  "repository_visibility": "public",
+  "title": "A Testable Theory of Atomic Features",
+  "authors": "Kenny Peng, Jon Kleinberg, and Nikhil Garg",
+  "publication": "Working paper, 2026",
+  "status": "formalized",
+  "code": {
+    "revision": "4cac32567b0ba28e91b183e5c8eed672d20a6e22",
+    "lean_files": 157,
+    "lean_lines": 39335,
+    "counting_method": "tracked_lean_physical_lines"
+  },
+  "links": {
+    "repository": "https://github.com/nikhgarg/atomic-features-formalization",
+    "report": "https://github.com/nikhgarg/atomic-features-formalization/blob/main/FINAL_VALIDATION_REPORT.md",
+    "lean_statements": "https://github.com/nikhgarg/atomic-features-formalization/blob/main/PKG26AtomicFeatures/PaperInterface.lean",
+    "theorem_index": "https://github.com/nikhgarg/atomic-features-formalization/blob/main/docs/THEOREMS.md"
+  }
+}

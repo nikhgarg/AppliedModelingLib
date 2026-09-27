@@ -187,6 +187,12 @@ def _tex_escape(value: object) -> str:
     return "".join(
         r"{\fontspec{Latin Modern Math}" + character + "}"
         if character == "ℓ" or 0x1D400 <= ord(character) <= 0x1D7FF
+        # DejaVu Serif lacks U+227B, which occurs in reviewer-facing prose
+        # copied from social-choice source notation. Keep the exact glyph in
+        # ordinary TeX fields rather than replacing it with a look-alike ASCII
+        # comparison or allowing XeTeX to drop it.
+        else r"{\fontspec{Noto Sans Math}" + character + "}"
+        if character == "≻"
         else replacements.get(character, character)
         for character in text
     )

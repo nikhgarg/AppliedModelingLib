@@ -1009,5 +1009,26 @@ class PublicReleaseProjectionTests(unittest.TestCase):
         self.assertEqual(status["artifacts"], {"paper_interface": "papers/Fixture/PaperInterface.lean"})
 
 
+class ConsolidatedArtifactProjectionTests(unittest.TestCase):
+    def test_status_omits_standalone_graph_reviews_but_retains_inputs_and_scope(self):
+        review_names = ("source_proof_fidelity", "defect_support_match",
+                        "library_semantic_review", "v11_raw_source_spec_screening")
+        payload = {
+            "status": "partially formalized",
+            "human_summary": "One source claim remains open.",
+            "review_surface": {"library_semantic_review": "audit/library_semantic_review.json"},
+            "artifacts": {name: f"papers/Fixture/audit/{name}.json" for name in review_names},
+        }
+        payload["artifacts"]["final_validation_report"] = "papers/Fixture/FINAL_VALIDATION_REPORT.md"
+        result = json.loads(projection.project_bytes(
+            "papers/Fixture/status.json", json.dumps(payload).encode()
+        ))
+        self.assertEqual(result["artifacts"], {
+            "final_validation_report": "papers/Fixture/FINAL_VALIDATION_REPORT.md"
+        })
+        for name in ("status", "human_summary", "review_surface"):
+            self.assertEqual(result[name], payload[name])
+
+
 if __name__ == "__main__":
     unittest.main()

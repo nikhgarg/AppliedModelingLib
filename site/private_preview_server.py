@@ -86,6 +86,22 @@ class PrivatePreviewHandler(http.server.SimpleHTTPRequestHandler):
     def send_head(self):
         request_path = urlsplit(self.path).path
         target = Path(self.translate_path(self.path))
+        if target == SITE_ROOT or target == SITE_ROOT / "index.html":
+            # Use the same external-reference rows and combined counts as Pages.
+            import sys
+            sys.path.insert(0, str(REPOSITORY_ROOT))
+            from scripts.public_release_external_references import load_references, render_index
+            paths = set(subprocess.check_output(
+                ["git", "ls-files", "-z"], cwd=REPOSITORY_ROOT, text=True
+            ).split("\0")) - {""}
+            references = load_references(REPOSITORY_ROOT, paths)
+            content = render_index((SITE_ROOT / "index.html").read_text(), references,
+                                   include_totals=True).encode()
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(content)))
+            self.end_headers()
+            return io.BytesIO(content)
         if (
             request_path.startswith(ARTIFACT_PREFIX)
             and target.suffix.lower() == ".md"

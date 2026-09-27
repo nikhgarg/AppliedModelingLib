@@ -1,9 +1,9 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "MSVV07AdWords",
-  "private_source_map_sha256": "a3f41b7d9bf3c4f54fe6c7fd98563323b94d87c05b1455d10895cd996463282a",
+  "private_source_map_sha256": "2068eb5731641982b7b5f188cafbf70f4a687c7116c55b19af29b047342045df",
   "public_manifest_path": "papers/MSVV07AdWords/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "f5c5d40128a7c88520c59a9b0a7a54f6aa0bdc970f8ddd1bfa9534efa429c015",
+  "public_source_map_sha256": "73570da719146ef53a2eff74d258b72671367bdba04e399b6b7e228388298f94",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,
@@ -21,7 +21,6 @@
     "paperTradeoff_formula",
     "section2_competitive_ratio_definition",
     "section3_slab_and_current_slab_definition",
-    "section4_balance_exact_tightness_instance",
     "section4_bidder_type_definition",
     "section4_factor_revealing_primal_dual_lp_formulas",
     "section4_lemma1_balance_pays_no_later_slab",
@@ -53,9 +52,9 @@
     "section6_next_highest_bid_all_theorem8_finite_explicit_error",
     "section6_page_top_balance_theorem8_finite_explicit_error",
     "section8_switching_query_distribution_model",
-    "theorem8_balance_msvv_competitive_of_small_bids_limit_family",
     "theorem8_corrected_unspent_fraction_formula",
     "theorem8_dual_induced_tradeoff_formula",
+    "theorem8_source_unit_budget_competitive_in_small_bids_limit",
     "theorem9HardDistribution_uniform",
     "theorem9_base_instance_balance_revenue_claim",
     "theorem9_hard_instance_round_bids_and_optimum",
@@ -266,18 +265,6 @@
         }
       ],
       "source_kind": "definition"
-    },
-    "section4_balance_exact_tightness_instance": {
-      "source_anchors": [
-        {
-          "line_end": 495,
-          "line_start": 488,
-          "publication_locator": "cited publication",
-          "quoted_text": "\u0003\nRecall that the size of the matching is at least N − Φ − Nk , hence it tends to N (1 − 1e ). Since\nOPT is N , the competitive ratio is at least 1 − 1e .\nOn the other hand one can find an instance of the problem (e.g., the one provided in [KP00])\nsuch that at the end of the algorithm all the inequalities of the primal are tight, hence the\ncompetitive ratio of BALANCE is exactly 1 − 1e .\n\n5",
-          "quoted_text_sha256": "403632d0ca1479488ba68b16cc8d50e7d7db59070f5115b50d1ed3bb0bdee6a0"
-        }
-      ],
-      "source_kind": "claim"
     },
     "section4_bidder_type_definition": {
       "semantic_context": [
@@ -693,25 +680,6 @@
       ],
       "source_kind": "definition"
     },
-    "theorem8_balance_msvv_competitive_of_small_bids_limit_family": {
-      "source_anchors": [
-        {
-          "line_end": 773,
-          "line_start": 718,
-          "publication_locator": "cited publication",
-          "quoted_text": "Theorem 8 For function ψk defined as\nψk (i) :=\n\nk−1\nX\nj=i\n\n1\nyj∗ = 1 − (1 − )k−i+1\nk\n\nthe competitive ratio of the algorithm is (1 − 1e ), as k tends to infinity.\nProof :\nBy Lemma 4, the optimal solution to L(π, ψ) and D(π, ψ) has value l · y ∗ . By\nLemma 5 this equals (b + ∆) · y ∗ ≤ N/e + ∆ · y ∗ (since b · y ∗ ≤ N/e, from Section 4).\nNow,\n∗\n\n∆·y =\n\nk−1\nX\n\ny ∗i ((α1 − β1 ) + . . . + (αi − βi )\n\nk−1\nX\n\n∗\n(αi − βi )(yi∗ + . . . + yk−1\n)\n\nk−1\nX\n\n(αi − βi )ψ(i)\n\ni=1\n\n=\n\ni=1\n\n=\n\ni=1\n\n≤\n\nN\n,\nk\n\nwhere the last equality follows from our choice of the function ψ, and the inequality follows\nfrom Lemma 7. As k tends to infinity, we get that the competitive ratio of our algorithm is\n(1 − 1e ).",
-          "quoted_text_sha256": "6ef939cbe600a3647ff45735199a85c0646cea4846db728bed3e4c51b8cc2bfc"
-        },
-        {
-          "line_end": 819,
-          "line_start": 785,
-          "publication_locator": "cited publication",
-          "quoted_text": "Lemma 7 gives us\nX\n\nψ(i)αi ≤\n\ni\n\nwhere the choice of ψ is:\n\nX\n\nψ(i)βi\n\ni\n\n1\nψ(i) = 1 − (1 − )k−i+1\nk\n\nCombining these relations we get:\nk\nX\n\nαi\n\ni=1\n\nk−i+1\nN\n≤\nk\ne\n\nBut the left side of the inequality above is precisely the amount of money left unspent at the\nend of the algorithm. This establishes that the competitive ratio is 1 − 1/e.",
-          "quoted_text_sha256": "f5f5fa5821761a55fdad52752800788738c1cc010a366ac7db0b9161ed2fa558"
-        }
-      ],
-      "source_kind": "theorem"
-    },
     "theorem8_corrected_unspent_fraction_formula": {
       "source_anchors": [
         {
@@ -742,6 +710,25 @@
         }
       ],
       "source_kind": "formula"
+    },
+    "theorem8_source_unit_budget_competitive_in_small_bids_limit": {
+      "source_anchors": [
+        {
+          "line_end": 773,
+          "line_start": 718,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem 8 For function ψk defined as\nψk (i) :=\n\nk−1\nX\nj=i\n\n1\nyj∗ = 1 − (1 − )k−i+1\nk\n\nthe competitive ratio of the algorithm is (1 − 1e ), as k tends to infinity.\nProof :\nBy Lemma 4, the optimal solution to L(π, ψ) and D(π, ψ) has value l · y ∗ . By\nLemma 5 this equals (b + ∆) · y ∗ ≤ N/e + ∆ · y ∗ (since b · y ∗ ≤ N/e, from Section 4).\nNow,\n∗\n\n∆·y =\n\nk−1\nX\n\ny ∗i ((α1 − β1 ) + . . . + (αi − βi )\n\nk−1\nX\n\n∗\n(αi − βi )(yi∗ + . . . + yk−1\n)\n\nk−1\nX\n\n(αi − βi )ψ(i)\n\ni=1\n\n=\n\ni=1\n\n=\n\ni=1\n\n≤\n\nN\n,\nk\n\nwhere the last equality follows from our choice of the function ψ, and the inequality follows\nfrom Lemma 7. As k tends to infinity, we get that the competitive ratio of our algorithm is\n(1 − 1e ).",
+          "quoted_text_sha256": "6ef939cbe600a3647ff45735199a85c0646cea4846db728bed3e4c51b8cc2bfc"
+        },
+        {
+          "line_end": 819,
+          "line_start": 785,
+          "publication_locator": "cited publication",
+          "quoted_text": "Lemma 7 gives us\nX\n\nψ(i)αi ≤\n\ni\n\nwhere the choice of ψ is:\n\nX\n\nψ(i)βi\n\ni\n\n1\nψ(i) = 1 − (1 − )k−i+1\nk\n\nCombining these relations we get:\nk\nX\n\nαi\n\ni=1\n\nk−i+1\nN\n≤\nk\ne\n\nBut the left side of the inequality above is precisely the amount of money left unspent at the\nend of the algorithm. This establishes that the competitive ratio is 1 − 1/e.",
+          "quoted_text_sha256": "f5f5fa5821761a55fdad52752800788738c1cc010a366ac7db0b9161ed2fa558"
+        }
+      ],
+      "source_kind": "theorem"
     },
     "theorem9HardDistribution_uniform": {
       "source_anchors": [

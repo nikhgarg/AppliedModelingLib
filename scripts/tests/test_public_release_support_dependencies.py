@@ -33,6 +33,32 @@ from scripts.public_release_support_dependencies import (  # noqa: E402
 
 
 class PublicReleaseSupportDependenciesTests(unittest.TestCase):
+    def test_external_reference_coexists_with_authenticated_support(self) -> None:
+        from scripts.public_release_external_references import render_readme
+        from scripts.tests.test_public_release_external_references import fixture_reference
+        for extra in (None, "private.md", "Main.lean"):
+            with self.subTest(extra=extra), tempfile.TemporaryDirectory() as temporary:
+                repo = Path(temporary)
+                self.init_repo(repo)
+                self.authenticated_fixture(repo)
+                reference = fixture_reference()
+                self.put_json(repo, "papers/ExampleExternal/external.json", reference)
+                (repo / "papers/ExampleExternal/README.md").write_text(render_readme(reference))
+                if extra:
+                    (repo / "papers/ExampleExternal" / extra).write_text("extra content")
+                candidate = self.commit(repo, "add external reference alongside support")
+                paths = set(subprocess.check_output(
+                    ["git", "ls-tree", "-r", "--name-only", candidate], cwd=repo, text=True
+                ).splitlines())
+                result = select_public_support_dependencies(
+                    repo, candidate, paths, self.private_blob_entries(paths)
+                )
+                self.assertEqual(result.eligible_namespaces, frozenset({"SupportDependency"}))
+                if extra:
+                    self.assertTrue(any("permits only" in issue for issue in result.issues))
+                else:
+                    self.assertEqual(result.issues, ())
+
     @staticmethod
     def init_repo(repo: Path) -> None:
         subprocess.run(["git", "init", "-q"], cwd=repo, check=True)

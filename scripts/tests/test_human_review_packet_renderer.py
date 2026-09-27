@@ -33,6 +33,10 @@ class HumanReviewPacketRendererTests(TestCase):
         self.assertIn(r"x\_\allowbreak{}1 ∈ ℝ", rendered)
         self.assertNotIn(r"\fontspec{Latin Modern Math}x", rendered)
 
+    def test_prose_preserves_strict_social_choice_order_glyph(self):
+        rendered = renderer._tex_escape("a≻b")
+        self.assertEqual(rendered, r"a{\fontspec{Noto Sans Math}≻}b")
+
     def test_long_lean_identifiers_break_at_camel_case_without_changing_text(self):
         name = (
             "Fixture.SLA2026BoroughQueueingInput."

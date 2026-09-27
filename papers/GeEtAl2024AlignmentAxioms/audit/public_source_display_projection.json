@@ -1,17 +1,19 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "GeEtAl2024AlignmentAxioms",
-  "private_source_map_sha256": "7ea8859629abb71b790aae880dc95240d67cbde8d29c906e8190378fae46a25f",
+  "private_source_map_sha256": "db200d944d24ef5444d521f714243188839196d9784b410769aaadccdf0eeb53",
   "public_manifest_path": "papers/GeEtAl2024AlignmentAxioms/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "a8aabca10411710b499321ed1e4411b85821863bfb42fdecedcad6973661f3bb",
+  "public_source_map_sha256": "2b95facd7cf0a4bc046bc887071a438c084d5093ace9c5c672854ced688e676b",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,
   "selected_source_item_ids": [
     "appendix_b_unique_pmc_infeasible_example",
     "c1_rule_model",
+    "c5_local_source_ballot_output",
+    "c6_fixed_priority_tie_convention",
     "definition2_1_pareto_optimality",
-    "definition2_2_and_attached_consequences",
+    "definition2_2_pairwise_majority_consistency",
     "definition4_1_majority_consistency",
     "definition4_2_winner_monotonicity",
     "definitionC_1_ranking_separability",
@@ -25,6 +27,7 @@
     "linear_social_choice_model",
     "majority_loss_rule_model",
     "pareto_kemeny_rule_model",
+    "pmc_ranking_uniqueness_and_nonexistence",
     "standard_loss_rule_model",
     "theorem3_1",
     "theorem3_6",
@@ -94,6 +97,37 @@
       ],
       "source_kind": "definition"
     },
+    "c5_local_source_ballot_output": {
+      "source_anchors": [
+        {
+          "line_end": 1514,
+          "line_start": 1509,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem C.5. Linear Kemeny subject to PO violates separability and majority consistency.\n\nProof. First, consider a set of candidates and a profile similar to the one that is given in the proof\nof Theorem C.4. When we restrict to reward functions that 1 above 2, then we can check that Linear\nKemeny subject to PO outputs one of the rankings that are in the input profile. Without loss of\ngenerality, assume that it outputs the ranking of v1 .",
+          "quoted_text_sha256": "b9ac5f4dc6fee94902dd4d10d2fbb8bf9dced7bdf3d9841d60109b89d7e5f036"
+        }
+      ],
+      "source_kind": "condition"
+    },
+    "c6_fixed_priority_tie_convention": {
+      "source_anchors": [
+        {
+          "line_end": 1539,
+          "line_start": 1530,
+          "publication_locator": "cited publication",
+          "quoted_text": "C.3   Leximax Plurality\n\nPlurality is probably the most ubiquitous voting rule in the world. Its ranking variant ranks the can-\ndidates in decreasing order with respect to their plurality scores. The plurality score of a candidate\nis equal to the number of her appearances in the first position. This rule is known to satisfy several\naxioms but in linear social choice cannot be directly applied, as not all rankings are feasibly.\nSimilarly to leximax Copeland, we define Leximax Plurality as follows. It ranks first the candidate\nwith the highest plurality score that can be ranked first under some parameter vector. Subject to\nthis first position, it ranks second the candidate with the highest plurality score that can feasibly be\nranked second, and so on, until all the positions are filled.",
+          "quoted_text_sha256": "d8f97f701617d954011fbb0a5ca545b5e247d1c3c213eab4e560a9d5afb1e1ba"
+        },
+        {
+          "line_end": 1572,
+          "line_start": 1543,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fTheorem C.6. Leximax Plurality satisfies majority consistency, winner monotonicity and separa-\nbility.\n\nProof. Note that leximax Plurality always returns a ranking in which the candidate with the highest\nplurality score is ranked first, since there exists at least one feasible ranking in which this candidate\nis ranked first. From this observation, we immediately see that leximax Plurality satisfies majority\nconsistency.\nNow, suppose that on input profile π, the rule outputs a ranking such that candidate a is ranked first.\nThis means that a has the highest plurality score. Now, consider a profile π ′ which is similar to π\nwith the only exception being a ranking in which a is ranked in a higher position. It is clear that a\ncontinues to have the highest plurality score and therefore leximax Plurality will output a ranking in\nwhich a is ranked first. Therefore, winner monotonicity is satisfied. .\nIt remains to prove that the rule satisfies separability. Suppose that under two different profiles π1\nand π2 , the rule outputs σ, and under the aggregated profile π3 , it outputs σ ′ . We will show that\nσ = σ ′ . One main observation is that if a candidate a has a higher plurality score than a candidate b\nunder both π1 and π2 , then a has a higher plurality score than b under π3 as well. We will show the\ndesired property by induction on the positions of the ranking σ. Start from the first position in which\nsay candidate a is ranked first. From above, we know that a has the highest plurality score under\nboth π1 and π2 , which remains true in π3 , and therefore a is ranked first in σ ′ . Now, assume that up\nto position t − 1, σ and σ ′ are similar and denote with a′ the candidate that is ranked at position t of\nσ. We denote by S1 , S2 and S3 the set of candidates that are not ranked among the first t positions\nin σ and have higher plurality score than a′ under π1 , π2 , and π3 respectively. Since, a′ is ranked at\nthe t-th postion in σ, we get that, subject to the fixed first t − 1 position, no candidate in S1 ∪ S2 can\nbe ranked at the t-th position. The theorem follows by noticing that S3 ⊆ S1 ∪ S2 , which follows\nfrom the main observation above.\n\n\n\n\n                                                   27",
+          "quoted_text_sha256": "119cddb66f5d71140fb380d0b6e54d5fbfa2e18f57c32b01ec4eb162607d3d42"
+        }
+      ],
+      "source_kind": "condition"
+    },
     "definition2_1_pareto_optimality": {
       "source_anchors": [
         {
@@ -106,28 +140,14 @@
       ],
       "source_kind": "definition"
     },
-    "definition2_2_and_attached_consequences": {
-      "semantic_context": [
-        {
-          "semantic_role": "model",
-          "source_anchors": [
-            {
-              "line_end": 211,
-              "line_start": 158,
-              "publication_locator": "cited publication",
-              "quoted_text": "2     The Linear Social Choice Model\nLet C be a set of m distinct prompt/responses, referred to as candidates, and let V = {1, . . . , n} be\na set of n human participants, known as voters. We denote by Rd the d-dimensional real space in\nwhich both candidate feature vectors and chosen parameter vectors lie.\nEach candidate c ∈ C is associated with a distinct feature vector xc ∈ Rd . A parameter vector\nθ ∈ Rd induces a linear reward function rθ : C 7→ R defined by taking the dot product with feature\nvectors rθ (c) = ⟨θ, xc ⟩. We will primarily be interested in how these parameterized functions rank\nthe candidates by reward. Let Ra≻b = {θ | rθ (a) ≥ rθ (b)} be the region where the reward of a is\nat least as large as that of b. Note that Ra≻b and Rb≻a split Rd into two half spaces, separated by\nthe hyperplane orthogonal to xa − xb . Parameter vectors θ on the hyperplane have rθ (a) = rθ (b),\nwhile rankings in the interior of either half-space strictly rank one over the other.\nFor a ranking σ over the candidates, we say that θ induces σ, denoted θ ▷ σ, if a ≻σ b implies\nrθ (a) ≥ rθ (b). Let Rσ = {θ | θ ▷ σ} be the set of vectors θ thatTinduce it. Note that this can\nbe written as the intersection of corresponding half spaces Rσ = a,b:a≻σ b Ra≻b . Further, the\n\n\n                                                    3\n\fcollection of {Rσ } essentially form a partition of Rd , covering the space and intersecting only at\ntheir boundaries.\nWe call a θ non-degenerate if it is fully on one side of each of the separating hyperplanes, i.e.,\nrθ (a) ̸= rθ (b) for all a, b ∈ C. Non-degenerate parameter vectors lie in the interior of some Rσ ,\nand thus induce exactly one ranking. We call σ feasible if Rσ has a nonempty interior, i.e., is induced\nby some nondegenerate θ.3\nEach voter i ∈ V submits a ranking over the candidate σi . We assume that the feature space is\nrich enough that voter preferences can be captured via non-degenerate parameter vectors. In other\nwords, we assume that each σi is feasible. We refer to the vector of voter rankings π = (σi )i∈V as\na profile. Further, for two candidates a, b, we write na≻b (π) := |{i ∈ V | a ≻σi b}| for the number\nof voters that prefer a to b, and wa≻b (π) = na≻b (π)/n for the proportion of such voters. When the\nprofile π is clear from context, we may shorten these to na≻b and wa≻b , respectively.\nWe define a parameter aggregation rule as a function that takes as input a profile π and outputs a\nparameter vector θ∗ . Our goal is to design parameter aggregation rules such that rθ∗ satisfies desir-\nable properties with respect to the voter preferences. However, as the properties we care about will\nonly be with respect to how rθ∗ ranks the candidates, it will be more convenient to work with what\nwe call linear rank aggregation rules that take as input a profile π and output a feasible ranking σ.\nThere is a natural way to interpret a parameter aggregation rule as a linear rank aggregation rule,\nnamely, output any feasible ranking induced by θ∗ . The exact properties of the parameter aggrega-\ntion rule could in principle be sensitive to the tie-breaking of non-degenerate outputs, however, all\nof our results will be robust to such tie-breaking.4\nWe pay special attention to a prominent family of rules from social choice theory referred to as C1\nrules [14], whose outputs depend only on majority relationships, i.e., they only need to know for\neach pair of candidates (a, b) whether the majority prefers a or b.\nIn our study, we examine several axioms borrowed from social choice theory to evaluate the reason-\nableness (fairness) of our aggregation mechanisms. These axioms include:\nDefinition 2.1 (Pareto Optimality). A linear rank aggregation rule f satisfies Pareto optimality if,\nwhenever every voter prefers candidate a over candidate b on π, i.e., wa≻b (π) = 1, then candidate\na is ranked higher than candidate b in the output ranking, i.e., a ≻f (π) b.\nDefinition 2.2 (Pairwise Majority Consistency (PMC)). A ranking σ is called a PMC ranking for\nprofile π if for all a, b ∈ C, a ≻σ b if and only if a majority of voters rank a ≻σi b, i.e., wa≻b > 1/2.\nA linear rank aggregation rule satisfies PMC if, when a PMC ranking σ exists for the input profile\nπ and σ is feasible, then f (π) = σ.\n\nNote that a PMC ranking for each π need not exist, but when one does, it is unique. The words “σ\nis feasible” allude to the possibility that no non-degenerate parameter vector θ induces the unique\nPMC ranking. Indeed, we have such an example; see Appendix B for details.",
-              "quoted_text_sha256": "1b59a52d5b49a164ded4baefa32e7b57370f67403aac86cd19533ed4f4992741"
-            }
-          ]
-        }
-      ],
+    "definition2_2_pairwise_majority_consistency": {
       "source_anchors": [
         {
-          "line_end": 211,
+          "line_end": 207,
           "line_start": 204,
           "publication_locator": "cited publication",
-          "quoted_text": "Definition 2.2 (Pairwise Majority Consistency (PMC)). A ranking σ is called a PMC ranking for\nprofile π if for all a, b ∈ C, a ≻σ b if and only if a majority of voters rank a ≻σi b, i.e., wa≻b > 1/2.\nA linear rank aggregation rule satisfies PMC if, when a PMC ranking σ exists for the input profile\nπ and σ is feasible, then f (π) = σ.\n\nNote that a PMC ranking for each π need not exist, but when one does, it is unique. The words “σ\nis feasible” allude to the possibility that no non-degenerate parameter vector θ induces the unique\nPMC ranking. Indeed, we have such an example; see Appendix B for details.",
-          "quoted_text_sha256": "4a9f2046703fd4a1147304226b0f87f319951f14febb00c071bae34ccc1725d1"
+          "quoted_text": "Definition 2.2 (Pairwise Majority Consistency (PMC)). A ranking σ is called a PMC ranking for\nprofile π if for all a, b ∈ C, a ≻σ b if and only if a majority of voters rank a ≻σi b, i.e., wa≻b > 1/2.\nA linear rank aggregation rule satisfies PMC if, when a PMC ranking σ exists for the input profile\nπ and σ is feasible, then f (π) = σ.",
+          "quoted_text_sha256": "3a1471656430ba445071001d03ae9fc6c237cff6c46928a141ff491c3d6c8318"
         }
       ],
       "source_kind": "definition"
@@ -391,6 +411,32 @@
         }
       ],
       "source_kind": "definition"
+    },
+    "pmc_ranking_uniqueness_and_nonexistence": {
+      "semantic_context": [
+        {
+          "semantic_role": "model",
+          "source_anchors": [
+            {
+              "line_end": 211,
+              "line_start": 158,
+              "publication_locator": "cited publication",
+              "quoted_text": "2     The Linear Social Choice Model\nLet C be a set of m distinct prompt/responses, referred to as candidates, and let V = {1, . . . , n} be\na set of n human participants, known as voters. We denote by Rd the d-dimensional real space in\nwhich both candidate feature vectors and chosen parameter vectors lie.\nEach candidate c ∈ C is associated with a distinct feature vector xc ∈ Rd . A parameter vector\nθ ∈ Rd induces a linear reward function rθ : C 7→ R defined by taking the dot product with feature\nvectors rθ (c) = ⟨θ, xc ⟩. We will primarily be interested in how these parameterized functions rank\nthe candidates by reward. Let Ra≻b = {θ | rθ (a) ≥ rθ (b)} be the region where the reward of a is\nat least as large as that of b. Note that Ra≻b and Rb≻a split Rd into two half spaces, separated by\nthe hyperplane orthogonal to xa − xb . Parameter vectors θ on the hyperplane have rθ (a) = rθ (b),\nwhile rankings in the interior of either half-space strictly rank one over the other.\nFor a ranking σ over the candidates, we say that θ induces σ, denoted θ ▷ σ, if a ≻σ b implies\nrθ (a) ≥ rθ (b). Let Rσ = {θ | θ ▷ σ} be the set of vectors θ thatTinduce it. Note that this can\nbe written as the intersection of corresponding half spaces Rσ = a,b:a≻σ b Ra≻b . Further, the\n\n\n                                                    3\n\fcollection of {Rσ } essentially form a partition of Rd , covering the space and intersecting only at\ntheir boundaries.\nWe call a θ non-degenerate if it is fully on one side of each of the separating hyperplanes, i.e.,\nrθ (a) ̸= rθ (b) for all a, b ∈ C. Non-degenerate parameter vectors lie in the interior of some Rσ ,\nand thus induce exactly one ranking. We call σ feasible if Rσ has a nonempty interior, i.e., is induced\nby some nondegenerate θ.3\nEach voter i ∈ V submits a ranking over the candidate σi . We assume that the feature space is\nrich enough that voter preferences can be captured via non-degenerate parameter vectors. In other\nwords, we assume that each σi is feasible. We refer to the vector of voter rankings π = (σi )i∈V as\na profile. Further, for two candidates a, b, we write na≻b (π) := |{i ∈ V | a ≻σi b}| for the number\nof voters that prefer a to b, and wa≻b (π) = na≻b (π)/n for the proportion of such voters. When the\nprofile π is clear from context, we may shorten these to na≻b and wa≻b , respectively.\nWe define a parameter aggregation rule as a function that takes as input a profile π and outputs a\nparameter vector θ∗ . Our goal is to design parameter aggregation rules such that rθ∗ satisfies desir-\nable properties with respect to the voter preferences. However, as the properties we care about will\nonly be with respect to how rθ∗ ranks the candidates, it will be more convenient to work with what\nwe call linear rank aggregation rules that take as input a profile π and output a feasible ranking σ.\nThere is a natural way to interpret a parameter aggregation rule as a linear rank aggregation rule,\nnamely, output any feasible ranking induced by θ∗ . The exact properties of the parameter aggrega-\ntion rule could in principle be sensitive to the tie-breaking of non-degenerate outputs, however, all\nof our results will be robust to such tie-breaking.4\nWe pay special attention to a prominent family of rules from social choice theory referred to as C1\nrules [14], whose outputs depend only on majority relationships, i.e., they only need to know for\neach pair of candidates (a, b) whether the majority prefers a or b.\nIn our study, we examine several axioms borrowed from social choice theory to evaluate the reason-\nableness (fairness) of our aggregation mechanisms. These axioms include:\nDefinition 2.1 (Pareto Optimality). A linear rank aggregation rule f satisfies Pareto optimality if,\nwhenever every voter prefers candidate a over candidate b on π, i.e., wa≻b (π) = 1, then candidate\na is ranked higher than candidate b in the output ranking, i.e., a ≻f (π) b.\nDefinition 2.2 (Pairwise Majority Consistency (PMC)). A ranking σ is called a PMC ranking for\nprofile π if for all a, b ∈ C, a ≻σ b if and only if a majority of voters rank a ≻σi b, i.e., wa≻b > 1/2.\nA linear rank aggregation rule satisfies PMC if, when a PMC ranking σ exists for the input profile\nπ and σ is feasible, then f (π) = σ.\n\nNote that a PMC ranking for each π need not exist, but when one does, it is unique. The words “σ\nis feasible” allude to the possibility that no non-degenerate parameter vector θ induces the unique\nPMC ranking. Indeed, we have such an example; see Appendix B for details.",
+              "quoted_text_sha256": "1b59a52d5b49a164ded4baefa32e7b57370f67403aac86cd19533ed4f4992741"
+            }
+          ]
+        }
+      ],
+      "source_anchors": [
+        {
+          "line_end": 211,
+          "line_start": 204,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 2.2 (Pairwise Majority Consistency (PMC)). A ranking σ is called a PMC ranking for\nprofile π if for all a, b ∈ C, a ≻σ b if and only if a majority of voters rank a ≻σi b, i.e., wa≻b > 1/2.\nA linear rank aggregation rule satisfies PMC if, when a PMC ranking σ exists for the input profile\nπ and σ is feasible, then f (π) = σ.\n\nNote that a PMC ranking for each π need not exist, but when one does, it is unique. The words “σ\nis feasible” allude to the possibility that no non-degenerate parameter vector θ induces the unique\nPMC ranking. Indeed, we have such an example; see Appendix B for details.",
+          "quoted_text_sha256": "4a9f2046703fd4a1147304226b0f87f319951f14febb00c071bae34ccc1725d1"
+        }
+      ],
+      "source_kind": "claim"
     },
     "standard_loss_rule_model": {
       "source_anchors": [

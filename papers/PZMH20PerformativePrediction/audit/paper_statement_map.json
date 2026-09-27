@@ -36,22 +36,26 @@
       "aliases": [
         "Corollary 5.1"
       ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "measureWassersteinConvexRRMConvergesLinearlySpec, measureWassersteinConvexRGDConvergesLinearlySpec, and measureWassersteinStableObjectiveGapSpec, each proved by its paired PaperInterface endpoint.",
+          "classification": "source_faithful_domain_scoped_general_measure_model",
+          "formal_meaning": "The source parameter space Theta is represented by the subtype of its closed convex finite-dimensional Euclidean domain. Laws, losses, expected risks, A1/A2, and Wasserstein sensitivity are required only for admissible parameters. The RGD update additionally records integrability of its displayed expected data gradient at every admissible deployed/evaluated pair; its gamma <= beta relation is derived from on-domain A1/A2 whenever Theta is non-singleton, with the singleton conclusion proved directly.",
+          "id": "general-measure-analytic-bridge-formalized-scope",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3506652b783b239ce454b4bc95169361be023764630178c482bc471367a45317",
+          "source_locator": "cited publication:188-194; cited publication:264-269; cited publication:324-344; cited publication:373-415; cited publication:543-561",
+          "why_needed": "The paper defines its predictive parameters in a closed convex subset of a finite-dimensional Euclidean space. Requiring a total law or loss extension, or regularity of that extension away from Theta, is not part of its model. The recovered direct RRM proof and the domain-gradient RGD proof use only the source-domain information."
+        }
+      ],
       "claim_bearing": true,
-      "corrected_target": {
-        "archival_equivalence_claimed": false,
-        "archival_source_locator": "cited publication:543-561",
-        "archival_source_quote_sha256": "174656acb5f3a1012fd1d4dacbd394ed3e989bbe7fb351085b5082fa610af662",
-        "corrected_target_review_sha256": "7f3248c6ae14ce43ddc5e11013035ce4c6274454b5831c2aef514d524cf4b119",
-        "corrected_target_sha256": "c35e25952f03cb7e59797be08ad8c96b6875edc1f9f9fc88370ec847dd9b5614",
-        "governing_defect_ids": [
-          "corollary-5.1-general-measure-analytic-bridge"
-        ],
-        "schema": 1,
-        "statement": "For an arbitrary-law measure-performative model on a complete real inner-product ambient parameter space, take the admissible parameter domain to be the entire ambient carrier. Assume expected-loss and gradient integrability for every ambient deployed/evaluated parameter pair; A1 joint gradient smoothness, A2 pointwise strong convexity, and data- and parameter-coordinate Lipschitz loss for every ambient parameter and every datum in the chosen data carrier; nonnegative Wasserstein sensitivity for every ambient parameter pair; local loss measurability and pointwise parameter differentiability for every ambient parameter and datum; a whole-space repeated-risk-minimization update with strict epsilon beta over gamma below one; and a whole-space performative optimum. Then, from every ambient initial point, the update converges to a unique whole-space stable point whose performative objective gap to that optimum is at most two Lz epsilon times (Ltheta plus Lz epsilon) over gamma."
-      },
-      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
         "PZMH20PerformativePrediction.measureWassersteinStableObjectiveGapProof"
+      ],
+      "model_convention_ids": [
+        "general-measure-analytic-bridge-formalized-scope"
       ],
       "semantic_contract": {
         "evidence_declaration": "PZMH20PerformativePrediction.measureWassersteinStableObjectiveGapProof",
@@ -78,13 +82,10 @@
           "source_quote_sha256": "801792f19cedd4d3cc4fa5008630cbef66244055f2328cf5d04d399253605b12"
         }
       ],
-      "source_defect_ids": [
-        "corollary-5.1-general-measure-analytic-bridge"
-      ],
       "source_kind": "corollary",
       "source_location": "cited publication:543-561",
-      "source_note": "The corrected target proves the arbitrary-law convergence and objective-gap conclusion on the entire ambient parameter carrier. Unlike the source's fixed closed convex domain Theta, the current target has no separate domain argument: RRM minimization, performative optimality, stability, regularity, and the initial point are all whole-space. The data carrier may be chosen as the source support union Z; if it is larger, the pointwise predicates also quantify beyond Z. No reduction from the source-domain corollary to this whole-space target is proved, and necessity of the stronger scope is unresolved.",
-      "source_status": "corrected",
+      "source_note": "The direct arbitrary-law finite-dimensional source-domain corollary uses the source-domain stable and Stackelberg comparators together with its RRM-convergence input; it does not require a whole-space restriction.",
+      "source_status": "direct byte-pinned source result",
       "source_url": "https://proceedings.mlr.press/v119/perdomo20a.html",
       "spec_lean_declarations": [
         "PZMH20PerformativePrediction.finiteStableObjectiveGapSpec",
@@ -515,23 +516,40 @@
       "aliases": [
         "Proposition 4.1"
       ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "measureWassersteinConvexRRMConvergesLinearlySpec, measureWassersteinConvexRGDConvergesLinearlySpec, and measureWassersteinStableObjectiveGapSpec, each proved by its paired PaperInterface endpoint.",
+          "classification": "source_faithful_domain_scoped_general_measure_model",
+          "formal_meaning": "The source parameter space Theta is represented by the subtype of its closed convex finite-dimensional Euclidean domain. Laws, losses, expected risks, A1/A2, and Wasserstein sensitivity are required only for admissible parameters. The RGD update additionally records integrability of its displayed expected data gradient at every admissible deployed/evaluated pair; its gamma <= beta relation is derived from on-domain A1/A2 whenever Theta is non-singleton, with the singleton conclusion proved directly.",
+          "id": "general-measure-analytic-bridge-formalized-scope",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3506652b783b239ce454b4bc95169361be023764630178c482bc471367a45317",
+          "source_locator": "cited publication:188-194; cited publication:264-269; cited publication:324-344; cited publication:373-415; cited publication:543-561",
+          "why_needed": "The paper defines its predictive parameters in a closed convex subset of a finite-dimensional Euclidean space. Requiring a total law or loss extension, or regularity of that extension away from Theta, is not part of its model. The recovered direct RRM proof and the domain-gradient RGD proof use only the source-domain information."
+        }
+      ],
       "claim_bearing": true,
       "corrected_target": {
         "archival_equivalence_claimed": false,
         "archival_source_locator": "cited publication:442-445",
         "archival_source_quote_sha256": "cb8f4855d3b37d68d121776217bae733ad0b208c43800dd3c1b5b9d977c5d740",
-        "corrected_target_review_sha256": "6986b8745ea099fb4c348bc5843e2bee5f88e0ed1b616c1fa5d22f1a918fc1ef",
-        "corrected_target_sha256": "7be1ac33f0cead7c8cf9b808939e6cdd914b192bca3f147d645dfaf3b365dade",
+        "corrected_target_review_sha256": "3069ba8d6f6bd614e957d0d0a5f555d4aaf14f471e4a6352413fae0ebb46d44d",
+        "corrected_target_sha256": "ebcd90c68772091386d122d4d2a1563b488f0a82dfc9b75b2297c0e5727ff194",
         "governing_defect_ids": [
           "proposition-4.1-expected-risk-continuity-bridge",
           "proposition-4.1-convex-domain-omission"
         ],
         "schema": 1,
-        "statement": "For a globally defined arbitrary-law measure-performative model on a finite-dimensional real ambient parameter space, assume expected-loss integrability for every ambient deployed/evaluated parameter pair. Let the source parameter domain be nonempty, compact, and convex. If the decoupled expected risk is jointly continuous on the entire ambient parameter product and every pointwise loss is convex on the domain for every datum in the chosen data carrier, then a performatively stable parameter exists in the domain."
+        "statement": "For a measure-performative model defined on the nonempty compact convex source parameter domain Theta in a finite-dimensional real space, assume the on-domain decoupled expected risk is jointly continuous and every pointwise loss is convex on Theta. Then a performatively stable parameter exists in Theta."
       },
       "coverage_status": "corrected_source_statement",
       "lean_declarations": [
         "PZMH20PerformativePrediction.measureCompactConvexStablePointExistsProof"
+      ],
+      "model_convention_ids": [
+        "general-measure-analytic-bridge-formalized-scope"
       ],
       "semantic_contract": {
         "evidence_declaration": "PZMH20PerformativePrediction.measureCompactConvexStablePointExistsProof",
@@ -565,7 +583,7 @@
       ],
       "source_kind": "proposition",
       "source_location": "cited publication:442-445 (PMLR PDF p. 7, Proposition 4.1)",
-      "source_note": "The corrected target makes the source domain nonempty and convex and uses joint continuity of decoupled expected risk as the Berge bridge. A total ambient model is a representation choice, but expected-loss integrability for every ambient parameter pair and joint risk continuity on the full ambient product are stronger than the source conditions on Theta. Requiring convexity for every datum is stronger than the source condition on Z only when the chosen data carrier contains points outside Z. Necessity of these ambient conditions is unresolved. The displayed compact-only reading is false on a compiled finite counterexample, and bare pointwise continuity of an unbounded loss does not itself provide expectation continuity under W1 movement.",
+      "source_note": "The corrected target makes the source domain nonempty and convex and uses joint continuity of decoupled expected risk on Theta times Theta as the Berge bridge. The source model is defined on Theta, so no arbitrary off-domain extension or its regularity is required. The displayed compact-only reading is false on a compiled finite counterexample, and bare pointwise continuity of an unbounded loss does not itself provide expectation continuity under W1 movement.",
       "source_status": "corrected",
       "source_url": "https://proceedings.mlr.press/v119/perdomo20a.html",
       "spec_lean_declarations": [
@@ -726,19 +744,18 @@
         "archival_equivalence_claimed": false,
         "archival_source_locator": "cited publication:373-415",
         "archival_source_quote_sha256": "1f14c9fb9f4e88404fa7e031f694f5b93ae42c12a5af9cb77769acb4052fb17a",
-        "corrected_target_review_sha256": "d679034ef6da01985f818fe78046c0ff71728331b45ce275f58fec30496e8d05",
-        "corrected_target_sha256": "2f3e60d196227b40c22ce28e22a25c4bbd8d9a58b1762e880bc755c82d646089",
+        "corrected_target_review_sha256": "c2a9fe9a6ee892d30b4b4f3280a7839feb74abc736a41ca7780fb38ea95d41a1",
+        "corrected_target_sha256": "1af18ce119114689a4f667c9354e78a32aa25f725d69508bee866bed18298174",
         "governing_defect_ids": [
           "theorem-3.10-pointwise-moment-uniform-adaptive-envelope",
-          "theorem-3.10-all-dimension-sample-rate",
-          "theorem-3.10-rerm-data-loss-wasserstein-bridge"
+          "theorem-3.10-all-dimension-sample-rate"
         ],
         "schema": 1,
-        "statement": "In data dimension greater than two, use the explicit supercritical batch-count schedule, evaluated at the canonical capped deviation, together with the inverse-square confidence schedule. Suppose the input data provide the stated smoothness, strong-convexity, Wasserstein-sensitivity, and small-sensitivity conditions; a convex parameter domain; a shared bounded exponential-moment and tail envelope along every adaptive history; measurable adaptive sampling and bad events; data-coordinate Lipschitzness, population-gradient integrability, local loss measurability, pointwise loss differentiation, and empirical-loss integrability; a checked RERM trajectory and population RRM update with a performatively stable point; and the stated numerical W1 budget, outer-contraction, absorbing-radius, and initial-distance conditions. Then there exists an entry iteration such that, under the adaptive conditionally IID sampling law, with probability at least one minus p, every RERM iterate at or after that entry iteration lies within the prescribed radius of the stable point. The model and expected-loss integrability are defined for every ambient parameter. Joint-gradient smoothness and pointwise strong convexity quantify over all ambient parameters and data points; Wasserstein sensitivity, gradient integrability, and loss differentiation quantify over all ambient parameters. RERM data-loss Lipschitzness also quantifies over every ambient parameter and data point. These global hypotheses are stronger in scope than the source assumptions on the parameter domain and the union of its induced supports; their necessity for the source conclusion is unresolved."
+        "statement": "For every positive data dimension, use the explicit all-dimensional selected-shell count schedule and inverse-square confidence allocation. Suppose the input data provide a shared bounded exponential-moment and tail envelope along every adaptive history; measurable adaptive sampling and raw-Wasserstein bad events; a convex parameter domain; A1's data-gradient bound and A2's pointwise strong-convexity lower model on that domain; empirical-risk integrability; a checked RERM trajectory and population risk-minimizing update with a performatively stable point; and the stated sensitivity, numerical W1 budget, absorbing-radius, and entry conditions. Then there is a finite selected-shell gate scale and an entry iteration such that, under the adaptive conditionally IID sampling law, with probability at least one minus p, every later RERM iterate lies within the prescribed radius of the stable point. The selected-shell construction derives the raw W1 roundwise failure bound and deterministic threshold internally. No data-coordinate loss-Lipschitz bridge, gradient-integrability premise, pointwise first-order certificate, or caller-supplied selected-shell certificate is assumed. The companion exact count bounds are regime-specific: dimension one has inverse-square times one radius logarithm, the separately connected sharp dimension-two trajectory has inverse-square times squared radius logarithm, and the supercritical schedule has inverse-dimension power. The printed single all-dimension rate is not claimed."
       },
       "coverage_status": "corrected_source_statement",
       "lean_declarations": [
-        "PZMH20PerformativePrediction.theorem310CorrectedRERMAllRoundTrajectoryReview"
+        "PZMH20PerformativePrediction.theorem310RERMRawWassersteinAllDimensionalSamplingRecovery"
       ],
       "semantic_context_requirements": [
         {
@@ -803,10 +820,10 @@
         }
       ],
       "semantic_contract": {
-        "evidence_declaration": "PZMH20PerformativePrediction.theorem310CorrectedRERMAllRoundTrajectoryReview",
+        "evidence_declaration": "PZMH20PerformativePrediction.theorem310RERMRawWassersteinAllDimensionalSamplingRecovery",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
-        "spec_declaration": "PZMH20PerformativePrediction.theorem310CorrectedRERMAllRoundTrajectoryReviewSpec"
+        "spec_declaration": "PZMH20PerformativePrediction.theorem310RERMRawWassersteinAllDimensionalSamplingRecoverySpec"
       },
       "source_anchor_evidence": [
         {
@@ -828,7 +845,7 @@
         {
           "id": "theorem.3.10.finite.sample.retraining.rerm",
           "identity_schema": 2,
-          "reviewed_lean_route": "PZMH20PerformativePrediction.theorem310CorrectedRERMAllRoundTrajectoryReview",
+          "reviewed_lean_route": "PZMH20PerformativePrediction.theorem310RERMRawWassersteinAllDimensionalSamplingRecovery",
           "semantic_claim": "Under the theorem's smoothness, strong-convexity, sensitivity, and exponential-moment hypotheses, a round-dependent RERM sample schedule gives high-probability eventual containment within delta of a stable point.",
           "source_locator": "cited publication:373-415",
           "source_quote_sha256": "1f14c9fb9f4e88404fa7e031f694f5b93ae42c12a5af9cb77769acb4052fb17a"
@@ -841,7 +858,7 @@
       ],
       "source_kind": "theorem",
       "source_location": "cited publication:373-415 (PMLR PDF p. 6, Theorem 3.10)",
-      "source_note": "The selected target uses the capped supercritical schedule and derives a finite entry iteration. Its dimension, uniform-moment, analytic and numerical premises remain explicit; the printed all-dimension sample budget is not claimed. Global ambient regularity is retained by the existing compiled proof; no extension from the source-domain assumptions has been proved.",
+      "source_note": "The RERM target is the direct raw-Wasserstein route. Its bounded adaptive moment envelope, event measurability, entry and numerical budget remain explicit. The all-dimensional count has a finite trajectory route in every positive dimension, while the checked rate explanation is necessarily regime-specific; the printed common all-dimension formula is not credited. The historical data-loss-Lipschitz bridge has been eliminated by a direct minimizer perturbation proof.",
       "source_presentation_reconciliation": {
         "boundary_reason": "interleaved_parallel_columns",
         "core_anchor": {
@@ -869,7 +886,7 @@
       ],
       "statement": "Under the theorem's smoothness, strong-convexity, sensitivity, and exponential-moment hypotheses, a round-dependent RERM sample schedule gives high-probability eventual containment within delta of a stable point.",
       "support_lean_declarations": [
-        "PZMH20PerformativePrediction.theorem310CorrectedRERMAllRoundTrajectoryReviewSpec"
+        "PZMH20PerformativePrediction.theorem310RERMRawWassersteinAllDimensionalSamplingRecoverySpec"
       ],
       "title": "Theorem 3.10"
     },
@@ -1029,29 +1046,26 @@
     },
     "theorem_3_10_rerm_formalized_premises": {
       "aliases": [
-        "Theorem310CorrectedRERMAllRoundTrajectoryData",
-        "theorem310CorrectedRERMCountSchedule"
+        "Theorem310RERMRawWassersteinAllDimensionalSamplingRecoveryData"
       ],
       "claim_bearing": false,
       "corrected_target": {
         "archival_equivalence_claimed": false,
         "archival_source_locator": "cited publication:373-415",
         "archival_source_quote_sha256": "1f14c9fb9f4e88404fa7e031f694f5b93ae42c12a5af9cb77769acb4052fb17a",
-        "corrected_target_review_sha256": "b6eb3da42181b4248725582feba4deb1869f159a5dbc0dcecde0df5020f0e0bd",
-        "corrected_target_sha256": "011b22b06da04db55cc8ed0a787ed62645609d6d09efab1b7071491230583077",
+        "corrected_target_review_sha256": "9d42545136bf2b32c25fa6f7ace0b019403d2b864c6a352e4c20fd3e522c75a3",
+        "corrected_target_sha256": "eca9c3a77fd313bd1cfa54518994f1a5f91b1e4eaa90e0f8475d6ca9dab48e89",
         "governing_defect_ids": [
           "theorem-3.10-pointwise-moment-uniform-adaptive-envelope",
-          "theorem-3.10-all-dimension-sample-rate",
-          "theorem-3.10-rerm-data-loss-wasserstein-bridge"
+          "theorem-3.10-all-dimension-sample-rate"
         ],
         "schema": 1,
-        "statement": "The RERM premise bundle for Theorem 3.10(a) specifies data dimension greater than two, the concrete capped count and inverse-square confidence schedules, a shared bounded exponential moment and tail envelope, measurable adaptive sampling and bad events, data-Lipschitz loss and empirical-loss integrability, smoothness and strong convexity with Wasserstein sensitivity, a convex domain with empirical and population risk-minimizing updates and a stable point, and the numerical W1 budget, contraction slack, absorbing-radius, and initial-distance conditions. The trajectory theorem derives population contraction and a finite entry iteration; neither a caller-supplied small-deviation gate nor a supplied burn-in bound is a premise. The model and expected-loss integrability are defined for every ambient parameter. Joint-gradient smoothness and pointwise strong convexity quantify over all ambient parameters and data points; Wasserstein sensitivity, gradient integrability, and loss differentiation quantify over all ambient parameters. RERM data-loss Lipschitzness also quantifies over every ambient parameter and data point. These global hypotheses are stronger in scope than the source assumptions on the parameter domain and the union of its induced supports; their necessity for the source conclusion is unresolved."
+        "statement": "The RERM premise bundle for the approved Theorem 3.10(a) recovery fixes the explicit all-positive-dimensional selected-shell count schedule and inverse-square confidence allocation; a shared bounded exponential-moment and tail envelope along every adaptive history; measurable adaptive sampling and raw-Wasserstein bad events; a convex parameter domain; A1's data-gradient bound and A2's pointwise strong-convexity lower model on that domain; empirical-risk integrability; a checked RERM trajectory and population risk-minimizing update with a performatively stable point; and the stated sensitivity, numerical W1 budget, absorbing-radius, and entry conditions. The selected-shell construction derives the raw W1 roundwise failure bound and deterministic threshold internally. No data-coordinate loss-Lipschitz bridge, gradient-integrability premise, pointwise first-order certificate, or caller-supplied selected-shell certificate is assumed."
       },
       "coverage_status": "corrected_source_statement",
       "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "PZMH20PerformativePrediction.Theorem310CorrectedRERMAllRoundTrajectoryData",
-        "AppliedModelingLib.IsMeasureDataLossLipschitz"
+        "PZMH20PerformativePrediction.Theorem310RERMRawWassersteinAllDimensionalSamplingRecoveryData"
       ],
       "source_anchor_evidence": [
         {
@@ -1064,12 +1078,11 @@
       ],
       "source_defect_ids": [
         "theorem-3.10-pointwise-moment-uniform-adaptive-envelope",
-        "theorem-3.10-all-dimension-sample-rate",
-        "theorem-3.10-rerm-data-loss-wasserstein-bridge"
+        "theorem-3.10-all-dimension-sample-rate"
       ],
       "source_kind": "condition",
       "source_location": "cited publication:373-415 (PMLR PDF p. 6, Theorem 3.10(a))",
-      "source_note": "The selected target uses the capped supercritical schedule and derives a finite entry iteration. Its dimension, uniform-moment, analytic and numerical premises remain explicit; the printed all-dimension sample budget is not claimed. Global ambient regularity is retained by the existing compiled proof; no extension from the source-domain assumptions has been proved.",
+      "source_note": "The premise carrier is the exact constructor consumed by the direct raw-Wasserstein RERM Spec. It makes the approved all-dimensional schedule, raw-event, and recurrence inputs reviewable field by field while keeping the finite-IID bound and threshold derived rather than supplied.",
       "source_status": "corrected",
       "statement": "Theorem 3.10(a) states a finite-sample RERM containment conclusion under its displayed smoothness, strong-convexity, sensitivity, exponential-moment, and sample-order hypotheses."
     },
@@ -1123,22 +1136,26 @@
       "aliases": [
         "Theorem 3.5"
       ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "measureWassersteinConvexRRMConvergesLinearlySpec, measureWassersteinConvexRGDConvergesLinearlySpec, and measureWassersteinStableObjectiveGapSpec, each proved by its paired PaperInterface endpoint.",
+          "classification": "source_faithful_domain_scoped_general_measure_model",
+          "formal_meaning": "The source parameter space Theta is represented by the subtype of its closed convex finite-dimensional Euclidean domain. Laws, losses, expected risks, A1/A2, and Wasserstein sensitivity are required only for admissible parameters. The RGD update additionally records integrability of its displayed expected data gradient at every admissible deployed/evaluated pair; its gamma <= beta relation is derived from on-domain A1/A2 whenever Theta is non-singleton, with the singleton conclusion proved directly.",
+          "id": "general-measure-analytic-bridge-formalized-scope",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3506652b783b239ce454b4bc95169361be023764630178c482bc471367a45317",
+          "source_locator": "cited publication:188-194; cited publication:264-269; cited publication:324-344; cited publication:373-415; cited publication:543-561",
+          "why_needed": "The paper defines its predictive parameters in a closed convex subset of a finite-dimensional Euclidean space. Requiring a total law or loss extension, or regularity of that extension away from Theta, is not part of its model. The recovered direct RRM proof and the domain-gradient RGD proof use only the source-domain information."
+        }
+      ],
       "claim_bearing": true,
-      "corrected_target": {
-        "archival_equivalence_claimed": false,
-        "archival_source_locator": "cited publication:264-330",
-        "archival_source_quote_sha256": "aeaaddc0f4f676325213789069a6ef503b2f73fdef3da84a33ae51e782ccc9d6",
-        "corrected_target_review_sha256": "cf74aa69f7a4f459dba1d0178739eb48dfcbe962adfa073a58c78135b9bbe545",
-        "corrected_target_sha256": "f84c4f498462f26b63933e783aacce4a516983f14aa8328692b7f76e1add4986",
-        "governing_defect_ids": [
-          "theorem-3.5-general-measure-analytic-bridge"
-        ],
-        "schema": 1,
-        "statement": "For an arbitrary-law measure-performative model on a complete real inner-product ambient parameter space, let the source parameter domain be closed and convex and let the repeated-risk-minimization update minimize frozen risk on that domain. Assume expected-loss and gradient integrability for every ambient deployed/evaluated parameter pair; A1 joint gradient smoothness and A2 pointwise strong convexity for every ambient parameter and every datum in the chosen data carrier; nonnegative Wasserstein sensitivity for every ambient parameter pair; local loss measurability and pointwise parameter differentiability for every ambient parameter and datum; and strict epsilon beta over gamma below one. Then, for each initial point in the domain, the update has the displayed epsilon beta over gamma contraction on the domain and there exists a domain-stable point, unique among domain-stable points, such that the iterates from that initial point converge to it with the displayed geometric rate."
-      },
-      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
         "PZMH20PerformativePrediction.measureWassersteinConvexRRMConvergesLinearlyProof"
+      ],
+      "model_convention_ids": [
+        "general-measure-analytic-bridge-formalized-scope"
       ],
       "semantic_contract": {
         "evidence_declaration": "PZMH20PerformativePrediction.measureWassersteinConvexRRMConvergesLinearlyProof",
@@ -1182,13 +1199,10 @@
           "verbatim_source_clause": "(b) If ε < βγ , the iterates θt of RRM converge to a unique"
         }
       ],
-      "source_defect_ids": [
-        "theorem-3.5-general-measure-analytic-bridge"
-      ],
       "source_kind": "theorem",
       "source_location": "cited publication:264-269; cited publication:324-344",
-      "source_note": "The corrected target is the proved arbitrary-law closed-convex RRM endpoint. A total ambient model is a representation choice, and the data carrier may be chosen as the source support union Z. The current A1, A2, Wasserstein-sensitivity, integrability, measurability, and differentiation hypotheses nevertheless quantify over parameters outside the source domain Theta; if the data carrier is larger than Z, the pointwise predicates also quantify beyond Z. No derivation from the source-domain conditions is proved, and necessity of the stronger scope is unresolved.",
-      "source_status": "corrected",
+      "source_note": "The direct arbitrary-law theorem is proved on the finite-dimensional source parameter domain Theta. Its A1/A2 and Wasserstein-sensitivity reasoning is on-domain, so no arbitrary off-domain extension is a theorem premise.",
+      "source_status": "direct byte-pinned source result",
       "source_url": "https://proceedings.mlr.press/v119/perdomo20a.html",
       "spec_lean_declarations": [
         "PZMH20PerformativePrediction.finiteUnconstrainedRRMContractionSpec",
@@ -1211,22 +1225,26 @@
       "aliases": [
         "Theorem 3.8"
       ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "measureWassersteinConvexRRMConvergesLinearlySpec, measureWassersteinConvexRGDConvergesLinearlySpec, and measureWassersteinStableObjectiveGapSpec, each proved by its paired PaperInterface endpoint.",
+          "classification": "source_faithful_domain_scoped_general_measure_model",
+          "formal_meaning": "The source parameter space Theta is represented by the subtype of its closed convex finite-dimensional Euclidean domain. Laws, losses, expected risks, A1/A2, and Wasserstein sensitivity are required only for admissible parameters. The RGD update additionally records integrability of its displayed expected data gradient at every admissible deployed/evaluated pair; its gamma <= beta relation is derived from on-domain A1/A2 whenever Theta is non-singleton, with the singleton conclusion proved directly.",
+          "id": "general-measure-analytic-bridge-formalized-scope",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "3506652b783b239ce454b4bc95169361be023764630178c482bc471367a45317",
+          "source_locator": "cited publication:188-194; cited publication:264-269; cited publication:324-344; cited publication:373-415; cited publication:543-561",
+          "why_needed": "The paper defines its predictive parameters in a closed convex subset of a finite-dimensional Euclidean space. Requiring a total law or loss extension, or regularity of that extension away from Theta, is not part of its model. The recovered direct RRM proof and the domain-gradient RGD proof use only the source-domain information."
+        }
+      ],
       "claim_bearing": true,
-      "corrected_target": {
-        "archival_equivalence_claimed": false,
-        "archival_source_locator": "cited publication:373-415",
-        "archival_source_quote_sha256": "1f14c9fb9f4e88404fa7e031f694f5b93ae42c12a5af9cb77769acb4052fb17a",
-        "corrected_target_review_sha256": "86b61a60705f2cb72a092fd44404690ecebb0bc37367b3040b5ceefe6d4f6cd3",
-        "corrected_target_sha256": "3702e7d3c45070e14e57d8a65e6fa344fdca1c1dde99cbc8ac822e5b873f2954",
-        "governing_defect_ids": [
-          "theorem-3.8-general-measure-analytic-bridge"
-        ],
-        "schema": 1,
-        "statement": "For an arbitrary-law measure-performative model on a complete real inner-product ambient parameter space, let the source parameter domain be nonempty, closed, and convex with a variational nonexpansive projection. Assume expected-loss and gradient integrability for every ambient deployed/evaluated parameter pair; A1 joint gradient smoothness and A2 pointwise strong convexity for every ambient parameter and every datum in the chosen data carrier; nonnegative Wasserstein sensitivity for every ambient parameter pair; local loss measurability and pointwise parameter differentiability for every ambient parameter and datum; and the exact inequalities 0 < gamma <= beta, 0 < eta <= 2 / (gamma + beta), and epsilon < gamma / ((gamma + beta) * (1 + 3 * eta * beta / 2)). Then repeated projected gradient descent has the displayed contraction on the domain, a unique domain-stable point, convergence from every domain initial point, and the displayed geometric rate."
-      },
-      "coverage_status": "corrected_source_statement",
       "lean_declarations": [
         "PZMH20PerformativePrediction.measureWassersteinConvexRGDConvergesLinearlyProof"
+      ],
+      "model_convention_ids": [
+        "general-measure-analytic-bridge-formalized-scope"
       ],
       "semantic_contract": {
         "evidence_declaration": "PZMH20PerformativePrediction.measureWassersteinConvexRGDConvergesLinearlyProof",
@@ -1253,12 +1271,9 @@
           "source_quote_sha256": "1f14c9fb9f4e88404fa7e031f694f5b93ae42c12a5af9cb77769acb4052fb17a"
         }
       ],
-      "source_defect_ids": [
-        "theorem-3.8-general-measure-analytic-bridge"
-      ],
       "source_kind": "theorem",
       "source_location": "cited publication:373-415 (PMLR PDF p. 5, Theorem 3.8)",
-      "source_note": "The corrected target is the proved arbitrary-law projected-RGD endpoint. A total ambient model is a representation choice, and the data carrier may be chosen as the source support union Z. The current A1, A2, Wasserstein-sensitivity, integrability, measurability, and differentiation hypotheses nevertheless quantify over parameters outside the source domain Theta; if the data carrier is larger than Z, the pointwise predicates also quantify beyond Z. No derivation from the source-domain conditions is proved, and necessity of the stronger scope is unresolved.",
+      "source_note": "The direct arbitrary-law projected-RGD theorem is proved on the finite-dimensional source parameter domain Theta. The source's expected-gradient update is defined with the requisite on-domain integrability, and gamma <= beta is derived from A1/A2 on non-singleton domains rather than assumed.",
       "source_presentation_reconciliation": {
         "boundary_reason": "interleaved_parallel_columns",
         "core_anchor": {
@@ -1276,7 +1291,7 @@
         "validated_at": "2026-08-29T00:00:00Z",
         "validator": "Codex PZ source-only two-column reconciliation reviewer"
       },
-      "source_status": "corrected",
+      "source_status": "direct byte-pinned source result",
       "source_url": "https://proceedings.mlr.press/v119/perdomo20a.html",
       "spec_lean_declarations": [
         "PZMH20PerformativePrediction.finiteConvexRGDConvergesLinearlySpec",
@@ -1381,7 +1396,6 @@
   },
   "library_semantic_prerequisite_sources": {
     "AppliedModelingLib.IsJointlySmoothGradient": "theorem_3_10_rgd_formalized_premises",
-    "AppliedModelingLib.IsMeasureDataLossLipschitz": "theorem_3_10_rerm_formalized_premises",
     "AppliedModelingLib.IsMeasurePointwiseGradientStronglyConvex": "theorem_3_10_rgd_formalized_premises",
     "AppliedModelingLib.IsMeasureWassersteinSensitive": "theorem_3_10_rgd_formalized_premises",
     "AppliedModelingLib.MeasurePerformativeModel": "theorem_3_10_rgd_formalized_premises",
@@ -1402,8 +1416,8 @@
     "PZMH20PerformativePrediction.IsMeasureRRMOn": "definition_3_3_repeated_risk_minimization",
     "PZMH20PerformativePrediction.IsMeasureStable": "definition_2_3_performative_stability_and_decoupled_risk",
     "PZMH20PerformativePrediction.IsMeasureWassersteinSensitive": "definition_3_1_epsilon_sensitivity",
-    "PZMH20PerformativePrediction.Theorem310CorrectedRERMAllRoundTrajectoryData": "theorem_3_10_rerm_formalized_premises",
-    "PZMH20PerformativePrediction.Theorem310CorrectedRGDAllRoundTrajectoryData": "theorem_3_10_rgd_formalized_premises"
+    "PZMH20PerformativePrediction.Theorem310CorrectedRGDAllRoundTrajectoryData": "theorem_3_10_rgd_formalized_premises",
+    "PZMH20PerformativePrediction.Theorem310RERMRawWassersteinAllDimensionalSamplingRecoveryData": "theorem_3_10_rerm_formalized_premises"
   },
   "publication_corrected_target_projection": {
     "approval_material_included": false,

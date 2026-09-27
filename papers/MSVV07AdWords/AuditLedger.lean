@@ -160,22 +160,14 @@ theorem audit_section4_lemma1_balance_pays_no_later_spent_fraction_of_balance_ch
     section4_lemma1_balance_pays_no_later_spent_fraction_of_balance_choice
       I A q hchoice hopt_can hoptCurrent_le_type hequal_bids hbid_pos
 
-/-- Audit endpoint for MSVV Section 4 Lemma 2. -/
+/-- Audit endpoint for MSVV Section 4 Lemma 2's idealized BALANCE execution. -/
 theorem audit_section4_lemma2_factor_revealing_lp_constraint
-    {m : ℕ} (N : ℝ) (x beta : Fin m → ℝ) (i : Fin m)
-    (hprefix_cover :
-      (∑ j ∈ MSVV07SourceLemmas.paperRoutePrefix i, x j) ≤
-        ∑ j ∈ MSVV07SourceLemmas.paperRoutePrefix i, beta j)
-    (hbeta_prefix :
-      (∑ j ∈ MSVV07SourceLemmas.paperRoutePrefix i, beta j) =
-        MSVV07SourceLemmas.paperRouteRhs N i -
-          ∑ j ∈ MSVV07SourceLemmas.paperRoutePrefix i,
-            MSVV07SourceLemmas.paperRouteDeltaCoeff i j * x j) :
-    MSVV07SourceLemmas.paperRouteLPRow x i ≤
-      MSVV07SourceLemmas.paperRouteRhs N i := by
-  exact
-    section4_lemma2_factor_revealing_lp_constraint
-      N x beta i hprefix_cover hbeta_prefix
+    {m : ℕ} {Advertiser Event : Type*} [Fintype Advertiser] [Fintype Event]
+    (E : SourceRunner.Section4IdealizedBalanceExecution m Advertiser Event)
+    (i : Fin m) :
+    MSVV07SourceLemmas.paperRouteLPRow E.typeCount i ≤
+      MSVV07SourceLemmas.paperRouteRhs (Fintype.card Advertiser : ℝ) i := by
+  exact PaperInterface.section4_lemma2_factor_revealing_lp_constraint E i
 
 /-- Audit endpoint for MSVV Section 4 Lemma 3. -/
 theorem audit_section4_lemma3_factor_revealing_lp_value_tends (N : ℝ) :
@@ -1349,18 +1341,18 @@ theorem audit_theorem9_no_randomized_integral_prefix_algorithm_beats_msvv_ratio 
   exact theorem9_no_randomized_integral_prefix_algorithm_beats_msvv_ratio
 
 /--
-Audit endpoint for Theorem 9 using the paper-facing randomized online
-algorithm alias for the finite prefix model.
+Audit endpoint for Theorem 9 in the source query-split model, which allows
+every feasible nonanticipating allocation of the repeated queries in a round.
 -/
 theorem audit_theorem9_no_randomized_online_algorithm_beats_msvv_ratio :
-    ∀ delta : ℝ, 0 < delta →
-      ∃ N0 : ℕ, ∀ N : ℕ, N0 ≤ N →
-        ∀ randomizedAlgorithm : theorem9RandomizedOnlineAlgorithm N,
-          ¬ ∀ permutation,
-            paperMsvvRatio + delta <
-              AppliedModelingLib.pmfExp randomizedAlgorithm
-                (fun algorithm =>
-                  theorem9CappedNormalizedRevenue N algorithm permutation) := by
+    ∀ b : ℕ, 0 < b →
+      ∀ delta : ℝ, 0 < delta →
+        ∃ N0 : ℕ, ∀ N : ℕ, N0 ≤ N →
+          ∀ randomizedAlgorithm : Proof.theorem9SourceRandomizedOnlineAlgorithm N b,
+            ¬ ∀ permutation,
+              paperMsvvRatio + delta <
+                AppliedModelingLib.pmfExp randomizedAlgorithm
+                  (fun policy => Proof.theorem9SourceNormalizedRevenue policy permutation) := by
   exact theorem9_no_randomized_online_algorithm_beats_msvv_ratio
 
 end AuditLedger

@@ -1,6 +1,6 @@
 {
   "acceptance_credential": false,
-  "accepted_graph_sha256": "fb2187e835102b2335fea22d3b2938fc30793ba91974a898cc5d74e43027593d",
+  "accepted_graph_sha256": "527a7ac6b9f619d3c2dff41d03ea2ca91758ab3e9a0c16ca77a864ab7a098fd4",
   "bindings_by_source_item": {
     "appendix_kappa_counterexample_family": {
       "accepted_source_role_contract_sha256": "49b3dfad154ee342ec3d604931300f5a34a64a8de2ac42389b56efe7ffcc78fd",
@@ -129,17 +129,14 @@
       ]
     },
     "paperSmallBidsLimitFamily_fields": {
-      "accepted_source_role_contract_sha256": "48468b46f13e2dda808348b3d4a21e7e4eddcb06a6729976b9261cdff18ee60b",
-      "public_source_role_projection_sha256": "be604c06276fefdefb3815074c5ef7702483d82ae1d04f14416f123001f1c305",
+      "accepted_source_role_contract_sha256": "f4ec8b721516084a1dac2503013b02a7a8f6678f4676b113c68d361beb62cc13",
+      "public_source_role_projection_sha256": "f4ec8b721516084a1dac2503013b02a7a8f6678f4676b113c68d361beb62cc13",
       "schema": 1,
-      "withheld_field_paths": [
-        "corrected_target.approval",
-        "corrected_target.archival_source_locator"
-      ]
+      "withheld_field_paths": []
     },
     "paperSmallBids_iff": {
-      "accepted_source_role_contract_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
-      "public_source_role_projection_sha256": "10d3b168adc54f4f65034bf4056bf824f46ba8a384f57936a80b50242dd4daa6",
+      "accepted_source_role_contract_sha256": "4eb7d0ddb7e5eb47740d27e1726cffa809d85a00ebec41705e582883d0b99a65",
+      "public_source_role_projection_sha256": "4eb7d0ddb7e5eb47740d27e1726cffa809d85a00ebec41705e582883d0b99a65",
       "schema": 1,
       "withheld_field_paths": []
     },
@@ -222,13 +219,10 @@
       "withheld_field_paths": []
     },
     "section4_balance_exact_tightness_instance": {
-      "accepted_source_role_contract_sha256": "c627688217777334728497f0ce3a97aac828668c0bb66a0cf64aa80f53c515fa",
-      "public_source_role_projection_sha256": "34bd10873615fc2382f8ec56b2d9a0de2bd83da5b0f9da2e4633517647002b36",
+      "accepted_source_role_contract_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
+      "public_source_role_projection_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
       "schema": 1,
-      "withheld_field_paths": [
-        "corrected_target.approval",
-        "corrected_target.archival_source_locator"
-      ]
+      "withheld_field_paths": []
     },
     "section4_balance_revenue_factor_lp_bridge_formula": {
       "accepted_source_role_contract_sha256": "dfcc6b216a0d49afd3abeeeaf73c47142fa1445f358257a19b2e740044965a50",
@@ -602,15 +596,6 @@
       "schema": 1,
       "withheld_field_paths": []
     },
-    "theorem8_balance_msvv_competitive_of_small_bids_limit_family": {
-      "accepted_source_role_contract_sha256": "37f6aafd50b3faa8b1a91117490fa1b1322f9aed25e1dd3704431d2bd3fe1e50",
-      "public_source_role_projection_sha256": "4132cb2b44011006e85b1817a08cc3cdfa050e1b43a251b5be82e20165adda29",
-      "schema": 1,
-      "withheld_field_paths": [
-        "corrected_target.approval",
-        "corrected_target.archival_source_locator"
-      ]
-    },
     "theorem8_corrected_unspent_fraction_formula": {
       "accepted_source_role_contract_sha256": "dfcc6b216a0d49afd3abeeeaf73c47142fa1445f358257a19b2e740044965a50",
       "public_source_role_projection_sha256": "dfcc6b216a0d49afd3abeeeaf73c47142fa1445f358257a19b2e740044965a50",
@@ -643,6 +628,15 @@
       "public_source_role_projection_sha256": "7943bb0a1038c9b9ca1ec777a62b2cf0d2afdf222d3ccb832d0d97bcd18dfc6a",
       "schema": 1,
       "withheld_field_paths": []
+    },
+    "theorem8_source_unit_budget_competitive_in_small_bids_limit": {
+      "accepted_source_role_contract_sha256": "4147879a5161fec0b900f056ec7b9a63fe8a89266d20150a9dd27e3a1af415c4",
+      "public_source_role_projection_sha256": "8a7d1f477d2d4f1265f60918cb459f7868365d79f989fa0c7bf7c4827a9b4d85",
+      "schema": 1,
+      "withheld_field_paths": [
+        "corrected_target.approval",
+        "corrected_target.archival_source_locator"
+      ]
     },
     "theorem8_unspent_budget_bound_formula": {
       "accepted_source_role_contract_sha256": "ff5a0e099e16c780ec0c807bad8030a1474e5e84b20ee9670ac2ec27355bdb21",
@@ -695,13 +689,13 @@
   },
   "paper": "MSVV07AdWords",
   "private_role_material_included": false,
-  "private_source_map_material_sha256": "a9b61b989da11deb410c9d878d10cc582041bd66d0b3c6509ba25fc0b48dabb0",
-  "private_source_map_sha256": "a3f41b7d9bf3c4f54fe6c7fd98563323b94d87c05b1455d10895cd996463282a",
+  "private_source_map_material_sha256": "f5b152e0b1217718cd390975fedfd63fbb0d660425d548ce33d2231166abfc18",
+  "private_source_map_sha256": "2068eb5731641982b7b5f188cafbf70f4a687c7116c55b19af29b047342045df",
   "projection_contract_sha256": "ed0964edc9c70f5ce087ce9bf134712ca40c7964ecaefd403309ac9a1b47d34d",
-  "public_display_manifest_material_sha256": "3066d380d59bd5017eb650f897d7c522edb96f093164bd3c5ef9e1f1645e761e",
-  "public_display_manifest_sha256": "473e2cae972d43bfe37a8989bc96d911be2b453d83f7b72d304584b731ee0fc0",
-  "public_source_map_material_sha256": "cef788b764433e91c5e504d80c1b2e0552aeea25f147c94947ae4fb61fb1a3e8",
-  "public_source_map_sha256": "f5c5d40128a7c88520c59a9b0a7a54f6aa0bdc970f8ddd1bfa9534efa429c015",
+  "public_display_manifest_material_sha256": "469c86bc5168e513d0017da958d7352d399e822be8da1e1ac43075f500d74fc8",
+  "public_display_manifest_sha256": "bad73f9e8734e133b6ce20aac9dacb39d0684e3d93538db205a68a43105f3d1c",
+  "public_source_map_material_sha256": "bab99c3b7daeb7b5af3543ddbe6e67111a01907f9e005f63eb942430560e4e79",
+  "public_source_map_sha256": "73570da719146ef53a2eff74d258b72671367bdba04e399b6b7e228388298f94",
   "raw_private_approval_material_included": false,
   "schema": 1
 }

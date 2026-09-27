@@ -2957,5 +2957,182 @@ theorem eventually_no_randomized_algorithm_beats_msvvRatio_add_delta
 
 end BMatchingTheorem9SymmetricPointwiseLayerCountFamilyCertificate
 
+/-! ### Theorem 9 source query-split normal form -/
+
+/--
+A finite nonanticipating policy on Theorem 9's repeated-query hard family.
+For a round containing `b` identical queries, `allocationCount` records how
+many are sent to each visible bidder.  Thus it permits the arbitrary
+within-round splitting used in the paper's `q_ij` argument, rather than
+choosing a single bidder for a collapsed round.  Budget feasibility is stated
+on every permuted hard instance; it makes the capped fractional payoff equal
+to the realized normalized b-matching revenue.
+-/
+structure BMatchingTheorem9SourceHardPolicy (N b : ℕ) where
+  allocationCount :
+    (Fin N → Finset (Fin N)) → Fin N → Fin N → Fin (b + 1)
+  allocationCount_zero_of_not_visible :
+    ∀ obs round bidder, bidder ∉ obs round →
+      allocationCount obs round bidder = 0
+  allocationCount_round_le_capacity :
+    ∀ obs round,
+      (∑ bidder ∈ obs round, (allocationCount obs round bidder : ℕ)) ≤ b
+  allocationCount_bidder_le_capacity :
+    ∀ permutation bidder,
+      (∑ round : Fin N,
+        (allocationCount (theorem9ObservedPrefix N permutation round)
+          round (permutation bidder) : ℕ)) ≤ b
+
+/-- The source hard-policy space is finite for every finite hard instance. -/
+noncomputable instance (N b : ℕ) : Fintype (BMatchingTheorem9SourceHardPolicy N b) := by
+  classical
+  exact Fintype.ofInjective (fun policy => policy.allocationCount) (by
+    intro policy policy' h
+    cases policy
+    cases policy'
+    cases h
+    rfl)
+
+noncomputable instance (N b : ℕ) : DecidableEq (BMatchingTheorem9SourceHardPolicy N b) := by
+  classical
+  exact Classical.decEq _
+
+namespace BMatchingTheorem9SourceHardPolicy
+
+/-- Normalized count allocated to one bidder in one repeated-query round. -/
+noncomputable def allocationFraction {N b : ℕ}
+    (policy : BMatchingTheorem9SourceHardPolicy N b)
+    (obs : Fin N → Finset (Fin N)) (round bidder : Fin N) : ℝ :=
+  (policy.allocationCount obs round bidder : ℕ) / (b : ℝ)
+
+theorem allocationFraction_zero_of_not_visible {N b : ℕ}
+    (policy : BMatchingTheorem9SourceHardPolicy N b)
+    (obs : Fin N → Finset (Fin N)) (round bidder : Fin N)
+    (hnot : bidder ∉ obs round) :
+    policy.allocationFraction obs round bidder = 0 := by
+  simp [allocationFraction,
+    policy.allocationCount_zero_of_not_visible obs round bidder hnot]
+
+theorem allocationFraction_sum_le_one {N b : ℕ} (hb : 0 < b)
+    (policy : BMatchingTheorem9SourceHardPolicy N b)
+    (obs : Fin N → Finset (Fin N)) (round : Fin N) :
+    (∑ bidder ∈ obs round,
+      policy.allocationFraction obs round bidder) ≤ 1 := by
+  have hsumNat := policy.allocationCount_round_le_capacity obs round
+  have hsumReal :
+      (∑ bidder ∈ obs round,
+        (policy.allocationCount obs round bidder : ℕ) : ℝ) ≤ (b : ℝ) := by
+    exact_mod_cast hsumNat
+  rw [show (∑ bidder ∈ obs round,
+      policy.allocationFraction obs round bidder) =
+        (∑ bidder ∈ obs round,
+          (policy.allocationCount obs round bidder : ℕ) : ℝ) / (b : ℝ) by
+      simp only [allocationFraction, Finset.sum_div]]
+  have hbReal : 0 < (b : ℝ) := by exact_mod_cast hb
+  calc
+    (∑ bidder ∈ obs round,
+      (policy.allocationCount obs round bidder : ℕ) : ℝ) / (b : ℝ)
+        ≤ (b : ℝ) / (b : ℝ) :=
+          div_le_div_of_nonneg_right hsumReal (le_of_lt hbReal)
+    _ = 1 := div_self (ne_of_gt hbReal)
+
+/-- Actual normalized revenue of a feasible source hard policy. -/
+noncomputable def normalizedRevenue {N b : ℕ}
+    (policy : BMatchingTheorem9SourceHardPolicy N b)
+    (permutation : Equiv.Perm (Fin N)) : ℝ :=
+  (∑ bidder : Fin N,
+    ∑ round : Fin N,
+      policy.allocationFraction
+        (theorem9ObservedPrefix N permutation round)
+        round (permutation bidder)) / (N : ℝ)
+
+theorem total_allocationFraction_le_one {N b : ℕ} (hb : 0 < b)
+    (policy : BMatchingTheorem9SourceHardPolicy N b)
+    (permutation : Equiv.Perm (Fin N)) (bidder : Fin N) :
+    (∑ round : Fin N,
+      policy.allocationFraction
+        (theorem9ObservedPrefix N permutation round)
+        round (permutation bidder)) ≤ 1 := by
+  have hsumNat := policy.allocationCount_bidder_le_capacity permutation bidder
+  have hsumReal :
+      (∑ round : Fin N,
+        (policy.allocationCount
+          (theorem9ObservedPrefix N permutation round)
+          round (permutation bidder) : ℕ) : ℝ) ≤ (b : ℝ) := by
+    exact_mod_cast hsumNat
+  rw [show (∑ round : Fin N,
+      policy.allocationFraction
+        (theorem9ObservedPrefix N permutation round)
+        round (permutation bidder)) =
+        (∑ round : Fin N,
+          (policy.allocationCount
+            (theorem9ObservedPrefix N permutation round)
+            round (permutation bidder) : ℕ) : ℝ) / (b : ℝ) by
+      simp only [allocationFraction, Finset.sum_div]]
+  have hbReal : 0 < (b : ℝ) := by exact_mod_cast hb
+  calc
+    (∑ round : Fin N,
+      (policy.allocationCount
+        (theorem9ObservedPrefix N permutation round)
+        round (permutation bidder) : ℕ) : ℝ) / (b : ℝ)
+        ≤ (b : ℝ) / (b : ℝ) :=
+          div_le_div_of_nonneg_right hsumReal (le_of_lt hbReal)
+    _ = 1 := div_self (ne_of_gt hbReal)
+
+/--
+The source hard policies form a feasible prefix-rule family.  This is the
+bridge from the paper's finite `q_ij` fractions to the general Theorem 9
+symmetry and harmonic-cap argument.
+-/
+noncomputable def feasiblePrefixRuleFamily (b : ℕ) (hb : 0 < b) :
+    BMatchingTheorem9FeasiblePrefixRuleFamily
+      (fun N => BMatchingTheorem9SourceHardPolicy N b) where
+  prefixAllocation := fun N policy obs round bidder =>
+    policy.allocationFraction obs round bidder
+  prefixAllocation_zero_of_not_visible := by
+    intro N policy obs round bidder hnot
+    exact policy.allocationFraction_zero_of_not_visible obs round bidder hnot
+  prefixAllocation_sum_le_one := by
+    intro N policy obs round
+    exact allocationFraction_sum_le_one hb policy obs round
+
+theorem feasiblePrefixRuleFamily_normalizedRevenue_eq {N b : ℕ} (hb : 0 < b)
+    (policy : BMatchingTheorem9SourceHardPolicy N b)
+    (permutation : Equiv.Perm (Fin N)) :
+    (feasiblePrefixRuleFamily b hb).normalizedRevenue N policy permutation =
+      policy.normalizedRevenue permutation := by
+  unfold BMatchingTheorem9FeasiblePrefixRuleFamily.normalizedRevenue
+  unfold feasiblePrefixRuleFamily normalizedRevenue
+  congr 1
+  apply Finset.sum_congr rfl
+  intro bidder _
+  rw [min_eq_right (total_allocationFraction_le_one hb policy permutation bidder)]
+
+/--
+Theorem 9 in the source hard-input normal form.  A randomized online policy
+is a distribution over all finite nonanticipating allocation-count policies;
+these include arbitrary feasible splits of the identical queries within a
+round.  Hence this endpoint is not restricted to one-choice-per-round rules.
+-/
+theorem eventually_no_randomized_source_hard_policy_beats_msvvRatio_add_delta
+    (b : ℕ) (hb : 0 < b) :
+    ∀ delta : ℝ, 0 < delta →
+      ∃ N0 : ℕ, ∀ N : ℕ, N0 ≤ N →
+        ∀ randomizedAlgorithm : PMF (BMatchingTheorem9SourceHardPolicy N b),
+          ¬ ∀ permutation,
+            AdWordsInstance.msvvRatio + delta <
+              AppliedModelingLib.pmfExp randomizedAlgorithm
+                (fun policy => policy.normalizedRevenue permutation) := by
+  have h :=
+    BMatchingTheorem9FeasiblePrefixRuleFamily.eventually_no_randomized_algorithm_beats_msvvRatio_add_delta
+      (feasiblePrefixRuleFamily b hb)
+  intro delta hdelta
+  obtain ⟨N0, hN0⟩ := h delta hdelta
+  refine ⟨N0, fun N hN randomizedAlgorithm => ?_⟩
+  simpa only [feasiblePrefixRuleFamily_normalizedRevenue_eq hb] using
+    hN0 N hN randomizedAlgorithm
+
+end BMatchingTheorem9SourceHardPolicy
+
 end Online
 end AppliedModelingLib

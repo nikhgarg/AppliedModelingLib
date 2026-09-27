@@ -32,7 +32,7 @@
 \node[dag_model, below=of SmallBids, text width=3.5cm] (Balance)
   {\textbf{Algorithm (Sec. 3)}\\Balance/MSVV scaled-bid rule};
 \node[dag_result, left=of Balance, text width=3.5cm] (Cost)
-  {\textbf{Operational Routes}\\cost-threaded scan; slab/type/fiber accounting; Sec.~6 $\alpha/\beta$ formulas; fluid tightness};
+  {\textbf{Operational Routes}\\cost-threaded scan; slab/type/fiber accounting; finite nested-cohort tightness; Sec.~6 $\alpha/\beta$ formulas};
 \node[dag_result, below=of Balance, text width=3.5cm] (LP)
   {\textbf{LP/Dual Surface}\\displayed programs, witnesses, and weak duality};
 \node[dag_result, below=of LP, text width=3.5cm] (History)
@@ -42,25 +42,25 @@
 \node[dag_lemma, right=of SmallBids, text width=3.7cm] (L1)
   {\textbf{Lemma 1 (Sec. 4)}\\OPT type implies Balance pays no later slab};
 \node[dag_lemma, below=of L1, text width=3.7cm] (L2)
-  {\textbf{Lemma 2 (Sec. 4)}\\equal-bids factor-revealing LP constraints};
+  {\textbf{Lemma 2 (Sec. 4)}\\idealized-slab equal-bids factor-revealing LP constraints};
 \node[dag_lemma, below=of L2, text width=3.7cm] (L3)
   {\textbf{Lemma 3 (Sec. 4)}\\exact factor-LP optimizer, upper bound, and $N/e$ limit};
 \node[dag_lemma, below=of L3, text width=3.7cm] (L4)
   {\textbf{Lemma 4 (Sec. 5)}\\constructed tradeoff LP: the fixed geometric dual is optimal};
 \node[dag_lemma, below=of L4, text width=3.7cm] (L5)
-  {\textbf{Lemma 5 (Sec. 5)}\\right side $l=b+\Delta(\pi,\psi)$};
+  {\textbf{Lemma 5 (Sec. 5)}\\idealized-slab right side $l=b+\Delta(\pi,\psi)$};
 \node[dag_lemma, below=of L5, text width=3.7cm] (L6)
-  {\textbf{Lemma 6 (Sec. 5)}\\per-query ALG/OPT tradeoff inequality};
+  {\textbf{Lemma 6 (Sec. 5)}\\actual-run per-query tradeoff plus endpoint slab term};
 \node[dag_lemma, below=of L6, text width=3.7cm] (L7)
-  {\textbf{Lemma 7 (Sec. 5)}\\weighted perturbation exact $N/k$ form};
+  {\textbf{Lemma 7 (Sec. 5)}\\Theorem 8 dual tradeoff: actual-run slab error $\leq 2N/k$};
 
 % Lean route to Theorem 8
 \node[dag_result, left=of History, text width=3.5cm] (Charge)
   {\textbf{Finite Charge Lemmas}\\query-dual summation plus explicit error};
 \node[dag_result, below=of Charge, text width=3.5cm] (Delta)
   {\textbf{Finite $\delta$ Theorem}\\explicit small-bids error bound};
-\node[dag_partial, below=of Delta, text width=3.5cm] (T8)
-  {\textbf{Theorem 8 (Sec. 5)}\\finite bound proved; limit requires vanishing error, not yet derived from the source regime};
+\node[dag_result, below=of Delta, text width=3.5cm] (T8)
+  {\textbf{Theorem 8 (Sec. 5)}\\source-normalized finite error $3N/(m+1)$\\automatic small-bids limit};
 
 % Extensions
 \node[dag_result, below=of T8, text width=3.5cm] (Sec6)
@@ -74,11 +74,11 @@
 
 % Lower bound
 \node[dag_model, right=of L4, text width=3.7cm] (Yao)
-  {\textbf{Theorem 9 Setup}\\Yao distribution over bidder permutations};
+  {\textbf{Theorem 9 Setup}\\Yao distribution and query-split policy model};
 \node[dag_result, below=of Yao, text width=3.7cm] (Harmonic)
   {\textbf{Harmonic Cap}\\finite layer count and asymptotic bound};
 \node[dag_result, below=of Harmonic, text width=3.7cm] (T9)
-  {\textbf{Theorem 9 (Sec. 7)}\\source intermediates, harmonic payoff, and randomized-online lower bound};
+  {\textbf{Theorem 9 (Sec. 7)}\\query-split payoff, harmonic cap, and randomized-online lower bound};
 
 % Edges
 \draw[dag_arrow] (Model) -- (SmallBids);

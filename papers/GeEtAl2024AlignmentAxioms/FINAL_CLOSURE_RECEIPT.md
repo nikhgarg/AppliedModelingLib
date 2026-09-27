@@ -3,11 +3,11 @@ schema = 6
 paper = "GeEtAl2024AlignmentAxioms"
 closure_status = "current"
 acceptance_credential = false
-closed_at = "2026-09-01"
+closed_at = "2026-09-27"
 
 [accepted_graph]
 pointer = "papers/GeEtAl2024AlignmentAxioms/audit/obligation_evidence/current_accepted_graph.json"
-graph_sha256 = "4a71c52687abc0c5b125060d3814b1adbd527dc25ffb952287d0f4f5ddb069db"
+graph_sha256 = "ac8afbe6281bac5b4fb12e5d44ee9e9aaf7fa14596ddf4a73eba8ba20783db6f"
 
 +++
 

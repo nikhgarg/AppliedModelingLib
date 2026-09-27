@@ -685,6 +685,21 @@ theorem proof_section5_lemma5_tradeoff_rhs_eq_base_add_delta
       N alpha beta i hbeta_prefix
 
 /--
+The source-facing Lemma 5 endpoint fixes `beta` to the idealized slab
+accounting introduced immediately before the lemma.  Thus its prefix identity
+is derived from that definition rather than supplied by a caller.
+-/
+theorem proof_section5_lemma5_tradeoff_rhs_eq_base_add_delta_of_idealized_slabs
+    {m : ℕ} (N : ℝ) (alpha : Fin m → ℝ) (i : Fin m) :
+    MSVV07SourceLemmas.paperRouteLPRow alpha i =
+      MSVV07SourceLemmas.paperRouteRhs N i +
+        MSVV07SourceLemmas.paperRouteDelta alpha
+          (MSVV07SourceLemmas.paperRouteIdealBeta N alpha) i := by
+  exact proof_section5_lemma5_tradeoff_rhs_eq_base_add_delta
+    N alpha (MSVV07SourceLemmas.paperRouteIdealBeta N alpha) i
+    (MSVV07SourceLemmas.paperRouteIdealBeta_prefix N alpha i)
+
+/--
 Section 5 Lemma 6. For each query with OPT type at most `k - 1`, the
 Balance/MSVV choice rule and monotonicity of `ψ` imply the paper's per-query
 tradeoff inequality.
@@ -1879,16 +1894,16 @@ noncomputable abbrev theorem9HardDistribution (N : ℕ) :
   uniformPermutationDistribution N
 
 /--
-Theorem 9 deterministic algorithms in this formalization: a finite integral
-prefix algorithm sees only the observed prefix and chooses at most one visible
-eligible bidder each round.
+An auxiliary one-choice-per-collapsed-round model for Theorem 9.  The selected
+source endpoint below instead uses the query-split source normal form, which
+permits the arbitrary within-round allocations denoted `q_ij` in the paper.
 -/
 abbrev theorem9IntegralPrefixAlgorithm (N : ℕ) :=
   BMatchingIntegralPrefixAlgorithm N
 
 /--
-The randomized online algorithms used in Theorem 9, formalized as probability
-distributions over finite integral prefix algorithms.
+An auxiliary randomized distribution over one-choice-per-collapsed-round
+algorithms.  It is not the selected source Theorem 9 algorithm class.
 -/
 abbrev theorem9RandomizedOnlineAlgorithm (N : ℕ) :=
   PMF (theorem9IntegralPrefixAlgorithm N)
@@ -1901,6 +1916,28 @@ abbrev theorem9FeasiblePrefixRuleFamily
     (Algorithm : ℕ → Type*)
     [∀ N, Fintype (Algorithm N)] [∀ N, DecidableEq (Algorithm N)] :=
   BMatchingTheorem9FeasiblePrefixRuleFamily Algorithm
+
+/--
+The source Theorem 9 deterministic model on its hard family: for every round
+of `b` identical queries, a nonanticipating policy may split the queries among
+all visible bidders, subject to round and bidder capacities.
+-/
+abbrev theorem9SourceHardPolicy (N b : ℕ) :=
+  BMatchingTheorem9SourceHardPolicy N b
+
+/--
+The source Theorem 9 randomized-online model.  On the finite hard instance,
+randomness is a distribution over all feasible nonanticipating query-split
+policies, rather than a restriction to one collapsed-round choice.
+-/
+abbrev theorem9SourceRandomizedOnlineAlgorithm (N b : ℕ) :=
+  PMF (theorem9SourceHardPolicy N b)
+
+/-- Actual normalized b-matching revenue in the source query-split model. -/
+noncomputable abbrev theorem9SourceNormalizedRevenue {N b : ℕ}
+    (policy : theorem9SourceHardPolicy N b)
+    (permutation : Equiv.Perm (Fin N)) : ℝ :=
+  policy.normalizedRevenue permutation
 
 /-- The capped normalized revenue expression used in the Section 7 proof. -/
 noncomputable abbrev theorem9CappedNormalizedRevenue
@@ -1983,19 +2020,23 @@ theorem theorem9_no_randomized_integral_prefix_algorithm_beats_msvv_ratio
     paper_adwords_theorem9_eventually_no_randomized_algorithm_beats_msvv_ratio_add_delta_of_integral_prefix_algorithms
 
 /--
-Theorem 9, paper-facing randomized online algorithm endpoint in the finite
-prefix model.
+Theorem 9 in the paper's repeated-query b-matching model.  This quantifies
+over every finite nonanticipating feasible query-split policy on the hard
+family, so it includes the arbitrary within-round fractions `q_ij` used in the
+source proof.
 -/
 theorem proof_theorem9_no_randomized_online_algorithm_beats_msvv_ratio :
-    ∀ delta : ℝ, 0 < delta →
-      ∃ N0 : ℕ, ∀ N : ℕ, N0 ≤ N →
-        ∀ randomizedAlgorithm : theorem9RandomizedOnlineAlgorithm N,
-          ¬ ∀ permutation,
-            paperMsvvRatio + delta <
-              AppliedModelingLib.pmfExp randomizedAlgorithm
-                (fun algorithm =>
-                  theorem9CappedNormalizedRevenue N algorithm permutation) := by
-  exact theorem9_no_randomized_integral_prefix_algorithm_beats_msvv_ratio
+    ∀ b : ℕ, 0 < b →
+      ∀ delta : ℝ, 0 < delta →
+        ∃ N0 : ℕ, ∀ N : ℕ, N0 ≤ N →
+          ∀ randomizedAlgorithm : theorem9SourceRandomizedOnlineAlgorithm N b,
+            ¬ ∀ permutation,
+              paperMsvvRatio + delta <
+                AppliedModelingLib.pmfExp randomizedAlgorithm
+                  (fun policy => theorem9SourceNormalizedRevenue policy permutation) := by
+  intro b hb
+  exact
+    BMatchingTheorem9SourceHardPolicy.eventually_no_randomized_source_hard_policy_beats_msvvRatio_add_delta b hb
 
 end MSVV07PaperFacing.Proof
 end Online

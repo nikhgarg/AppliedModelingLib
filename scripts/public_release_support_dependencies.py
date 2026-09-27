@@ -364,6 +364,26 @@ def select_public_support_dependencies(
     eligible_paths: set[str] = set()
     for namespace in support_candidates:
         namespace_paths = namespaces[namespace]
+        reference_path = f"papers/{namespace}/external.json"
+        if reference_path in namespace_paths:
+            # A validated external reference has no local proof or support role.
+            # Inspect exact Git bytes and the whole tree so extra code, status,
+            # root modules, and private notes cannot hide behind the manifest.
+            try:
+                try:
+                    from public_release_external_references import validate_reference, validate_reference_folder
+                except ModuleNotFoundError:
+                    from scripts.public_release_external_references import validate_reference, validate_reference_folder
+                reference = validate_reference(json.loads(_git_bytes(
+                    repo, ["show", f"{candidate_ref}:{reference_path}"]
+                )), namespace)
+                readme = _git_bytes(repo, [
+                    "show", f"{candidate_ref}:papers/{namespace}/README.md"
+                ]).decode("utf-8")
+                validate_reference_folder(reference, tree_paths, readme)
+            except (ValueError, RuntimeError, OSError) as exc:
+                issues.append(f"{reference_path}: {exc}")
+            continue
         namespace_issues: list[str] = []
         if namespace in listed_namespaces:
             namespace_issues.append(

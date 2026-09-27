@@ -1,4 +1,5 @@
 import PZMH20PerformativePrediction.PaperInterface
+import PZMH20PerformativePrediction.EmpiricalRRMSamplingRecovery
 
 /-!
 # Proof Interface: Performative Prediction
@@ -135,14 +136,14 @@ theorem rrmConvergence {Parameter : Type*} [MetricSpace Parameter]
 theorem measureCompactConvexStablePointExistsProof
     {Parameter Data : Type*} [NormedAddCommGroup Parameter] [NormedSpace ℝ Parameter]
     [FiniteDimensional ℝ Parameter] [MeasurableSpace Data]
-    (model : MeasurePerformativeModel Parameter Data) (domain : Set Parameter)
+    {domain : Set Parameter} (model : MeasurePerformativeModelOn Parameter Data domain)
     (hcompact : IsCompact domain) (hne : domain.Nonempty) (hconvex : Convex ℝ domain)
-    (hjoint : Continuous (fun point : Parameter × Parameter =>
-      measureDecoupledPerformativeRisk model point.1 point.2))
-    (hlossConvex : ∀ datum, ConvexOn ℝ domain (model.loss datum)) :
-    measureCompactConvexStablePointExistsSpec model domain hcompact hne hconvex hjoint
+    (hjoint : Continuous (fun point : domain × domain =>
+      model.decoupledPerformativeRisk point.1 point.2))
+    (hlossConvex : ∀ datum, ConvexOn ℝ domain (measureLossOnDomain model datum)) :
+    measureCompactConvexStablePointExistsSpec model hcompact hne hconvex hjoint
       hlossConvex :=
-  measureCompactConvexStablePointExists model domain hcompact hne hconvex hjoint hlossConvex
+  measureDomainCompactConvexStablePointExists model hcompact hne hconvex hjoint hlossConvex
 
 theorem measureWassersteinOptimumStableDistanceProof
     {Parameter Data : Type*} [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter]
@@ -164,52 +165,44 @@ theorem measureWassersteinOptimumStableDistanceProof
     hstrong hloss hsensitivity hsensitive optimal stable hoptimal hstable
 
 theorem measureWassersteinStableObjectiveGapProof
-    {Parameter Data : Type*} [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter]
-    [CompleteSpace Parameter] [MeasurableSpace Data] [MetricSpace Data]
-    (model : MeasurePerformativeModel Parameter Data)
-    (gradient : Data → Parameter → Parameter) {smoothness : NNReal}
-    (hjoint : IsJointlySmoothGradient gradient smoothness)
-    (hintegrable : ∀ distributionParameter evaluatedParameter,
-      Integrable (fun datum => gradient datum evaluatedParameter)
-        (model.dataLaw distributionParameter : Measure Data))
-    (hloss_meas : ∀ distributionParameter evaluatedParameter,
-      ∀ᶠ parameter in nhds evaluatedParameter,
-        AEStronglyMeasurable (fun datum => model.loss datum parameter)
-          (model.dataLaw distributionParameter : Measure Data))
-    (hpointwise : ∀ datum parameter,
-      HasGradientAt (fun theta => model.loss datum theta) (gradient datum parameter) parameter)
+    {Parameter Feature Label : Type*}
+    [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter]
+    [CompleteSpace Parameter] [FiniteDimensional ℝ Parameter]
+    [MeasurableSpace Feature] [MeasurableSpace Label]
+    [MetricSpace (Feature × Label)] {domain : Set Parameter}
+    (profile : MeasureStrategicClassificationProfile Parameter Feature Label domain)
+    (gradient : (Feature × Label) → domain → Parameter)
+    (hclosed : IsClosed domain) (hconvex : Convex ℝ domain) {smoothness : NNReal}
+    (hjoint :
+      (∀ datum first second,
+        ‖gradient datum first - gradient datum second‖ ≤
+          (smoothness : ℝ) * dist (first : Parameter) (second : Parameter)) ∧
+      (∀ first second parameter,
+        ‖gradient first parameter - gradient second parameter‖ ≤
+          (smoothness : ℝ) * dist first second))
     {modulus : ℝ} (hmodulus : 0 < modulus)
-    (hstrong : IsMeasurePointwiseGradientStronglyConvex model gradient modulus)
+    (hstrong : profile.performativeModelOn.IsPointwiseGradientStronglyConvex gradient modulus)
     {dataConstant parameterConstant : NNReal}
-    (hdataLoss : IsMeasureDataLossLipschitz model dataConstant)
-    (hparameterLoss : IsMeasureParameterLossLipschitz model parameterConstant)
+    (hdataLoss : profile.performativeModelOn.IsDataLossLipschitz dataConstant)
+    (hparameterLoss : ∀ datum, LipschitzWith parameterConstant (profile.loss datum))
     {sensitivity : ℝ} (hsensitivity : 0 ≤ sensitivity)
-    (hsensitive : IsMeasureWassersteinSensitive model sensitivity)
-    (update : Parameter → Parameter) (hrrm : IsMeasureRRM model update)
+    (hsensitive : profile.performativeModelOn.IsWassersteinSensitive sensitivity)
+    (update : domain → domain)
+    (hrrm : ∀ deployed candidate,
+      profile.performativeModelOn.decoupledPerformativeRisk deployed (update deployed) ≤
+        profile.performativeModelOn.decoupledPerformativeRisk deployed candidate)
     (hfactor : sensitivity * (smoothness : ℝ) / modulus < 1)
-    (initial optimal : Parameter)
-    (hoptimal : IsMeasurePerformativelyOptimal model optimal)
+    (initial optimal : domain)
+    (hoptimal : profile.IsStackelbergEquilibrium optimal)
     :
-    measureWassersteinStableObjectiveGapSpec model gradient hjoint hintegrable hloss_meas
-      hpointwise hmodulus hstrong hdataLoss hparameterLoss hsensitivity hsensitive update hrrm
-      hfactor initial optimal hoptimal := by
-  have hrrmOn : IsMeasureRRMOn model Set.univ update := by
-    intro deployed _
-    exact ⟨Set.mem_univ _, fun candidate _ => hrrm deployed candidate⟩
-  obtain ⟨stable, _, hstableOn, huniqueOn, hconverges, hrate⟩ :=
-    measureWassersteinConvexRRMConvergesLinearly_of_A1_A2 model gradient hjoint hintegrable
-      hsensitivity hmodulus hsensitive hstrong Set.univ isClosed_univ convex_univ update hrrmOn
-      hloss_meas hpointwise hfactor initial (Set.mem_univ initial)
-  have hstable : IsMeasurePerformativelyStable model stable := fun candidate =>
-    hstableOn.2 candidate (Set.mem_univ candidate)
-  have hunique : ∀ other, IsMeasurePerformativelyStable model other → other = stable := by
-    intro other hother
-    exact huniqueOn other (Set.mem_univ other)
-      ⟨Set.mem_univ other, fun candidate _ => hother candidate⟩
-  have hgap := measureWassersteinStableObjectiveGap model gradient hjoint hintegrable hloss_meas
-    hpointwise hmodulus hstrong hdataLoss hparameterLoss hsensitivity hsensitive optimal stable
-    hoptimal hstable
-  exact ⟨stable, hstable, hunique, hconverges, hrate, hgap⟩
+    measureWassersteinStableObjectiveGapSpec profile gradient hclosed hconvex hjoint hmodulus
+      hstrong hdataLoss hparameterLoss hsensitivity hsensitive update hrrm hfactor
+      initial optimal hoptimal := by
+  have hperformative :=
+    (profile.isStackelbergEquilibrium_iff_isPerformativelyOptimal optimal hoptimal.1).mp hoptimal
+  exact DomainRelative.rrm_converges_with_objective_gap_on profile.performativeModelOn
+    gradient hclosed hconvex smoothness hjoint.2 hmodulus hsensitivity hstrong hsensitive
+    hdataLoss parameterConstant update hrrm hfactor initial optimal hperformative
 
 theorem repeatedGradientDescent
     {Parameter Data : Type*} [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter]
@@ -421,79 +414,64 @@ theorem measureWassersteinConvexRRMContractionProof
 
 theorem measureWassersteinConvexRRMConvergesLinearlyProof
     {Parameter Data : Type*} [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter]
-    [CompleteSpace Parameter] [MeasurableSpace Data] [MetricSpace Data]
-    (model : MeasurePerformativeModel Parameter Data)
-    (gradient : Data → Parameter → Parameter) {smoothness : NNReal}
-    (hjoint : IsJointlySmoothGradient gradient smoothness)
-    (hintegrable : ∀ distributionParameter evaluatedParameter,
-      Integrable (fun datum => gradient datum evaluatedParameter)
-        (model.dataLaw distributionParameter : Measure Data))
+    [CompleteSpace Parameter] [FiniteDimensional ℝ Parameter]
+    [MeasurableSpace Data] [MetricSpace Data]
+    (domain : Set Parameter) (model : MeasurePerformativeModelOn Parameter Data domain)
+    (gradient : Data → domain → Parameter) {smoothness : NNReal}
+    (hjoint : (∀ datum first second,
+      ‖gradient datum first - gradient datum second‖ ≤
+        (smoothness : ℝ) * dist first second) ∧
+      ∀ first second parameter,
+        ‖gradient first parameter - gradient second parameter‖ ≤
+          (smoothness : ℝ) * dist first second)
     {sensitivity modulus : ℝ} (hsensitivity : 0 ≤ sensitivity) (hmodulus : 0 < modulus)
-    (hsensitive : IsMeasureWassersteinSensitive model sensitivity)
-    (domain : Set Parameter) (hclosed : IsClosed domain) (hconvex : Convex ℝ domain)
-    (update : Parameter → Parameter) (hrrm : IsMeasureRRMOn model domain update)
-    (hloss_meas : ∀ distributionParameter evaluatedParameter,
-      ∀ᶠ parameter in nhds evaluatedParameter,
-        AEStronglyMeasurable (fun datum => model.loss datum parameter)
-          (model.dataLaw distributionParameter : Measure Data))
-    (hpointwise : ∀ datum parameter,
-      HasGradientAt (fun theta => model.loss datum theta) (gradient datum parameter) parameter)
-    (hstrong : IsMeasurePointwiseGradientStronglyConvex model gradient modulus)
+    (hsensitive : model.IsWassersteinSensitive sensitivity)
+    (hclosed : IsClosed domain) (hconvex : Convex ℝ domain)
+    (update : domain → domain)
+    (hrrm : ∀ deployed candidate,
+      model.decoupledPerformativeRisk deployed (update deployed) ≤
+        model.decoupledPerformativeRisk deployed candidate)
+    (hstrong : model.IsPointwiseGradientStronglyConvex gradient modulus)
     (hfactor : sensitivity * (smoothness : ℝ) / modulus < 1)
-    (initial : Parameter) (hinitial : initial ∈ domain) :
-    measureWassersteinConvexRRMConvergesLinearlySpec model gradient hjoint hintegrable hsensitivity
-      hmodulus hsensitive domain hclosed hconvex update hrrm hloss_meas hpointwise hstrong hfactor initial hinitial :=
-  ⟨fun first hfirst second hsecond =>
-      measureWassersteinConvexRRMContractionProof model gradient hjoint hintegrable hsensitivity
-        hmodulus hsensitive domain hconvex update hrrm hloss_meas hpointwise hstrong first second
-        hfirst hsecond,
-    measureWassersteinConvexRRMConvergesLinearly_of_A1_A2 model gradient hjoint hintegrable
-      hsensitivity hmodulus hsensitive hstrong domain hclosed hconvex update hrrm hloss_meas
-      hpointwise hfactor initial hinitial⟩
+    (initial : domain) :
+    measureWassersteinConvexRRMConvergesLinearlySpec domain model gradient hjoint hsensitivity
+      hmodulus hsensitive hclosed hconvex update hrrm hstrong hfactor initial :=
+  ⟨DomainRelative.norm_rrm_sub_le_on model gradient hconvex smoothness hjoint.2 hmodulus
+      hstrong hsensitive update hrrm,
+    DomainRelative.rrm_converges_on_with_log_bound model gradient hclosed hconvex smoothness
+      hjoint.2 hmodulus hsensitivity hstrong hsensitive update hrrm hfactor initial⟩
 
 theorem measureWassersteinConvexRGDConvergesLinearlyProof
     {Parameter Data : Type*} [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter]
-    [CompleteSpace Parameter] [MeasurableSpace Data] [MetricSpace Data]
-    (model : MeasurePerformativeModel Parameter Data)
-    (gradient : Data → Parameter → Parameter) {smoothness : NNReal}
-    (hjoint : IsJointlySmoothGradient gradient smoothness)
-    (hintegrable : ∀ distributionParameter evaluatedParameter,
-      Integrable (fun datum => gradient datum evaluatedParameter)
-        (model.dataLaw distributionParameter : Measure Data))
+    [CompleteSpace Parameter] [FiniteDimensional ℝ Parameter]
+    [MeasurableSpace Data] [MetricSpace Data] {domain : Set Parameter}
+    (model : MeasurePerformativeModelOn Parameter Data domain)
+    (gradient : Data → domain → Parameter) {smoothness : NNReal}
+    (hjoint : (∀ datum first second,
+      ‖gradient datum first - gradient datum second‖ ≤
+        (smoothness : ℝ) * ‖(first : Parameter) - (second : Parameter)‖) ∧
+      ∀ first second parameter,
+        ‖gradient first parameter - gradient second parameter‖ ≤
+          (smoothness : ℝ) * dist first second)
+    (hintegrable : ∀ deployed evaluated : domain,
+      Integrable (fun datum => gradient datum evaluated)
+        (model.dataLaw deployed : Measure Data))
     {sensitivity modulus : ℝ} (hsensitivity : 0 ≤ sensitivity)
-    (hsensitive : IsMeasureWassersteinSensitive model sensitivity)
-    (hmodulus : 0 < modulus) (hmodulus_le : modulus ≤ (smoothness : ℝ))
-    (hstrong : IsMeasurePointwiseGradientStronglyConvex model gradient modulus)
-    (domain : Set Parameter) (hclosed : IsClosed domain) (hnonempty : domain.Nonempty)
-    (hconvex : Convex ℝ domain) (project : Parameter → Parameter)
-    (hproject : IsVariationalEuclideanProjectionOn domain project)
-    (hproject_nonexpansive : LipschitzWith 1 project)
+    (hsensitive : model.IsWassersteinSensitive sensitivity)
+    (hmodulus : 0 < modulus)
+    (hstrong : model.IsPointwiseGradientStronglyConvex gradient modulus)
+    (hclosed : IsClosed domain) (hnonempty : domain.Nonempty) (hconvex : Convex ℝ domain)
     (stepSize : ℝ) (hstepSize : 0 < stepSize)
     (hstepSize_le : stepSize ≤ 2 / (modulus + (smoothness : ℝ)))
     (hsensitivity_small : sensitivity < modulus /
       ((modulus + (smoothness : ℝ)) * (1 + (3 / 2) * stepSize * (smoothness : ℝ))))
-    (hloss_meas : ∀ distributionParameter evaluatedParameter,
-      ∀ᶠ parameter in nhds evaluatedParameter,
-        AEStronglyMeasurable (fun datum => model.loss datum parameter)
-          (model.dataLaw distributionParameter : Measure Data))
-    (hpointwise : ∀ datum parameter,
-      HasGradientAt (fun theta => model.loss datum theta) (gradient datum parameter) parameter)
-    (initial : Parameter) (hinitial : initial ∈ domain) :
+    (initial : domain) :
     measureWassersteinConvexRGDConvergesLinearlySpec model gradient hjoint hintegrable hsensitivity
-      hsensitive hmodulus hmodulus_le hstrong domain hclosed hnonempty hconvex project hproject
-      hproject_nonexpansive stepSize hstepSize hstepSize_le hsensitivity_small hloss_meas hpointwise
-      initial hinitial := by
-  constructor
-  · intro first _ second _
-    simpa only [dist_eq_norm] using
-      dist_measureRepeatedGradientDescentUpdate_sub_le_of_A1_A2_wassersteinSensitive
-        model gradient hjoint hintegrable hsensitivity hsensitive hmodulus hmodulus_le hstrong
-        project hproject_nonexpansive stepSize hstepSize.le hstepSize_le hsensitivity_small
-        hloss_meas hpointwise first second
-  · exact measureWassersteinConvexRGDConvergesLinearly_of_A1_A2
-      model gradient hjoint hintegrable hsensitivity hsensitive hmodulus hmodulus_le hstrong domain
-        hclosed hnonempty hconvex project hproject hproject_nonexpansive stepSize hstepSize
-        hstepSize_le hsensitivity_small hloss_meas hpointwise initial hinitial
+      hsensitive hmodulus hstrong hclosed hnonempty hconvex stepSize hstepSize
+      hstepSize_le hsensitivity_small initial :=
+  DomainRelative.rgd_converges_on model gradient hnonempty hclosed hconvex hjoint.1 hjoint.2
+    hintegrable hsensitivity hsensitive hmodulus hstrong stepSize hstepSize hstepSize_le
+    hsensitivity_small initial
 
 theorem finiteConvexRRMContractionProof
     {Parameter Data : Type*} [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter]
@@ -1093,5 +1071,42 @@ theorem theorem310CorrectedRERMAllRoundTrajectoryReview
         data.hcontraction_le_outer hpopulation.2.1 hcontract data.htolerance_nonneg data.hinitial
         data.hbudget data.herror_outer data.herror_absorbed entryIteration hentry
         data.hmoment data.hintegrableEmpiricalLoss data.hbound_nonneg data.htolerance data.hevent
+
+/-- The source-faithful raw-`W₁` RERM endpoint avoids the historical
+selected-shell and loss-Lipschitz bridge assumptions. -/
+theorem theorem310RERMRawWassersteinSamplingRecovery
+    {Parameter : Type*} [MeasurableSpace Parameter]
+    [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter] [CompleteSpace Parameter]
+    (data : Theorem310RERMRawWassersteinSamplingRecoveryData Parameter) :
+    theorem310RERMRawWassersteinSamplingRecoverySpec data := by
+  simpa only [theorem310RERMRawWassersteinSamplingRecoverySpec] using
+    PZMH20PerformativePrediction.EmpiricalRRMSamplingRecovery.one_sub_le_measureReal_pOneFournierGuillinAdaptiveEuclideanRERMState_le_radius_after_of_samplingKernel
+        data.dimension data.cutoff data.alpha data.gamma data.momentBound data.deviation
+        data.model data.sampling data.gradient data.domain data.hconvex data.smoothness
+        data.hgradient data.hdata data.hmodulus data.hstrong data.confidence data.countSchedule
+        data.hcountPositive data.deployedOfHistory data.hmeasurableDeployed data.hempirical
+        data.populationUpdate data.hpopulation data.stable data.hstable data.hsensitivityNonneg
+        data.hsmoothnessPos data.hsensitivitySmall data.hsensitive data.hradius data.hinitial
+        data.hempiricalIntegrable data.entryIteration data.hentry data.pnonneg data.hevent
+        data.hfiniteIID data.hthreshold
+
+/-- Exact proof endpoint for the all-dimensional raw-`W₁` RERM Spec. -/
+theorem theorem310RERMRawWassersteinAllDimensionalSamplingRecovery
+    {Parameter : Type*} [MeasurableSpace Parameter]
+    [NormedAddCommGroup Parameter] [InnerProductSpace ℝ Parameter]
+    [CompleteSpace Parameter]
+    (data : Theorem310RERMRawWassersteinAllDimensionalSamplingRecoveryData Parameter) :
+    theorem310RERMRawWassersteinAllDimensionalSamplingRecoverySpec data := by
+  simpa only [theorem310RERMRawWassersteinAllDimensionalSamplingRecoverySpec] using
+    EmpiricalRRMAllDimensionalRecovery.one_sub_le_measureReal_pOneFournierGuillinAdaptiveEuclideanRERMState_le_radius_after_of_allDimensionalConcreteSchedule
+      data.dimension data.cutoff data.hdimension data.heta_pos data.heta_le_one data.halpha_pos
+      data.hgamma_pos data.halpha_gap data.hscaled data.hscaled_pos data.hscaled_le_one
+      data.htailBound_pos data.htailEnvelope data.p data.headTolerance data.hp data.hheadTolerance
+      data.htailBound_moment data.model data.sampling data.gradient data.domain data.hconvex
+      data.smoothness data.hgradient data.hdata data.hmodulus data.hstrong data.deployedOfHistory
+      data.hmeasurableDeployed data.hempirical data.populationUpdate data.hpopulation data.stable
+      data.hstable data.hsensitivityNonneg data.hsmoothnessPos data.hsensitivitySmall data.hsensitive
+      data.hradius data.hinitial data.hempiricalIntegrable data.entryIteration data.hentry data.hmoment
+      data.hbudget data.hevent
 
 end PZMH20PerformativePrediction

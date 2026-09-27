@@ -157,6 +157,10 @@
     "LBG22StrategicRanking": {
       "publication": "AISTATS / PMLR 151, 2022",
       "year": 2022
+    },
+    "GolzHaghtalabYang2025Distortion": {
+      "publication": "NeurIPS, 2025",
+      "year": 2025
     }
   },
   "source_url_overrides": {
@@ -198,7 +202,8 @@
     "PG24NoisyMatchingMarkets": "https://arxiv.org/abs/2402.16771",
     "CGGG20SelectiveInformationAcquisition": "https://arxiv.org/abs/1911.02715v3",
     "GKP26LinearRepresentationHypothesis": "https://arxiv.org/abs/2602.11246v1",
-    "LBG22StrategicRanking": "https://proceedings.mlr.press/v151/liu22b.html"
+    "LBG22StrategicRanking": "https://proceedings.mlr.press/v151/liu22b.html",
+    "GolzHaghtalabYang2025Distortion": "https://arxiv.org/abs/2505.23749"
   },
   "readme_title_overrides": {
     "MSVV07AdWords": "MSVV07 AdWords"
@@ -372,7 +377,6 @@
     "MendelsonWhang1990PriorityPricing": "Few lines of code as much of machinery is in the shared library",
     "FreundSchapire1997Hedge": "Few lines of code as much of machinery is in the shared library",
     "GHW01DigitalGoods": "Formalizes the SODA paper; Theorem 8.2 uses the refined monotone-auction wording from the journal version. The continuous-outcome extension assumes a common monotone coupling and integrable revenue; deriving such a coupling from arbitrary marginal offer laws remains outside the checked result.",
-    "MSVV07AdWords": "Formalization gap: Theorem 8's limit is proved when its finite-error term vanishes; deriving that condition from the paper's small-bid regime remains unproved.",
     "EOS07GSP": "Formalization gap: Theorem 8 uniqueness is proved among common symmetric continuation plans; uniqueness among arbitrary bidder-specific plans remains unproved.",
     "FalahatgarEtAl2017MaxingRanking": "",
     "GJ19OptimalBinaryRatingSystems": "",

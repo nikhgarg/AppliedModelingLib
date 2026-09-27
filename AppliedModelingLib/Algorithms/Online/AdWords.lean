@@ -395,6 +395,20 @@ def runHistoryStateFrom
   | S, [] => S
   | S, q :: qs => runHistoryStateFrom I rule (stepHistoryState I rule S q) qs
 
+/-- Running a concatenated fresh-or-repeated history is running its prefix then suffix. -/
+theorem runHistoryStateFrom_append
+    [Fintype Query] [DecidableEq Advertiser] [DecidableEq Query]
+    (I : AdWordsInstance Advertiser Query)
+    (rule : ChoiceRule Advertiser Query)
+    (before after : List Query) (S : HistoryState Advertiser Query) :
+    runHistoryStateFrom I rule S (before ++ after) =
+      runHistoryStateFrom I rule (runHistoryStateFrom I rule S before) after := by
+  induction before generalizing S with
+  | nil => simp [runHistoryStateFrom]
+  | cons q qs ih =>
+      simp only [List.cons_append, runHistoryStateFrom]
+      exact ih (stepHistoryState I rule S q)
+
 /-- Run an online choice rule from the initial empty state. -/
 def runHistoryState
     [Fintype Query] [DecidableEq Advertiser] [DecidableEq Query]
@@ -1262,6 +1276,24 @@ theorem balanceDiscount_le_one (x : ℝ) :
   have hexp : 0 ≤ Real.exp (x - 1) := Real.exp_nonneg (x - 1)
   linarith
 
+/-- The Balance discount is strictly decreasing in the spent fraction. -/
+theorem balanceDiscount_strictAnti {x y : ℝ} (hxy : x < y) :
+    balanceDiscount y < balanceDiscount x := by
+  unfold balanceDiscount
+  have hexp : Real.exp (x - 1) < Real.exp (y - 1) := by
+    rw [Real.exp_lt_exp]
+    linarith
+  linarith
+
+/-- An unsaturated bidder has strictly positive Balance discount. -/
+theorem balanceDiscount_pos_of_lt_one {x : ℝ} (hx : x < 1) :
+    0 < balanceDiscount x := by
+  unfold balanceDiscount
+  have hexp : Real.exp (x - 1) < 1 := by
+    rw [Real.exp_lt_one_iff]
+    linarith
+  linarith
+
 theorem balanceDiscount_mem_unit_interval_of_le_one {x : ℝ} (hx : x ≤ 1) :
     0 ≤ balanceDiscount x ∧ balanceDiscount x ≤ 1 :=
   ⟨balanceDiscount_nonneg_of_le_one hx, balanceDiscount_le_one x⟩
@@ -2127,6 +2159,65 @@ theorem revenue_stepHistoryState_eq_add_stepRevenueCharge
         simp [stepHistoryState, stepRevenueCharge, hseen, hchoice]
         exact revenue_assignQuery_of_unassigned
           I S.assignment q a (hS.2 q hseen)
+
+/-- A feasible step earns no revenue when every positive-bid advertiser is
+already budget-saturated. -/
+theorem revenue_stepHistoryState_eq_of_zero_or_saturated
+    [Fintype Query] [DecidableEq Advertiser] [DecidableEq Query]
+    (I : AdWordsInstance Advertiser Query)
+    (hbid : I.NonnegativeBids)
+    (rule : ChoiceRule Advertiser Query)
+    (hrule : I.ChoiceRuleFeasible rule)
+    (S : HistoryState Advertiser Query) (q : Query)
+    (hS : I.StateInvariant S)
+    (hsaturated : ∀ a, I.bid a q = 0 ∨ I.spend S.assignment a = I.budget a) :
+    I.revenue (stepHistoryState I rule S q).assignment = I.revenue S.assignment := by
+  classical
+  by_cases hseen : q ∈ S.seen
+  · simp [stepHistoryState, hseen]
+  · cases hchoice : rule S.assignment q with
+    | none => simp [stepHistoryState, hseen, hchoice]
+    | some a =>
+        have hcan := hrule S.assignment q a hchoice
+        have hzero : I.bid a q = 0 := by
+          rcases hsaturated a with hzero | hfull
+          · exact hzero
+          · have hle : I.bid a q ≤ 0 := by
+              unfold CanAssign at hcan
+              linarith
+            exact le_antisymm hle (hbid a q)
+        simp only [stepHistoryState, hseen, if_false, hchoice]
+        rw [revenue_assignQuery_of_unassigned I S.assignment q a (hS.2 q hseen), hzero]
+        ring
+
+/-- A feasible step leaves a saturated advertiser unchanged when her current
+bid is strictly positive. -/
+theorem spend_stepHistoryState_eq_of_saturated_positive
+    [Fintype Query] [DecidableEq Advertiser] [DecidableEq Query]
+    (I : AdWordsInstance Advertiser Query)
+    (rule : ChoiceRule Advertiser Query)
+    (hrule : I.ChoiceRuleFeasible rule)
+    (S : HistoryState Advertiser Query) (q : Query) (b : Advertiser)
+    (hS : I.StateInvariant S)
+    (hfull : I.spend S.assignment b = I.budget b)
+    (hpositive : 0 < I.bid b q) :
+    I.spend (stepHistoryState I rule S q).assignment b = I.spend S.assignment b := by
+  classical
+  by_cases hseen : q ∈ S.seen
+  · simp [stepHistoryState, hseen]
+  · cases hchoice : rule S.assignment q with
+    | none => simp [stepHistoryState, hseen, hchoice]
+    | some a =>
+        have hcan := hrule S.assignment q a hchoice
+        have hne : b ≠ a := by
+          intro hba
+          subst a
+          unfold CanAssign at hcan
+          rw [hfull] at hcan
+          linarith
+        simp only [stepHistoryState, hseen, if_false, hchoice]
+        exact spend_assignQuery_other_of_unassigned I S.assignment q
+          (hS.2 q hseen) hne
 
 theorem runHistoryStateFrom_invariant
     [Fintype Query] [DecidableEq Advertiser] [DecidableEq Query]

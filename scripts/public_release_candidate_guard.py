@@ -901,8 +901,28 @@ def status_visibility_issues(
             status_paths[paper_name] = path
 
     issues: list[str] = []
+    external_namespaces: set[str] = set()
+    for paper_name in sorted(paper_names):
+        reference_path = f"papers/{paper_name}/external.json"
+        if reference_path not in paths:
+            continue
+        try:
+            try:
+                from public_release_external_references import validate_reference, validate_reference_folder
+            except ModuleNotFoundError:
+                from scripts.public_release_external_references import validate_reference, validate_reference_folder
+            reference = validate_reference(
+                json.loads(_git(repo, ["show", f"{candidate_ref}:{reference_path}"])),
+                paper_name,
+            )
+            # _git strips trailing whitespace; compare exact candidate bytes here.
+            readme = _git_bytes(repo, ["show", f"{candidate_ref}:papers/{paper_name}/README.md"]).decode()
+            validate_reference_folder(reference, paths, readme)
+            external_namespaces.add(paper_name)
+        except (ValueError, RuntimeError, OSError) as exc:
+            issues.append(f"{reference_path}: {exc}")
     support_namespaces: frozenset[str] = frozenset()
-    if entries is not None and paper_names - set(status_paths):
+    if entries is not None and paper_names - set(status_paths) - external_namespaces:
         try:
             from public_release_support_dependencies import select_public_support_dependencies
         except ModuleNotFoundError:  # Module-style import.
@@ -911,7 +931,7 @@ def status_visibility_issues(
         issues.extend(support.issues)
         support_namespaces = support.eligible_namespaces
     for paper_name in sorted(paper_names):
-        if paper_name in support_namespaces:
+        if paper_name in support_namespaces or paper_name in external_namespaces:
             continue
         path = status_paths.get(paper_name)
         if path is None:

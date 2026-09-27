@@ -12,7 +12,6 @@
     "paper_interface": "papers/MSVV07AdWords/PaperInterface.lean",
     "proof_interface": "papers/MSVV07AdWords/ProofInterface.lean",
     "readme": "papers/MSVV07AdWords/README.md",
-    "source_proof_fidelity": "papers/MSVV07AdWords/audit/source_proof_fidelity.json",
     "source_runner": "papers/MSVV07AdWords/SourceRunner.lean",
     "source_text": "cited publication"
   },
@@ -28,10 +27,10 @@
   },
   "human_summary": "",
   "id": "MSVV07AdWords",
-  "main_caveat": "Theorem 8 has a proved finite additive-error bound, but its competitive-ratio limit has not been derived from the paper small-bid assumptions. Section 4 tightness is proved through a fluid construction; the finite instance remains open.",
+  "main_caveat": "Theorem 8 is formalized through the paper's stated temporary unit-budget/exhaustive-OPT normalization: the actual occurrence runner has explicit finite error 3N/(m+1), whose small-bids limit is automatic. This is a source clarification of the finite accounting, not a correction to the limiting theorem. Section 4 uses a source-compatible finite nested-cohort tightness construction; MSVV cites KP00 but does not print that construction's incidence data.",
   "paper_interface": {
     "declaration_rows": 113,
-    "line_count": 3433,
+    "line_count": 3898,
     "maintainability_issue": null,
     "oversized": false,
     "path": "papers/MSVV07AdWords/PaperInterface.lean",
@@ -64,7 +63,7 @@
       "section3_greedy_tight_half_exampleSpec",
       "section3_discrete_tradeoff_convergenceSpec",
       "section3_equal_bid_discrete_msvv_is_balanceSpec",
-      "theorem8_balance_msvv_competitive_of_small_bids_limit_familySpec",
+      "theorem8_source_unit_budget_competitive_in_small_bids_limitSpec",
       "section6_alpha_total_definitionSpec",
       "section6_beta_lower_bound_formulaSpec",
       "section6_weighted_alpha_beta_inequalitySpec",
@@ -95,7 +94,7 @@
       "section4_lemma1_balance_pays_no_later_slabSpec",
       "section4_lemma2_factor_revealing_lp_constraintSpec",
       "section4_lemma3_factor_revealing_lp_optimalitySpec",
-      "section4_balance_exact_tightness_instanceSpec",
+      "section4_finite_balance_tightness_instanceSpec",
       "section5_tradeoff_revealing_primal_dual_lp_formulasSpec",
       "section5_type_fiber_alpha_accounting_formulaSpec",
       "section5_slab_fiber_beta_accounting_formulaSpec",
@@ -128,9 +127,9 @@
       "section3_discrete_tradeoff_monotonicitySpec": "section3_discrete_tradeoff_monotonicity",
       "section3_equal_bid_discrete_msvv_is_balanceSpec": "section3_equal_bid_discrete_msvv_is_balance",
       "section3_greedy_tight_half_exampleSpec": "section3_greedy_tight_half_example",
-      "section4_balance_exact_tightness_instanceSpec": "section4_balance_exact_tightness_instance",
       "section4_discretization_error_boundSpec": "section4_discretization_error_bound",
       "section4_factor_revealing_primal_dual_lp_formulasSpec": "section4_factor_revealing_primal_dual_lp_formulas",
+      "section4_finite_balance_tightness_instanceSpec": "section4_finite_balance_tightness_instance",
       "section4_lemma1_balance_pays_no_later_slabSpec": "section4_lemma1_balance_pays_no_later_slab",
       "section4_lemma2_factor_revealing_lp_constraintSpec": "section4_lemma2_factor_revealing_lp_constraint",
       "section4_lemma3_factor_revealing_lp_optimalitySpec": "section4_lemma3_factor_revealing_lp_optimality",
@@ -155,11 +154,11 @@
       "section6_next_highest_bid_all_theorem8_finite_explicit_errorSpec": "section6_next_highest_bid_all_theorem8_finite_explicit_error",
       "section6_weighted_alpha_beta_inequalitySpec": "section6_weighted_alpha_beta_inequality",
       "section8_weighted_effective_bid_formulaSpec": "section8_weighted_effective_bid_formula",
-      "theorem8_balance_msvv_competitive_of_small_bids_limit_familySpec": "theorem8_balance_msvv_competitive_of_small_bids_limit_family",
       "theorem8_delta_dual_suffix_identitySpec": "theorem8_delta_dual_suffix_identity",
       "theorem8_dual_induced_tradeoff_formulaSpec": "theorem8_dual_induced_tradeoff_formula",
       "theorem8_simple_proof_beta_recurrence_formulaSpec": "theorem8_simple_proof_beta_recurrence_formula",
       "theorem8_simple_proof_weighted_alpha_beta_inequalitySpec": "theorem8_simple_proof_weighted_alpha_beta_inequality",
+      "theorem8_source_unit_budget_competitive_in_small_bids_limitSpec": "theorem8_source_unit_budget_competitive_in_small_bids_limit",
       "theorem8_unspent_budget_bound_formulaSpec": "theorem8_unspent_budget_bound_formula",
       "theorem9_base_instance_balance_revenue_claimSpec": "theorem9_base_instance_balance_revenue_claim",
       "theorem9_expected_round_allocation_boundSpec": "theorem9_expected_round_allocation_bound",
@@ -207,7 +206,7 @@
           "section4_lemma1_balance_pays_no_later_slabSpec",
           "section4_lemma2_factor_revealing_lp_constraintSpec",
           "section4_lemma3_factor_revealing_lp_optimalitySpec",
-          "section4_balance_exact_tightness_instanceSpec",
+          "section4_finite_balance_tightness_instanceSpec",
           "section5_tradeoff_revealing_primal_dual_lp_formulasSpec",
           "section5_type_fiber_alpha_accounting_formulaSpec",
           "section5_slab_fiber_beta_accounting_formulaSpec",
@@ -232,7 +231,7 @@
       {
         "id": "additional_source_results",
         "names": [
-          "theorem8_balance_msvv_competitive_of_small_bids_limit_familySpec"
+          "theorem8_source_unit_budget_competitive_in_small_bids_limitSpec"
         ],
         "title": "Additional source results"
       },
@@ -252,6 +251,6 @@
   },
   "schema": 1,
   "source_version": "Journal of the ACM, 2007",
-  "status": "partially formalized",
+  "status": "formalized",
   "title": "AdWords and Generalized Online Matching"
 }

@@ -1,6 +1,6 @@
 {
   "acceptance_credential": false,
-  "accepted_graph_sha256": "dc51b908bfabd3cf71b5ce9fd95cb1d5fe666af6c35a6ea8cdb95f6820e4d811",
+  "accepted_graph_sha256": "9d1122e4977bc8f30d0fe7a5e9fe47a0cf1edad6969a28a1e718bc90666133e8",
   "bindings_by_source_item": {
     "assumptions_a1_a2_joint_smoothness_and_strong_convexity": {
       "accepted_source_role_contract_sha256": "833843175a57efcc42628b0a84e8c38255ed09660fd387cb299770e41e9ed782",
@@ -9,13 +9,10 @@
       "withheld_field_paths": []
     },
     "corollary_5_1_stable_objective_gap": {
-      "accepted_source_role_contract_sha256": "eb279e2349a10df247f9f213cab536779edfc92b0daec91ed330d3975eae0312",
-      "public_source_role_projection_sha256": "24f4b2381fac9575e56cabdc0de3de1e7b6e957e6154e879a4ee52dceae942e0",
+      "accepted_source_role_contract_sha256": "f4254796949514af697b1a57a525740c36a37b17d9eafef0da4f0bb27d637328",
+      "public_source_role_projection_sha256": "f4254796949514af697b1a57a525740c36a37b17d9eafef0da4f0bb27d637328",
       "schema": 1,
-      "withheld_field_paths": [
-        "corrected_target.approval",
-        "corrected_target.archival_source_locator"
-      ]
+      "withheld_field_paths": []
     },
     "definition_2_1_performative_optimality_and_risk": {
       "accepted_source_role_contract_sha256": "7ca175ba7da33ed8ed359a60a17c7d9c9f405eaffd0c09c865b32e97af9a9952",
@@ -81,8 +78,8 @@
       ]
     },
     "proposition_4_1_stable_point_existence": {
-      "accepted_source_role_contract_sha256": "0c10351149313d7c130b6ec265bbca74393517e72f976c8e3265050d7a23b3d5",
-      "public_source_role_projection_sha256": "a17ce7bc2d37ae2c499fe465ce1f734fbdf74eba3458e5866095075d27808da0",
+      "accepted_source_role_contract_sha256": "9a6f8fbcf832b4dd327126d68813a464524cde9d372ea59b55b488170f984e64",
+      "public_source_role_projection_sha256": "2ced572f802266c429041b25af3a13e8572481a3b497df6568c7499042cab22d",
       "schema": 1,
       "withheld_field_paths": [
         "corrected_target.approval",
@@ -108,8 +105,8 @@
       "withheld_field_paths": []
     },
     "theorem_3_10_finite_sample_retraining_rerm": {
-      "accepted_source_role_contract_sha256": "19c0513a508924a0ba6ed08b40f2b3b1fb62e06a6c3030bf26a7d697088760da",
-      "public_source_role_projection_sha256": "11abaa98e1817620c2bab904c1d700c22fb570b2ab8959e0a74ed6814858e744",
+      "accepted_source_role_contract_sha256": "869480706f200feed858dcc3ac56be28acb51a8259166091aa4547f7ca7425c7",
+      "public_source_role_projection_sha256": "126efb67db4dfeba7660b06184275f6e529018770ce3c8e4f1d13b11139d8f1b",
       "schema": 1,
       "withheld_field_paths": [
         "corrected_target.approval",
@@ -126,8 +123,8 @@
       ]
     },
     "theorem_3_10_rerm_formalized_premises": {
-      "accepted_source_role_contract_sha256": "61ad9a5ad5b1b845313c71351a3643d8937dbc8d7b3c3538cc0c42a4130dff1c",
-      "public_source_role_projection_sha256": "d625e97cac05308062af57a188c89bae526789046d1ed8ab9fa59809b3685cb6",
+      "accepted_source_role_contract_sha256": "b8deb258face5d6e05bdada309224b85c44943d1744261a00afe9abbde65819b",
+      "public_source_role_projection_sha256": "69b96cb681c1550e7b3a2ef3ed6acc7d2a67b0e84ce0ae0967334788e6b8309d",
       "schema": 1,
       "withheld_field_paths": [
         "corrected_target.approval",
@@ -144,22 +141,16 @@
       ]
     },
     "theorem_3_5_repeated_risk_minimization_convergence": {
-      "accepted_source_role_contract_sha256": "e126d7160f5718c97b981ad01e5916c780dd4f61146263d5ed7ac652ce698693",
-      "public_source_role_projection_sha256": "feaa22a043d666976740e77407faeeeb9594be25bec95f3571db9884cecad9c9",
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
       "schema": 1,
-      "withheld_field_paths": [
-        "corrected_target.approval",
-        "corrected_target.archival_source_locator"
-      ]
+      "withheld_field_paths": []
     },
     "theorem_3_8_repeated_gradient_descent_convergence": {
-      "accepted_source_role_contract_sha256": "48997c479b80ed3a4b767c97f36ffa11580c40bba361f996c3b4fab669a49cd2",
-      "public_source_role_projection_sha256": "ee5d86257d0ce84529d040ac6eed6804470387737253eeccf3e6796b8caa1640",
+      "accepted_source_role_contract_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
+      "public_source_role_projection_sha256": "500c1615c64b9ebcf5237eb58b1273b7bf3ef43257fa5173f1e1fcc34155c286",
       "schema": 1,
-      "withheld_field_paths": [
-        "corrected_target.approval",
-        "corrected_target.archival_source_locator"
-      ]
+      "withheld_field_paths": []
     },
     "theorem_4_3_data_lipschitz_premise": {
       "accepted_source_role_contract_sha256": "2d6df3df23dfc6bde6da0073116e6b4bb3a841d86daed6f8b12513f1ec5cfccd",
@@ -176,13 +167,13 @@
   },
   "paper": "PZMH20PerformativePrediction",
   "private_role_material_included": false,
-  "private_source_map_material_sha256": "744a4abfefa6703a15f3b0eb9837efce0e5ed9491e513ca9aafe9105132f16c7",
-  "private_source_map_sha256": "e4950a1d816aff2fcb574a66ba7bb00cbbb1dafce02bbfad09bd96e9a547e008",
+  "private_source_map_material_sha256": "6a323a4b3ed6dea213a47f0a1227b60171fe0479c59a67c898df4bc4578394f3",
+  "private_source_map_sha256": "21d2d565638c3a968ef9702f9496561e49f8297a5137adc95de1e83a68e92d70",
   "projection_contract_sha256": "ed0964edc9c70f5ce087ce9bf134712ca40c7964ecaefd403309ac9a1b47d34d",
-  "public_display_manifest_material_sha256": "c13c4dbec73c942c15e8bce23cb766d2b09d6e18ada77987d9e34115ba18f586",
-  "public_display_manifest_sha256": "e667f712e8ff56ed70a405abc553b62ec9929af5a17b8546fb62a9b7443bf8b5",
-  "public_source_map_material_sha256": "5a05fded19edeae2b6326740b8c4e8bea0efe49f284d3eeca7aecc15714aeaa2",
-  "public_source_map_sha256": "4132fe3a15f0bae85961945d95b5ed394903af38b23068ae452779f7e906f9f3",
+  "public_display_manifest_material_sha256": "76f3b615f5c90134bf8b7fc92f276b0349e283cd71d09085788169536e850826",
+  "public_display_manifest_sha256": "5c3912e8ffce63ae567bebc636ccfb8f6ae77f56aa87bddbd309695a9b095d37",
+  "public_source_map_material_sha256": "3e4e0861affe08e5d59dc8f37751fec98a2a3deeec2543a9ee25c5ebd38b1645",
+  "public_source_map_sha256": "8836cc5e50a0678ef78e32ad6e473934e138c89764e8bfff36c77d50d23ad074",
   "raw_private_approval_material_included": false,
   "schema": 1
 }

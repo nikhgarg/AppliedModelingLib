@@ -284,8 +284,8 @@ theorem section4_lemma1_balance_pays_no_later_slab
     Proof.proof_section4_lemma1_balance_pays_no_later_slab
       psi hoptCurrent_le_type hchoice hequal_bids hbid_pos hpsi_strictAnti
 
-/-- Section 4 Lemma 2: Lemma 1's prefix accounting yields the LP row constraint. -/
-theorem section4_lemma2_factor_revealing_lp_constraint
+/-- Algebraic Section 4 LP step once prefix coverage and slab accounting are established. -/
+theorem section4_factor_revealing_lp_constraint_of_prefix_and_beta
     {m : ℕ} (N : ℝ) (x beta : Fin m → ℝ) (i : Fin m)
     (hprefix_cover :
       (∑ j ∈ MSVV07SourceLemmas.paperRoutePrefix i, x j) ≤
@@ -1022,19 +1022,20 @@ theorem theorem9_no_randomized_integral_prefix_algorithm_beats_msvv_ratio :
   exact Proof.theorem9_no_randomized_integral_prefix_algorithm_beats_msvv_ratio
 
 /--
-Theorem 9, paper-facing randomized online algorithm endpoint in the finite
-prefix model.
+Theorem 9, paper-facing randomized online b-matching endpoint in the source
+query-split normal form.  It permits the arbitrary within-round `q_ij`
+fractions used in the source proof.
 Source status: direct paper theorem
 -/
 theorem theorem9_no_randomized_online_algorithm_beats_msvv_ratio :
-    ∀ delta : ℝ, 0 < delta →
-      ∃ N0 : ℕ, ∀ N : ℕ, N0 ≤ N →
-        ∀ randomizedAlgorithm : theorem9RandomizedOnlineAlgorithm N,
-          ¬ ∀ permutation,
-            paperMsvvRatio + delta <
-              AppliedModelingLib.pmfExp randomizedAlgorithm
-                (fun algorithm =>
-                  theorem9CappedNormalizedRevenue N algorithm permutation) := by
+    ∀ b : ℕ, 0 < b →
+      ∀ delta : ℝ, 0 < delta →
+        ∃ N0 : ℕ, ∀ N : ℕ, N0 ≤ N →
+          ∀ randomizedAlgorithm : Proof.theorem9SourceRandomizedOnlineAlgorithm N b,
+            ¬ ∀ permutation,
+              paperMsvvRatio + delta <
+                AppliedModelingLib.pmfExp randomizedAlgorithm
+                  (fun policy => Proof.theorem9SourceNormalizedRevenue policy permutation) := by
   exact Proof.proof_theorem9_no_randomized_online_algorithm_beats_msvv_ratio
 
 end MSVV07PaperFacing

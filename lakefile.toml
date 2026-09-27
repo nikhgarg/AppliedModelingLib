@@ -2,6 +2,7 @@ name = "AppliedModelingLib"
 version = "0.1.0"
 keywords = ["math"]
 defaultTargets = [
+  "GolzHaghtalabYang2025Distortion",
   "LBG22StrategicRanking",
   "GKP26LinearRepresentationHypothesis",
   "CGGG20SelectiveInformationAcquisition",
@@ -242,4 +243,8 @@ srcDir = "papers"
 
 [[lean_lib]]
 name = "LBG22StrategicRanking"
+srcDir = "papers"
+
+[[lean_lib]]
+name = "GolzHaghtalabYang2025Distortion"
 srcDir = "papers"

@@ -3,9 +3,9 @@
 
 | Field | Value |
 |---|---|
-| Final status | Partially formalized |
+| Final status | Formalized |
 | Paper reference | [AdWords and Generalized Online Matching](https://people.eecs.berkeley.edu/~vazirani/pubs/adwords.pdf) by Aranyak Mehta, Amin Saberi, Umesh Vazirani, and Vijay V. Vazirani; Journal of the ACM, 2007. |
-| Lines of Code | 22,118 |
+| Lines of Code | 28,430 |
 
 ## Key Links
 

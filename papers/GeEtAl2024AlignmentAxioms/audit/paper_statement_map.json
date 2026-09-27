@@ -107,6 +107,94 @@
       "source_status": "direct byte-pinned source model",
       "statement": "A C1 linear rank aggregation rule depends only on the directed strict pairwise-majority relation of the input profile."
     },
+    "c5_local_source_ballot_output": {
+      "aliases": [
+        "HasC5SourceBallotOutput"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "`c4ParetoKemenySelector_hasC5SourceBallotOutput` proves the internal finite classification; `theoremC_5_paretoKemeny_failsSeparabilityAndMajorityConsistency` has only the source Pareto-Kemeny selector premise.",
+          "classification": "source_proof_realization",
+          "formal_meaning": "Lean derives the source proof's finite first-profile classification from Pareto-constrained Kemeny minimality: objective equality at 30 forces one full reversed cyclic block, all other blocks forward, and no inter-block inversion, yielding one of the six submitted ballots.",
+          "id": "GE24-C5-FINITE-CLASSIFICATION-DERIVED-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "a6e898a1ae7087bbc0ffa6c9c33450d854de64266f3ab5c7a18e7cf2ad0122bb",
+          "report_summary": "Theorem C.5 is proved without an extra selector premise; the source's six-ballot classification is a checked equality-case derivation.",
+          "source_locator": "cited publication:1509-1514",
+          "why_needed": "The source invokes the classification before its without-loss-of-generality selection. The previous formalization exposed it as a premise; the current proof derives it, so this record is source-proof realization context rather than an additional model convention or assumption."
+        }
+      ],
+      "claim_bearing": false,
+      "inventory_role": "deep_audit_material",
+      "model_convention_ids": [
+        "GE24-C5-FINITE-CLASSIFICATION-DERIVED-01"
+      ],
+      "scope_disposition": "deep_audit_material",
+      "scope_disposition_note": "The C.5 first-profile classification is a proof step supporting the selected theorem, not an additional paper claim. It is now derived by `c4ParetoKemenySelector_hasC5SourceBallotOutput` from the selected theorem's Pareto-Kemeny primitives.",
+      "source_anchor_evidence": [
+        {
+          "line_end": 1514,
+          "line_start": 1509,
+          "publication_locator": "cited publication",
+          "quoted_text": "Theorem C.5. Linear Kemeny subject to PO violates separability and majority consistency.\n\nProof. First, consider a set of candidates and a profile similar to the one that is given in the proof\nof Theorem C.4. When we restrict to reward functions that 1 above 2, then we can check that Linear\nKemeny subject to PO outputs one of the rankings that are in the input profile. Without loss of\ngenerality, assume that it outputs the ranking of v1 .",
+          "quoted_text_sha256": "b9ac5f4dc6fee94902dd4d10d2fbb8bf9dced7bdf3d9841d60109b89d7e5f036"
+        }
+      ],
+      "source_kind": "condition",
+      "source_location": "cited publication:1509-1514",
+      "source_note": "This proof-support classification is now derived by the finite C.4 equality-case theorem; it is not a source-facing premise of Theorem C.5.",
+      "statement": "For C.5's first profile, the source proof classifies the Pareto-constrained Kemeny output as one submitted ballot before choosing a representative without loss of generality."
+    },
+    "c6_fixed_priority_tie_convention": {
+      "aliases": [
+        "IsPriorityTieLeximaxPluralitySelector"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only GeEtAl2024AlignmentAxioms.IsPriorityTieLeximaxPluralitySelector and theoremC_6_fixedTieLeximaxPluralitySpec. `isPriorityTieLeximaxPluralitySelector_isLeximaxPluralitySelector` separately verifies that this refined rule satisfies the source's unrefined sequential highest-plurality prescription.",
+          "classification": "source_definedness_clarification",
+          "formal_meaning": "Lean makes each sequential Leximax Plurality choice deterministic by using an arbitrary fixed injective candidate priority only when plurality scores tie. A strictly higher plurality score always wins, and the same profile-independent priority applies at every profile and prefix.",
+          "id": "GE24-C6-FIXED-TIE-CONVENTION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "ed2ba4e21989bebdbde9448eb2caef498ebb2ebda75b5a062af27d3f6c68f69b",
+          "report_summary": "C.6 uses a fixed deterministic tie convention only to make the paper's sequential highest-plurality prescription a single rule; all strict plurality comparisons are unchanged.",
+          "source_locator": "cited publication:1530-1539; cited publication:1543-1572",
+          "why_needed": "The source describes a rule that ranks the feasible candidate with the highest plurality score at each position, but does not resolve equality. A fixed total tie convention turns that maximum correspondence into the ranking aggregation function needed by the C.6 statements without changing any strict score comparison."
+        }
+      ],
+      "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "GeEtAl2024AlignmentAxioms.IsPriorityTieLeximaxPluralitySelector"
+      ],
+      "model_convention_ids": [
+        "GE24-C6-FIXED-TIE-CONVENTION-01"
+      ],
+      "source_anchor_evidence": [
+        {
+          "line_end": 1539,
+          "line_start": 1530,
+          "publication_locator": "cited publication",
+          "quoted_text": "C.3   Leximax Plurality\n\nPlurality is probably the most ubiquitous voting rule in the world. Its ranking variant ranks the can-\ndidates in decreasing order with respect to their plurality scores. The plurality score of a candidate\nis equal to the number of her appearances in the first position. This rule is known to satisfy several\naxioms but in linear social choice cannot be directly applied, as not all rankings are feasibly.\nSimilarly to leximax Copeland, we define Leximax Plurality as follows. It ranks first the candidate\nwith the highest plurality score that can be ranked first under some parameter vector. Subject to\nthis first position, it ranks second the candidate with the highest plurality score that can feasibly be\nranked second, and so on, until all the positions are filled.",
+          "quoted_text_sha256": "d8f97f701617d954011fbb0a5ca545b5e247d1c3c213eab4e560a9d5afb1e1ba"
+        },
+        {
+          "line_end": 1572,
+          "line_start": 1543,
+          "publication_locator": "cited publication",
+          "quoted_text": "\fTheorem C.6. Leximax Plurality satisfies majority consistency, winner monotonicity and separa-\nbility.\n\nProof. Note that leximax Plurality always returns a ranking in which the candidate with the highest\nplurality score is ranked first, since there exists at least one feasible ranking in which this candidate\nis ranked first. From this observation, we immediately see that leximax Plurality satisfies majority\nconsistency.\nNow, suppose that on input profile π, the rule outputs a ranking such that candidate a is ranked first.\nThis means that a has the highest plurality score. Now, consider a profile π ′ which is similar to π\nwith the only exception being a ranking in which a is ranked in a higher position. It is clear that a\ncontinues to have the highest plurality score and therefore leximax Plurality will output a ranking in\nwhich a is ranked first. Therefore, winner monotonicity is satisfied. .\nIt remains to prove that the rule satisfies separability. Suppose that under two different profiles π1\nand π2 , the rule outputs σ, and under the aggregated profile π3 , it outputs σ ′ . We will show that\nσ = σ ′ . One main observation is that if a candidate a has a higher plurality score than a candidate b\nunder both π1 and π2 , then a has a higher plurality score than b under π3 as well. We will show the\ndesired property by induction on the positions of the ranking σ. Start from the first position in which\nsay candidate a is ranked first. From above, we know that a has the highest plurality score under\nboth π1 and π2 , which remains true in π3 , and therefore a is ranked first in σ ′ . Now, assume that up\nto position t − 1, σ and σ ′ are similar and denote with a′ the candidate that is ranked at position t of\nσ. We denote by S1 , S2 and S3 the set of candidates that are not ranked among the first t positions\nin σ and have higher plurality score than a′ under π1 , π2 , and π3 respectively. Since, a′ is ranked at\nthe t-th postion in σ, we get that, subject to the fixed first t − 1 position, no candidate in S1 ∪ S2 can\nbe ranked at the t-th position. The theorem follows by noticing that S3 ⊆ S1 ∪ S2 , which follows\nfrom the main observation above.\n\n\n\n\n                                                   27",
+          "quoted_text_sha256": "119cddb66f5d71140fb380d0b6e54d5fbfa2e18f57c32b01ec4eb162607d3d42"
+        }
+      ],
+      "source_kind": "condition",
+      "source_location": "cited publication:1530-1539; cited publication:1543-1572",
+      "source_note": "The source leaves score ties unresolved. The approved definedness clarification supplies one profile-independent priority without changing any strict plurality comparison.",
+      "statement": "For C.6's sequential highest-plurality prescription, one fixed injective candidate priority resolves only equal plurality scores at every profile and prefix."
+    },
     "definition2_1_pareto_optimality": {
       "claim_bearing": true,
       "inventory_role": "source_semantic_declaration",
@@ -127,75 +215,27 @@
       "source_status": "direct byte-pinned source definition",
       "statement": "A linear rank aggregation rule is Pareto optimal when every unanimous strict pairwise preference is preserved in the output ranking."
     },
-    "definition2_2_and_attached_consequences": {
+    "definition2_2_pairwise_majority_consistency": {
       "aliases": [
-        "definition2_2_pairwiseMajorityConsistencyAndConsequences"
+        "PairwiseMajorityConsistent"
       ],
       "claim_bearing": true,
+      "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GeEtAl2024AlignmentAxioms.definition2_2_pairwiseMajorityConsistencyAndConsequences"
+        "AppliedModelingLib.Alignment.Axioms.PairwiseMajorityConsistent"
       ],
-      "semantic_context_requirements": [
-        {
-          "semantic_role": "model",
-          "source_anchor_evidence": [
-            {
-              "line_end": 211,
-              "line_start": 158,
-              "publication_locator": "cited publication",
-              "quoted_text": "2     The Linear Social Choice Model\nLet C be a set of m distinct prompt/responses, referred to as candidates, and let V = {1, . . . , n} be\na set of n human participants, known as voters. We denote by Rd the d-dimensional real space in\nwhich both candidate feature vectors and chosen parameter vectors lie.\nEach candidate c ∈ C is associated with a distinct feature vector xc ∈ Rd . A parameter vector\nθ ∈ Rd induces a linear reward function rθ : C 7→ R defined by taking the dot product with feature\nvectors rθ (c) = ⟨θ, xc ⟩. We will primarily be interested in how these parameterized functions rank\nthe candidates by reward. Let Ra≻b = {θ | rθ (a) ≥ rθ (b)} be the region where the reward of a is\nat least as large as that of b. Note that Ra≻b and Rb≻a split Rd into two half spaces, separated by\nthe hyperplane orthogonal to xa − xb . Parameter vectors θ on the hyperplane have rθ (a) = rθ (b),\nwhile rankings in the interior of either half-space strictly rank one over the other.\nFor a ranking σ over the candidates, we say that θ induces σ, denoted θ ▷ σ, if a ≻σ b implies\nrθ (a) ≥ rθ (b). Let Rσ = {θ | θ ▷ σ} be the set of vectors θ thatTinduce it. Note that this can\nbe written as the intersection of corresponding half spaces Rσ = a,b:a≻σ b Ra≻b . Further, the\n\n\n                                                    3\n\fcollection of {Rσ } essentially form a partition of Rd , covering the space and intersecting only at\ntheir boundaries.\nWe call a θ non-degenerate if it is fully on one side of each of the separating hyperplanes, i.e.,\nrθ (a) ̸= rθ (b) for all a, b ∈ C. Non-degenerate parameter vectors lie in the interior of some Rσ ,\nand thus induce exactly one ranking. We call σ feasible if Rσ has a nonempty interior, i.e., is induced\nby some nondegenerate θ.3\nEach voter i ∈ V submits a ranking over the candidate σi . We assume that the feature space is\nrich enough that voter preferences can be captured via non-degenerate parameter vectors. In other\nwords, we assume that each σi is feasible. We refer to the vector of voter rankings π = (σi )i∈V as\na profile. Further, for two candidates a, b, we write na≻b (π) := |{i ∈ V | a ≻σi b}| for the number\nof voters that prefer a to b, and wa≻b (π) = na≻b (π)/n for the proportion of such voters. When the\nprofile π is clear from context, we may shorten these to na≻b and wa≻b , respectively.\nWe define a parameter aggregation rule as a function that takes as input a profile π and outputs a\nparameter vector θ∗ . Our goal is to design parameter aggregation rules such that rθ∗ satisfies desir-\nable properties with respect to the voter preferences. However, as the properties we care about will\nonly be with respect to how rθ∗ ranks the candidates, it will be more convenient to work with what\nwe call linear rank aggregation rules that take as input a profile π and output a feasible ranking σ.\nThere is a natural way to interpret a parameter aggregation rule as a linear rank aggregation rule,\nnamely, output any feasible ranking induced by θ∗ . The exact properties of the parameter aggrega-\ntion rule could in principle be sensitive to the tie-breaking of non-degenerate outputs, however, all\nof our results will be robust to such tie-breaking.4\nWe pay special attention to a prominent family of rules from social choice theory referred to as C1\nrules [14], whose outputs depend only on majority relationships, i.e., they only need to know for\neach pair of candidates (a, b) whether the majority prefers a or b.\nIn our study, we examine several axioms borrowed from social choice theory to evaluate the reason-\nableness (fairness) of our aggregation mechanisms. These axioms include:\nDefinition 2.1 (Pareto Optimality). A linear rank aggregation rule f satisfies Pareto optimality if,\nwhenever every voter prefers candidate a over candidate b on π, i.e., wa≻b (π) = 1, then candidate\na is ranked higher than candidate b in the output ranking, i.e., a ≻f (π) b.\nDefinition 2.2 (Pairwise Majority Consistency (PMC)). A ranking σ is called a PMC ranking for\nprofile π if for all a, b ∈ C, a ≻σ b if and only if a majority of voters rank a ≻σi b, i.e., wa≻b > 1/2.\nA linear rank aggregation rule satisfies PMC if, when a PMC ranking σ exists for the input profile\nπ and σ is feasible, then f (π) = σ.\n\nNote that a PMC ranking for each π need not exist, but when one does, it is unique. The words “σ\nis feasible” allude to the possibility that no non-degenerate parameter vector θ induces the unique\nPMC ranking. Indeed, we have such an example; see Appendix B for details.",
-              "quoted_text_sha256": "1b59a52d5b49a164ded4baefa32e7b57370f67403aac86cd19533ed4f4992741"
-            }
-          ]
-        }
-      ],
-      "semantic_contract": {
-        "evidence_declaration": "GeEtAl2024AlignmentAxioms.definition2_2_pairwiseMajorityConsistencyAndConsequences",
-        "evidence_mode": "proves",
-        "semantic_shape": "plain",
-        "spec_declaration": "GeEtAl2024AlignmentAxioms.definition2_2_pairwiseMajorityConsistencyAndConsequencesSpec"
-      },
       "source_anchor_evidence": [
         {
-          "line_end": 211,
+          "line_end": 207,
           "line_start": 204,
           "publication_locator": "cited publication",
-          "quoted_text": "Definition 2.2 (Pairwise Majority Consistency (PMC)). A ranking σ is called a PMC ranking for\nprofile π if for all a, b ∈ C, a ≻σ b if and only if a majority of voters rank a ≻σi b, i.e., wa≻b > 1/2.\nA linear rank aggregation rule satisfies PMC if, when a PMC ranking σ exists for the input profile\nπ and σ is feasible, then f (π) = σ.\n\nNote that a PMC ranking for each π need not exist, but when one does, it is unique. The words “σ\nis feasible” allude to the possibility that no non-degenerate parameter vector θ induces the unique\nPMC ranking. Indeed, we have such an example; see Appendix B for details.",
-          "quoted_text_sha256": "4a9f2046703fd4a1147304226b0f87f319951f14febb00c071bae34ccc1725d1"
-        }
-      ],
-      "source_claim_atoms": [
-        {
-          "id": "definition2.2.pmc.rule",
-          "identity_schema": 3,
-          "reviewed_lean_route": "GeEtAl2024AlignmentAxioms.definition2_2_pairwiseMajorityConsistencyAndConsequences",
-          "semantic_claim": "A pairwise-majority-consistent rule returns an existing feasible ranking that exactly realizes every strict pairwise-majority comparison.",
-          "source_locator": "cited publication:204-207",
-          "source_quote_sha256": "3a1471656430ba445071001d03ae9fc6c237cff6c46928a141ff491c3d6c8318",
-          "verbatim_source_clause": "Definition 2.2 (Pairwise Majority Consistency (PMC)). A ranking σ is called a PMC ranking for\nprofile π if for all a, b ∈ C, a ≻σ b if and only if a majority of voters rank a ≻σi b, i.e., wa≻b > 1/2.\nA linear rank aggregation rule satisfies PMC if, when a PMC ranking σ exists for the input profile\nπ and σ is feasible, then f (π) = σ."
-        },
-        {
-          "id": "definition2.2.pmc.need.not.exist",
-          "identity_schema": 3,
-          "reviewed_lean_route": "GeEtAl2024AlignmentAxioms.definition2_2_pairwiseMajorityConsistencyAndConsequences",
-          "semantic_claim": "A profile need not admit any PMC ranking.",
-          "source_locator": "cited publication:209-209",
-          "source_quote_sha256": "903258bfa1508c91a0bd158c0ac2120984f03c05fb6a9ccb51006aecf9af1f4b",
-          "verbatim_source_clause": "a PMC ranking for each π need not exist"
-        },
-        {
-          "id": "definition2.2.pmc.unique.when.exists",
-          "identity_schema": 3,
-          "reviewed_lean_route": "GeEtAl2024AlignmentAxioms.definition2_2_pairwiseMajorityConsistencyAndConsequences",
-          "semantic_claim": "Whenever a PMC ranking exists, it is unique.",
-          "source_locator": "cited publication:209-209",
-          "source_quote_sha256": "903258bfa1508c91a0bd158c0ac2120984f03c05fb6a9ccb51006aecf9af1f4b",
-          "verbatim_source_clause": "but when one does, it is unique."
+          "quoted_text": "Definition 2.2 (Pairwise Majority Consistency (PMC)). A ranking σ is called a PMC ranking for\nprofile π if for all a, b ∈ C, a ≻σ b if and only if a majority of voters rank a ≻σi b, i.e., wa≻b > 1/2.\nA linear rank aggregation rule satisfies PMC if, when a PMC ranking σ exists for the input profile\nπ and σ is feasible, then f (π) = σ.",
+          "quoted_text_sha256": "3a1471656430ba445071001d03ae9fc6c237cff6c46928a141ff491c3d6c8318"
         }
       ],
       "source_kind": "definition",
-      "source_location": "cited publication:204-211",
-      "source_note": "The unnumbered sentences immediately following Definition 2.2 are attached to that definition rather than counted as a second paper presentation. Appendix B owns the example itself and is reviewed exactly once.",
+      "source_location": "cited publication:204-207",
+      "source_note": "Definition 2.2 itself is reviewed directly against the reusable PMC declaration; the following source observations are a separately routed claim.",
       "source_presentation_reconciliation": {
         "boundary_reason": "completed_statement_then_explanation",
         "core_anchor": {
@@ -209,15 +249,11 @@
         "presentation_label": "Definition 2.2",
         "relation": "conservative_text_span_core",
         "schema": 1,
-        "semantic_basis": "Lines 204-207 contain Definition 2.2. Lines 209-211 state attached consequences and point to the separately owned Appendix-B example; those clauses remain in this row's explicit atom bundle without extending the definition core.",
-        "validated_at": "2026-09-01T00:00:00Z",
+        "semantic_basis": "Lines 204-207 contain the complete Definition 2.2 statement. Lines 209-211 are separately routed factual observations and a pointer to Appendix B, not clauses of the definition.",
+        "validated_at": "2026-09-27T00:00:00Z",
         "validator": "Ge et al. current-protocol source-boundary review"
       },
-      "source_status": "direct byte-pinned source definition",
-      "statement": "Definition 2.2 requires a rule to return an existing feasible PMC ranking; a PMC ranking need not exist, and whenever one exists it is unique. The separate Appendix-B presentation supplies the announced infeasible-PMC example.",
-      "support_lean_declarations": [
-        "GeEtAl2024AlignmentAxioms.definition2_2_pairwiseMajorityConsistencyAndConsequencesSpec"
-      ]
+      "statement": "When the strict pairwise-majority relation forms a feasible ranking, a pairwise-majority-consistent rule returns that ranking."
     },
     "definition4_1_majority_consistency": {
       "claim_bearing": true,
@@ -389,10 +425,28 @@
       "statement": "LCPO can be implemented by testing every position-candidate pair with the displayed linear-parameter feasibility problem and selecting a Copeland-maximal successful candidate, using O(|C|^2) linear-program feasibility queries."
     },
     "lcpo_rule_model": {
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only GeEtAl2024AlignmentAxioms.IsPriorityTieLCPOSelector and theorem4_3_constructedFixedTieLCPOSpec. The selector's `IsLCPOSelector` component separately verifies the unrefined source prescription.",
+          "classification": "source_definedness_clarification",
+          "formal_meaning": "Lean resolves equal Copeland scores in LCPO using an arbitrary fixed injective candidate priority. The priority is used only when scores tie and is fixed independently of the profile and of a ranking prefix.",
+          "id": "GE24-THEOREM43-FIXED-TIE-CONVENTION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "742e5e1134c77f251ee5eebbbc997da744e471668ed3b7a3ec353dcad11b0bd8",
+          "report_summary": "Theorem 4.3 is formalized for every LCPO selector with one fixed profile-independent injective candidate priority resolving score ties.",
+          "source_locator": "cited publication:416-489",
+          "why_needed": "The source says to select a candidate with the highest Copeland score but leaves equality unresolved, while Theorem 4.3 assigns winner monotonicity to a single rule. A profile-dependent resolution of equal scores can fail that axiom. The fixed-priority selector is the stated source clarification; strict score comparisons and the PO feasibility restriction are unchanged."
+        }
+      ],
       "claim_bearing": true,
       "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
         "GeEtAl2024AlignmentAxioms.fixedTieLCPO"
+      ],
+      "model_convention_ids": [
+        "GE24-THEOREM43-FIXED-TIE-CONVENTION-01"
       ],
       "source_anchor_evidence": [
         {
@@ -482,24 +536,6 @@
       ],
       "source_kind": "lemma",
       "source_location": "cited publication:318-319",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "563e494b7890ba3fcc53aadaa310feb25f5fcc4d67e98ffe8d5c06307f3b7286",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "e494a7d5264605cd65d29dcbb63007cede66fd850237020ec7d14f10c634ec9c",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct review of the byte-pinned Lemma 3.2, its preceding loss context, and the complete expanded Spec confirmed the same rational majority weight in (1/2,1], A1<A2 with A2>0, nonempty unconstrained optimizer set, and uniform ra>A2 and rb<=A1 bounds.",
-            "source_atom_sha256": "95256f89bdab0fb96d50359e6359215e21e1413728ce2ac969f87819d32acd7b",
-            "spec_component_sha256s": [
-              "14afc92bb5a7ffe47bfae26959d58cf30e6695530de8b6db9a1861e2f2b2b037"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "5ffc4598a802b835d5f95018f4f676b7a63bd30a568f73225396f1432a010a16",
-        "spec_closure_sha256": "0c0af50cb3f0dea595ef9b0f24d7b39678ffaa6a639258f5950d6d3f37d90316",
-        "spec_surface_sha256": "14afc92bb5a7ffe47bfae26959d58cf30e6695530de8b6db9a1861e2f2b2b037"
-      },
       "source_status": "direct byte-pinned source result",
       "statement": "For a suitable rational majority weight above one half, the unconstrained three-candidate core objective has minimizers and every minimizer separates its two reward coordinates across fixed bounds A1 < A2 with A2 positive.",
       "support_lean_declarations": [
@@ -581,24 +617,6 @@
         "validated_at": "2026-08-28T00:00:00Z",
         "validator": "Ge et al. independent source-boundary review"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "563e494b7890ba3fcc53aadaa310feb25f5fcc4d67e98ffe8d5c06307f3b7286",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "b093ecc119f9c9a1f1a6c9cdce1ed29c35a29254ace5c7f6039722e4bad172e5",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct review of the byte-pinned Lemma 3.3 and the complete expanded Spec confirmed the same conditional transfer from nonempty uniformly separated unconstrained minimizers to nonempty core parameter minimizers with A3>0 and uniform theta1>A3, theta2<A4 bounds. Instantiating the Spec's g with the source weighted loss preserves the same p.",
-            "source_atom_sha256": "bf4626f9715ff776b51fb422390213b95fcb59032cee3c85dd40086a6e4356df",
-            "spec_component_sha256s": [
-              "90e4f081dbd79c44dc82cb05c08dc779226ea23c3b382eab62a4d83676f135b7"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "6652c7330387a718d1b3f460866a27ed3290f95632903af4cc89059f10b639ca",
-        "spec_closure_sha256": "f13ae28b327d7531ef0b5b9eb04faf5798ffc3d1e988e9855bc69b4849b73a7d",
-        "spec_surface_sha256": "90e4f081dbd79c44dc82cb05c08dc779226ea23c3b382eab62a4d83676f135b7"
-      },
       "source_status": "direct byte-pinned source result",
       "statement": "The separated unconstrained core minimizers transfer through the source feature matrix to nonempty parameter minimizers whose first coordinate is bounded below by a positive A3 and whose second coordinate is bounded above by A4.",
       "support_lean_declarations": [
@@ -606,22 +624,11 @@
       ]
     },
     "lemma3_4": {
+      "archival_equivalence_claimed": true,
       "claim_bearing": true,
-      "corrected_target": {
-        "archival_equivalence_claimed": false,
-        "archival_source_locator": "cited publication:351",
-        "archival_source_quote_sha256": "b718f604d1a258de0eddcc0457c04c586ddeb7425e5b83b67668c51cf97d6b38",
-        "corrected_target_review_sha256": "833798f8e0575c0a1648c16f881c5b24b5ea2c78eb39fbbd41f21f633c69e41e",
-        "corrected_target_sha256": "0f4cdb0629c38103f1de60eec8c041ae95f7f170a43ce7c5632b8799a1e9032c",
-        "governing_defect_ids": [
-          "GE24-LEMMA34-WEAK-RELATION-01"
-        ],
-        "schema": 1,
-        "statement": "The Lemma 3.3 coordinate bounds put every core minimizer in the strict cone that ranks each original candidate above its copy for every positive perturbation satisfying the displayed delta bound."
-      },
-      "coverage_status": "corrected_source_statement",
+      "coverage_status": "pending_final_independent_review",
       "lean_declarations": [
-        "GeEtAl2024AlignmentAxioms.lemma3_4_correctedCopyCone"
+        "GeEtAl2024AlignmentAxioms.lemma3_4_literalZeroWeakInclusion"
       ],
       "semantic_context_requirements": [
         {
@@ -650,10 +657,10 @@
         }
       ],
       "semantic_contract": {
-        "evidence_declaration": "GeEtAl2024AlignmentAxioms.lemma3_4_correctedCopyCone",
+        "evidence_declaration": "GeEtAl2024AlignmentAxioms.lemma3_4_literalZeroWeakInclusion",
         "evidence_mode": "proves",
         "semantic_shape": "plain",
-        "spec_declaration": "GeEtAl2024AlignmentAxioms.lemma3_4_correctedCopyConeSpec"
+        "spec_declaration": "GeEtAl2024AlignmentAxioms.lemma3_4_literalZeroWeakInclusionSpec"
       },
       "source_anchor_evidence": [
         {
@@ -667,11 +674,12 @@
       "source_claim_atoms": [
         {
           "id": "lemma3.4",
-          "identity_schema": 2,
-          "reviewed_lean_route": "GeEtAl2024AlignmentAxioms.lemma3_4_correctedCopyCone",
-          "semantic_claim": "The core-minimizer coordinate bounds imply that every core minimizer lies in the strict cone ranking each original candidate above its positive-epsilon copy.",
+          "identity_schema": 3,
+          "reviewed_lean_route": "GeEtAl2024AlignmentAxioms.lemma3_4_literalZeroWeakInclusion",
+          "semantic_claim": "Every global minimizer of the literal six-candidate epsilon-zero objective ranks c-prime weakly at least as high as c.",
           "source_locator": "cited publication:351-351",
-          "source_quote_sha256": "b718f604d1a258de0eddcc0457c04c586ddeb7425e5b83b67668c51cf97d6b38"
+          "source_quote_sha256": "b718f604d1a258de0eddcc0457c04c586ddeb7425e5b83b67668c51cf97d6b38",
+          "verbatim_source_clause": "Lemma 3.4. OP T (0) ⊆ Rc′ ≻c ."
         }
       ],
       "source_defect_ids": [
@@ -679,29 +687,11 @@
       ],
       "source_kind": "lemma",
       "source_location": "cited publication:351",
-      "source_note": "At epsilon zero the weak source region contains every parameter. The checked statement records the strict positive-epsilon cone proved by the source calculation and needed for stability.",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "563e494b7890ba3fcc53aadaa310feb25f5fcc4d67e98ffe8d5c06307f3b7286",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "ab9279f453586f1da29f535aeef9f10b4668d15a85c2b29e8a113061545e25ba",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The archival Lemma 3.4 is byte-pinned, while the source map separately records and approves the strict corrected target because the printed weak epsilon-zero containment is vacuous. Direct review confirmed that the expanded Spec is exactly the approved coordinate-bound implication delta*A4-A3<0 yielding the strict positive-perturbation copy cone; this binding does not assert archival equivalence.",
-            "source_atom_sha256": "6454abf6a5f1bf3317e7c6c9c3cdb3c06dd68af298fa9d66b5e0f4e754ca1ef6",
-            "spec_component_sha256s": [
-              "b27ab9534945e68fc2820ff00ba277666033670b718a475e18c63a4401155771"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "7d8a5d35d0888a28d6aaa7abff8e6aca274d42ee870a57461ee21d7bb45864ca",
-        "spec_closure_sha256": "8eefa5bd0111c6954963c2f5cb70ef453e0b9b0088c49f91612d011a0f136fdf",
-        "spec_surface_sha256": "b27ab9534945e68fc2820ff00ba277666033670b718a475e18c63a4401155771"
-      },
-      "source_status": "corrected",
+      "source_note": "At epsilon zero the copied and original candidates coincide, so the printed weak inclusion is literal and vacuous. The source proof's strict positive-epsilon cone is retained separately because it is the margin needed by the repaired Lemma 3.5 perturbation argument. Formalization disposition: The literal epsilon-zero weak inclusion is now a direct Spec and proof endpoint. The distinct strict cone is supporting source-proof material needed to repair Lemma 3.5, not a replacement for the Lemma 3.4 source statement.",
+      "source_status": "direct byte-pinned source result; strict positive-epsilon cone retained as supporting proof bridge",
       "statement": "Lemma 3.4 states OPT(0) is contained in the weak region where c-prime is ranked at least as high as c.",
       "support_lean_declarations": [
-        "GeEtAl2024AlignmentAxioms.lemma3_4_correctedCopyConeSpec"
+        "GeEtAl2024AlignmentAxioms.lemma3_4_literalZeroWeakInclusionSpec"
       ]
     },
     "lemma3_5": {
@@ -796,24 +786,6 @@
         "validated_at": "2026-08-28T00:00:00Z",
         "validator": "Ge et al. independent source-boundary review"
       },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "563e494b7890ba3fcc53aadaa310feb25f5fcc4d67e98ffe8d5c06307f3b7286",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "7ebdf909459593628dd68f34be282ddeb466d9071f4b29042e9f8ced2163b1e1",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "The archival Lemma 3.5 is byte-pinned, while the source map separately records and approves the corrected target because the printed weak epsilon-zero premise does not justify its open-set step. Direct review confirmed that the expanded Spec is exactly the approved strict infimum gap on the entire weak bad half-space for all sufficiently small positive epsilon under the strict cone; this binding does not assert archival equivalence.",
-            "source_atom_sha256": "1927737a503ee925abd24a661a5cfc77a4abe137596a16c0197d423206d9ca2d",
-            "spec_component_sha256s": [
-              "45e6b0dc93df1d3b575e233258ccb311701ee08de5931570acbbfafe352cb5c2"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "5c821b886d0bf4658e9fe3f4f177c2370a3d955041201739fb10dea182389065",
-        "spec_closure_sha256": "1e2153596ecc662b4cc19e32e20c0d34e98a6c12104e2c76c5b1fbdd0855c910",
-        "spec_surface_sha256": "45e6b0dc93df1d3b575e233258ccb311701ee08de5931570acbbfafe352cb5c2"
-      },
       "source_status": "corrected",
       "statement": "Lemma 3.5 claims the weak epsilon-zero optimizer containment implies the positive-epsilon infimum gap.",
       "support_lean_declarations": [
@@ -824,7 +796,7 @@
       "claim_bearing": true,
       "inventory_role": "source_semantic_declaration",
       "lean_declarations": [
-        "GeEtAl2024AlignmentAxioms.IsFixedTieLeximaxPluralitySelector"
+        "GeEtAl2024AlignmentAxioms.IsLeximaxPluralitySelector"
       ],
       "source_anchor_evidence": [
         {
@@ -994,6 +966,96 @@
       "source_status": "direct byte-pinned source model with explicit fixed tie key",
       "statement": "Linear Kemeny subject to Pareto optimality restricts its Kemeny minimization to feasible rankings satisfying the profile's unanimous pairwise constraints."
     },
+    "pmc_ranking_uniqueness_and_nonexistence": {
+      "aliases": [
+        "pmcRankingUniquenessAndNonexistence"
+      ],
+      "claim_bearing": true,
+      "lean_declarations": [
+        "GeEtAl2024AlignmentAxioms.pmcRankingUniquenessAndNonexistence"
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "model",
+          "source_anchor_evidence": [
+            {
+              "line_end": 211,
+              "line_start": 158,
+              "publication_locator": "cited publication",
+              "quoted_text": "2     The Linear Social Choice Model\nLet C be a set of m distinct prompt/responses, referred to as candidates, and let V = {1, . . . , n} be\na set of n human participants, known as voters. We denote by Rd the d-dimensional real space in\nwhich both candidate feature vectors and chosen parameter vectors lie.\nEach candidate c ∈ C is associated with a distinct feature vector xc ∈ Rd . A parameter vector\nθ ∈ Rd induces a linear reward function rθ : C 7→ R defined by taking the dot product with feature\nvectors rθ (c) = ⟨θ, xc ⟩. We will primarily be interested in how these parameterized functions rank\nthe candidates by reward. Let Ra≻b = {θ | rθ (a) ≥ rθ (b)} be the region where the reward of a is\nat least as large as that of b. Note that Ra≻b and Rb≻a split Rd into two half spaces, separated by\nthe hyperplane orthogonal to xa − xb . Parameter vectors θ on the hyperplane have rθ (a) = rθ (b),\nwhile rankings in the interior of either half-space strictly rank one over the other.\nFor a ranking σ over the candidates, we say that θ induces σ, denoted θ ▷ σ, if a ≻σ b implies\nrθ (a) ≥ rθ (b). Let Rσ = {θ | θ ▷ σ} be the set of vectors θ thatTinduce it. Note that this can\nbe written as the intersection of corresponding half spaces Rσ = a,b:a≻σ b Ra≻b . Further, the\n\n\n                                                    3\n\fcollection of {Rσ } essentially form a partition of Rd , covering the space and intersecting only at\ntheir boundaries.\nWe call a θ non-degenerate if it is fully on one side of each of the separating hyperplanes, i.e.,\nrθ (a) ̸= rθ (b) for all a, b ∈ C. Non-degenerate parameter vectors lie in the interior of some Rσ ,\nand thus induce exactly one ranking. We call σ feasible if Rσ has a nonempty interior, i.e., is induced\nby some nondegenerate θ.3\nEach voter i ∈ V submits a ranking over the candidate σi . We assume that the feature space is\nrich enough that voter preferences can be captured via non-degenerate parameter vectors. In other\nwords, we assume that each σi is feasible. We refer to the vector of voter rankings π = (σi )i∈V as\na profile. Further, for two candidates a, b, we write na≻b (π) := |{i ∈ V | a ≻σi b}| for the number\nof voters that prefer a to b, and wa≻b (π) = na≻b (π)/n for the proportion of such voters. When the\nprofile π is clear from context, we may shorten these to na≻b and wa≻b , respectively.\nWe define a parameter aggregation rule as a function that takes as input a profile π and outputs a\nparameter vector θ∗ . Our goal is to design parameter aggregation rules such that rθ∗ satisfies desir-\nable properties with respect to the voter preferences. However, as the properties we care about will\nonly be with respect to how rθ∗ ranks the candidates, it will be more convenient to work with what\nwe call linear rank aggregation rules that take as input a profile π and output a feasible ranking σ.\nThere is a natural way to interpret a parameter aggregation rule as a linear rank aggregation rule,\nnamely, output any feasible ranking induced by θ∗ . The exact properties of the parameter aggrega-\ntion rule could in principle be sensitive to the tie-breaking of non-degenerate outputs, however, all\nof our results will be robust to such tie-breaking.4\nWe pay special attention to a prominent family of rules from social choice theory referred to as C1\nrules [14], whose outputs depend only on majority relationships, i.e., they only need to know for\neach pair of candidates (a, b) whether the majority prefers a or b.\nIn our study, we examine several axioms borrowed from social choice theory to evaluate the reason-\nableness (fairness) of our aggregation mechanisms. These axioms include:\nDefinition 2.1 (Pareto Optimality). A linear rank aggregation rule f satisfies Pareto optimality if,\nwhenever every voter prefers candidate a over candidate b on π, i.e., wa≻b (π) = 1, then candidate\na is ranked higher than candidate b in the output ranking, i.e., a ≻f (π) b.\nDefinition 2.2 (Pairwise Majority Consistency (PMC)). A ranking σ is called a PMC ranking for\nprofile π if for all a, b ∈ C, a ≻σ b if and only if a majority of voters rank a ≻σi b, i.e., wa≻b > 1/2.\nA linear rank aggregation rule satisfies PMC if, when a PMC ranking σ exists for the input profile\nπ and σ is feasible, then f (π) = σ.\n\nNote that a PMC ranking for each π need not exist, but when one does, it is unique. The words “σ\nis feasible” allude to the possibility that no non-degenerate parameter vector θ induces the unique\nPMC ranking. Indeed, we have such an example; see Appendix B for details.",
+              "quoted_text_sha256": "1b59a52d5b49a164ded4baefa32e7b57370f67403aac86cd19533ed4f4992741"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "evidence_declaration": "GeEtAl2024AlignmentAxioms.pmcRankingUniquenessAndNonexistence",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain",
+        "spec_declaration": "GeEtAl2024AlignmentAxioms.pmcRankingUniquenessAndNonexistenceSpec"
+      },
+      "source_anchor_evidence": [
+        {
+          "line_end": 211,
+          "line_start": 204,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 2.2 (Pairwise Majority Consistency (PMC)). A ranking σ is called a PMC ranking for\nprofile π if for all a, b ∈ C, a ≻σ b if and only if a majority of voters rank a ≻σi b, i.e., wa≻b > 1/2.\nA linear rank aggregation rule satisfies PMC if, when a PMC ranking σ exists for the input profile\nπ and σ is feasible, then f (π) = σ.\n\nNote that a PMC ranking for each π need not exist, but when one does, it is unique. The words “σ\nis feasible” allude to the possibility that no non-degenerate parameter vector θ induces the unique\nPMC ranking. Indeed, we have such an example; see Appendix B for details.",
+          "quoted_text_sha256": "4a9f2046703fd4a1147304226b0f87f319951f14febb00c071bae34ccc1725d1"
+        }
+      ],
+      "source_atomization": {
+        "basis": "Definition 2.2 is a source semantic declaration, whereas the immediately following nonexistence and uniqueness observations are a separate source assertion. Appendix B independently owns the concrete infeasibility witness.",
+        "parent_source_item": "definition2_2_and_attached_consequences",
+        "schema": 1,
+        "validated_at": "2026-08-18T00:00:00Z",
+        "validator": "v11 source-first review-surface preparation"
+      },
+      "source_claim_atoms": [
+        {
+          "id": "definition2.2.pmc.need.not.exist",
+          "identity_schema": 3,
+          "reviewed_lean_route": "GeEtAl2024AlignmentAxioms.pmcRankingUniquenessAndNonexistence",
+          "semantic_claim": "A profile need not admit any PMC ranking.",
+          "source_locator": "cited publication:209-209",
+          "source_quote_sha256": "903258bfa1508c91a0bd158c0ac2120984f03c05fb6a9ccb51006aecf9af1f4b",
+          "verbatim_source_clause": "a PMC ranking for each π need not exist"
+        },
+        {
+          "id": "definition2.2.pmc.unique.when.exists",
+          "identity_schema": 3,
+          "reviewed_lean_route": "GeEtAl2024AlignmentAxioms.pmcRankingUniquenessAndNonexistence",
+          "semantic_claim": "Whenever a PMC ranking exists, it is unique.",
+          "source_locator": "cited publication:209-209",
+          "source_quote_sha256": "903258bfa1508c91a0bd158c0ac2120984f03c05fb6a9ccb51006aecf9af1f4b",
+          "verbatim_source_clause": "but when one does, it is unique."
+        }
+      ],
+      "source_kind": "claim",
+      "source_location": "cited publication:204-211",
+      "source_note": "This unnumbered source assertion immediately follows Definition 2.2. The separate Appendix-B presentation owns the explicit feasible-profile/infeasible-PMC witness.",
+      "source_presentation_reconciliation": {
+        "boundary_reason": "completed_statement_then_explanation",
+        "core_anchor": {
+          "line_end": 207,
+          "line_start": 204,
+          "publication_locator": "cited publication",
+          "quoted_text": "Definition 2.2 (Pairwise Majority Consistency (PMC)). A ranking σ is called a PMC ranking for\nprofile π if for all a, b ∈ C, a ≻σ b if and only if a majority of voters rank a ≻σi b, i.e., wa≻b > 1/2.\nA linear rank aggregation rule satisfies PMC if, when a PMC ranking σ exists for the input profile\nπ and σ is feasible, then f (π) = σ.",
+          "quoted_text_sha256": "3a1471656430ba445071001d03ae9fc6c237cff6c46928a141ff491c3d6c8318"
+        },
+        "presentation_kind": "definition",
+        "presentation_label": "Definition 2.2",
+        "relation": "conservative_text_span_core",
+        "schema": 1,
+        "semantic_basis": "Lines 204-207 contain Definition 2.2. Lines 209-211 state attached consequences and point to the separately owned Appendix-B example; those clauses remain in this row's explicit atom bundle without extending the definition core.",
+        "validated_at": "2026-09-01T00:00:00Z",
+        "validator": "Ge et al. current-protocol source-boundary review"
+      },
+      "source_status": "direct byte-pinned source definition",
+      "statement": "A PMC ranking need not exist; whenever one exists, it is unique.",
+      "support_lean_declarations": [
+        "GeEtAl2024AlignmentAxioms.pmcRankingUniquenessAndNonexistenceSpec"
+      ]
+    },
     "standard_loss_rule_model": {
       "claim_bearing": true,
       "inventory_role": "source_semantic_declaration",
@@ -1087,24 +1149,6 @@
       ],
       "source_kind": "theorem",
       "source_location": "cited publication:267-269",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "563e494b7890ba3fcc53aadaa310feb25f5fcc4d67e98ffe8d5c06307f3b7286",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "f7f5bce032ca440e02c10aac8fef55310d2e5ed0dff131fb4951b79515b15c26",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct review of the byte-pinned Theorem 3.1 and its standard-loss model against the complete expanded Spec confirmed the same nonnegative loss, strict infimum gap at zero, convexity alternatives, standard-loss-minimizing rule class, and simultaneous failures of pairwise majority consistency and Pareto optimality. The Spec realizes the source failure through its two explicit finite branches without using a declaration name or paraphrase as evidence.",
-            "source_atom_sha256": "859145e61a43f4f6eb01c295f097bfcf9437099b532b267a8c056e9ee7e8d2a0",
-            "spec_component_sha256s": [
-              "e84f62997e2b8bda5c5c709202b9b243ad4cb2733f317e4ce15b1659c54bf171"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "be33c81ea351f23c1f32422b71972747001df49626735e569de63224f979bd0b",
-        "spec_closure_sha256": "9b55dd15f4a55e6fbff53ed2044cd8a0a4b31b4021dc9a6e1164d931285bc867",
-        "spec_surface_sha256": "e84f62997e2b8bda5c5c709202b9b243ad4cb2733f317e4ce15b1659c54bf171"
-      },
       "source_status": "direct byte-pinned source result",
       "statement": "Every standard-loss-minimizing linear rank aggregation rule for a nonnegative loss with infimum below its value at zero, under either the nondecreasing weakly convex or strictly convex source alternative, fails both pairwise majority consistency and Pareto optimality.",
       "support_lean_declarations": [
@@ -1185,24 +1229,6 @@
         "semantic_basis": "Lines 389-390 contain the complete Theorem 3.6 statement. The following paragraph explains the necessity of its loss-gap premise and introduces Theorem 3.7.",
         "validated_at": "2026-08-28T00:00:00Z",
         "validator": "Ge et al. independent source-boundary review"
-      },
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "6c9f5849ee4d38db59cd38ac0305e0e050917dd118b14dfadec46fcb5a33adb2",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "d40d2d03ad56e1cd21e5761a4a2bc7d550c11e094b392de6aa23f206d455a31f",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct review of the byte-pinned Theorem 3.6, the majority-loss rule presentation, and the complete expanded Spec confirmed the same nondecreasing nonnegative loss with loss(0) above its infimum, majority-loss-minimizing rule, and pairwise-majority-consistency conclusion for every finite linear-ranking instance.",
-            "source_atom_sha256": "61f045158c8ce103ec60633d393223ede2d455ae06e0f0718b028debc2b23aa7",
-            "spec_component_sha256s": [
-              "69ad21b89c045321d692c73adca7c1c38c2633b4b3bd17db8618c5da933bb079"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "1af51e23f5123d0210d0c997f702d466809adf71bdeffa30674bcbca1d07c6ad",
-        "spec_closure_sha256": "363a9134e835dc5d6fe4c594b53c15a9681c35d41c026ddeb25fefe38c2263d8",
-        "spec_surface_sha256": "69ad21b89c045321d692c73adca7c1c38c2633b4b3bd17db8618c5da933bb079"
       },
       "source_status": "direct byte-pinned source result",
       "statement": "A majority-loss-minimizing linear rank aggregation rule satisfies pairwise majority consistency for every nondecreasing nonnegative loss whose value at zero exceeds its infimum.",
@@ -1335,9 +1361,27 @@
       ]
     },
     "theorem4_3": {
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only GeEtAl2024AlignmentAxioms.IsPriorityTieLCPOSelector and theorem4_3_constructedFixedTieLCPOSpec. The selector's `IsLCPOSelector` component separately verifies the unrefined source prescription.",
+          "classification": "source_definedness_clarification",
+          "formal_meaning": "Lean resolves equal Copeland scores in LCPO using an arbitrary fixed injective candidate priority. The priority is used only when scores tie and is fixed independently of the profile and of a ranking prefix.",
+          "id": "GE24-THEOREM43-FIXED-TIE-CONVENTION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "742e5e1134c77f251ee5eebbbc997da744e471668ed3b7a3ec353dcad11b0bd8",
+          "report_summary": "Theorem 4.3 is formalized for every LCPO selector with one fixed profile-independent injective candidate priority resolving score ties.",
+          "source_locator": "cited publication:416-489",
+          "why_needed": "The source says to select a candidate with the highest Copeland score but leaves equality unresolved, while Theorem 4.3 assigns winner monotonicity to a single rule. A profile-dependent resolution of equal scores can fail that axiom. The fixed-priority selector is the stated source clarification; strict score comparisons and the PO feasibility restriction are unchanged."
+        }
+      ],
       "claim_bearing": true,
       "lean_declarations": [
         "GeEtAl2024AlignmentAxioms.theorem4_3_constructedFixedTieLCPO"
+      ],
+      "model_convention_ids": [
+        "GE24-THEOREM43-FIXED-TIE-CONVENTION-01"
       ],
       "semantic_context_requirements": [
         {
@@ -1395,24 +1439,6 @@
       ],
       "source_kind": "theorem",
       "source_location": "cited publication:459",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "cc795e566e1d464c8de28674739c1c32d4194d7cc35d7d9a7b0379063f7d6221",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "f5db4f0c9dccb5a051859212802bdca90409ba378f1d692d6da0900f67f8b691",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct review of the byte-pinned Theorem 4.3, the LCPO rule presentation, Definitions 2.1, 2.2, 4.1, and 4.2, and the complete expanded Spec confirmed the same four conclusions: PO, PMC, majority consistency, and winner monotonicity. The fixed key resolves only source-unspecified ties and the fallback has no behavior on the source's feasible-profile domain.",
-            "source_atom_sha256": "16b70dde6121f3d7a44f0a4ac7eb02f3bf528bf0052448bea38a9da58a131623",
-            "spec_component_sha256s": [
-              "82c526692d9fb8d0d5257b480ded2a2bd8070320739a26b0e843a988aaa11d0a"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "26707de6694c99b5e25dd8e6719344457f8d384b19e589e8ea4c489436c8d26c",
-        "spec_closure_sha256": "d1afc51fa0d484c56414685e3a796e5da54f51275edeb0ccd851da59070470fa",
-        "spec_surface_sha256": "82c526692d9fb8d0d5257b480ded2a2bd8070320739a26b0e843a988aaa11d0a"
-      },
       "source_status": "direct byte-pinned source result with fixed rule-level tie convention",
       "statement": "Leximax Copeland subject to Pareto optimality satisfies Pareto optimality, pairwise majority consistency, majority consistency, and winner monotonicity.",
       "support_lean_declarations": [
@@ -1468,24 +1494,6 @@
       ],
       "source_kind": "theorem",
       "source_location": "cited publication:1398-1399",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "5a81a094330a5f4d6f833717e488f0991878b927a29a5545ce34d802aa35a202",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "7af59164c3f072f0a156533104b3f509aa7cdd616f909baf1f157fadebdfd66f",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct review of the byte-pinned Theorem C.2, its two literal profile blocks, and the complete expanded Spec confirmed both source branches: every consistently tie-broken Copeland selector fails separability on the unrestricted construction, and the fixed-tie LCPO family fails separability on the corresponding linear construction.",
-            "source_atom_sha256": "0707b214974aea95c7bf9041447182c586f0afb3b37699643c4334898b1f8992",
-            "spec_component_sha256s": [
-              "953653bcd425a2cd93b14bf3dbffee1200ac5c30e7c9c24e668ba8a9633bd3e8"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "b9101bdf5765f825140a7c389defed4657bf50d41edc86ff1bb5553c1b38e04e",
-        "spec_closure_sha256": "1db2112984cd24e6902780416ba6f151d997a7d2d70d01a57c2bd4399b8020dd",
-        "spec_surface_sha256": "953653bcd425a2cd93b14bf3dbffee1200ac5c30e7c9c24e668ba8a9633bd3e8"
-      },
       "source_status": "direct byte-pinned source result with consistent fixed ties",
       "statement": "Copeland in unrestricted social choice and leximax Copeland subject to Pareto optimality in linear social choice both fail ranking separability.",
       "support_lean_declarations": [
@@ -1493,9 +1501,27 @@
       ]
     },
     "theoremC_3": {
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "checked_scope": "Only AppliedModelingLib.Alignment.Axioms.IsContractionConsistentKemenySelector and theoremC_3_linearKemenySpec. `kemenySelector_pairwiseMajorityConsistent` separately proves the tie-independent PMC component; `fixedTieKemenySelector_isContractionConsistent` verifies that fixed injective priority is one implementation.",
+          "classification": "source_definedness_clarification",
+          "formal_meaning": "Lean requires a linear-Kemeny selector to retain its selected minimizer whenever that minimizer remains available after the minimizer set contracts. This condition applies only to equal objective values and leaves every strict Kemeny comparison unchanged.",
+          "id": "GE24-C3-CONTRACTION-TIE-CONVENTION-01",
+          "kind": "source_model_convention",
+          "protocol": "approved-source-review-context-v1",
+          "record_sha256": "d8a2160e732bbb3cc536023417184409a58b167e936345c40ee90693a39244f1",
+          "report_summary": "Theorem C.3 is formalized for every contraction-consistent linear-Kemeny tie selector; fixed profile-independent priority is a checked special case.",
+          "source_locator": "cited publication:1423-1456",
+          "why_needed": "The source defines linear Kemeny by an argmin correspondence but states separability for a single rule. Its additivity argument shows that the common output remains a minimizer after profiles are combined; to conclude that the same rule returns it, the tie selection must be consistent under this contraction of the minimizer set. Pairwise majority consistency does not need this condition."
+        }
+      ],
       "claim_bearing": true,
       "lean_declarations": [
         "GeEtAl2024AlignmentAxioms.theoremC_3_linearKemeny"
+      ],
+      "model_convention_ids": [
+        "GE24-C3-CONTRACTION-TIE-CONVENTION-01"
       ],
       "semantic_context_requirements": [
         {
@@ -1541,25 +1567,7 @@
       ],
       "source_kind": "theorem",
       "source_location": "cited publication:1450",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "b75ab9ce1350793202ff53d8afec27899abf4c3c43bd48fad413c87fd085c72e",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "e9d6679dded384778e71a8f492fbd8958493897596c80e12769da53c01030f13",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct review of the byte-pinned Theorem C.3, the exact linear-Kemeny objective, and the complete expanded Spec confirmed pairwise majority consistency and ranking separability for the feasible minimum-disagreement rule. The canonical selector adds one profile-independent key only to make the source rule functional and does not alter its feasible argmin set.",
-            "source_atom_sha256": "2229d5f4ff5a114b4ce6694062352defe5cae25b77d0fdb9ebbcfd082e2ec52b",
-            "spec_component_sha256s": [
-              "710bb4adf9c41cd1c5ac50f1b4da51c4446d2def2bf666c7909a599fddd30d43"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "956d656a9197db4170a1924e01a1325b1e9783b4b48b9bc14ae7e4cfb41b7309",
-        "spec_closure_sha256": "423938a300fa2135c9ffd38ed95e9b82face9c8168cd7d7e42da3dc1b1cec4db",
-        "spec_surface_sha256": "710bb4adf9c41cd1c5ac50f1b4da51c4446d2def2bf666c7909a599fddd30d43"
-      },
-      "source_status": "direct byte-pinned source result with fixed rule-level tie convention",
+      "source_status": "direct byte-pinned source result with a contraction-consistent rule-level tie clarification",
       "statement": "Linear Kemeny satisfies pairwise majority consistency and ranking separability.",
       "support_lean_declarations": [
         "GeEtAl2024AlignmentAxioms.theoremC_3_linearKemenySpec"
@@ -1611,24 +1619,6 @@
       ],
       "source_kind": "theorem",
       "source_location": "cited publication:1457",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "6337e3538c7e617fdd79108eef47bc226714f5a035dc1cd119b6e6e65f6fe4af",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "6c4f52565118e5f3b076fc06e560170eb4dff882535470bdd2608af77b901f37",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct review of the byte-pinned Theorem C.4, its twenty-row seven-coordinate feature table and six voter parameters, and the complete expanded Spec confirmed that every Kemeny selector on the literal construction fails both Pareto optimality and majority consistency. Candidate 18 denotes the exact twenty-element carrier Fin (18+2).",
-            "source_atom_sha256": "b81d636ad6a35668023cd3fd1cdf369da4906ac3a980cc7a8dd6f19828c543f6",
-            "spec_component_sha256s": [
-              "3ec3a9eb68205fcd55663b10de2c5295e540b45fbbb02a930a801a7898c6dae6"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "da3a8571c3d661374fe38f55aebc6d4e0bbd55da596d1e783d1b5863b5745e2e",
-        "spec_closure_sha256": "32f67eb01ab297367d8e1752d06ae764017deed532daefef1bbe8a926436b5fa",
-        "spec_surface_sha256": "3ec3a9eb68205fcd55663b10de2c5295e540b45fbbb02a930a801a7898c6dae6"
-      },
       "source_status": "direct byte-pinned source result",
       "statement": "On the source's literal twenty-candidate, seven-feature, six-voter construction, every linear-Kemeny selector fails Pareto optimality and majority consistency.",
       "support_lean_declarations": [
@@ -1639,16 +1629,16 @@
       "approved_review_context_schema": 1,
       "approved_review_contexts": [
         {
-          "checked_scope": "Only GeEtAl2024AlignmentAxioms.IsParetoKemenySelector and theoremC_5_paretoKemenyFailsSeparabilityAndMajorityConsistencySpec. The C.4 feature table and the three literal C.5 profiles remain separately byte-pinned source constructions.",
-          "classification": "source_wlog_local_output_selection",
-          "formal_meaning": "For the finite C.5 construction, Lean assumes only the source proof's displayed local choice that the rule outputs v1 on the first profile. On every source-feasible profile it otherwise requires only Pareto-constrained Kemeny minimization; it does not assume a global tie key or a profile-independent tie-selection law.",
-          "id": "GE24-C5-LOCAL-WLOG-SELECTION-01",
+          "checked_scope": "`c4ParetoKemenySelector_hasC5SourceBallotOutput` proves the internal finite classification; `theoremC_5_paretoKemeny_failsSeparabilityAndMajorityConsistency` has only the source Pareto-Kemeny selector premise.",
+          "classification": "source_proof_realization",
+          "formal_meaning": "Lean derives the source proof's finite first-profile classification from Pareto-constrained Kemeny minimality: objective equality at 30 forces one full reversed cyclic block, all other blocks forward, and no inter-block inversion, yielding one of the six submitted ballots.",
+          "id": "GE24-C5-FINITE-CLASSIFICATION-DERIVED-01",
           "kind": "source_model_convention",
           "protocol": "approved-source-review-context-v1",
-          "record_sha256": "7fed18e4daa5532f14e7f5b19c21af12e89efc4a610175fd5b4b715d2cd5848c",
-          "report_summary": "The C.5 counterexample uses the source proof's explicit local WLOG choice of v1 on its first profile; it adds no global tie-breaking convention.",
+          "record_sha256": "a6e898a1ae7087bbc0ffa6c9c33450d854de64266f3ab5c7a18e7cf2ad0122bb",
+          "report_summary": "Theorem C.5 is proved without an extra selector premise; the source's six-ballot classification is a checked equality-case derivation.",
           "source_locator": "cited publication:1509-1514",
-          "why_needed": "The source proof says 'Without loss of generality, assume that it outputs the ranking of v1.' The formal theorem records that exact local premise rather than strengthening it to a selector convention the source does not state."
+          "why_needed": "The source invokes the classification before its without-loss-of-generality selection. The previous formalization exposed it as a premise; the current proof derives it, so this record is source-proof realization context rather than an additional model convention or assumption."
         }
       ],
       "claim_bearing": true,
@@ -1656,7 +1646,7 @@
         "GeEtAl2024AlignmentAxioms.theoremC_5_paretoKemenyFailsSeparabilityAndMajorityConsistency"
       ],
       "model_convention_ids": [
-        "GE24-C5-LOCAL-WLOG-SELECTION-01"
+        "GE24-C5-FINITE-CLASSIFICATION-DERIVED-01"
       ],
       "semantic_context_requirements": [
         {
@@ -1714,24 +1704,6 @@
       ],
       "source_kind": "theorem",
       "source_location": "cited publication:1509",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "7ed6d6c72164cb5ddbcdc6d7ccba7158aeff5cead647f5c5495c91deda33a89b",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "d55fc0070a03e241e2e9342bbfce3c6f8d49e8eafb542c801d6529d39977df96",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct review of the byte-pinned Theorem C.5, its Pareto-restricted Kemeny rule and literal profiles, and the complete expanded Spec confirmed both ranking-separability and majority-consistency failures. The fixed source-compatible tie key makes the proof's without-loss-of-generality choice one profile-independent rule without altering feasible Pareto-Kemeny minimizers.",
-            "source_atom_sha256": "e3969103e72a6f1ea53922e11b3e35027896bbebb8ab9b942c74613e02588d5f",
-            "spec_component_sha256s": [
-              "27018c7558457336297f183a0de0f14d7e3b82cbb98be0e22044c60907f4af1f"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "f06539e0609f88b85935559e0ae4b8e734d15b254f9bac177dc29a3ed045d94f",
-        "spec_closure_sha256": "251155dffd226f6a5a11f40bbd46ccbb2d39a8879e98abd1feb7c427dc3362ae",
-        "spec_surface_sha256": "27018c7558457336297f183a0de0f14d7e3b82cbb98be0e22044c60907f4af1f"
-      },
       "source_status": "direct byte-pinned source result with explicit fixed tie key",
       "statement": "Linear Kemeny subject to Pareto optimality violates ranking separability and majority consistency.",
       "support_lean_declarations": [
@@ -1742,13 +1714,13 @@
       "approved_review_context_schema": 1,
       "approved_review_contexts": [
         {
-          "checked_scope": "Only GeEtAl2024AlignmentAxioms.IsFixedTieLeximaxPluralitySelector and theoremC_6_fixedTieLeximaxPluralitySatisfiesAxiomsSpec. The source's sequential feasibility and plurality-score construction remains separately byte-pinned.",
+          "checked_scope": "Only GeEtAl2024AlignmentAxioms.IsPriorityTieLeximaxPluralitySelector and theoremC_6_fixedTieLeximaxPluralitySpec. `isPriorityTieLeximaxPluralitySelector_isLeximaxPluralitySelector` separately verifies that this refined rule satisfies the source's unrefined sequential highest-plurality prescription.",
           "classification": "source_definedness_clarification",
-          "formal_meaning": "Lean makes each sequential Leximax Plurality choice deterministic by using a fixed candidate-index order only when plurality scores tie. A strictly higher plurality score always wins, and the same fixed tie choice applies at every profile and prefix.",
+          "formal_meaning": "Lean makes each sequential Leximax Plurality choice deterministic by using an arbitrary fixed injective candidate priority only when plurality scores tie. A strictly higher plurality score always wins, and the same profile-independent priority applies at every profile and prefix.",
           "id": "GE24-C6-FIXED-TIE-CONVENTION-01",
           "kind": "source_model_convention",
           "protocol": "approved-source-review-context-v1",
-          "record_sha256": "80a338a3700fa61df3788c3e950085d7d7756a54464746938b47e76db494ca32",
+          "record_sha256": "ed2ba4e21989bebdbde9448eb2caef498ebb2ebda75b5a062af27d3f6c68f69b",
           "report_summary": "C.6 uses a fixed deterministic tie convention only to make the paper's sequential highest-plurality prescription a single rule; all strict plurality comparisons are unchanged.",
           "source_locator": "cited publication:1530-1539; cited publication:1543-1572",
           "why_needed": "The source describes a rule that ranks the feasible candidate with the highest plurality score at each position, but does not resolve equality. A fixed total tie convention turns that maximum correspondence into the ranking aggregation function needed by the C.6 statements without changing any strict score comparison."
@@ -1805,24 +1777,6 @@
       ],
       "source_kind": "theorem",
       "source_location": "cited publication:1543-1544",
-      "source_spec_correspondence": {
-        "closure_environment_sha256": "79dbb865a7c835aa2b12db1b7cd164fe62889654cfcd84a44544f1bfeb57263d",
-        "closure_node_dispositions": [],
-        "item_identity_sha256": "2d781a8319e36e38438b335cba6c3106a0b9a750fa0ce93faf71b637898eac73",
-        "schema": 1,
-        "source_atom_bindings": [
-          {
-            "semantic_bridge": "Direct review of the byte-pinned Theorem C.6, the position-by-position feasible leximax-Plurality construction, and the complete expanded Spec confirmed majority consistency, winner monotonicity, and ranking separability for every rule family satisfying that exact fixed-tie selector condition.",
-            "source_atom_sha256": "ef292d409c0cd615196898242c358ac24d7fe6de370ec628f5e3948e26f61c5d",
-            "spec_component_sha256s": [
-              "095b1b2e80a3156666afd8437c094d2e450f02d1aae7eded50823f1b540c3fa4"
-            ]
-          }
-        ],
-        "source_atoms_sha256": "3343f046f2f8edd7e853035a42b0c7db0240a9a7cef85c90e26dd6d60b1aba55",
-        "spec_closure_sha256": "25e9453c02ae5b7cc8974d2ef833625b28889c3100b580bc046818953529f463",
-        "spec_surface_sha256": "095b1b2e80a3156666afd8437c094d2e450f02d1aae7eded50823f1b540c3fa4"
-      },
       "source_status": "direct byte-pinned source result with fixed rule-level tie convention",
       "statement": "Leximax Plurality satisfies majority consistency, winner monotonicity, and ranking separability.",
       "support_lean_declarations": [
@@ -1830,8 +1784,43 @@
       ]
     }
   },
+  "library_semantic_prerequisite_sources": {
+    "AppliedModelingLib.Alignment.Axioms.C1LinearRankAggregationRule": "c1_rule_model",
+    "AppliedModelingLib.Alignment.Axioms.FeasibleProfile": "linear_social_choice_model",
+    "AppliedModelingLib.Alignment.Axioms.FeatureVector": "linear_social_choice_model",
+    "AppliedModelingLib.Alignment.Axioms.InducesRanking": "linear_social_choice_model",
+    "AppliedModelingLib.Alignment.Axioms.IsKemenySelector": "linear_kemeny_rule_model",
+    "AppliedModelingLib.Alignment.Axioms.LinearFeasibleRanking": "linear_social_choice_model",
+    "AppliedModelingLib.Alignment.Axioms.LinearRankAggregationRule": "linear_social_choice_model",
+    "AppliedModelingLib.Alignment.Axioms.LinearRewardParameter": "linear_social_choice_model",
+    "AppliedModelingLib.Alignment.Axioms.MajorityConsistent": "definition4_1_majority_consistency",
+    "AppliedModelingLib.Alignment.Axioms.NondegenerateParameter": "linear_social_choice_model",
+    "AppliedModelingLib.Alignment.Axioms.PairwiseMajorityConsistent": "definition2_2_pairwise_majority_consistency",
+    "AppliedModelingLib.Alignment.Axioms.ParetoOptimal": "definition2_1_pareto_optimality",
+    "AppliedModelingLib.Alignment.Axioms.RankingProfile": "linear_social_choice_model",
+    "AppliedModelingLib.Alignment.Axioms.RankingSeparability": "definitionC_1_ranking_separability",
+    "AppliedModelingLib.Alignment.Axioms.SamePairwiseMajorityRelation": "c1_rule_model",
+    "AppliedModelingLib.Alignment.Axioms.StrictlyPrefers": "linear_social_choice_model",
+    "AppliedModelingLib.Alignment.Axioms.WinnerMonotonic": "definition4_2_winner_monotonicity",
+    "AppliedModelingLib.Alignment.Axioms.canonicalKemenyRule": "linear_kemeny_rule_model",
+    "AppliedModelingLib.Alignment.Axioms.kemenyDisagreement": "linear_kemeny_rule_model",
+    "AppliedModelingLib.Alignment.Axioms.linearReward": "linear_social_choice_model",
+    "AppliedModelingLib.SocialChoice.Ranking.Candidate": "linear_social_choice_model",
+    "AppliedModelingLib.SocialChoice.Ranking.Ranking": "linear_social_choice_model"
+  },
   "paper": "GeEtAl2024AlignmentAxioms",
   "paper_interface_namespace": "GeEtAl2024AlignmentAxioms",
+  "paper_semantic_prerequisite_sources": {
+    "GeEtAl2024AlignmentAxioms.IsLeximaxPluralitySelector": "leximax_plurality_rule_model",
+    "GeEtAl2024AlignmentAxioms.IsMajorityLossMinimizing": "majority_loss_rule_model",
+    "GeEtAl2024AlignmentAxioms.IsParetoKemenySelector": "pareto_kemeny_rule_model",
+    "GeEtAl2024AlignmentAxioms.IsPriorityTieLeximaxPluralitySelector": "c6_fixed_priority_tie_convention",
+    "GeEtAl2024AlignmentAxioms.fixedTieLCPO": "lcpo_rule_model",
+    "GeEtAl2024AlignmentAxioms.globalMajorityLossInfimum": "majority_loss_rule_model",
+    "GeEtAl2024AlignmentAxioms.majorityLoss": "majority_loss_rule_model",
+    "GeEtAl2024AlignmentAxioms.restrictedMajorityLossInfimum": "majority_loss_rule_model",
+    "GeEtAl2024AlignmentAxioms.standardLossFormulationSpec": "standard_loss_rule_model"
+  },
   "publication_corrected_target_projection": {
     "approval_material_included": false,
     "schema": 1

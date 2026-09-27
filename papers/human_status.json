@@ -242,8 +242,8 @@
       "human_translation": "0/50 reviewed",
       "llm_as_judge_translation": "accepted closeout: 50/50 raw-source-to-Spec match",
       "llm_as_judge_paper_coverage": "accepted closeout: 50/50 source claims covered",
-      "lean_loc": 22118,
-      "main_note": "Formalization gap: Theorem 8's limit is proved when its finite-error term vanishes; deriving that condition from the paper's small-bid regime remains unproved.",
+      "lean_loc": 28430,
+      "main_note": "",
       "main_note_citation": null,
       "main_note_review": null,
       "paper_folder": "papers/MSVV07AdWords",
@@ -261,7 +261,6 @@
         "paper_interface": "papers/MSVV07AdWords/PaperInterface.lean",
         "proof_interface": "papers/MSVV07AdWords/ProofInterface.lean",
         "readme": "papers/MSVV07AdWords/README.md",
-        "source_proof_fidelity": "papers/MSVV07AdWords/audit/source_proof_fidelity.json",
         "source_runner": "papers/MSVV07AdWords/SourceRunner.lean",
         "source_text": "cited publication"
       }
@@ -602,7 +601,7 @@
       "human_translation": "0/11 reviewed",
       "llm_as_judge_translation": "accepted closeout: 11/11 raw-source-to-Spec match",
       "llm_as_judge_paper_coverage": "accepted closeout: 11/11 source claims covered",
-      "lean_loc": 3813,
+      "lean_loc": 13293,
       "main_note": "Formalization gap: Theorem 3.10 gives eventual high-probability containment in dimension > 2 with uniform moments and stronger regularity; the printed sample-count and burn-in bounds remain unproved.",
       "main_note_citation": null,
       "main_note_review": {
@@ -612,18 +611,14 @@
       "paper_folder": "papers/PZMH20PerformativePrediction",
       "review_entrypoint": "papers/PZMH20PerformativePrediction/FINAL_VALIDATION_REPORT.md",
       "artifacts": {
-        "paper_interface": "papers/PZMH20PerformativePrediction/PaperInterface.lean",
-        "proof_interface": "papers/PZMH20PerformativePrediction/ProofInterface.lean",
         "assumptions": "papers/PZMH20PerformativePrediction/Assumptions.lean",
-        "final_validation_report": "papers/PZMH20PerformativePrediction/FINAL_VALIDATION_REPORT.md",
-        "dependency_dag_tex": "papers/PZMH20PerformativePrediction/docs/DependencyDAG.tex",
         "dependency_dag_pdf": "papers/PZMH20PerformativePrediction/docs/DependencyDAG.pdf",
-        "source_proof_fidelity": "papers/PZMH20PerformativePrediction/audit/source_proof_fidelity.json",
-        "defect_support_match": "papers/PZMH20PerformativePrediction/audit/defect_support_match_llm.json",
-        "library_semantic_review": "papers/PZMH20PerformativePrediction/audit/library_semantic_review.json",
-        "v11_raw_source_spec_screening": "papers/PZMH20PerformativePrediction/audit/v11_raw_source_spec_screening.json",
+        "dependency_dag_tex": "papers/PZMH20PerformativePrediction/docs/DependencyDAG.tex",
+        "final_validation_report": "papers/PZMH20PerformativePrediction/FINAL_VALIDATION_REPORT.md",
         "human_review_packet_pdf": "papers/PZMH20PerformativePrediction/docs/HUMAN_REVIEW_PACKET.pdf",
-        "human_review_packet_tex": "papers/PZMH20PerformativePrediction/docs/HUMAN_REVIEW_PACKET.tex"
+        "human_review_packet_tex": "papers/PZMH20PerformativePrediction/docs/HUMAN_REVIEW_PACKET.tex",
+        "paper_interface": "papers/PZMH20PerformativePrediction/PaperInterface.lean",
+        "proof_interface": "papers/PZMH20PerformativePrediction/ProofInterface.lean"
       }
     },
     {
@@ -858,7 +853,7 @@
       "human_translation": "0/27 reviewed",
       "llm_as_judge_translation": "accepted closeout: 27/27 raw-source-to-Spec match",
       "llm_as_judge_paper_coverage": "accepted closeout: 27/27 source claims covered",
-      "lean_loc": 9919,
+      "lean_loc": 12227,
       "main_note": "",
       "main_note_citation": null,
       "main_note_review": {
@@ -868,17 +863,14 @@
       "paper_folder": "papers/GeEtAl2024AlignmentAxioms",
       "review_entrypoint": "papers/GeEtAl2024AlignmentAxioms/FINAL_VALIDATION_REPORT.md",
       "artifacts": {
-        "paper_interface": "papers/GeEtAl2024AlignmentAxioms/PaperInterface.lean",
-        "proof_interface": "papers/GeEtAl2024AlignmentAxioms/ProofInterface.lean",
         "assumptions": "papers/GeEtAl2024AlignmentAxioms/Assumptions.lean",
-        "final_validation_report": "papers/GeEtAl2024AlignmentAxioms/FINAL_VALIDATION_REPORT.md",
-        "dependency_dag_tex": "papers/GeEtAl2024AlignmentAxioms/docs/DependencyDAG.tex",
         "dependency_dag_pdf": "papers/GeEtAl2024AlignmentAxioms/docs/DependencyDAG.pdf",
-        "human_review_packet_tex": "papers/GeEtAl2024AlignmentAxioms/docs/HUMAN_REVIEW_PACKET.tex",
+        "dependency_dag_tex": "papers/GeEtAl2024AlignmentAxioms/docs/DependencyDAG.tex",
+        "final_validation_report": "papers/GeEtAl2024AlignmentAxioms/FINAL_VALIDATION_REPORT.md",
         "human_review_packet_pdf": "papers/GeEtAl2024AlignmentAxioms/docs/HUMAN_REVIEW_PACKET.pdf",
-        "source_proof_fidelity": "papers/GeEtAl2024AlignmentAxioms/audit/source_proof_fidelity.json",
-        "library_semantic_review": "papers/GeEtAl2024AlignmentAxioms/audit/library_semantic_review.json",
-        "v11_raw_source_spec_screening": "papers/GeEtAl2024AlignmentAxioms/audit/v11_raw_source_spec_screening.json"
+        "human_review_packet_tex": "papers/GeEtAl2024AlignmentAxioms/docs/HUMAN_REVIEW_PACKET.tex",
+        "paper_interface": "papers/GeEtAl2024AlignmentAxioms/PaperInterface.lean",
+        "proof_interface": "papers/GeEtAl2024AlignmentAxioms/ProofInterface.lean"
       }
     },
     {
@@ -1199,6 +1191,39 @@
       }
     },
     {
+      "id": "GolzHaghtalabYang2025Distortion",
+      "title": "Distortion of AI Alignment: Does Preference Optimization Optimize for Preferences?",
+      "authors": "Paul Gölz, Nika Haghtalab, and Kunhe Yang",
+      "publication": "NeurIPS, 2025",
+      "publication_year": 2025,
+      "source_url": "https://arxiv.org/abs/2505.23749",
+      "paper_info": "Distortion of AI Alignment: Does Preference Optimization Optimize for Preferences? by Paul Gölz, Nika Haghtalab, and Kunhe Yang; NeurIPS, 2025.",
+      "status": "Formalized",
+      "human_review": "0/16",
+      "human_translation": "0/16 reviewed",
+      "llm_as_judge_translation": "accepted closeout: 16/16 raw-source-to-Spec match",
+      "llm_as_judge_paper_coverage": "accepted closeout: 16/16 source claims covered",
+      "lean_loc": 23210,
+      "main_note": "",
+      "main_note_citation": null,
+      "main_note_review": {
+        "status": "draft",
+        "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
+      },
+      "paper_folder": "papers/GolzHaghtalabYang2025Distortion",
+      "review_entrypoint": "papers/GolzHaghtalabYang2025Distortion/FINAL_VALIDATION_REPORT.md",
+      "artifacts": {
+        "assumptions": "papers/GolzHaghtalabYang2025Distortion/Assumptions.lean",
+        "dependency_dag_pdf": "papers/GolzHaghtalabYang2025Distortion/docs/DependencyDAG.pdf",
+        "dependency_dag_tex": "papers/GolzHaghtalabYang2025Distortion/docs/DependencyDAG.tex",
+        "final_validation_report": "papers/GolzHaghtalabYang2025Distortion/FINAL_VALIDATION_REPORT.md",
+        "human_review_packet_pdf": "papers/GolzHaghtalabYang2025Distortion/docs/HUMAN_REVIEW_PACKET.pdf",
+        "human_review_packet_tex": "papers/GolzHaghtalabYang2025Distortion/docs/HUMAN_REVIEW_PACKET.tex",
+        "paper_interface": "papers/GolzHaghtalabYang2025Distortion/PaperInterface.lean",
+        "proof_interface": "papers/GolzHaghtalabYang2025Distortion/ProofInterface.lean"
+      }
+    },
+    {
       "id": "DGD26AdmissionsPredictability",
       "title": "Capacity Constraints Make Admissions Processes Less Predictable",
       "authors": "Evan Dong; Nikhil Garg; Sarah Dean",
@@ -1275,8 +1300,8 @@
       "source_url": "https://arxiv.org/abs/2606.08872v2",
       "paper_info": "EFX for Additive Chores: Nonexistence, Pareto Incompatibility, and Bi-Valued Existence by Wentao He and Biaoshuai Tao; arXiv:2606.08872v2, 2026.",
       "status": "Formalized",
-      "human_review": "0/18",
-      "human_translation": "0/18 reviewed",
+      "human_review": "3/18",
+      "human_translation": "3/18 reviewed",
       "llm_as_judge_translation": "accepted closeout: 18/18 raw-source-to-Spec match",
       "llm_as_judge_paper_coverage": "accepted closeout: 18/18 source claims covered",
       "lean_loc": 40537,
@@ -1289,20 +1314,17 @@
       "paper_folder": "papers/HT26EFXChores",
       "review_entrypoint": "papers/HT26EFXChores/FINAL_VALIDATION_REPORT.md",
       "artifacts": {
-        "paper_interface": "papers/HT26EFXChores/PaperInterface.lean",
-        "proof_interface": "papers/HT26EFXChores/ProofInterface.lean",
         "assumptions": "papers/HT26EFXChores/Assumptions.lean",
+        "dependency_dag_pdf": "papers/HT26EFXChores/docs/DependencyDAG.pdf",
+        "dependency_dag_tex": "papers/HT26EFXChores/docs/DependencyDAG.tex",
         "final_closure_receipt": "papers/HT26EFXChores/FINAL_CLOSURE_RECEIPT.md",
         "final_validation_report": "papers/HT26EFXChores/FINAL_VALIDATION_REPORT.md",
         "focused_build_receipt": "papers/HT26EFXChores/audit/FOCUSED_BUILD_RECEIPT.json",
-        "dependency_dag_tex": "papers/HT26EFXChores/docs/DependencyDAG.tex",
-        "dependency_dag_pdf": "papers/HT26EFXChores/docs/DependencyDAG.pdf",
-        "human_review_packet_tex": "papers/HT26EFXChores/docs/HUMAN_REVIEW_PACKET.tex",
+        "human_review": "papers/HT26EFXChores/docs/HUMAN_REVIEW.md",
         "human_review_packet_pdf": "papers/HT26EFXChores/docs/HUMAN_REVIEW_PACKET.pdf",
-        "library_semantic_review": "papers/HT26EFXChores/audit/library_semantic_review.json",
-        "source_proof_fidelity": "papers/HT26EFXChores/audit/source_proof_fidelity.json",
-        "defect_support_match": "papers/HT26EFXChores/audit/defect_support_match_llm.json",
-        "v11_raw_source_spec_screening": "papers/HT26EFXChores/audit/v11_raw_source_spec_screening.json"
+        "human_review_packet_tex": "papers/HT26EFXChores/docs/HUMAN_REVIEW_PACKET.tex",
+        "paper_interface": "papers/HT26EFXChores/PaperInterface.lean",
+        "proof_interface": "papers/HT26EFXChores/ProofInterface.lean"
       }
     },
     {

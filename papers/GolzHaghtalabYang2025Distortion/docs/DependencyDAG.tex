@@ -1,0 +1,107 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+\begin{tikzpicture}[every node/.style={font=\sffamily\small}]
+
+\dagPaperMetadata{Distortion of AI Alignment: Does Preference Optimization Optimize for Preferences?}{Paul Gölz, Nika Haghtalab, and Kunhe Yang}{NeurIPS}{2025}{https://arxiv.org/abs/2505.23749}
+\dagPaperLegendRightOfMetadata{
+  \node[dag_model, dag_template_legend] (legModel) at (0,0) {formalized\\model or definition};
+  \node[dag_lemma, dag_template_legend] (legLemma) at (4.7,0) {formalized\\lemma or appendix support};
+  \node[dag_result, dag_template_legend] (legResult) at (9.4,0) {formalized\\main result};
+}
+\daglegend{(legModel)(legLemma)(legResult)}{Legend}
+
+\begin{dagPaperBody}
+\begin{scope}[xshift=1.2cm,yshift=-0.5cm]
+
+\node[dag_model, text width=5.2cm] (Population) at (0,0) {
+  \textbf{Population preference model}\\finite alternatives, unit-interval user utilities, average welfare, user-level Bradley--Terry comparisons
+};
+\node[dag_model, text width=5.2cm] (Sampling) at (9,0) {
+  \textbf{Comparison experiment}\\separate alternative sampler, iid users and labels, arbitrary within-user answer correlation
+};
+\node[dag_model, text width=5.2cm] (Alignment) at (22,0) {
+  \textbf{Alignment model}\\reference policy, finite KL ball, RLHF reward fit, NLHF maximin policy
+};
+
+\node[dag_lemma, text width=4.8cm] (Lemma1) at (0,-4.3) {
+  \textbf{Lemma 1}\\population win-rate linearization
+};
+\node[dag_lemma, text width=4.4cm] (Lemma10) at (7,-4.3) {
+  \textbf{Appendix Lemma 10}\\empirical win-rate concentration
+};
+\node[dag_lemma, text width=4.4cm] (Lemma11) at (14,-4.3) {
+  \textbf{Appendix Lemma 11}\\normalized-Borda concentration
+};
+\node[dag_lemma, text width=4.4cm] (Theorem12) at (21,-4.3) {
+  \textbf{Appendix Theorem 12}\\formal Borda lower-bound construction
+};
+\node[dag_lemma, text width=4.4cm] (Lemma15) at (28,-4.3) {
+  \textbf{Appendix Lemma 15}\\infinite decreasing-welfare sequence
+};
+
+\node[dag_result, text width=4.6cm] (Theorem2) at (0,-8.8) {
+  \textbf{Theorem 2}\\Borda upper bound and finite-sample guarantee
+};
+\node[dag_result, text width=4.6cm] (Theorem3) at (7,-8.8) {
+  \textbf{Theorem 3}\\voting-rule lower bound
+};
+\node[dag_result, text width=4.6cm] (Theorem5) at (21,-8.8) {
+  \textbf{Theorem 5}\\main-text Borda lower bound
+};
+\node[dag_result, text width=4.6cm] (Theorem6) at (14,-8.8) {
+  \textbf{Theorem 6}\\exponential RLHF lower bound
+};
+\node[dag_result, text width=4.6cm] (Theorem9) at (28,-8.8) {
+  \textbf{Theorem 9}\\unbounded correlated-sampling distortion
+};
+
+\node[dag_result, text width=4.6cm] (Theorem7) at (7,-13.3) {
+  \textbf{Theorem 7}\\NLHF population and finite-sample upper bounds
+};
+\node[dag_result, text width=4.6cm] (Corollary4) at (14,-13.3) {
+  \textbf{Corollary 4}\\maximal-lottery guarantee; neutral finite zero-incidence margin
+};
+\node[dag_lemma, text width=4.6cm] (Proposition13) at (21,-13.3) {
+  \textbf{Appendix Proposition 13}\\constrained/regularized NLHF equivalence
+};
+\node[dag_lemma, text width=4.6cm] (Proposition14) at (28,-13.3) {
+  \textbf{Appendix Proposition 14}\\constrained/regularized RLHF equivalence
+};
+\node[dag_result, text width=4.6cm] (Corollary8) at (21,-17.8) {
+  \textbf{Corollary 8}\\regularized NLHF guarantee
+};
+\node[dag_lemma, text width=4.6cm] (AppendixF3) at (14,-17.8) {
+  \textbf{Appendix F.3}\\normalized DPO--RLHF equivalence
+};
+
+\begin{scope}[on background layer]
+\draw[dag_arrow] (Population) -- (Lemma1);
+\draw[dag_arrow] (Sampling) -- (Lemma10);
+\draw[dag_arrow] (Lemma10) -- (Lemma11);
+\draw[dag_arrow] (Population.south east) -- ++(1.2,-0.8) -- ++(0,-4.4) -- (Theorem3.north west);
+\draw[dag_arrow] (Sampling.south east) -- ++(1.5,-0.8) -- ++(0,-4.4) -- (Theorem3.north east);
+\draw[dag_arrow] (Population.south) -- ++(0,-1.0) -- ++(21,0) -- (Theorem12.north);
+\draw[dag_arrow] (Theorem12) -- (Theorem5);
+\draw[dag_arrow] (Lemma1) -- (Theorem2);
+\draw[dag_arrow] (Lemma11.south west) -- ++(-1,-1) -- ++(-10,0) -| (Theorem2.north east);
+\draw[dag_arrow] (Lemma1.south east) -- ++(1.2,-1.0) -- ++(0,-5.2) -- (Theorem7.north west);
+\draw[dag_arrow] (Lemma10.south east) -- ++(3.0,-1.0) -- ++(0,-5.2) -- (Theorem7.north east);
+\draw[dag_arrow] (Alignment.south west) -- ++(-2.0,-1.0) -- ++(-8.0,0) -- ++(0,-9.5) -- (Theorem7.north east);
+\draw[dag_arrow] (Theorem7) -- (Corollary4);
+\draw[dag_arrow] (Alignment.south west) -- ++(-3.5,-1.0) -- ++(0,-4.8) -- (Theorem6.north east);
+\draw[dag_arrow] (Lemma11) -- (Theorem6);
+\draw[dag_arrow] (Lemma15) -- (Theorem9);
+\draw[dag_arrow] (Alignment.south east) -- ++(3.0,-1.0) -- ++(0,-4.8) -- (Theorem9.north west);
+\draw[dag_arrow] (Alignment.south) -- ++(0,-1.0) -- ++(3.2,0) -- ++(0,-10.0) -- (Proposition13.north east);
+\draw[dag_arrow] (Alignment.south east) -- ++(7.8,-1.0) -- ++(0,-10.0) -- (Proposition14.north east);
+\draw[dag_arrow] (Theorem7.south east) -- (Corollary8.north west);
+\draw[dag_arrow] (Proposition13) -- (Corollary8);
+\draw[dag_arrow] (Alignment.south) -- ++(0,-1.0) -- ++(-4.0,0) -- ++(0,-10.0) -- (AppendixF3.north);
+\end{scope}
+
+\end{scope}
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

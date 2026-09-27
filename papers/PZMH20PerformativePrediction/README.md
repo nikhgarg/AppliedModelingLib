@@ -5,7 +5,7 @@
 |---|---|
 | Final status | Formalized |
 | Paper reference | [Performative Prediction](https://proceedings.mlr.press/v119/perdomo20a.html) by Juan C. Perdomo, Tijana Zrnic, Celestine Mendler-Dünner, and Moritz Hardt; ICML, 2020. |
-| Lines of Code | 3,813 |
+| Lines of Code | 13,293 |
 
 ## Key Links
 

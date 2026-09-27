@@ -86,6 +86,24 @@ def _projected_corrected_target_map() -> dict[str, object]:
 
 
 class PublicReleaseCandidateGuardTests(unittest.TestCase):
+    def test_external_reference_is_link_only_and_checked_from_candidate_tree(self) -> None:
+        from scripts.public_release_external_references import render_readme
+        from scripts.tests.test_public_release_external_references import fixture_reference
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo = Path(temp_dir)
+            self.init_repo(repo)
+            folder = repo / "papers/ExampleExternal"
+            folder.mkdir(parents=True)
+            reference = fixture_reference()
+            (folder / "external.json").write_text(json.dumps(reference))
+            (folder / "README.md").write_text(render_readme(reference))
+            valid = self.commit(repo, "external reference")
+            self.assertEqual(guard.status_visibility_issues(repo, valid), [])
+            (folder / "Main.lean").write_text("-- Must not use the reference exemption\n")
+            invalid = self.commit(repo, "add prohibited proof")
+            self.assertTrue(any("permits only" in item for item in guard.status_visibility_issues(repo, invalid)))
+            self.assertEqual(guard.status_visibility_issues(repo, valid), [])
+
     def test_paper_target_guard_checks_registered_roots_beyond_default_targets(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             repo = Path(temp_dir)

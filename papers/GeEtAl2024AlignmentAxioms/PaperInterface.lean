@@ -23,9 +23,11 @@ actual reusable declarations (`ParetoOptimal`, `PairwiseMajorityConsistent`,
 `MajorityConsistent`, `WinnerMonotonic`, and `RankingSeparability`); this file
 does not duplicate them through reflexive equivalence wrappers.
 
-The repaired Lemma 3.4--3.5 targets preserve the paper's final Theorem 3.1
-conclusion while making the valid strict-cone and perturbation-gap statements
-explicit. They do not assert the printed weak-half-space/open-set step.
+The literal weak containment of Lemma 3.4 is checked separately: it is true
+at the coincident-feature baseline but vacuous.  The repaired substantive
+Lemma 3.4--3.5 targets preserve the paper's final Theorem 3.1 conclusion
+while making the valid strict-cone and perturbation-gap statements explicit;
+they do not assert the printed weak-half-space/open-set inference.
 -/
 
 namespace GeEtAl2024AlignmentAxioms
@@ -34,22 +36,14 @@ open AppliedModelingLib.Alignment.Axioms
 open AppliedModelingLib.SocialChoice.Ranking
 
 /--
-Source Definition 2.2 and its attached observations: PMC means returning the
-feasible ranking that realizes every strict pairwise-majority comparison; a
-PMC ranking need not exist, and when one exists it is unique.  Appendix B's
-separate infeasibility example has its own source owner below.
+The two factual observations following source Definition 2.2: a PMC ranking
+need not exist, and any PMC ranking that does exist is unique. Definition 2.2
+itself is reviewed directly against `PairwiseMajorityConsistent`; Appendix B
+separately owns the infeasible-PMC example.
 -/
-def definition2_2_pairwiseMajorityConsistencyAndConsequencesSpec : Prop :=
-  (∀ (Voter : Type) [Fintype Voter] (n : ℕ)
-      (feasible : Ranking n → Prop)
-      (rule : LinearRankAggregationRule Voter n feasible),
-      PairwiseMajorityConsistent feasible rule ↔
-        ∀ profile majorityRanking,
-          FeasibleProfile feasible profile → feasible majorityRanking →
-            IsPairwiseMajorityRanking profile majorityRanking →
-              rule.run profile = majorityRanking) ∧
-    (¬ ∃ ranking : Ranking 7,
-      IsPairwiseMajorityRanking c1ProfilePlus1 ranking) ∧
+def pmcRankingUniquenessAndNonexistenceSpec : Prop :=
+  (¬ ∃ ranking : Ranking 7,
+    IsPairwiseMajorityRanking c1ProfilePlus1 ranking) ∧
     (∀ (Voter : Type) [Fintype Voter] (n : ℕ)
       (profile : RankingProfile Voter n) (first second : Ranking n),
       IsPairwiseMajorityRanking profile first →
@@ -150,6 +144,19 @@ def lemma3_3_coreMinimizersSpec : Prop :=
         parameter.1 > A3 ∧ parameter.2 < A4
 
 /--
+The literal statement of source Lemma 3.4.  At the zero perturbation, `c′`
+and `c` have identical feature vectors, hence every parameter, in particular
+every optimizer, is in the source's weak half-space `R_{c′ ≻ c}`.
+-/
+def lemma3_4_literalZeroWeakInclusionSpec : Prop :=
+  ∀ (δ weight : ℝ) (loss : ℝ → ℝ) (parameter : ℝ × ℝ),
+    IsGlobalMinimizer (sixCandidateSourceObjective 0 δ weight loss) parameter →
+      linearReward (twoCoordinateParameter parameter) (sixCandidateCopyFeatures 0 δ)
+          (5 : Candidate 4) ≤
+        linearReward (twoCoordinateParameter parameter) (sixCandidateCopyFeatures 0 δ)
+          (4 : Candidate 4)
+
+/--
 Corrected source-facing Lemma 3.4: the Lemma 3.3 coordinate bounds put every
 zero-perturbation core minimizer in the strict cone that ranks the original
 candidate above its copy for every positive perturbation.
@@ -224,19 +231,18 @@ def theorem3_7_C1FailsParetoAndConsequencesSpec : Prop :=
       IsPairwiseMajorityRanking c1ProfilePlus1 ranking)
 
 /--
-The fixed-tie finite LCPO construction satisfies all four components of source
-Theorem 4.3. The candidate-index tie break is fixed independently of profile.
+Theorem 4.3 for LCPO with an arbitrary fixed candidate priority.  The source
+algorithm chooses a highest-scoring feasible candidate at each position; its
+rule-level winner-monotonicity conclusion requires this profile-independent
+resolution of score ties.
 -/
 def theorem4_3_constructedFixedTieLCPOSpec : Prop :=
   ∀ {Voter : Type} [Fintype Voter] [Nonempty Voter] {n : ℕ}
-    (feasible : Ranking n → Prop) (fallback : Ranking n) (hfallback : feasible fallback),
-      ParetoOptimal feasible (fixedTieLCPO (Voter := Voter) feasible fallback hfallback) ∧
-        PairwiseMajorityConsistent feasible
-          (fixedTieLCPO (Voter := Voter) feasible fallback hfallback) ∧
-          MajorityConsistent feasible
-            (fixedTieLCPO (Voter := Voter) feasible fallback hfallback) ∧
-            WinnerMonotonic feasible
-              (fixedTieLCPO (Voter := Voter) feasible fallback hfallback)
+    (feasible : Ranking n → Prop) (rule : LinearRankAggregationRule Voter n feasible)
+    (priority : Candidate n → ℕ),
+      IsPriorityTieLCPOSelector feasible rule priority →
+        ParetoOptimal feasible rule ∧ PairwiseMajorityConsistent feasible rule ∧
+          MajorityConsistent feasible rule ∧ WinnerMonotonic feasible rule
 
 /-- The exact explicit unique-PMC-but-infeasible construction of Appendix B. -/
 def appendixBExplicitInfeasiblePMCSpec : Prop :=
@@ -257,13 +263,19 @@ def theoremC_2_copelandAndLCPOFailSeparabilitySpec : Prop :=
     IsConsistentlyTieBrokenLCPOSelector copelandRule lcpoRule →
       ¬ RankingSeparability c2AllRankingsFeasible lcpoRule)
 
-/-- The complete finite fixed-tie form of source Theorem C.3. -/
+/--
+The complete finite form of source Theorem C.3.  Its “consistent
+tie-breaking” is the contraction principle needed by the additive proof:
+removing other tied Kemeny minimizers cannot dislodge a selected minimizer
+that remains available.  A fixed injective ranking priority is one checked
+implementation of this condition.
+-/
 def theoremC_3_linearKemenySpec : Prop :=
-  ∀ {n : ℕ} (feasible : Ranking n → Prop) (fallback : Ranking n)
-    (hfallback : feasible fallback) (voterCount : ℕ),
-      PairwiseMajorityConsistent feasible
-        (canonicalKemenyRule feasible fallback hfallback voterCount) ∧
-        RankingSeparability feasible (canonicalKemenyRule feasible fallback hfallback)
+  ∀ {n : ℕ} (feasible : Ranking n → Prop)
+    (rule : ∀ voterCount : ℕ, LinearRankAggregationRule (Fin voterCount) n feasible),
+      IsContractionConsistentKemenySelector feasible rule →
+        (∀ voterCount : ℕ, PairwiseMajorityConsistent feasible (rule voterCount)) ∧
+          RankingSeparability feasible rule
 
 /-- The literal finite linear-Kemeny counterexample of source Theorem C.4. -/
 def theoremC_4_linearKemenyFailsParetoAndMajorityConsistencySpec : Prop :=
@@ -273,23 +285,25 @@ def theoremC_4_linearKemenyFailsParetoAndMajorityConsistencySpec : Prop :=
         ¬ MajorityConsistent (LinearFeasibleRanking c4Features) rule
 
 /--
-The literal Pareto-constrained Kemeny counterexample of source Theorem C.5.
-The first-profile output is the source proof's explicit WLOG selection of
-`v1`; no global tie-breaking rule is added.
+Source Theorem C.5. The proof derives its first-profile input-ballot
+classification from Pareto-constrained Kemeny minimality, then indexes a
+matching finite appendage without imposing a particular `v1` choice or a
+global tie-breaking rule.
 -/
 def theoremC_5_paretoKemenyFailsSeparabilityAndMajorityConsistencySpec : Prop :=
   ∀ rule : ∀ voterCount : ℕ,
       LinearRankAggregationRule (Fin voterCount) 18 (LinearFeasibleRanking c4Features),
     IsParetoKemenySelector rule →
-      (rule 6).run c4Profile = c4Ranking_v1 →
       ¬ RankingSeparability (LinearFeasibleRanking c4Features) rule ∧
         ¬ MajorityConsistent (LinearFeasibleRanking c4Features) (rule 9)
 
-/-- The finite fixed-tie form of source Theorem C.6. -/
+/-- The source's C.6 claims under one fixed, profile-independent candidate priority. -/
 def theoremC_6_fixedTieLeximaxPluralitySpec : Prop :=
   ∀ {n : ℕ} (feasible : Ranking n → Prop)
-    (rule : ∀ voterCount : ℕ, LinearRankAggregationRule (Fin voterCount) n feasible),
-      (∀ voterCount : ℕ, IsFixedTieLeximaxPluralitySelector feasible (rule voterCount)) →
+    (rule : ∀ voterCount : ℕ, LinearRankAggregationRule (Fin voterCount) n feasible)
+    (priority : Candidate n → ℕ),
+      (∀ voterCount : ℕ,
+        IsPriorityTieLeximaxPluralitySelector feasible (rule voterCount) priority) →
         (∀ voterCount : ℕ, MajorityConsistent feasible (rule voterCount)) ∧
           (∀ voterCount : ℕ, WinnerMonotonic feasible (rule voterCount)) ∧
             RankingSeparability feasible rule

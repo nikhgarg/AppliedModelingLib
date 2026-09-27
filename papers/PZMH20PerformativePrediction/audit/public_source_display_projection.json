@@ -1,9 +1,9 @@
 {
   "generator": "python3 scripts/public_source_display_projection.py",
   "paper_id": "PZMH20PerformativePrediction",
-  "private_source_map_sha256": "e4950a1d816aff2fcb574a66ba7bb00cbbb1dafce02bbfad09bd96e9a547e008",
+  "private_source_map_sha256": "21d2d565638c3a968ef9702f9496561e49f8297a5137adc95de1e83a68e92d70",
   "public_manifest_path": "papers/PZMH20PerformativePrediction/audit/public_source_display_projection.json",
-  "public_source_map_sha256": "4132fe3a15f0bae85961945d95b5ed394903af38b23068ae452779f7e906f9f3",
+  "public_source_map_sha256": "8836cc5e50a0678ef78e32ad6e473934e138c89764e8bfff36c77d50d23ad074",
   "raw_source_artifact_included": false,
   "raw_source_display_material": "selected_byte_pinned_source_anchor_quotes",
   "schema": 1,

@@ -75,6 +75,27 @@ and [custom domains across project sites](https://docs.github.com/en/pages/confi
 
 ## Before Publishing
 
+### Formalizations maintained in another repository
+
+A link-only paper folder contains `external.json` and a generated `README.md`.
+For example, `papers/PKG26AtomicFeaturesExternal` links to the standalone Atomic
+Features formalization. Its manifest supplies the citation, the status reported
+by that repository, and links to its report, Lean statements, theorem index, and
+repository. It has no local proof target, `status.json`, or closeout credential.
+
+Run `python3 scripts/public_release_external_references.py` after staging a new
+manifest, and use `--check` to check the generated folder and table row. Ordinary
+status regeneration preserves these rows in the same table. Record the external
+revision and count physical lines in its tracked `.lean` files, excluding
+dependencies. The website build and local preview add these snapshots to the
+displayed paper and code totals; the underlying status index remains local.
+Human-review counts are not inferred from an external report. The website build
+validates the tracked references and renders their README pages. The release guard permits
+only the two reference files in these folders, preventing private proof or source
+files from being exported under the external-reference designation.
+
+### Release checks
+
 1. Decide whether the paper PDF should be linked externally or added as a final
    reviewed public artifact.
 2. Review `site/index.html` for accurate contact text and non-generated prose.

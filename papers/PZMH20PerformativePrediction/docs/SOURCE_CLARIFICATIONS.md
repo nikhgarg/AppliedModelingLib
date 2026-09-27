@@ -34,21 +34,24 @@ and REGD uses empirical projected gradients.
 
 Source: Theorem 3.10, p. 6; Appendix E.4.
 
-- **All dimensions with sample budget
-  $n_t=O((\epsilon\delta)^{-m}\log(t/p))$ → $m>2$ and an explicit sufficient
-  batch selector, without the printed big-O budget.** Here $m$ is data
+- **One printed all-dimension sample budget → separate checked routes, without
+  the printed big-O formula.** The direct RERM route covers every positive data
+  dimension with an explicit selected-shell schedule: inverse-square times one
+  radius logarithm at $m=1$, inverse-square times a squared-radius logarithm
+  at $m=2$, and the supercritical inverse-dimension power at $m>2$. The REGD
+  route remains the explicit supercritical ($m>2$) schedule. Here $m$ is data
   dimension, $\epsilon$ distribution sensitivity, $\delta$ target distance,
   and $p$ total failure probability. A Bernoulli mass estimate fluctuates on
   scale $n^{-1/2}$, exactly its Wasserstein error on $\{0,1\}$, so the
-  displayed $r^{-1}$ sample dependence at $m=1$ does not supply accuracy $r$.
+  printed $r^{-1}$ sample dependence at $m=1$ does not supply accuracy $r.
   [Fournier–Guillin Theorems 1–2](https://arxiv.org/pdf/1312.2128) distinguish
   $m=1$, $m=2$ with a logarithmic correction, and $m>2$.
-- **Regularity on $\Theta$ and $Z=\bigcup_{\theta\in\Theta}\operatorname{supp}D(\theta)$
-  → regularity on the entire parameter and data spaces.** A1/A2 hold for all
-  parameter/data pairs; sensitivity, loss/gradient integrability, and loss
-  differentiation hold for all ambient parameters. RERM's data-Lipschitz loss
-  bound is global too. This restricts the models covered by the current proof;
-  necessity of the stronger scope is unresolved.
+- **RERM regularity on $\Theta$ and $Z=\bigcup_{\theta\in\Theta}\operatorname{supp}D(\theta)$
+  → the source-domain model carrier.** The recovered direct raw-$W_1$ RERM
+  route uses its laws, loss integrability, A1/A2 lower model, sensitivity, and
+  minimization only on the declared feasible domain. It does not retain the
+  historical data-Lipschitz loss bridge. The separate RGD finite-sample route
+  still records its older global analytic regularity boundary explicitly.
 - **A finite exponential moment separately at each deployment → one common
   bound over every law reached along every adaptive history:**
   $$\int e^{\lambda\|z\|^\alpha}\,dD(\theta)(z)\leq K,
@@ -58,37 +61,34 @@ Source: Theorem 3.10, p. 6; Appendix E.4.
   the batch selector splits bounded-region and tail errors and allocates
   round failure budgets $6p/[\pi^2(t+1)^2]$. Necessity of the uniform bound
   under all source hypotheses is unresolved.
-- **Explicit sample-count and burn-in formulas → sufficient error budgets
-  and some finite entry time.** For contraction factor $q$, target radius $R$,
+- **Explicit sample-count formula → dimension-regime schedules; logarithmic
+  burn-in → recovered source-style entry threshold.** For contraction factor
+  $q$, target radius $R$,
   sampling perturbation $e$, and outer factor $q\leq q_{\rm out}<1$, retain
   $$e\leq(q_{\rm out}-q)R,\qquad e\leq(1-q)R.$$
   These inequalities keep sampling noise within the contraction slack.
-  The proof derives a finite $t_0$ after which the iterates stay within $R$ with
-  probability at least $1-p$. Matching the paper's displayed sample-count
-  and logarithmic burn-in bounds remains unproved.
-- **RERM gradient regularity alone → an additional data-Lipschitz loss
-  comparison:** for loss constant $L_z$, Wasserstein tolerance $W$, and
-  risk tolerance $\tau$, require $L_zW\leq\tau$ and use
-  $e=\sqrt{4\tau/\gamma}$. Strong convexity converts risk error to parameter
-  error; gradient smoothness alone does not give this loss-Lipschitz premise.
-  REGD instead uses $e=h\beta W$ for step $h\geq0$. Both branches need
-  integrable sampled quantities and tolerances fitting the concentration
-  selector's bounded-region and tail budgets. Necessity of these current-proof
-  premises is unresolved.
+  The proof instantiates the source-style condition
+  $$t_0\ \geq\ \frac{\log(d_0/R)}{1-q_{\rm out}}$$
+  (with the RERM outer factor $2\epsilon\beta/\gamma$) and then keeps every
+  later iterate within $R$ with probability at least $1-p$. The printed common
+  all-dimension sample-count formula is not valid in every positive dimension;
+  the proved dimension-regime schedules replace it.
+- **RERM gradient regularity → direct minimizer perturbation, without a
+  data-Lipschitz loss comparison.** The recovered RERM proof uses A1's
+  data-gradient bound and A2's strong-convexity lower model to convert its raw
+  $W_1$ event directly into a parameter perturbation. REGD instead uses
+  $e=h\beta W$ for step $h\geq0$. Both branches retain the integrability and
+  numerical tolerances their respective adaptive concentration constructions
+  actually consume.
 
 ## Proposition 4.1: stable-point existence
 
 - **Continuity of the loss and distribution map on the source domain
-  $\Theta$ and support union $Z$ → expected-loss integrability for every
-  ambient deployed/evaluated parameter pair and joint continuity of the
-  decoupled expected risk on the full ambient parameter product.** The current
-  target also requires loss convexity on $\Theta$ for every datum in the
-  chosen data carrier. Defining a total model outside $\Theta$ is a
-  representation choice, and taking the data carrier to be $Z$ makes the
-  all-datum quantifier source-relative. The global integrability and
-  continuity conditions still constrain the off-domain extension; they are
-  sufficient for the current fixed-point proof, and their necessity is
-  unresolved.
+  $\Theta$ and support union $Z$ → joint continuity of the decoupled expected
+  risk on $\Theta\times\Theta$.** This remains the explicit continuity bridge
+  needed by the compact best-response proof. The current model is defined on
+  $\Theta$, so it does not require a total off-domain law or loss extension;
+  pointwise loss convexity is likewise imposed only on the feasible domain.
 - **Compact $\Theta$ in the displayed proposition → nonempty compact convex
   $\Theta$.** Convexity is already part of the paper's global parameter-space
   setup, so making it explicit here adds no source-model restriction. A
@@ -110,30 +110,59 @@ Source: Theorem 3.10, p. 6; Appendix E.4.
 
 <a id="theorems-35-and-38-population-scope"></a>
 
-## Theorems 3.5 and 3.8: population scope
+## Theorems 3.5 and 3.8: recovered source-domain scope
+
+- **The closed convex source parameter space $\Theta$ → the actual Lean
+  parameter carrier.** `MeasurePerformativeModelOn` defines laws, losses, and
+  expected risks only for admissible parameters. Theorem 3.5 now proves its
+  transport contraction directly from on-domain A1/A2, loss integrability, and
+  Wasserstein sensitivity; it has no off-domain or population-gradient
+  integrability premise. Theorem 3.8 records expected-gradient integrability
+  on $\Theta$ because that is the population update displayed in the source,
+  then proves its projected contraction and rate on the same domain. This is a
+  clarification of the paper's model domain, not an additional economic
+  assumption or a change to either conclusion.
+- **The source's finite-dimensional $Theta\subseteq\mathbb R^d$ → explicit
+  finite-dimensional Lean parameter spaces.** Theorem 3.8 does not separately
+  assume $\gamma\leq\beta$: A1/A2 derive it on every non-singleton domain;
+  the singleton case satisfies the displayed conclusion directly.
+
+## Historical all-ambient route for Theorems 3.5 and 3.8
 
 - **A1, A2, Wasserstein sensitivity, and analytic conditions on the source
   domain $\Theta$ and support union $Z$ → the same conditions over every
   ambient parameter and every datum in the chosen Lean data carrier.** The
-  current targets also require expected-loss and gradient integrability for
+  prior targets also required expected-loss and gradient integrability for
   every ambient deployed/evaluated parameter pair, together with local loss
   measurability and pointwise parameter differentiation there. Their
   contraction, stability, and convergence conclusions remain restricted to
   $\Theta$. Making the model total outside $\Theta$ is a representation
   choice, and choosing the data carrier as $Z$ removes the apparent
   off-support strengthening. The parameter-global hypotheses still restrict
-  the current formalization beyond the paper; no derivation from the
+  the prior formalization beyond the paper; no derivation from the
   source-domain assumptions is proved, and necessity is unresolved.
 
 <a id="corollary-51-whole-space-population-scope"></a>
 
-## Corollary 5.1: whole-space population scope
+## Corollary 5.1: recovered strategic source-domain scope
+
+- **The strategic-classification corollary → its domain-relative strategic
+  profile and Stackelberg benchmark.** The current endpoint keeps the source's
+  closed convex parameter domain, induced distribution, selected response, and
+  Stackelberg comparison. It obtains RRM convergence from the recovered
+  domain-relative theorem and proves the displayed objective-gap upper bound.
+  No whole-space extension or performative-optimum substitution is required.
+- **The source's Euclidean parameter setting → an explicit
+  finite-dimensional parameter-space binder.** This is a source specialization
+  of a previously more-general Lean endpoint, not an added condition.
+
+## Historical whole-space route for Corollary 5.1
 
 - **RRM, performative optimality, stability, and regularity on the source's
   closed convex domain $\Theta$ → RRM, optimality, stability, A1, A2,
   Wasserstein sensitivity, loss Lipschitzness, integrability, measurability,
   and differentiation on the entire ambient parameter carrier.** The current
-  target has no separate domain argument and starts from any ambient initial
+  prior target had no separate domain argument and started from any ambient initial
   point. Choosing the Lean data carrier as $Z$ can make its all-datum
   quantifiers source-relative; the whole-parameter-space restriction remains.
   No reduction from the source-domain corollary is proved, and necessity of

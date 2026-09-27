@@ -2653,6 +2653,21 @@ theorem sixCandidateCopy_rewardGap
   ring
 
 /--
+The literal weak containment stated in source Lemma 3.4.  At `ε = 0`, the
+feature vectors of `c′` and `c` coincide, so every parameter—not only an
+optimizer—lies in the weak region `R_{c′ ≻ c}`.  This exact observation is
+therefore logically valid but cannot provide the strict positive-perturbation
+separation required later in the source proof.
+-/
+theorem sixCandidateCopy_zero_cPrimeAboveOrTied
+    (δ : ℝ) (parameter : LinearRewardParameter 2) :
+    linearReward parameter (sixCandidateCopyFeatures 0 δ) (5 : Candidate 4) ≤
+      linearReward parameter (sixCandidateCopyFeatures 0 δ) (4 : Candidate 4) := by
+  apply sub_nonneg.mp
+  rw [sixCandidateCopy_rewardGap]
+  norm_num
+
+/--
 For positive ε, the source's weak half-space `R_{c′ ≻ c}` is exactly the
 closed copy-bad cone.  This is the concrete bridge used by the corrected
 perturbation result.

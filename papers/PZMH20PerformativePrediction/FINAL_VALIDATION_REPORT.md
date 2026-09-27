@@ -1,6 +1,6 @@
 # Final Validation Report: Performative Prediction
 
-Updated: 2026-09-06
+Updated: 2026-09-27
 
 ## 1. Human Verdict
 
@@ -8,20 +8,21 @@ The population convergence, stability, comparison, and counterexample results
 are proved on the domains summarized below. The finite-sample RERM and REGD
 results prove an all-round neighborhood guarantee under their stated inputs.
 
-**Formalization gap:** Theorems 3.5 and 3.8 assume A1, A2, Wasserstein sensitivity,
-and analytic regularity over the ambient parameter space while stating their
-conclusions on the source domain. Proposition 4.1 assumes global expected-risk
-continuity, and Corollary 5.1 takes the parameter domain to be the entire
-ambient space. Necessity of these stronger current-proof conditions is
-unresolved. See the comparisons for
-[Theorems 3.5 and 3.8](docs/SOURCE_CLARIFICATIONS.md#theorems-35-and-38-population-scope),
+**Source-domain clarification:** Theorems 3.5 and 3.8, Proposition 4.1, and
+Corollary 5.1 use the paper's closed convex finite-dimensional parameter domain
+$\Theta$ directly. Theorems 3.5 and 3.8 and Corollary 5.1 retain their stated
+conclusions; the Proposition 4.1 target explicitly records the on-domain joint
+continuity of expected decoupled risk needed for its best-response argument.
+See [the population results](docs/SOURCE_CLARIFICATIONS.md#theorems-35-and-38-recovered-source-domain-scope),
 [Proposition 4.1](docs/SOURCE_CLARIFICATIONS.md#proposition-41-stable-point-existence),
-and [Corollary 5.1](docs/SOURCE_CLARIFICATIONS.md#corollary-51-whole-space-population-scope).
+and [Corollary 5.1](docs/SOURCE_CLARIFICATIONS.md#corollary-51-recovered-strategic-source-domain-scope).
 
-**Formalization gap:** Theorem 3.10 is proved for data dimension greater than two
-with uniform moments, global regularity, and explicit numerical conditions;
-the printed all-dimension sample budget and logarithmic burn-in bound remain
-unproved. [Details](docs/SOURCE_CLARIFICATIONS.md#theorem-310-dimension-and-adaptive-uniformity).
+**Theorem 3.10 source clarification:** Direct raw-Wasserstein RERM is proved
+in every positive data dimension, with regime-specific schedules; REGD is
+proved for data dimension greater than two. Both use an explicit uniform
+adaptive moment condition, global regularity, and numerical conditions. The
+source-style logarithmic entry threshold is proved, and the schedules state the
+applicable dimension-specific sample counts. [Details](docs/SOURCE_CLARIFICATIONS.md#theorem-310-dimension-and-adaptive-uniformity).
 
 ## 2. Closeout Status
 
@@ -43,48 +44,40 @@ Proposition 3.6(a--c), Propositions 4.1--4.2, Theorem 4.3 and Corollary 5.1.
 
 | Result | Comparison with source |
 | --- | --- |
-| Theorem 3.5 | **Formalization gap:** A1, A2, Wasserstein sensitivity, expected-loss/gradient integrability, measurability and differentiation hold for every ambient parameter; the conclusion remains on $\Theta$. Necessity is unresolved. [Conditions](docs/SOURCE_CLARIFICATIONS.md#theorems-35-and-38-population-scope). |
-| Proposition 3.6(a) | **Exact.** |
-| Proposition 3.6(b) | **Exact.** |
-| Proposition 3.6(c) | **Source clarification:** $0<\gamma\leq\beta$ is required by the regularity constants; the counterexample covers $\epsilon\geq\gamma/\beta$. [Compatibility](docs/SOURCE_CLARIFICATIONS.md#proposition-36c-compatible-regularity-constants). |
-| Theorem 3.8 | **Formalization gap:** A1, A2, Wasserstein sensitivity, expected-loss/gradient integrability, measurability and differentiation hold for every ambient parameter; the conclusion remains on $\Theta$. Necessity is unresolved. [Conditions](docs/SOURCE_CLARIFICATIONS.md#theorems-35-and-38-population-scope). |
-| Theorem 3.10, RERM | **Formalization gap:** all-round probability guarantee for dimension > 2, with uniform moments, global regularity, data-Lipschitz loss and numerical slack (necessity unresolved); printed sample/burn-in bounds remain unproved. [Conditions](docs/SOURCE_CLARIFICATIONS.md#theorem-310-dimension-and-adaptive-uniformity). |
-| Theorem 3.10, empirical gradient descent | **Formalization gap:** all-round guarantee for dimension > 2, with uniform moments, global regularity and numerical slack (necessity unresolved); printed sample/burn-in bounds remain unproved. [Conditions](docs/SOURCE_CLARIFICATIONS.md#theorem-310-dimension-and-adaptive-uniformity). |
-| Proposition 4.1 | **Formalization gap:** expected-loss integrability and joint continuity of expected decoupled risk hold on the full ambient parameter product; stability remains domain-relative. Necessity of the global scope is unresolved. [Condition](docs/SOURCE_CLARIFICATIONS.md#proposition-41-stable-point-existence). |
-| Proposition 4.2 | **Exact claim; witness domain clarified:** both Bernoulli endpoint bounds are imposed. [Valid example](docs/SOURCE_CLARIFICATIONS.md#proposition-42-valid-bernoulli-probabilities). |
-| Theorem 4.3 | **Exact.** |
-| Corollary 5.1 | **Formalization gap:** whole-space RRM and optimum assumptions; the strategic-classification Stackelberg interpretation is not formalized. [Conditions](docs/SOURCE_CLARIFICATIONS.md#corollary-51-whole-space-population-scope). |
+| Theorem 3.5 | **Exact under the source-domain reading.** The finite-dimensional closed convex domain $\Theta$ is the parameter carrier; the contraction, stability, convergence, and entry bound are unchanged. [Scope](docs/SOURCE_CLARIFICATIONS.md#theorems-35-and-38-recovered-source-domain-scope). |
+| Proposition 3.6(a) | **Exact.** The formal statement proves the stated smooth convex counterexample and its nonconvergent RRM orbit. |
+| Proposition 3.6(b) | **Exact.** The formal statement proves the stated strongly convex nonsmooth counterexample and its two-cycle. |
+| Proposition 3.6(c) | **Exact under clarified regularity conditions.** The compatible range $0<\gamma\leq\beta$ supports the stated counterexample for $\epsilon\geq\gamma/\beta$. [Compatibility](docs/SOURCE_CLARIFICATIONS.md#proposition-36c-compatible-regularity-constants). |
+| Theorem 3.8 | **Exact under the source-domain reading.** Its projected expected-gradient update is defined on $\Theta$; $\gamma\leq\beta$ is derived on non-singleton domains and the singleton case is direct. [Scope](docs/SOURCE_CLARIFICATIONS.md#theorems-35-and-38-recovered-source-domain-scope). |
+| Theorem 3.10, RERM | **Formalized under source clarifications.** The all-round guarantee holds in every positive data dimension with a regime-specific selected-shell schedule, a uniform adaptive moment envelope, numerical slack, and the source-style logarithmic entry threshold. [Conditions](docs/SOURCE_CLARIFICATIONS.md#theorem-310-dimension-and-adaptive-uniformity). |
+| Theorem 3.10, empirical gradient descent | **Formalized under source clarifications.** The all-round guarantee holds for dimension > 2 with a uniform adaptive moment envelope, global regularity, numerical slack, and the source-style logarithmic entry threshold. [Conditions](docs/SOURCE_CLARIFICATIONS.md#theorem-310-dimension-and-adaptive-uniformity). |
+| Proposition 4.1 | **Formalized under clarified domain and continuity conditions.** On a nonempty compact convex $\Theta$, on-domain joint continuity of expected decoupled risk and pointwise convexity yield a domain-stable parameter. [Condition](docs/SOURCE_CLARIFICATIONS.md#proposition-41-stable-point-existence) and [model scope](docs/SOURCE_CLARIFICATIONS.md#theorems-35-and-38-recovered-source-domain-scope). |
+| Proposition 4.2 | **Exact with a source clarification.** Both Bernoulli endpoint bounds are imposed. [Valid example](docs/SOURCE_CLARIFICATIONS.md#proposition-42-valid-bernoulli-probabilities). |
+| Theorem 4.3 | **Exact.** The formal statement proves the domain-relative optimum--stable distance bound. |
+| Corollary 5.1 | **Exact under the source-domain reading.** The strategic domain profile and Stackelberg comparator yield the stated objective-gap bound. [Scope](docs/SOURCE_CLARIFICATIONS.md#corollary-51-recovered-strategic-source-domain-scope) and [model scope](docs/SOURCE_CLARIFICATIONS.md#theorems-35-and-38-recovered-source-domain-scope). |
 
-## 5. Remaining Boundaries and Gaps
+## 5. Clarified Conditions and Source Clarifications
 
-Theorems 3.5 and 3.8 retain ambient-global regularity while proving domain-level
-conclusions; Proposition 4.1 retains global expected-risk continuity; and
-Corollary 5.1 is a whole-space result. The exact differences are in the
-[Theorems 3.5 and 3.8](docs/SOURCE_CLARIFICATIONS.md#theorems-35-and-38-population-scope),
-[Proposition 4.1](docs/SOURCE_CLARIFICATIONS.md#proposition-41-stable-point-existence),
-and [Corollary 5.1](docs/SOURCE_CLARIFICATIONS.md#corollary-51-whole-space-population-scope)
-memo entries.
-Their necessity under the source hypotheses is unresolved.
-
-Theorem 3.10 proves the all-round probability guarantee with an explicit
-sufficient batch schedule for data dimension greater than two. The printed
-all-dimension sample-count and logarithmic burn-in bounds remain unproved.
-The current proof uses a common moment bound across adaptive histories and
-global regularity and numerical conditions; their necessity under the full
-source hypotheses is unresolved. The [memo](docs/SOURCE_CLARIFICATIONS.md#theorem-310-dimension-and-adaptive-uniformity)
-gives the exact differences.
+There is no remaining formalization gap in the selected results. Theorem 3.10
+uses two source clarifications: the formal statements make the uniform adaptive
+moment condition explicit and state the applicable dimension-specific sample
+schedules. Its direct RERM route covers every positive data dimension with
+separate dimension-one, dimension-two, and supercritical schedules; its REGD
+route is proved in data dimension greater than two. Both have the source-style
+logarithmic entry threshold. Proposition 3.6(c) makes the compatible regularity
+range explicit, Proposition 4.1 states the domain and continuity conditions,
+and Proposition 4.2 states both Bernoulli endpoint bounds. The
+[memo](docs/SOURCE_CLARIFICATIONS.md#theorem-310-dimension-and-adaptive-uniformity)
+gives the precise RERM/RGD distinction.
 
 ## 6. Additional Assumptions Beyond Paper
 
-The [population comparison](docs/SOURCE_CLARIFICATIONS.md#theorems-35-and-38-population-scope)
-states the ambient-global regularity and analytic premises for Theorems 3.5
-and 3.8, and the [Corollary 5.1 comparison](docs/SOURCE_CLARIFICATIONS.md#corollary-51-whole-space-population-scope)
-states its whole-space domain. The
-[stable-point existence argument](docs/SOURCE_CLARIFICATIONS.md#proposition-41-stable-point-existence)
-uses expected-loss integrability and joint continuity of expected risk over the
-full ambient parameter product for Proposition 4.1. Necessity of these exact
-premises has not been established. The finite-sample conditions are in
-[Section 5](#5-remaining-boundaries-and-gaps). Counterexample parameter choices
+The [source-domain clarification](docs/SOURCE_CLARIFICATIONS.md#theorems-35-and-38-recovered-source-domain-scope)
+records why the population results use the paper's finite-dimensional parameter
+domain rather than an arbitrary ambient extension. Proposition 4.1's formalized
+compact-domain target states the on-domain joint expected-risk continuity required
+by its best-response proof. The finite-sample source clarifications are in
+[Section 5](#5-clarified-conditions-and-source-clarifications). Counterexample parameter choices
 in the memo are constructions, not population-model assumptions.
 
 ## 7. Proof-Strategy Deviations
@@ -100,23 +93,23 @@ neighborhood of the stable point. The memo states the required inequalities.
 
 ## 9. Generalizations, Conjectures, and Extensions
 
-The remaining source-coverage work is identified in
-[Section 5](#5-remaining-boundaries-and-gaps).
+The documented source clarifications are identified in
+[Section 5](#5-clarified-conditions-and-source-clarifications).
 
 ## 10. Source Clarifications and Exact Readings
 
 The memo gives the
-[compatible-constant correction](docs/SOURCE_CLARIFICATIONS.md#proposition-36c-compatible-regularity-constants),
+[compatible-constant clarification](docs/SOURCE_CLARIFICATIONS.md#proposition-36c-compatible-regularity-constants),
 [explicit cycling witnesses](docs/SOURCE_CLARIFICATIONS.md#proposition-36ab-concrete-counterexample-models),
-and [Bernoulli endpoint correction](docs/SOURCE_CLARIFICATIONS.md#proposition-42-valid-bernoulli-probabilities).
-Theorem 3.10's substantive formalization boundary belongs to
-[Section 5](#5-remaining-boundaries-and-gaps), and population analytic premises
+and [Bernoulli endpoint clarification](docs/SOURCE_CLARIFICATIONS.md#proposition-42-valid-bernoulli-probabilities).
+Theorem 3.10's source clarifications are described in
+[Section 5](#5-clarified-conditions-and-source-clarifications), and population analytic premises
 to [Section 6](#6-additional-assumptions-beyond-paper).
 
 ## 11. Paper Issues or Caveats
 
-The material qualifications are stated in
-[Section 5](#5-remaining-boundaries-and-gaps) and
+The material source clarifications are stated in
+[Section 5](#5-clarified-conditions-and-source-clarifications) and
 [Section 6](#6-additional-assumptions-beyond-paper), with exact comparisons
 linked from the result table.
 
@@ -127,7 +120,7 @@ population contraction and stability statements, explicit counterexamples,
 finite/measure bridges, and eleven selected result targets. [ProofInterface.lean](ProofInterface.lean)
 contains their proof endpoints, including Theorem 3.10 trajectory results with
 an internally capped batch schedule and a derived finite entry iteration.
-Section 5 states the remaining source-coverage boundaries.
+Section 5 states the source clarifications and their proved formal statements.
 
 ## 13. Paper Assumption Provenance
 
@@ -138,9 +131,9 @@ data-Lipschitz condition as reusable source predicates. The map exposes the
 ambient model and global regularity predicates used by the population and
 Theorem 3.10 targets, bringing the routed surface to six paper-local and fourteen
 shared-library declarations. The current [paper](FINAL_CLOSURE_RECEIPT.md)
-and [library](FINAL_CLOSURE_RECEIPT.md) ledgers record the prior
-independent source comparisons; Section 20 identifies the changed rows that
-require refreshed review. Sections 5–6 state the mathematical boundaries.
+and [library](FINAL_CLOSURE_RECEIPT.md) ledgers record the independent
+source comparisons. Sections 5–6 state the source clarifications and
+mathematical conditions.
 
 ## 14. Displayed Formula Provenance
 
@@ -148,23 +141,24 @@ require refreshed review. Sections 5–6 state the mathematical boundaries.
 stability thresholds, counterexample losses, stable-point and optimum-distance
 bounds, risk gaps, and finite-sample expressions. The
 [clarification memo](docs/SOURCE_CLARIFICATIONS.md) records the compatible
-constants, Bernoulli endpoint correction, analytic domains, and Theorem 3.10
-boundary.
+constants, Bernoulli endpoint clarification, analytic domains, and Theorem 3.10
+source clarifications.
 
 ## 15. Library Lift Pass
 
 Reusable definitions include decoupled performative risk and Theorem 4.3's
 domain-relative model, risks, solution concepts, A2 witness, data-Lipschitz
 condition, and Wasserstein sensitivity. Population contraction, explicit
-counterexamples, stable-point arguments, and corrected Theorem 3.10
+counterexamples, stable-point arguments, and clarified Theorem 3.10
 trajectories remain paper-local.
 
 ## 16. DAG Audit
 
 The [dependency DAG](docs/DependencyDAG.pdf) shows the paper's definitions and
 named results. Its Theorem 3.10 nodes state the proved all-round containment
-for dimension greater than two and the unproved printed sample/burn-in bounds.
-The updated PDF was compiled and visually inspected on 2026-09-06; labels,
+and the dimension-regime replacement for the printed common all-dimension
+sample formula.
+The updated PDF was compiled and visually inspected on 2026-09-27; labels,
 node separation, and arrowheads are legible.
 
 ## 17. Validation Checks
@@ -185,29 +179,27 @@ now have current independent source comparisons.
 ## 19. Named Theorem Statements Checked
 
 - Theorems 3.5 and 3.8; Proposition 3.6(a--c): population contraction and the
-  three explicit failure examples on their corrected domains.
-- Theorem 3.10: RERM and REGD all-round neighborhood guarantees for dimension
-  greater than two, with the stated uniform-moment, analytic and numerical
-  inputs. The printed all-dimension sample and burn-in bounds remain unproved.
+  three explicit failure examples on their documented domains.
+- Theorem 3.10: RERM has an all-round neighborhood guarantee in every positive
+  dimension with separate dimension-one, dimension-two, and supercritical
+  schedules; REGD has the corresponding checked supercritical guarantee. Both
+  retain the source-style logarithmic entry threshold. The printed common
+  all-dimension sample formula is replaced by those proved schedules.
 - Propositions 4.1--4.2, Theorem 4.3, and Corollary 5.1: stable-point existence,
-  the corrected concavity witness, distance, convergence, and risk-gap results.
+  the Bernoulli concavity witness, distance, convergence, and risk-gap results.
 
 ## 20. Paper-Facing Statement Validator Ledger
 
-The existing [source-to-Spec ledger](FINAL_CLOSURE_RECEIPT.md)
-records four ordinary matches and seven matches to documented formalized
-targets across eleven results. The changed target descriptions for Theorems
-3.5 and 3.8, Proposition 4.1, and Corollary 5.1 require refreshed comparison.
-Theorem 4.3 and Proposition 4.2 remain ordinary source matches; the two
-Theorem 3.10 results retain the limited targets described in Section 5.
-Correction and boundary provenance is in
+The [source-to-Spec ledger](FINAL_CLOSURE_RECEIPT.md) records
+seven ordinary matches and four matches to documented source-clarification
+targets across the eleven selected results. Theorems 3.5 and 3.8 and Corollary
+5.1 have fresh source-domain matches; Proposition 4.1 and the two Theorem 3.10
+routes retain their documented source-clarification targets. The provenance is in
 [source-proof fidelity](FINAL_CLOSURE_RECEIPT.md).
 
 ## 21. Source-Coverage Audit Ledger
 
 [The source map](audit/paper_statement_map.json) records the eleven selected
-result targets and their governing definitions. This selected coverage does
-not establish the printed Theorem 3.10 quantitative bounds, derive the
-population results' ambient-global premises from the source-domain conditions,
-or turn Corollary 5.1's whole-space target into a result on arbitrary closed
-convex $\Theta$.
+result targets and their governing definitions. The Theorem 3.10 statements
+use the checked dimension-specific schedules; the population results are
+recorded on the paper's source domain $\Theta$.

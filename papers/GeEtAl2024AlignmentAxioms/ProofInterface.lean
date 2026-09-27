@@ -27,14 +27,12 @@ theorem standardLossFormulationSpec_iff_nonnegative_and_minimizing
         IsStandardLossMinimizing features loss rule := by
   rfl
 
-/-- Checked uniqueness and explicit linear-infeasibility observations after Definition 2.2. -/
-theorem definition2_2_pairwiseMajorityConsistencyAndConsequences :
-    definition2_2_pairwiseMajorityConsistencyAndConsequencesSpec := by
-  refine ⟨?_, c1ProfilePlus1_has_no_pairwiseMajorityRanking, ?_⟩
-  · intro Voter _ n feasible rule
-    exact definition2_2_pairwiseMajorityConsistent_core feasible rule
-  · intro Voter _ n profile first second hfirst hsecond
-    exact pairwiseMajorityRanking_unique profile first second hfirst hsecond
+/-- Checked nonexistence and uniqueness observations following Definition 2.2. -/
+theorem pmcRankingUniquenessAndNonexistence :
+    pmcRankingUniquenessAndNonexistenceSpec := by
+  refine ⟨c1ProfilePlus1_has_no_pairwiseMajorityRanking, ?_⟩
+  intro Voter _ n profile first second hfirst hsecond
+  exact pairwiseMajorityRanking_unique profile first second hfirst hsecond
 
 /-- Checked finite counterexample form of source Theorem 3.1. -/
 theorem theorem3_1_lossBasedImpossibility : theorem3_1_lossBasedImpossibilitySpec := by
@@ -104,6 +102,11 @@ theorem lemma3_3_coreMinimizers : lemma3_3_coreMinimizersSpec := by
   intro g A1 A2 hA hminimum hseparation
   exact lemma3_3_core_minimizers hA hminimum hseparation
 
+/-- Checked literal weak inclusion of source Lemma 3.4 at the ε = 0 baseline. -/
+theorem lemma3_4_literalZeroWeakInclusion : lemma3_4_literalZeroWeakInclusionSpec := by
+  intro δ weight loss parameter _
+  exact sixCandidateCopy_zero_cPrimeAboveOrTied δ (twoCoordinateParameter parameter)
+
 /-- Checked strict-cone repair of source Lemma 3.4. -/
 theorem lemma3_4_correctedCopyCone : lemma3_4_correctedCopyConeSpec := by
   intro g A3 A4 δ hA3_pos hδ_pos hδ_bounds hminimizer_bounds
@@ -137,10 +140,10 @@ theorem theorem3_7_C1FailsParetoAndConsequences :
   · intro Voter _ _ n profile ranking hmajority
     exact pairwiseMajorityRanking_respectsPareto profile ranking hmajority
 
-/-- Checked finite fixed-tie LCPO construction for all four Theorem 4.3 axioms. -/
+/-- Checked Theorem 4.3 for every fixed profile-independent candidate priority. -/
 theorem theorem4_3_constructedFixedTieLCPO : theorem4_3_constructedFixedTieLCPOSpec := by
-  intro Voter _ _ n feasible fallback hfallback
-  exact theorem4_3_constructed_fixedTieLCPO_core feasible fallback hfallback
+  intro Voter _ _ n feasible rule priority hselector
+  exact priorityTieLCPOSelector_theorem4_3 feasible rule priority hselector
 
 /-- Checked exact Appendix-B profile, majority ranking, uniqueness, and infeasibility. -/
 theorem appendixBExplicitInfeasiblePMC : appendixBExplicitInfeasiblePMCSpec := by
@@ -158,9 +161,9 @@ theorem theoremC_2_copelandAndLCPOFailSeparability :
 
 /-- Checked PMC and separability components of source Theorem C.3. -/
 theorem theoremC_3_linearKemeny : theoremC_3_linearKemenySpec := by
-  intro n feasible fallback hfallback voterCount
-  exact ⟨canonicalKemenyRule_pairwiseMajorityConsistent feasible fallback hfallback voterCount,
-    canonicalKemenyRule_rankingSeparability feasible fallback hfallback⟩
+  intro n feasible rule hselector
+  exact ⟨kemenySelector_pairwiseMajorityConsistent feasible rule hselector.1,
+    contractionConsistentKemenySelector_rankingSeparability feasible rule hselector⟩
 
 /-- Checked literal finite counterexample of source Theorem C.4. -/
 theorem theoremC_4_linearKemenyFailsParetoAndMajorityConsistency :
@@ -168,22 +171,15 @@ theorem theoremC_4_linearKemenyFailsParetoAndMajorityConsistency :
   intro rule hselector
   exact theoremC_4_linearKemeny_failsParetoAndMajorityConsistency rule hselector
 
-/-- Checked literal Pareto-Kemeny counterexample of source Theorem C.5. -/
+/-- Checked literal C.5 counterexample, including its first-profile finite classification. -/
 theorem theoremC_5_paretoKemenyFailsSeparabilityAndMajorityConsistency :
     theoremC_5_paretoKemenyFailsSeparabilityAndMajorityConsistencySpec := by
-  intro rule hselector hfirst
-  exact theoremC_5_paretoKemeny_failsSeparabilityAndMajorityConsistency
-    rule hselector hfirst
+  intro rule hselector
+  exact theoremC_5_paretoKemeny_failsSeparabilityAndMajorityConsistency rule hselector
 
-/-- Checked majority, winner-monotonicity, and separability components of Theorem C.6. -/
+/-- Checked C.6 components under a fixed profile-independent candidate priority. -/
 theorem theoremC_6_fixedTieLeximaxPlurality : theoremC_6_fixedTieLeximaxPluralitySpec := by
-  intro n feasible rule hselector
-  exact ⟨fun voterCount =>
-      fixedTieLeximaxPluralitySelector_majorityConsistent feasible (rule voterCount)
-        (hselector voterCount),
-    fun voterCount =>
-      fixedTieLeximaxPluralitySelector_winnerMonotonic feasible (rule voterCount)
-        (hselector voterCount),
-    fixedTieLeximaxPluralitySelector_rankingSeparability feasible rule hselector⟩
+  intro n feasible rule priority hselector
+  exact priorityTieLeximaxPluralitySelector_theoremC_6 feasible rule priority hselector
 
 end GeEtAl2024AlignmentAxioms

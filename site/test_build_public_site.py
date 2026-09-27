@@ -76,6 +76,30 @@ The result is $x^2 > 0$.
         with self.assertRaisesRegex(ValueError, "unpublished artifact"):
             build(self.repo, self.root / "output")
 
+    def test_external_reference_renders_links_and_combined_code_without_private_files(self):
+        from scripts.public_release_external_references import render_readme, PAPER_ROWS_END
+        from scripts.tests.test_public_release_external_references import fixture_reference
+        reference = fixture_reference()
+        self.write("papers/ExampleExternal/external.json", json.dumps(reference))
+        self.write("papers/ExampleExternal/README.md", render_readme(reference))
+        self.write("site/index.html", '<p class="project-stats">Currently, the project contains '
+                   '1 formalized papers, with 100 total lines of Lean code.</p>'
+                   '<table><tbody>\n' + PAPER_ROWS_END + '\n</tbody></table>')
+        subprocess.run(["git", "-C", str(self.repo), "add", "site/index.html", "papers/ExampleExternal"], check=True)
+        output = self.root / "output"
+        result = build(self.repo, output)
+        self.assertEqual(result["public_papers"], 1)
+        self.assertEqual(result["external_references"], 1)
+        index = (output / "index.html").read_text()
+        self.assertIn("125 total lines", index)
+        self.assertIn("2 formalized papers", index)
+        self.assertIn('href="https://github.com/example/proofs/blob/main/REPORT.md"', index)
+        self.assertIn('href="/AppliedModelingLib/artifacts/papers/ExampleExternal/README.html"', index)
+        page = (output / "artifacts/papers/ExampleExternal/README.html").read_text()
+        self.assertIn("External Paper", page)
+        self.assertIn("https://github.com/example/proofs", page)
+        self.assertFalse((output / "artifacts/papers/Private").exists())
+
     def test_project_root_can_be_previewed_without_a_prefix(self):
         output = self.root / "output"
         build(self.repo, output, "")

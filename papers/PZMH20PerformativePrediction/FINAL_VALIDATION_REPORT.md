@@ -77,7 +77,7 @@ records why the population results use the paper's finite-dimensional parameter
 domain rather than an arbitrary ambient extension. Proposition 4.1's formalized
 compact-domain target states the on-domain joint expected-risk continuity required
 by its best-response proof. The finite-sample source clarifications are in
-[Section 5](#5-remaining-boundaries-and-gaps). Counterexample parameter choices
+[Section 5](#5-clarified-conditions-and-source-clarifications). Counterexample parameter choices
 in the memo are constructions, not population-model assumptions.
 
 ## 7. Proof-Strategy Deviations
@@ -94,7 +94,7 @@ neighborhood of the stable point. The memo states the required inequalities.
 ## 9. Generalizations, Conjectures, and Extensions
 
 The documented source clarifications are identified in
-[Section 5](#5-remaining-boundaries-and-gaps).
+[Section 5](#5-clarified-conditions-and-source-clarifications).
 
 ## 10. Source Clarifications and Exact Readings
 
@@ -103,13 +103,13 @@ The memo gives the
 [explicit cycling witnesses](docs/SOURCE_CLARIFICATIONS.md#proposition-36ab-concrete-counterexample-models),
 and [Bernoulli endpoint clarification](docs/SOURCE_CLARIFICATIONS.md#proposition-42-valid-bernoulli-probabilities).
 Theorem 3.10's source clarifications are described in
-[Section 5](#5-remaining-boundaries-and-gaps), and population analytic premises
+[Section 5](#5-clarified-conditions-and-source-clarifications), and population analytic premises
 to [Section 6](#6-additional-assumptions-beyond-paper).
 
 ## 11. Paper Issues or Caveats
 
 The material source clarifications are stated in
-[Section 5](#5-remaining-boundaries-and-gaps) and
+[Section 5](#5-clarified-conditions-and-source-clarifications) and
 [Section 6](#6-additional-assumptions-beyond-paper), with exact comparisons
 linked from the result table.
 

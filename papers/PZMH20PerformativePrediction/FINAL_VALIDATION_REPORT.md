@@ -1,6 +1,6 @@
 # Final Validation Report: Performative Prediction
 
-Updated: 2026-09-27
+Updated: 2026-09-28
 
 ## 1. Human Verdict
 
@@ -49,9 +49,9 @@ Proposition 3.6(a--c), Propositions 4.1--4.2, Theorem 4.3 and Corollary 5.1.
 | Proposition 3.6(b) | **Exact.** The formal statement proves the stated strongly convex nonsmooth counterexample and its two-cycle. |
 | Proposition 3.6(c) | **Exact under clarified regularity conditions.** The compatible range $0<\gamma\leq\beta$ supports the stated counterexample for $\epsilon\geq\gamma/\beta$. [Compatibility](docs/SOURCE_CLARIFICATIONS.md#proposition-36c-compatible-regularity-constants). |
 | Theorem 3.8 | **Exact under the source-domain reading.** Its projected expected-gradient update is defined on $\Theta$; $\gamma\leq\beta$ is derived on non-singleton domains and the singleton case is direct. [Scope](docs/SOURCE_CLARIFICATIONS.md#theorems-35-and-38-recovered-source-domain-scope). |
-| Theorem 3.10, RERM | **Formalized under source clarifications.** The all-round guarantee holds in every positive data dimension with a regime-specific selected-shell schedule, a uniform adaptive moment envelope, numerical slack, and the source-style logarithmic entry threshold. [Conditions](docs/SOURCE_CLARIFICATIONS.md#theorem-310-dimension-and-adaptive-uniformity). |
-| Theorem 3.10, empirical gradient descent | **Formalized under source clarifications.** The all-round guarantee holds for dimension > 2 with a uniform adaptive moment envelope, global regularity, numerical slack, and the source-style logarithmic entry threshold. [Conditions](docs/SOURCE_CLARIFICATIONS.md#theorem-310-dimension-and-adaptive-uniformity). |
-| Proposition 4.1 | **Formalized under clarified domain and continuity conditions.** On a nonempty compact convex $\Theta$, on-domain joint continuity of expected decoupled risk and pointwise convexity yield a domain-stable parameter. [Condition](docs/SOURCE_CLARIFICATIONS.md#proposition-41-stable-point-existence) and [model scope](docs/SOURCE_CLARIFICATIONS.md#theorems-35-and-38-recovered-source-domain-scope). |
+| Theorem 3.10, RERM | **Exact with source clarifications.** The all-round guarantee holds in every positive data dimension with a regime-specific selected-shell schedule, a uniform adaptive moment envelope, numerical slack, and the source-style logarithmic entry threshold. [Conditions](docs/SOURCE_CLARIFICATIONS.md#theorem-310-dimension-and-adaptive-uniformity). |
+| Theorem 3.10, empirical gradient descent | **Exact with source clarifications.** The all-round guarantee holds for dimension > 2 with a uniform adaptive moment envelope, global regularity, numerical slack, and the source-style logarithmic entry threshold. [Conditions](docs/SOURCE_CLARIFICATIONS.md#theorem-310-dimension-and-adaptive-uniformity). |
+| Proposition 4.1 | **Exact with domain and continuity clarifications.** On a nonempty compact convex $\Theta$, on-domain joint continuity of expected decoupled risk and pointwise convexity yield a domain-stable parameter. [Condition](docs/SOURCE_CLARIFICATIONS.md#proposition-41-stable-point-existence) and [model scope](docs/SOURCE_CLARIFICATIONS.md#theorems-35-and-38-recovered-source-domain-scope). |
 | Proposition 4.2 | **Exact with a source clarification.** Both Bernoulli endpoint bounds are imposed. [Valid example](docs/SOURCE_CLARIFICATIONS.md#proposition-42-valid-bernoulli-probabilities). |
 | Theorem 4.3 | **Exact.** The formal statement proves the domain-relative optimum--stable distance bound. |
 | Corollary 5.1 | **Exact under the source-domain reading.** The strategic domain profile and Stackelberg comparator yield the stated objective-gap bound. [Scope](docs/SOURCE_CLARIFICATIONS.md#corollary-51-recovered-strategic-source-domain-scope) and [model scope](docs/SOURCE_CLARIFICATIONS.md#theorems-35-and-38-recovered-source-domain-scope). |
@@ -77,7 +77,7 @@ records why the population results use the paper's finite-dimensional parameter
 domain rather than an arbitrary ambient extension. Proposition 4.1's formalized
 compact-domain target states the on-domain joint expected-risk continuity required
 by its best-response proof. The finite-sample source clarifications are in
-[Section 5](#5-clarified-conditions-and-source-clarifications). Counterexample parameter choices
+[Section 5](#5-remaining-boundaries-and-gaps). Counterexample parameter choices
 in the memo are constructions, not population-model assumptions.
 
 ## 7. Proof-Strategy Deviations
@@ -94,7 +94,7 @@ neighborhood of the stable point. The memo states the required inequalities.
 ## 9. Generalizations, Conjectures, and Extensions
 
 The documented source clarifications are identified in
-[Section 5](#5-clarified-conditions-and-source-clarifications).
+[Section 5](#5-remaining-boundaries-and-gaps).
 
 ## 10. Source Clarifications and Exact Readings
 
@@ -103,13 +103,13 @@ The memo gives the
 [explicit cycling witnesses](docs/SOURCE_CLARIFICATIONS.md#proposition-36ab-concrete-counterexample-models),
 and [Bernoulli endpoint clarification](docs/SOURCE_CLARIFICATIONS.md#proposition-42-valid-bernoulli-probabilities).
 Theorem 3.10's source clarifications are described in
-[Section 5](#5-clarified-conditions-and-source-clarifications), and population analytic premises
+[Section 5](#5-remaining-boundaries-and-gaps), and population analytic premises
 to [Section 6](#6-additional-assumptions-beyond-paper).
 
 ## 11. Paper Issues or Caveats
 
 The material source clarifications are stated in
-[Section 5](#5-clarified-conditions-and-source-clarifications) and
+[Section 5](#5-remaining-boundaries-and-gaps) and
 [Section 6](#6-additional-assumptions-beyond-paper), with exact comparisons
 linked from the result table.
 

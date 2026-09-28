@@ -1,6 +1,6 @@
 # Final Validation Report: AdWords and Generalized On-line Matching
 
-Updated: 2026-09-27
+Updated: 2026-09-28
 
 ## 1. Human Verdict
 
@@ -32,12 +32,12 @@ source-first from the abstract through Appendix A. The public source is the
 | [Theorem 8](docs/SOURCE_CLARIFICATIONS.md#finite-and-limiting-theorem-8-readings) | **Exact.** |
 | [Theorem 9](docs/SOURCE_CLARIFICATIONS.md#theorem-9-query-split-lower-bound-model) | **Exact.** |
 | Section 3: GREEDY tight example, equal-bid BALANCE identity, and discrete tradeoff monotonicity/convergence | **Exact.** |
-| [Lemmas 1–2](docs/SOURCE_CLARIFICATIONS.md#sections-45-idealized-slab-lemmas) | **Exact with source clarification.** the source expressly idealizes exact type endpoints and nonstraddling payments; the idealized ledger derives both the summed Lemma 1 prefix inequality and Lemma 2's beta identity. |
+| Lemmas 1–2 | **Exact.** |
 | Lemma 3 | **Exact.** |
 | Lemma 4 | **Exact.** |
-| [Lemma 5](docs/SOURCE_CLARIFICATIONS.md#sections-45-idealized-slab-lemmas) | **Exact with source clarification.** its perturbed LP identity is exact for the source's stated idealized slab vector, which is derived rather than supplied. |
-| [Lemma 6](docs/SOURCE_CLARIFICATIONS.md#sections-45-idealized-slab-lemmas) | **Exact with source clarification.** the actual Theorem 8 occurrence runner proves the query comparison with its explicit endpoint slab term, whose aggregate vanishes in the source limit. |
-| [Lemma 7](docs/SOURCE_CLARIFICATIONS.md#section-5-lemma-7-finite-slab-accounting) | **Exact with source clarification.** for Theorem 8's dual-induced tradeoff, actual-run slab accounting gives finite weighted perturbation at most `2N/k`; the source's `1 - 1/e` limit is unchanged. |
+| Lemma 5 | **Exact.** |
+| Lemma 6 | **Exact.** |
+| Lemma 7 | **Exact.** |
 | [Theorem 8 suffix](docs/SOURCE_CLARIFICATIONS.md#theorem-8-finite-suffix-index) | **Exact after correcting the suffix-index typo:** exponent `k-i` and unspent fraction `(k-i)/k`. |
 | [Section 4 tightness](docs/SOURCE_CLARIFICATIONS.md#section-4-tightness) | **Exact.** |
 | [Section 6 variants](docs/SOURCE_CLARIFICATIONS.md#section-6-variants) | **Exact under additional charge and all-alive conditions.** Each possible charge must be small relative to its winner’s budget; the efficiency bound counts unit-cost arithmetic operations. |
@@ -45,16 +45,15 @@ source-first from the abstract through Appendix A. The public source is the
 | [`kappa>1` witness](docs/SOURCE_CLARIFICATIONS.md#the-kappa-witness-family) | **Corrected target.** The printed discrete family is unspecified; the checked continuous-limit witness has the stated endpoint behavior but does not claim a finite discrete family. |
 | Section 8 retained formulas and definitions | **Exact.** [uncredited](docs/SOURCE_CLARIFICATIONS.md#section-8-weighted-bid-proposal) |
 
-The formalization additionally proves explicit finite bounds for Theorem 8 and
-an explicit finite family attaining the Section 4 tightness limit.
+The formalization additionally proves explicit finite bounds for Lemmas 6–7
+and Theorem 8: the slab endpoint terms vanish in the paper's small-bids limit.
+It also proves an explicit finite family attaining the Section 4 tightness limit.
 
 ## 5. Remaining Boundaries and Gaps
 
-- Sections 4--5 use the source's express exact-type/no-straddling slab
-  idealization; the actual Theorem 8 route records and bounds its finite
-  endpoint effect. The Appendix executions are continuous limits without
-  fixed-positive-bid discretization bounds. Section 8's performance guarantees
-  are open questions in the source.
+The Appendix executions are continuous limits without fixed-positive-bid
+discretization bounds. Section 8's performance guarantees are open questions
+in the source.
 
 ## 6. Additional Assumptions Beyond Paper
 
@@ -80,8 +79,10 @@ None.
 
 ## 9. Generalizations, Conjectures, and Extensions
 
-The explicit finite Theorem 8 error bound and Section 4 family strengthen the
-paper's limiting statements. See the [finite bounds](docs/SOURCE_CLARIFICATIONS.md#finite-and-limiting-theorem-8-readings)
+The [finite accounting for Lemmas 6–7](docs/SOURCE_CLARIFICATIONS.md#section-5-lemma-7-finite-slab-accounting)
+bounds the weighted perturbation by $2N/k$, which vanishes as the number of
+slabs $k$ grows. The explicit Theorem 8 error bound and Section 4 family
+likewise establish the paper's limiting statements. See the [finite bounds](docs/SOURCE_CLARIFICATIONS.md#finite-and-limiting-theorem-8-readings)
 and [tightness construction](docs/SOURCE_CLARIFICATIONS.md#section-4-tightness).
 
 Optional extensions could refine the Appendix fluid certificate to a quantified
@@ -91,6 +92,9 @@ switching-distribution and many-representative RANKING proposals without
 prejudging their open guarantees. None is required for source-level status.
 
 ## 10. Source Clarifications and Exact Readings
+
+Lemmas 1–2 and 5 use the paper's explicitly stated
+[slab idealization](docs/SOURCE_CLARIFICATIONS.md#sections-45-idealized-slab-lemmas).
 
 The [memo](docs/SOURCE_CLARIFICATIONS.md) gives the Theorem 9 query-split
 lower-bound model, the finite suffix correction, the finite Lemma 7 slab

@@ -1,6 +1,6 @@
 # Final Validation Report: Axioms for AI Alignment from Human Feedback
 
-Updated: 2026-09-27
+Updated: 2026-09-28
 
 ## 1. Human Verdict
 
@@ -37,15 +37,15 @@ Exact source spans, semantic contexts, and Lean routes are in
 | Result | Comparison with the paper |
 | --- | --- |
 | Definition 2.2; Lemmas 3.2–3.3; Theorems 3.6–3.7; Appendix B; Theorem C.4 | **Exact.** |
-| [Theorem 3.1, positive-input branch](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#theorem-31-positive-input-branch-restricted-infimum-sign) | **Exact impossibility conclusion after correcting the sign typo:** reverse the printed restricted-infimum sign; the impossibility conclusion is unchanged. |
-| [Lemma 3.4](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#lemmas-3435-the-perturbation-seam) | **Exact.** At the literal zero-perturbation endpoint, each copy has the same feature vector as its original, so the printed weak inclusion holds for every parameter. |
-| [Lemma 3.5](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#lemmas-3435-the-perturbation-seam) | **Corrected target.** The literal weak inclusion supplies no margin; a strict positive-perturbation cone and closed-half-space objective gap establish the conclusion used by Theorem 3.1. |
-| [Footnote 7 witness](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#six-candidate-feasibility-witness) | **Exact witness after correcting the parameter typo:** parameter `(delta,2)` replaces `(1,1)`. |
-| [Theorem 4.3](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#rule-level-tie-conventions) | **Exact under a necessary source clarification:** every fixed, profile-independent injective candidate priority is covered. A profile-dependent tie selector is formally refuted, so the unqualified rule-level reading is false. |
-| [Theorem C.2](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#rule-level-tie-conventions) | **Exact under its displayed score-order-consistent tie condition.** |
-| [Theorem C.6](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#rule-level-tie-conventions) | **Exact under a necessary source clarification:** every fixed, profile-independent injective candidate priority is covered. The checked profile-dependent selector refutes the unqualified rule-level reading. |
-| [Theorem C.3](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#rule-level-tie-conventions) | **Exact under a source-definedness clarification.** Every contraction-consistent linear-Kemeny selector satisfies PMC and separability; fixed profile-independent injective priority is a checked special case. PMC itself is tie-independent because a feasible PMC ranking is the unique minimizer. |
-| [Theorem C.5](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#rule-level-tie-conventions) | **Exact.** The first-profile six-ballot classification invoked by the source proof is now derived from the explicit Pareto-constrained Kemeny equality case; a matching appendage covers every selected ballot, with no `v1` tie choice or global tie key. |
+| Theorem 3.1, positive-input branch | **Exact.** |
+| Lemma 3.4 | **Exact.** |
+| [Lemma 3.5](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#lemmas-3435-the-perturbation-seam) | **Corrected target.** A strict positive-perturbation margin establishes the required objective gap; the printed weak inclusion alone supplies no margin. |
+| [Footnote 7 witness](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#six-candidate-feasibility-witness) | **Exact with a parameter typo.** The witness uses `(delta,2)` in place of `(1,1)`. |
+| [Theorem 4.3](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#rule-level-tie-conventions) | **Exact with a tie-breaking clarification.** Ties use a fixed, profile-independent candidate priority; unrestricted profile-dependent selection can violate the result. |
+| Theorem C.2 | **Exact.** |
+| [Theorem C.6](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#rule-level-tie-conventions) | **Exact with a tie-breaking clarification.** Ties use a fixed, profile-independent candidate priority; unrestricted profile-dependent selection can violate the result. |
+| [Theorem C.3](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#rule-level-tie-conventions) | **Exact with a tie-breaking clarification.** A selected Kemeny minimizer remains selected when other tied minimizers are removed; fixed ranking priority is one such rule. |
+| Theorem C.5 | **Exact.** |
 
 ## 5. Remaining Boundaries and Gaps
 
@@ -86,14 +86,14 @@ the axioms that carry such a guard, while the reusable `RankingSeparability`
 predicate is global. This carrier convention is distinct from, and does not
 repair, the required fixed-priority tie condition.
 
-[The source clarifications and corrections memo](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md)
+[The tie conventions memo](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#rule-level-tie-conventions)
 explains these scopes. It does not infer that the paper's claims fail for
 other selectors merely because the current statements use these choices.
 
 ## 7. Proof-Strategy Deviations
 
-- Lemma 3.4 is proved at its literal weak zero-perturbation endpoint. Its distinct strict positive-perturbation cone is then used with a closed-half-space objective gap to repair Lemma 3.5 and prove the same Theorem 3.1.
-- The positive-input branch reverses its restricted-infimum sign; [Appendix A.1](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#appendix-a1-one-sided-derivatives) uses one-sided derivatives and consistent point scaling.
+- [Lemma 3.4](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#lemmas-3435-the-perturbation-seam) is proved at its literal weak zero-perturbation endpoint. Its distinct strict positive-perturbation cone is then used with a closed-half-space objective gap to repair Lemma 3.5 and prove the same Theorem 3.1.
+- The [positive-input branch of Theorem 3.1](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#theorem-31-positive-input-branch-restricted-infimum-sign) reverses a printed restricted-infimum sign; [Appendix A.1](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#appendix-a1-one-sided-derivatives) uses one-sided derivatives and consistent point scaling.
 - The [paragraph after Theorem 3.7](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#post-theorem-37-proof-location-sentence) attributes Appendix B's infeasible PMC ranking to Appendix A.6, whose majority relation is cyclic.
 
 The [memo](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md) gives the exact changes. Rule-selection restrictions are in Section 6.
@@ -122,10 +122,14 @@ paper-local constructions retain their exact feature tables and profiles.
 Footnote 7's six-candidate ranking uses parameter `(delta,2)` in place of
 `(1,1)`; see the [witness note](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#six-candidate-feasibility-witness).
 The Lemma 3.4 weak inclusion is direct and literal; only Lemma 3.5 requires the
-documented strict-cone correction. Theorem C.3 uses the source-definedness
-condition of contraction-consistent Kemeny tie selection, whereas the LCPO and
-leximax results retain their documented fixed-priority scopes. Sections 6–7
-cover the remaining statement scopes and proof changes.
+[documented strict-cone correction](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#lemmas-3435-the-perturbation-seam).
+Theorem C.3 uses contraction-consistent Kemeny tie selection, whereas the LCPO
+and leximax results use fixed candidate priorities. Theorem C.2's tie condition
+is stated in its source proof. Theorem C.5's finite case analysis is proved
+without an added tie-selection assumption; the
+[tie conventions memo](docs/SOURCE_CLARIFICATIONS_AND_CORRECTIONS.md#rule-level-tie-conventions)
+explains these results. Sections 6–7 cover the remaining statement scopes and
+proof changes.
 
 ## 11. Paper Issues or Caveats
 

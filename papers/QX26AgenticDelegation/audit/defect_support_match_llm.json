@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "paper": "QX26AgenticDelegation",
+  "prompt_version": "defect-support-v1-exact-source-defect-to-lean-semantic",
+  "audit_kind": "source_defect_to_lean_llm",
+  "source_grounded": true,
+  "validator": "",
+  "validator_type": "",
+  "validated_at": "",
+  "comment": "Judge whether each proposed Lean theorem is mathematically a counterexample to or refutation of the exact validated source defect. Names and declaration kind are never sufficient evidence.",
+  "prompt_summary": [
+    "Read the exact source span and all semantic fields of the cited audit/source_proof_fidelity.json defect, then inspect the elaborated Lean signature rather than relying on the declaration name.",
+    "Copy the exact canonical source item key, source statement digest, complete source_defect snapshot, source defect digest, Lean statement text/digest, and lean_signature_sha256. Any source or Lean change must make the judgment stale.",
+    "List every elaborated signature atom exactly once in lean_obligations using signature_ref, role, signature_atom_sha256, defect_relevance, and a substantive semantic_explanation. Do not insert unpinned Lean prose in place of signature atoms.",
+    "Align every Lean atom to a semantic source_defect field. For the conclusion, use counterexample_to or refutes and explicitly align it to source_claim. For each parameter or assumption, explain the concrete witness, source-model condition, or checked derivation that prevents a hidden premise.",
+    "Reject True, reflexive equality/equivalence, vacuous implications, and statements that only share names or terminology with the defect. A theorem proof is support only when its actual conclusion and inputs establish the recorded counterexample/refutation.",
+    "Use a validator independent of the formalizer, source curator, coverage classifier, and statement judge."
+  ],
+  "item_schema": {
+    "required": [
+      "source_item",
+      "source_statement_sha256",
+      "defect_id",
+      "source_defect",
+      "source_defect_sha256",
+      "support_declaration",
+      "lean_statement",
+      "lean_statement_sha256",
+      "lean_signature_sha256",
+      "judgment",
+      "reason",
+      "lean_obligations",
+      "obligation_alignment"
+    ],
+    "judgment_values": [
+      "valid_counterexample",
+      "valid_refutation",
+      "does_not_support",
+      "uncertain"
+    ],
+    "source_defect_fields": [
+      "id",
+      "source_locator",
+      "source_claim",
+      "defect_kind",
+      "affected_source_locators",
+      "statement_impact",
+      "status_impact",
+      "status_impact_rationale",
+      "repair_obligation",
+      "acceptance_condition",
+      "resolution",
+      "resolution_evidence"
+    ],
+    "lean_obligation_required": [
+      "signature_ref",
+      "role",
+      "signature_atom_sha256",
+      "defect_relevance",
+      "semantic_explanation"
+    ],
+    "alignment_required": [
+      "source_defect_field",
+      "lean_signature_ref",
+      "relation",
+      "semantic_basis",
+      "witness_or_derivation"
+    ]
+  },
+  "items": {}
+}

@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "paper": "QX26AgenticDelegation",
+  "prompt_version": "assumption-provenance-v4-verbatim-source-anchor-exact-premise",
+  "validator": "",
+  "validator_type": "",
+  "validated_at": "",
+  "comment": "Validate every assumption declaration and every exact audit-premise against source text or a Lean derivation.",
+  "prompt_summary": [
+    "For each Assumptions.lean declaration, decide semantically whether it is an explicit paper/model assumption, a source theorem condition, a documented caveat, a partial-formalization boundary, not a paper assumption, or uncertain.",
+    "For every exact -- audit-premise entry, give an independent premise_judgments entry. Group-level approval is insufficient.",
+    "Scrutinize each premise against the source model, not by declaration name, theorem label, or phrase overlap. Expand named predicates/wrappers enough to identify the actual mathematical assumption.",
+    "Certificate, replay, process, bridge, source-row, or broad package premises need a specific source primitive or a Lean-checked instantiation path from paper primitives; otherwise mark partial_boundary/not_paper_assumption.",
+    "Use source_text_model_primitive, source_text, or paper_condition only for premises explicitly stated by the source. Supply the exact byte-pinned source-anchor quote bundle, cite source_location, and record source_anchor_quote_identity_sha256; do not use a paraphrase, map statement, or reconstructed context as source evidence.",
+    "Use derived_from_source_primitives only when the Lean development derives the premise from prior source primitives.",
+    "Displayed formulas, capacity equations, threshold identities, density/mass rows, source-row packages, certificates, and proof conveniences are not paper assumptions unless the source explicitly assumes them; otherwise mark partial_boundary or not_paper_assumption."
+  ],
+  "items": {}
+}

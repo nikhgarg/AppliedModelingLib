@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "paper": "QX26AgenticDelegation",
+  "prompt_version": "paper-coverage-v6-verbatim-source-anchor-proof-row-signature-pins",
+  "audit_kind": "source_to_dashboard_llm",
+  "source_grounded": true,
+  "source_input_protocol": "verbatim_source_anchor_bundle_v1",
+  "seed_scaffold": false,
+  "validator": "",
+  "validator_type": "",
+  "validated_at": "",
+  "comment": "Judge whether each canonical source-paper statement is semantically covered by one or more dashboard rows. This is separate from row-local statement matching; phrase overlap or matching theorem names are not enough.",
+  "source_coverage_mode": "named_theoretical_statements",
+  "source_artifact_path": "papers/QX26AgenticDelegation/source-audited.pdf",
+  "source_artifact_sha256": "cddc048711c43022d5fd01b995bfb1114c728c8c879b809b5fdc354a391d3c35",
+  "prompt_summary": [
+    "For each source inventory item, identify the exact dashboard row(s) that cover the mathematical content.",
+    "Set source_input_protocol to verbatim_source_anchor_bundle_v1. Read the exact byte-pinned source_anchor_evidence quote bundle plus semantic_context_requirements quotes, never a source-map statement/paraphrase, as the source-side input. Record source_anchor_quote_identity_sha256 for each item. If the result depends on surrounding source context, that context must be included as exact anchors before coverage is judged.",
+    "The default coverage surface is source-labelled named theory only: named definitions, theorem-like results, and explicitly numbered formulas, algorithms, or assumptions. Figures, captions, numerical examples, simulations, empirical observations, and general prose belong only to an explicit deep_paper_with_all_prose_claims audit. A source-map key, claim_bearing flag, or Lean declaration/function name cannot suppress a labelled source result.",
+    "A covered verdict requires semantic coverage of the source hypotheses, objects, quantifiers, constants, formulas, and conclusions, not just a matching title or phrase.",
+    "Do not mark source-labelled formal results (definitions, propositions, theorems/corollaries, named claims, or main-text lemmas) out of scope for compactness. Expose dashboard rows so the row-local statement judge can inspect them. An unnumbered prose assertion may instead use the dedicated user_approved_scope_exclusion lane only with a byte-pinned source anchor and an explicit user instruction; it remains claim-bearing and receives no Lean proof credit. Appendix lemmas are a judgment call, but appendix theorem/corollary targets should be covered.",
+    "If a linked Lean row has extra replay/certificate/process/bridge/source-row premises, mark the source item covered_with_boundary or partially_covered unless those premises are separately derived from source primitives.",
+    "A theorem, proposition, lemma, corollary, named claim, runtime claim, or opted-in claim-bearing item receives direct coverage only through a reviewed Lean theorem/lemma row. A matching def/abbrev is specification vocabulary, not proof evidence; inspect declaration manifests rather than declaration names. A user_approved_scope_exclusion is the separate non-proof disposition for an unnumbered prose assertion, not direct coverage.",
+    "For every direct or conditional coverage link, record review_row_signature_sha256 as an exact object from each linked review-row name to that row's current elaborated, normalized Lean signature digest. Row names and source routes only locate the row; they do not bind the coverage judgment after its theorem type changes. The map keys must be exactly review_rows and every digest must be current.",
+    "For a corrected_source_statement inventory item, use coverage covered_corrected_target, target_kind approved_corrected_target, the corrected target statement digest, archival_statement_sha256, corrected_target_sha256, the exact governing_defect_ids, and archival_equivalence_claimed=false. The linked row must be exactly the sole complete endpoint in lean_declarations, and its reviewed paper statement must be the corrected target, not the archival wording. Aliases and support helpers cannot carry this coverage. Ordinary covered or a direct route is prohibited for that item.",
+    "A source_status quarantined_source_defect item is never directly covered as proved. Use support_only only with validated source_defect_ids and reviewed theorem/lemma counterexample or refutation routes, which are counted separately as defect support.",
+    "Every quarantined support route also needs an independent current audit/defect_support_match_llm.json judgment that exact-hash pins the source item, full validated defect record, Lean statement, and elaborated signature; declaration names and theorem kind are navigation, not semantic evidence.",
+    "Include source_evidence from the paper and dashboard_evidence from the row; exact-key or theorem-name matching is only a scaffold."
+  ],
+  "paper_statement_inventory_sha256": "",
+  "review_surface_sha256": "",
+  "item_schema": {
+    "direct_coverage_required": [
+      "review_rows",
+      "review_row_signature_sha256",
+      "reason",
+      "source_evidence",
+      "source_anchor_quote_identity_sha256",
+      "statement_sha256",
+      "source_item_coverage_digest_schema",
+      "source_item_coverage_sha256"
+    ],
+    "review_row_signature_sha256": {
+      "<review_row_name>": "<current_elaborated_normalized_lean_signature_sha256>"
+    },
+    "source_item_coverage_digest_schema": 5,
+    "source_item_coverage_sha256": "<current_source_semantic_item_digest>"
+  },
+  "items": {}
+}

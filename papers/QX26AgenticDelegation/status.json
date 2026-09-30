@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "id": "QX26AgenticDelegation",
+  "title": "Agentic Delegation and the Language Frontier of Software Developers",
+  "authors": "Alexander Quispe and Kevin Xu",
+  "source_version": "arXiv 2605.25438v2, 2026-07-07",
+  "intake_freeze_required": true,
+  "repository_visibility": "public",
+  "build_target": "lake build QX26AgenticDelegation",
+  "status": "formalized with caveat",
+  "main_caveat": "Paper-facing Specs are the algebraic cores of Propositions 1-5 (menu expansion, activation band under Assumption 1, cumulative gap, specialist counting identity, repository feasibility). Empirical ATT/DiD Eqs. (11)-(13) are out of scope. Closed-form CARA-Normal CE is used; EconCSLib Gaussian/ThresholdCharacterization are not bridged.",
+  "human_summary": "Lean formalization of Quispe-Xu 2026 (arXiv 2605.25438v2): production menus, CARA-Normal certainty equivalents, and Propositions 1-5. Author-maintained draft toward EconCSLib.",
+  "human_summary_review": {
+    "status": "draft",
+    "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
+  },
+  "review_entrypoint": "papers/QX26AgenticDelegation/FINAL_VALIDATION_REPORT.md",
+  "human_review": {
+    "reviewed_rows": 0,
+    "total_rows": 0,
+    "stale_rows": 0,
+    "mismatch_rows": 0,
+    "source": "paper-local status.json review_surface; human entries come from dashboard logs"
+  },
+  "paper_interface": {
+    "path": "papers/QX26AgenticDelegation/PaperInterface.lean",
+    "line_count": 0,
+    "declaration_rows": 5,
+    "review_rows": 5,
+    "oversized": false,
+    "maintainability_issue": null
+  },
+  "artifacts": {
+    "paper_interface": "papers/QX26AgenticDelegation/PaperInterface.lean",
+    "proof_interface": "papers/QX26AgenticDelegation/ProofInterface.lean",
+    "assumptions": "papers/QX26AgenticDelegation/Assumptions.lean",
+    "final_validation_report": "papers/QX26AgenticDelegation/FINAL_VALIDATION_REPORT.md",
+    "dependency_dag_tex": "papers/QX26AgenticDelegation/docs/DependencyDAG.tex",
+    "dependency_dag_pdf": "papers/QX26AgenticDelegation/docs/DependencyDAG.pdf",
+    "source_proof_fidelity": "papers/QX26AgenticDelegation/audit/source_proof_fidelity.json",
+    "defect_support_match": "papers/QX26AgenticDelegation/audit/defect_support_match_llm.json",
+    "library_semantic_review": "papers/QX26AgenticDelegation/audit/library_semantic_review.json",
+    "v11_raw_source_spec_screening": "papers/QX26AgenticDelegation/audit/v11_raw_source_spec_screening.json"
+  },
+  "review_surface": {
+    "source_file": "papers/QX26AgenticDelegation/PaperInterface.lean",
+    "proof_module": "QX26AgenticDelegation",
+    "assumption_source_file": "papers/QX26AgenticDelegation/Assumptions.lean",
+    "require_source_spec_correspondence": true,
+    "llm_statement_review": {
+      "lean_to_tex_file": "papers/QX26AgenticDelegation/audit/lean_to_tex_llm.json",
+      "match_judgment_file": "papers/QX26AgenticDelegation/audit/statement_match_llm.json",
+      "library_semantic_review_file": "papers/QX26AgenticDelegation/audit/library_semantic_review.json",
+      "v11_screening_file": "papers/QX26AgenticDelegation/audit/v11_raw_source_spec_screening.json",
+      "review_surface_audit_file": "papers/QX26AgenticDelegation/audit/review_surface_llm.json",
+      "paper_coverage_audit_file": "papers/QX26AgenticDelegation/audit/paper_coverage_llm.json",
+      "defect_support_judgment_file": "papers/QX26AgenticDelegation/audit/defect_support_match_llm.json",
+      "assumption_judgment_file": "papers/QX26AgenticDelegation/audit/assumption_match_llm.json",
+      "surface_audit_threshold": 30,
+      "surface_warning_threshold": 120,
+      "require_explicit_source_routes": true,
+      "require_source_claim_atoms": true,
+      "require_direct_expression_semantics_review": "v1",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-v2",
+      "policy": "For one source claim, give the LLM only the ordered byte-pinned source anchor bundle plus any byte-pinned semantic context, and the fully expanded transparent `...Spec : Prop`. Never compare a source-map summary, curator paraphrase, theorem label, Lean-to-TeX translation, or proof wrapper. Record the raw source-input bundle digest and the expanded-Spec digest under the v11 protocols. The paired theorem/lemma lives in ProofInterface.lean and receives only Lean-Meta exact-type proof credit through the configured proposition_spec_proofs route. For every material reused EconCSLib definition that appears in a source-facing Spec, separately register an exact bounded library declaration and source-map item in library_semantic_review.json; compare the raw source bundle with that actual library code, never with its name or a glossary. For formalized closeout, independently inventory every material source atom from exact pinned source quote bytes before consulting Lean, then bind the atoms to the elaborated Spec and account for the complete Lean closure, including proof and instance arguments. Every material closure terminal needs an explicit source, approved correction/additional assumption, checked Lean derivation, or version-pinned foundation basis; there are no automatic data, container, or name-based exemptions. Boolean check equals true remains proof debt when the check decides a result-bearing proposition; reflection makes that debt visible but does not discharge it. A total data selector may support an unconditional theorem only about its actual internally selected output; the review must expose its success/fallback equations and nontriviality and must not infer that a proposed nonfallback output is accepted. A result-level dependent if remains conditional proof debt, and a noncomputable decision receives no executable or runtime credit. Extra replay, certificate, process, bridge, source-row, or broad package assumptions must be judged `mismatch` or `uncertain`. Record the model/agent validator metadata and an atom-by-atom obligation ledger with exact source locators, explicit mathematical bridge statements, every source conclusion, and every Lean assumption. For every source route, pin the canonical source-item key, statement digest, exact locator, route kind, and semantic scope/evidence. Use direct only for an exact equivalent paper-facing endpoint with an exact source-conclusion/Lean-conclusion equivalence. Composite rows list every scoped source component as source_component with semantic evidence and a Lean conclusion, not a fabricated full-theorem equivalence. source_model_convention routes only an explicit source model reading, defect_or_remark_support only a quarantined defect or support-only remark, and proof_support only a substantive source-support scope that never supplies endpoint credit. Declaration links are only a cross-check, never semantic evidence. Conditional boundaries may account for extra Lean assumptions but cannot excuse unmatched source conclusions. Iterate on PaperInterface.lean until the full statement matches. If the dashboard has more than 30 rows, run a no-paper-context LLM audit that checks whether every row is paper-facing; at 120 or more rows, curate the surface before broad human review."
+    },
+    "llm_paper_coverage_review": {
+      "paper_coverage_audit_file": "papers/QX26AgenticDelegation/audit/paper_coverage_llm.json",
+      "defect_support_judgment_file": "papers/QX26AgenticDelegation/audit/defect_support_match_llm.json",
+      "policy": "Maintain an audit/paper_statement_map.json inventory of source definitions, formulas, and named statements, then use a separate LLM pass to judge whether each source item is covered by one or more dashboard rows. If coverage uses a reusable library declaration, it must route through an audited paper-local semantic bridge/equivalence row; matching by Lean/library/source names is not semantic evidence. Quarantined source defects require a separate exact-hash semantic judgment binding each candidate counterexample/refutation theorem to the validated defect record and every elaborated signature atom. This paper-level accounting is required before calling a full-paper formalization closed and is separate from row-local statement matching."
+    },
+    "llm_assumption_review": {
+      "assumption_judgment_file": "papers/QX26AgenticDelegation/audit/assumption_match_llm.json",
+      "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
+    },
+    "llm_source_record_review": {
+      "source_record_audit_file": "papers/QX26AgenticDelegation/audit/source_record_audit.json",
+      "source_record_judgment_file": "papers/QX26AgenticDelegation/audit/source_record_match_llm.json",
+      "policy": "Run the code-backed recursive source-record audit for any visible record, certificate, replay, process, bridge, source-row, or broad package premise. The LLM judge must classify each boundary-shaped input and recursive field by source evidence, Lean derivation, approved external boundary, or unresolved proof debt."
+    },
+    "semantic_model_review": {
+      "schema": 2,
+      "required_dimensions": [
+        "expanded_binders_and_domain",
+        "carrier_and_domain",
+        "probability_support_endpoints",
+        "joint_law_and_state_evolution",
+        "conditioning_and_calibration_semantics",
+        "expectation_definedness",
+        "null_cell_totalization_and_partition_scope",
+        "extended_rate_codomain"
+      ],
+      "policy": "For every reviewed row, preserve an alpha-normalized expanded binder/domain surface, including transparent local type aliases, record parameter domains, and model records reached only in result quantifiers. An unexpanded local opaque/constant type requires a checked carrier/refinement bridge rather than being silently treated as an ordinary carrier. When an expanded finite carrier uses index arithmetic such as Fin (n + c), record the source cardinal parameter, the expanded Lean expression, and a proved parameter translation; then explicitly compare it with pinned source text. Review endpoint support/cutoffs, product or iid laws versus source state evolution, conditioning/calibration semantics, expectation definedness, null-cell totalization and finite/countable/arbitrary partition scope, and Real versus extended-rate codomains when the expanded model makes them relevant. For a probability-law surface, state whether conditioning is pointwise, a.e., positive-fiber, or event-calibrated; state measurability/integrability or extended-value conventions for every expectation; and expose every zero-mass-cell branch. Local declaration and binder names are routing only; detected probability/rate shapes need a checked bridge from source primitives. Because this scaffold enables explicit v10 source routes, every full closeout requires current source-record semantic-model judgments for every generated row; an unresolved model dimension blocks both full statuses."
+    },
+    "source_proof_fidelity_review": {
+      "ledger_file": "papers/QX26AgenticDelegation/audit/source_proof_fidelity.json",
+      "policy": "Audit source proof steps by source locator and mathematical claim, not by Lean declaration name. Completed papers use ledger schema 2. Every defect records status_impact as formalized_note, formalized_with_caveat, or partially_formalized plus a semantic rationale. Minor repairs with an unchanged substantive endpoint are notes; formalized with caveat is reserved for a substantial central source-paper error with a fully proved corrected endpoint; weaker Lean targets and added non-source assumptions are partial. Keep this configured ledger whenever explicit source routes or source-defect links are present; a formalized note cannot waive an added non-source assumption or a partial boundary."
+    },
+    "assumption_policy": "strict",
+    "assumption_names": [
+      "Assumption1_foothold",
+      "Assumption2_verification",
+      "Assumption3_exchangeable"
+    ],
+    "source_definition_names": [],
+    "proposition_spec_proofs": {
+      "Proposition1_frontierExpansionSpec": "Proposition1_frontierExpansion",
+      "Proposition2_activationBandSpec": "Proposition2_activationBand",
+      "Proposition3_dynamicCumulativeSpec": "Proposition3_dynamicCumulative",
+      "Proposition4_specialistHeterogeneitySpec": "Proposition4_specialistHeterogeneity",
+      "Proposition5_repositoryExpansionSpec": "Proposition5_repositoryExpansion"
+    },
+    "paper_coverage_required": false,
+    "include_names": [
+      "Proposition1_frontierExpansionSpec",
+      "Proposition2_activationBandSpec",
+      "Proposition3_dynamicCumulativeSpec",
+      "Proposition4_specialistHeterogeneitySpec",
+      "Proposition5_repositoryExpansionSpec"
+    ],
+    "slices": [
+      {
+        "id": "all",
+        "title": "All source-facing review rows",
+        "names": [
+          "Proposition1_frontierExpansionSpec",
+          "Proposition2_activationBandSpec",
+          "Proposition3_dynamicCumulativeSpec",
+          "Proposition4_specialistHeterogeneitySpec",
+          "Proposition5_repositoryExpansionSpec"
+        ]
+      }
+    ]
+  }
+}

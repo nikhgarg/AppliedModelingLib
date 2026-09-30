@@ -1,0 +1,104 @@
+\documentclass[tikz,border=10pt]{standalone}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+
+% Agent visual validation loop:
+% 1. Compile this file to PDF after every substantive DAG edit.
+% 2. Inspect the PDF or a rendered PNG, not just the TeX source.
+% 3. Increase spacing or reroute arrows until no box, legend, note, edge, or label overlaps.
+%
+% Intended lifecycle:
+% - During paper intake, replace the scaffold below with every named result in the
+%   paper and the dependency arrows between them.
+% - After intake, treat this as a stable topology: update node styles/status/text
+%   as proofs close, but avoid adding boxes or arrows unless the original named
+%   result inventory or dependency map was actually incomplete.
+%
+% Arrow direction rule:
+% Draw edges from prerequisite/source node to dependent/target node.  The
+% `dag_arrow` and `dag_dashed_arrow` styles use an explicit end-arrow (`->`),
+% so the arrowhead should always land on the node that consumes the dependency.
+% Do not reverse the coordinate order just to make routing easier; use anchors
+% or an orthogonal route through empty space instead.
+
+\begin{tikzpicture}[
+  x=1cm,
+  y=1cm,
+  every node/.append style={outer sep=4pt}
+]
+
+\dagPaperMetadata{[Paper Title]}{[Authors]}{[Publication Venue]}{[Year]}{[Formalized PDF link]}
+
+% --- Legend: README status vocabulary plus formalized node-type styles. ---
+\dagPaperLegendRightOfMetadata{
+\node[dag_result, dag_template_legend] (legRes) at (0,0) {formalized\\result};
+\node[dag_lemma, dag_template_legend] (legLem) at (4.2,0) {formalized\\lemma};
+\node[dag_model, dag_template_legend] (legDef) at (8.4,0) {formalized\\definition};
+\node[dag_caveat_legend] (legCav) at (12.6,0) {formalized\\with caveat};
+\node[dag_partial, dag_template_legend] (legPart) at (0,-2.6) {partially\\formalized};
+\node[dag_conditional, dag_template_legend] (legCond) at (4.2,-2.6) {conditional};
+\node[dag_scaffold, dag_template_legend] (legScaf) at (8.4,-2.6) {scaffold};
+\node[dag_unformalized, dag_template_legend] (legNot) at (12.6,-2.6) {not started /\\not formalized};
+}
+\daglegend{(legRes)(legLem)(legDef)(legCav)(legPart)(legCond)(legScaf)(legNot)}{Legend}
+
+\begin{dagPaperBody}
+
+% --- Layout guidance for future agents. ---
+\node[dag_template_note] (Guide) at (6.4,0) {
+  Replace these scaffold nodes with the paper's named definitions, lemmas,
+  propositions, theorems, and corollaries. Keep nodes on the grid below:
+  columns are spaced by 6.4cm and rows by 3.2cm, which is wide enough for the
+  default 5cm node text widths. Prefer straight or orthogonal arrows (`--`,
+  `|-`, `-|`) and route through empty grid cells when a dependency skips a row.
+  Draw from prerequisite to dependent result so the arrowhead points at the
+  consumer.  For short horizontal gaps, use explicit anchors like `(A.east) --
+  (B.west)` and increase spacing if the arrowhead visually merges with a node.
+  After every layout change, render and inspect the PDF; if anything overlaps,
+  increase row or column spacing before adding complicated curves. Once the
+  initial named-result map is complete, prefer README-status style updates over
+  adding new boxes or arrows.
+};
+
+% --- Non-overlapping proof graph scaffold. ---
+% Status update pattern:
+% - Change the leading style only, e.g. dag_unformalized -> dag_conditional ->
+%   dag_lemma/dag_result, and update the short text if the remaining assumption changed.
+% - Keep node names and arrows stable after the initial intake map is complete.
+\node[dag_model] (Model) at (0,-4.2) {
+  \textbf{Definitions / Model} \\
+  Source primitives
+};
+\node[dag_lemma] (LemmaA) at (6.4,-4.2) {
+  \textbf{Lemma A} \\
+  First reusable step
+};
+\node[dag_lemma] (LemmaB) at (12.8,-4.2) {
+  \textbf{Lemma B} \\
+  Second reusable step
+};
+
+\node[dag_conditional] (Bridge) at (6.4,-7.4) {
+  \textbf{Bridge Theorem} \\
+  Boundary-dependent paper-facing reduction
+};
+\node[dag_unformalized] (Open) at (12.8,-7.4) {
+  \textbf{Open Source Result} \\
+  Name exact remaining gap
+};
+
+\node[dag_result] (Main) at (6.4,-10.6) {
+  \textbf{Main Theorem} \\
+  Closed paper-facing endpoint
+};
+
+\draw[dag_arrow] (Model) -- (LemmaA);
+\draw[dag_arrow] (LemmaA) -- (LemmaB);
+\draw[dag_arrow] (LemmaA) -- (Bridge);
+\draw[dag_dashed_arrow] (LemmaB) -- (Open);
+\draw[dag_arrow] (Bridge) -- (Main);
+\draw[dag_dashed_arrow] (Open) |- (Main);
+\end{dagPaperBody}
+\end{tikzpicture}
+\end{document}

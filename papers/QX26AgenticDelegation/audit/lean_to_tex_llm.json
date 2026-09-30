@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "paper": "QX26AgenticDelegation",
+  "prompt_version": "lean-to-tex-v3-strict-context-free-semantic-inputs",
+  "translator": "",
+  "translator_type": "",
+  "translated_at": "",
+  "prompt_summary": [
+    "Translate each Lean declaration from the Lean statement alone, with no paper context.",
+    "Preserve every visible variable, binder, hypothesis, domain condition, named predicate/wrapper application, equivalence or implication direction, and conclusion.",
+    "Do not replace formulas or named premises with theorem labels, source-like phrases, informal endpoints, or proof-route summaries.",
+    "If a statement contains a predicate such as a certificate/replay/process/bridge/source-row/bounds condition, keep that premise explicit with its arguments so the statement-match judge can inspect it semantically."
+  ],
+  "items": {}
+}

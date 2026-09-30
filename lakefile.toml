@@ -248,3 +248,7 @@ srcDir = "papers"
 [[lean_lib]]
 name = "GolzHaghtalabYang2025Distortion"
 srcDir = "papers"
+
+[[lean_lib]]
+name = "QX26AgenticDelegation"
+srcDir = "papers"

@@ -1,0 +1,141 @@
+{
+  "schema": 1,
+  "paper": "Sievert26SimpleAuctions",
+  "namespace": "Sievert26SimpleAuctions",
+  "paper_interface_module": "",
+  "semantic_route_schema": 2,
+  "initialize_selected_source_claim_atoms": true,
+  "closeout_review_policy": {
+    "schema": 1,
+    "source_scope": "all_named_theory",
+    "repeat_final_scope": "main_primary",
+    "required_final_adversary_count": 1,
+    "scheduling": {
+      "initial_semantic_review": [],
+      "final_adversarial_review": []
+    }
+  },
+  "source_version": "Zenodo v1.0.1 (DOI 10.5281/zenodo.24482558, 2026-11-23)",
+  "include_specs": [
+    "general_lower_bound",
+    "universal_upper_bound",
+    "two_sided_bracket",
+    "iid_lower_bound",
+    "iid100_lower_bound"
+  ],
+  "source_item_for_spec": {
+    "general_lower_bound": "general_lower_bound",
+    "universal_upper_bound": "universal_upper_bound",
+    "two_sided_bracket": "two_sided_bracket",
+    "iid_lower_bound": "iid_lower_bound",
+    "iid100_lower_bound": "iid100_lower_bound"
+  },
+  "evidence_declaration_for_spec": {
+    "general_lower_bound": "Sievert26SimpleAuctions.general_lower_bound",
+    "universal_upper_bound": "Sievert26SimpleAuctions.universal_upper_bound",
+    "two_sided_bracket": "Sievert26SimpleAuctions.two_sided_bracket",
+    "iid_lower_bound": "Sievert26SimpleAuctions.iid_lower_bound_thm",
+    "iid100_lower_bound": "Sievert26SimpleAuctions.iid100_lower_bound"
+  },
+  "source_semantic_declarations": {
+    "setting_definitions": [
+      "Sievert26SimpleAuctions.FinDist",
+      "Sievert26SimpleAuctions.SREV",
+      "Sievert26SimpleAuctions.BREV",
+      "Sievert26SimpleAuctions.Mechanism",
+      "Sievert26SimpleAuctions.REV",
+      "Sievert26SimpleAuctions.cStar"
+    ]
+  },
+  "paper_semantic_prerequisite_sources": {
+    "Sievert26SimpleAuctions.FinDist": "setting_definitions",
+    "Sievert26SimpleAuctions.SREV": "setting_definitions",
+    "Sievert26SimpleAuctions.Mechanism": "setting_definitions",
+    "Sievert26SimpleAuctions.BREV": "setting_definitions",
+    "Sievert26SimpleAuctions.REV": "setting_definitions",
+    "Sievert26SimpleAuctions.cStar": "setting_definitions"
+  },
+  "library_semantic_prerequisite_sources": {},
+  "semantic_context_requirements": {
+    "general_lower_bound": [
+      {
+        "semantic_role": "definition",
+        "source_location": "source-audited.tex:51-58"
+      }
+    ],
+    "universal_upper_bound": [
+      {
+        "semantic_role": "definition",
+        "source_location": "source-audited.tex:51-58"
+      }
+    ],
+    "two_sided_bracket": [
+      {
+        "semantic_role": "definition",
+        "source_location": "source-audited.tex:51-58"
+      }
+    ],
+    "iid_lower_bound": [
+      {
+        "semantic_role": "definition",
+        "source_location": "source-audited.tex:51-58"
+      }
+    ],
+    "iid100_lower_bound": [
+      {
+        "semantic_role": "definition",
+        "source_location": "source-audited.tex:51-58"
+      }
+    ]
+  },
+  "model_convention_ids_by_source_item": {
+    "setting_definitions": ["SIEVERT26-FINITE-INDEPENDENT-MODEL-01"],
+    "general_lower_bound": ["SIEVERT26-FINITE-INDEPENDENT-MODEL-01"],
+    "universal_upper_bound": ["SIEVERT26-FINITE-INDEPENDENT-MODEL-01"],
+    "two_sided_bracket": ["SIEVERT26-FINITE-INDEPENDENT-MODEL-01"],
+    "iid_lower_bound": ["SIEVERT26-FINITE-INDEPENDENT-MODEL-01"],
+    "iid100_lower_bound": ["SIEVERT26-FINITE-INDEPENDENT-MODEL-01"]
+  },
+  "source_named_result_inventory_review": {
+    "complete": true,
+    "validator": "independent_source_inventory_review_2026-11-24",
+    "method": "Read the complete 233-line byte-pinned Zenodo v1.0.1 LaTeX source independently of Lean declarations; verified all five theorem/corollary/proposition environments and the Section 1 Setting definitions block; confirmed no unlabelled standalone claims or appendix environments exist.",
+    "validated_at": "2026-11-24T15:00:00Z",
+    "prose_definition_presentations": [
+      {
+        "id": "setting_definitions_prose",
+        "source_locator": "source-audited.tex:51-58",
+        "defined_entity_kind": "object",
+        "defined_object": "FinDist",
+        "scope_disposition": "normal_named_theory_definition"
+      }
+    ],
+    "candidate_presentations": [],
+    "source_region_partition": {
+      "complete": true,
+      "validator": "independent_source_inventory_review_2026-11-24",
+      "method": "Partitioned the complete 233-line single-section/main-text paper into one exhaustive main_text region (no appendix or supplement exists).",
+      "validated_at": "2026-11-24T15:00:00Z",
+      "regions": [
+        {
+          "id": "main_text",
+          "kind": "main_text",
+          "source_locator": "source-audited.tex:1-233"
+        }
+      ],
+      "source_item_regions": {
+        "setting_definitions": "main_text",
+        "general_lower_bound": "main_text",
+        "universal_upper_bound": "main_text",
+        "two_sided_bracket": "main_text",
+        "iid_lower_bound": "main_text",
+        "iid100_lower_bound": "main_text"
+      },
+      "candidate_presentation_regions": {},
+      "prose_definition_presentation_regions": {
+        "setting_definitions_prose": "main_text"
+      },
+      "promoted_source_items": []
+    }
+  }
+}

@@ -1,0 +1,888 @@
+% Generated human-review packet template.  Source records, Lean statements,
+% and raw-source-to-Spec screening fields are substituted by
+% scripts/review_dashboard_packet.py.
+% Do not hand-edit generated packets; annotate the PDF or reconcile notes into
+% the paper-local human-review log.
+\documentclass[10pt]{article}
+\usepackage[margin=0.43in,footskip=0.2in]{geometry}
+\usepackage{fontspec}
+% Use a Unicode-complete main face as well as a Unicode-complete code face.
+% Reviewer reasons and source labels can contain exact Greek symbols outside
+% verbatim blocks; silently dropping one would corrupt the review packet.
+\setmainfont{DejaVu Serif}
+% The broad DejaVu Sans Unicode coverage preserves Lean's mathematical glyphs
+% (including U+2216 set difference and superscript identifiers) in verbatim
+% review blocks.  Its proportional metrics are preferable to silently missing
+% exact semantic text from a narrower monospace font.
+\setmonofont{DejaVu Sans}
+\usepackage{hyperref}
+\usepackage{amssymb}
+\usepackage{fvextra}
+\usepackage{enumitem}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.15em}
+\linespread{0.92}
+\hypersetup{colorlinks=true,linkcolor=blue,urlcolor=blue,breaklinks=true}
+\DefineVerbatimEnvironment{ReviewVerbatim}{Verbatim}{breaklines=true,breakanywhere=true,fontsize=\scriptsize}
+\newcommand{\reviewerbox}{%
+  \par\noindent\fbox{\parbox{0.96\linewidth}{\rule{0pt}{0.38in}}}\par
+}
+\newcommand{\reviewmatch}[1]{%
+  \par\noindent\textbf{Reviewer check:} $\square$\; #1\par
+  \noindent\emph{If left unchecked, explain the discrepancy or uncertainty below.}\par
+}
+
+\begin{document}
+\fontsize{9}{10}\selectfont
+
+\begin{center}
+{\LARGE Human review packet: Sievert26SimpleAuctions}\\[0.35em]
+\small Generated from byte-pinned source excerpts, the expanded PaperInterface
+specifications, and hash-bound raw-source-to-Spec screening records.
+\end{center}
+
+\noindent\textbf{Paper:} Sievert26SimpleAuctions\\
+\textbf{Paper id:} \texttt{Sievert26SimpleAuctions}\\
+\textbf{Source version:} \parbox[t]{0.76\linewidth}{\raggedright Zenodo v1.0.1 (DOI 10.5281/zenodo.24482558, 2026-11-23)}\\
+\textbf{Source record:} \texttt{audit/paper\_statement\_map.json}\\
+\textbf{Rows:} 5\\
+\textbf{Generated:} 2026-11-24\\
+\textbf{Source URL:} \href{https://doi.org/10.5281/zenodo.24482558}{official source}
+
+
+
+
+
+\section*{How to use this packet}
+For each source claim, compare the exact source excerpts with the expanded
+PaperInterface specification. Mark up this PDF or fill the blank reviewer box in the TeX source;
+return the annotated file for reconciliation into the paper-local human-review
+log.
+
+\section*{Open the interactive dashboard}
+The interactive dashboard is an optional alternative to using this PDF; it
+presents the same review surface rather than an additional review requirement.
+After forking and cloning (or pulling) AppliedModelingLib, run the following from the
+repository root. The cache command is needed only the first time in a new clone.
+\begin{ReviewVerbatim}
+cd <your-repository-checkout>
+lake exe cache get
+python3 scripts/review_dashboard.py --paper Sievert26SimpleAuctions --serve
+\end{ReviewVerbatim}
+Open \url{http://127.0.0.1:8765/} in a browser and keep that terminal running
+while reviewing. The dashboard records saved annotations in this paper's local
+reviewer-owned review record.
+
+\section*{Contents}
+\begin{itemize}[leftmargin=1.2em]
+\item \hyperlink{governing-declaration-section-5ef5ef0364b6939c}{Governing Lean declarations (8; supporting context)}
+\item \hyperlink{paper-prerequisite-section-5ef5ef0364b6939c}{Paper-specific semantic prerequisites (6; not paper claims)}
+\begin{itemize}[leftmargin=1.2em]
+\item \hyperlink{paper-prerequisite-5b39ea21863ce14e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\item \hyperlink{paper-prerequisite-e0c4e0f254386cff}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}BREV}
+\item \hyperlink{paper-prerequisite-b1d558d0810cbb0e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Mechanism}
+\item \hyperlink{paper-prerequisite-8bbfb5082359244f}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}REV}
+\item \hyperlink{paper-prerequisite-de82ecb4c67c171b}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}SREV}
+\item \hyperlink{paper-prerequisite-3b350509c2b8610a}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}c\allowbreak{}Star}
+\end{itemize}
+\item \hyperlink{source-section-0c7af8265958a9ea}{Main-text source claims (5)}
+\begin{itemize}[leftmargin=1.2em]
+\item \hyperlink{source-claim-c62d7224d99f5065}{Theorem 1 (General Lower Bound)}
+\item \hyperlink{source-claim-ee93e38fd4716dbe}{Theorem 2 (Universal Upper Bound)}
+\item \hyperlink{source-claim-1868c4adbd598c22}{Corollary 3 (Two-Sided Bracket)}
+\item \hyperlink{source-claim-401774aa30d66b30}{Theorem 4 (i.\allowbreak{}i.\allowbreak{}d.\allowbreak{} Lower Bound)}
+\item \hyperlink{source-claim-0e5826d998ecffab}{Proposition 5 (100-item i.\allowbreak{}i.\allowbreak{}d.\allowbreak{} Exact Rational Bound)}
+\end{itemize}
+\end{itemize}
+
+\clearpage
+\hypertarget{governing-declaration-section-5ef5ef0364b6939c}{}
+\section*{Governing Lean declarations}
+These exact graph-bound declaration bodies are retained by the displayed specifications or reviewed prerequisites. They are supporting context and do not add source-result rows or semantic judgments.
+\hypertarget{governing-declaration-b1b2d9866684404f}{}
+\subsection*{\small\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist.\allowbreak{}tail}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+Sievert26SimpleAuctions.FinDist → ℝ → ℝ
+
+value:
+fun (F : Sievert26SimpleAuctions.FinDist) (p : ℝ) => ∑ k : Fin F.size, if p ≤ F.val k then F.prob k else 0
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-5b39ea21863ce14e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\end{itemize}
+\hypertarget{governing-declaration-e678f8bf5214cffc}{}
+\subsection*{\small\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist.\allowbreak{}rev}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+Sievert26SimpleAuctions.FinDist → ℝ
+
+value:
+fun (F : Sievert26SimpleAuctions.FinDist) => sSup (Set.range fun (p : { p : ℝ // 0 ≤ p }) => ↑p * F.tail ↑p)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-5b39ea21863ce14e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\item \hyperlink{governing-declaration-b1b2d9866684404f}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist.\allowbreak{}tail}
+\end{itemize}
+\hypertarget{governing-declaration-8842f115c80c376e}{}
+\subsection*{\small\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Profile}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{ι : Type} → (ι → Sievert26SimpleAuctions.FinDist) → Type
+
+value:
+fun {ι : Type} (D : ι → Sievert26SimpleAuctions.FinDist) => (i : ι) → Fin (D i).size
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-5b39ea21863ce14e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\end{itemize}
+\hypertarget{governing-declaration-79beaf7b007655f2}{}
+\subsection*{\small\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}prob}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{ι : Type} → [Fintype ι] → (D : ι → Sievert26SimpleAuctions.FinDist) → Sievert26SimpleAuctions.Profile D → ℝ
+
+value:
+fun {ι : Type} [Fintype ι] (D : ι → Sievert26SimpleAuctions.FinDist) (ω : Sievert26SimpleAuctions.Profile D) =>
+  ∏ i : ι, (D i).prob (ω i)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-5b39ea21863ce14e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\item \hyperlink{governing-declaration-8842f115c80c376e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Profile}
+\end{itemize}
+\hypertarget{governing-declaration-b5f1b88cc13d90d0}{}
+\subsection*{\small\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}value}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{ι : Type} → (D : ι → Sievert26SimpleAuctions.FinDist) → Sievert26SimpleAuctions.Profile D → ι → ℝ
+
+value:
+fun {ι : Type} (D : ι → Sievert26SimpleAuctions.FinDist) (ω : Sievert26SimpleAuctions.Profile D) (a : ι) =>
+  (D a).val (ω a)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-5b39ea21863ce14e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\item \hyperlink{governing-declaration-8842f115c80c376e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Profile}
+\end{itemize}
+\hypertarget{governing-declaration-8a7d9cf1128641b7}{}
+\subsection*{\small\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Mechanism.\allowbreak{}rev}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{ι : Type} →
+  [inst : Fintype ι] → [DecidableEq ι] → Sievert26SimpleAuctions.Mechanism ι → (ι → Sievert26SimpleAuctions.FinDist) → ℝ
+
+value:
+fun {ι : Type} [Fintype ι] [DecidableEq ι] (M : Sievert26SimpleAuctions.Mechanism ι)
+    (D : ι → Sievert26SimpleAuctions.FinDist) =>
+  ∑ ω : Sievert26SimpleAuctions.Profile D, Sievert26SimpleAuctions.prob D ω * M.pay (Sievert26SimpleAuctions.value D ω)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-5b39ea21863ce14e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\item \hyperlink{paper-prerequisite-b1d558d0810cbb0e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Mechanism}
+\item \hyperlink{governing-declaration-8842f115c80c376e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Profile}
+\item \hyperlink{governing-declaration-79beaf7b007655f2}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}prob}
+\item \hyperlink{governing-declaration-b5f1b88cc13d90d0}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}value}
+\end{itemize}
+\hypertarget{governing-declaration-d6af1c790788c293}{}
+\subsection*{\small\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}bundle\allowbreak{}Tail}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+{ι : Type} → [Fintype ι] → [DecidableEq ι] → (ι → Sievert26SimpleAuctions.FinDist) → ℝ → ℝ
+
+value:
+fun {ι : Type} [Fintype ι] [DecidableEq ι] (D : ι → Sievert26SimpleAuctions.FinDist) (p : ℝ) =>
+  ∑ ω : Sievert26SimpleAuctions.Profile D,
+    if p ≤ ∑ i : ι, Sievert26SimpleAuctions.value D ω i then Sievert26SimpleAuctions.prob D ω else 0
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-5b39ea21863ce14e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\item \hyperlink{governing-declaration-8842f115c80c376e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Profile}
+\item \hyperlink{governing-declaration-79beaf7b007655f2}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}prob}
+\item \hyperlink{governing-declaration-b5f1b88cc13d90d0}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}value}
+\end{itemize}
+\hypertarget{governing-declaration-1ea0fec2fbf47f09}{}
+\subsection*{\small\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Valid\allowbreak{}Constants}
+\textbf{Declaration location:} paper-local
+\paragraph{Lean declaration body}
+\begin{ReviewVerbatim}
+type:
+ℝ → Prop
+
+value:
+fun (a : ℝ) =>
+  {c : ℝ |
+      ∀ (m : ℕ) (D : Fin m → Sievert26SimpleAuctions.FinDist),
+        Sievert26SimpleAuctions.REV D ≤ c * max (Sievert26SimpleAuctions.SREV D) (Sievert26SimpleAuctions.BREV D)}
+    a
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-e0c4e0f254386cff}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}BREV}
+\item \hyperlink{paper-prerequisite-5b39ea21863ce14e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\item \hyperlink{paper-prerequisite-8bbfb5082359244f}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}REV}
+\item \hyperlink{paper-prerequisite-de82ecb4c67c171b}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}SREV}
+\end{itemize}
+\clearpage
+\hypertarget{paper-prerequisite-section-5ef5ef0364b6939c}{}
+\section*{Paper-specific semantic prerequisites}
+\hypertarget{paper-prerequisite-5b39ea21863ce14e}{}
+\subsection*{\small\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 51-\allowbreak{}58\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\paragraph{Setting.}
+Let $D = (D_1, \dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\R_{\ge 0}$ (\texttt{FinDist} in \texttt{SimpleAuctions/Basic.lean}). Define:
+\begin{align*}
+  \SREV(D) &:= \sum_{i=1}^m \sup_{p \ge 0} p \Pr_{X_i \sim D_i}[X_i \ge p], &
+  \BREV(D) &:= \sup_{p \ge 0} p \Pr_{X \sim D}\!\left[\sum_{i=1}^m X_i \ge p\right],
+\end{align*}
+and $\REV(D) := \sup_{M} \E_{X \sim D}[\mathrm{pay}_M(X)]$, where $M = (\mathrm{alloc}_M, \mathrm{pay}_M)$ ranges over all direct mechanisms with $\mathrm{alloc}_M : \R^m \to [0,1]^m$ and $\mathrm{pay}_M : \R^m \to \R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \emph{all} nonnegative valuation vectors $v, v' \in \R_{\ge 0}^m$. Let $c^* := \inf\{c \in \R : \forall m \in \mathbb{N},\; \forall D : \mathrm{Fin}\,m \to \mathrm{FinDist},\; \REV(D) \le c \max\{\SREV(D),\BREV(D)\}\}$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+field size:
+Sievert26SimpleAuctions.FinDist → ℕ
+
+field val:
+(self : Sievert26SimpleAuctions.FinDist) → Fin self.size → ℝ
+
+field prob:
+(self : Sievert26SimpleAuctions.FinDist) → Fin self.size → ℝ
+
+field val_nonneg:
+∀ (self : Sievert26SimpleAuctions.FinDist) (k : Fin self.size), 0 ≤ self.val k
+
+field prob_nonneg:
+∀ (self : Sievert26SimpleAuctions.FinDist) (k : Fin self.size), 0 ≤ self.prob k
+
+field prob_sum:
+∀ (self : Sievert26SimpleAuctions.FinDist), ∑ k : Fin self.size, self.prob k = 1
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Compared cited publication:\allowbreak{}51-\allowbreak{}58 ('tuple of independent, finitely supported probability distributions on R\_\allowbreak{}\{>= 0\} (FinDist)') under approved model convention SIEVERT26-\allowbreak{}FINITE-\allowbreak{}INDEPENDENT-\allowbreak{}MODEL-\allowbreak{}01 with the expanded structure fields of FinDist and all displayed supporting uses (FinDist.\allowbreak{}tail, FinDist.\allowbreak{}rev, SREV, Profile, prob, value, bundleTail, BREV, Mechanism.\allowbreak{}rev, REV, ValidConstants, and all five source\_\allowbreak{}claim\_\allowbreak{}use specs).\allowbreak{} FinDist packages finite index size :\allowbreak{} ℕ, support values val :\allowbreak{} Fin size → ℝ with val\_\allowbreak{}nonneg (0 ≤ val k), and weights prob :\allowbreak{} Fin size → ℝ with prob\_\allowbreak{}nonneg (0 ≤ prob k) and prob\_\allowbreak{}sum (∑ k, prob k = 1), which enforces size ≥ 1 and represents exactly the finitely supported probability distributions on ℝ\_\allowbreak{}\{≥ 0\}.\allowbreak{} Potential duplicate val entries or zero-\allowbreak{}probability atoms aggregate additively under FinDist.\allowbreak{}tail, bundleTail, and Mechanism.\allowbreak{}rev because every consumer depends on realizations only via value D ω and weights linearly by prob, so all expectations and tail probabilities match the pushforward distribution exactly.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-e0c4e0f254386cff}{}
+\subsection*{\small\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}BREV}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}BREV\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 51-\allowbreak{}58\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\paragraph{Setting.}
+Let $D = (D_1, \dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\R_{\ge 0}$ (\texttt{FinDist} in \texttt{SimpleAuctions/Basic.lean}). Define:
+\begin{align*}
+  \SREV(D) &:= \sum_{i=1}^m \sup_{p \ge 0} p \Pr_{X_i \sim D_i}[X_i \ge p], &
+  \BREV(D) &:= \sup_{p \ge 0} p \Pr_{X \sim D}\!\left[\sum_{i=1}^m X_i \ge p\right],
+\end{align*}
+and $\REV(D) := \sup_{M} \E_{X \sim D}[\mathrm{pay}_M(X)]$, where $M = (\mathrm{alloc}_M, \mathrm{pay}_M)$ ranges over all direct mechanisms with $\mathrm{alloc}_M : \R^m \to [0,1]^m$ and $\mathrm{pay}_M : \R^m \to \R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \emph{all} nonnegative valuation vectors $v, v' \in \R_{\ge 0}^m$. Let $c^* := \inf\{c \in \R : \forall m \in \mathbb{N},\; \forall D : \mathrm{Fin}\,m \to \mathrm{FinDist},\; \REV(D) \le c \max\{\SREV(D),\BREV(D)\}\}$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{ι : Type} → [Fintype ι] → [DecidableEq ι] → (ι → Sievert26SimpleAuctions.FinDist) → ℝ
+
+value:
+fun {ι : Type} [Fintype ι] [DecidableEq ι] (D : ι → Sievert26SimpleAuctions.FinDist) =>
+  sSup (Set.range fun (p : { p : ℝ // 0 ≤ p }) => ↑p * Sievert26SimpleAuctions.bundleTail D ↑p)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-5b39ea21863ce14e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\item \hyperlink{governing-declaration-d6af1c790788c293}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}bundle\allowbreak{}Tail}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Compared cited publication:\allowbreak{}51-\allowbreak{}58 ('BREV(D) :\allowbreak{}= sup\_\allowbreak{}\{p >= 0\} p Pr\_\allowbreak{}\{X \textasciitilde{} D\}[sum\_\allowbreak{}\{i=1\}\textasciicircum{}m X\_\allowbreak{}i >= p]' under SIEVERT26-\allowbreak{}FINITE-\allowbreak{}INDEPENDENT-\allowbreak{}MODEL-\allowbreak{}01) with the expanded target of BREV and its supporting definitions bundleTail, Profile, prob, value, and FinDist.\allowbreak{} BREV takes sSup over \{p :\allowbreak{} ℝ /\allowbreak{}/\allowbreak{} 0 ≤ p\} of p * bundleTail D p, where bundleTail D p sums the independent product weights prob D ω = ∏ i, (D i).\allowbreak{}prob (ω i) over ω :\allowbreak{} Profile D satisfying p ≤ ∑ i, (D i).\allowbreak{}val (ω i).\allowbreak{} Because FinDist.\allowbreak{}prob\_\allowbreak{}sum = 1 forces nonempty finite support per item and nonnegativity gives bundleTail D p ∈ [0, 1] vanishing above max\_\allowbreak{}ω ∑ i, value D ω i, the sSup range is nonempty (0 at p = 0) and bounded above, so Real.\allowbreak{}sSup equals the exact real supremum (including m = 0 where BREV = 0).\allowbreak{} Parameterizing by [Fintype ι] [DecidableEq ι] specializes identically to Fin m in ValidConstants and all displayed source\_\allowbreak{}claim\_\allowbreak{}use targets, and yields a valid strengthening in the first conjunct of universal\_\allowbreak{}upper\_\allowbreak{}boundSpec.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-b1d558d0810cbb0e}{}
+\subsection*{\small\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Mechanism}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Mechanism\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 51-\allowbreak{}58\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\paragraph{Setting.}
+Let $D = (D_1, \dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\R_{\ge 0}$ (\texttt{FinDist} in \texttt{SimpleAuctions/Basic.lean}). Define:
+\begin{align*}
+  \SREV(D) &:= \sum_{i=1}^m \sup_{p \ge 0} p \Pr_{X_i \sim D_i}[X_i \ge p], &
+  \BREV(D) &:= \sup_{p \ge 0} p \Pr_{X \sim D}\!\left[\sum_{i=1}^m X_i \ge p\right],
+\end{align*}
+and $\REV(D) := \sup_{M} \E_{X \sim D}[\mathrm{pay}_M(X)]$, where $M = (\mathrm{alloc}_M, \mathrm{pay}_M)$ ranges over all direct mechanisms with $\mathrm{alloc}_M : \R^m \to [0,1]^m$ and $\mathrm{pay}_M : \R^m \to \R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \emph{all} nonnegative valuation vectors $v, v' \in \R_{\ge 0}^m$. Let $c^* := \inf\{c \in \R : \forall m \in \mathbb{N},\; \forall D : \mathrm{Fin}\,m \to \mathrm{FinDist},\; \REV(D) \le c \max\{\SREV(D),\BREV(D)\}\}$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-elaborated paper signature}
+\begin{ReviewVerbatim}
+field alloc:
+{ι : Type} → [inst : Fintype ι] → Sievert26SimpleAuctions.Mechanism ι → (ι → ℝ) → ι → ℝ
+
+field pay:
+{ι : Type} → [inst : Fintype ι] → Sievert26SimpleAuctions.Mechanism ι → (ι → ℝ) → ℝ
+
+field alloc_nonneg:
+∀ {ι : Type} [inst : Fintype ι] (self : Sievert26SimpleAuctions.Mechanism ι) (v : ι → ℝ) (i : ι), 0 ≤ self.alloc v i
+
+field alloc_le_one:
+∀ {ι : Type} [inst : Fintype ι] (self : Sievert26SimpleAuctions.Mechanism ι) (v : ι → ℝ) (i : ι), self.alloc v i ≤ 1
+
+field ir:
+∀ {ι : Type} [inst : Fintype ι] (self : Sievert26SimpleAuctions.Mechanism ι) (v : ι → ℝ),
+  (∀ (i : ι), 0 ≤ v i) → 0 ≤ ∑ i : ι, v i * self.alloc v i - self.pay v
+
+field ic:
+∀ {ι : Type} [inst : Fintype ι] (self : Sievert26SimpleAuctions.Mechanism ι) (v v' : ι → ℝ),
+  (∀ (i : ι), 0 ≤ v i) →
+    (∀ (i : ι), 0 ≤ v' i) → ∑ i : ι, v i * self.alloc v' i - self.pay v' ≤ ∑ i : ι, v i * self.alloc v i - self.pay v
+\end{ReviewVerbatim}
+
+
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Compared cited publication:\allowbreak{}51-\allowbreak{}58 ('direct mechanisms with alloc\_\allowbreak{}M :\allowbreak{} R\textasciicircum{}m -\allowbreak{}> [0,1]\textasciicircum{}m and pay\_\allowbreak{}M :\allowbreak{} R\textasciicircum{}m -\allowbreak{}> R satisfying incentive compatibility (IC) and individual rationality (IR) for all nonnegative valuation vectors v, v' in R\_\allowbreak{}\{>= 0\}\textasciicircum{}m') under SIEVERT26-\allowbreak{}FINITE-\allowbreak{}INDEPENDENT-\allowbreak{}MODEL-\allowbreak{}01 with the expanded structure fields of Mechanism, Mechanism.\allowbreak{}rev, REV, and displayed source\_\allowbreak{}claim\_\allowbreak{}use contexts.\allowbreak{} Mechanism ι provides alloc :\allowbreak{} (ι → ℝ) → ι → ℝ bounded in [0, 1] by alloc\_\allowbreak{}nonneg and alloc\_\allowbreak{}le\_\allowbreak{}one for all v and i, pay :\allowbreak{} (ι → ℝ) → ℝ, IR as 0 ≤ ∑ i, v i * alloc v i -\allowbreak{} pay v for all v ≥ 0, and IC as ∑ i, v i * alloc v' i -\allowbreak{} pay v' ≤ ∑ i, v i * alloc v i -\allowbreak{} pay v for all v, v' ≥ 0.\allowbreak{} Mechanism.\allowbreak{}rev computes the independent product expectation ∑ ω :\allowbreak{} Profile D, prob D ω * M.\allowbreak{}pay (value D ω), matching E\_\allowbreak{}\{X \textasciitilde{} D\}[pay\_\allowbreak{}M(X)].\allowbreak{} Generalizing Fin m to [Fintype ι] specializes directly to Fin m across all lower-\allowbreak{}bound specs and provides a valid strengthening in universal\_\allowbreak{}upper\_\allowbreak{}boundSpec.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-8bbfb5082359244f}{}
+\subsection*{\small\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}REV}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}REV\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 51-\allowbreak{}58\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\paragraph{Setting.}
+Let $D = (D_1, \dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\R_{\ge 0}$ (\texttt{FinDist} in \texttt{SimpleAuctions/Basic.lean}). Define:
+\begin{align*}
+  \SREV(D) &:= \sum_{i=1}^m \sup_{p \ge 0} p \Pr_{X_i \sim D_i}[X_i \ge p], &
+  \BREV(D) &:= \sup_{p \ge 0} p \Pr_{X \sim D}\!\left[\sum_{i=1}^m X_i \ge p\right],
+\end{align*}
+and $\REV(D) := \sup_{M} \E_{X \sim D}[\mathrm{pay}_M(X)]$, where $M = (\mathrm{alloc}_M, \mathrm{pay}_M)$ ranges over all direct mechanisms with $\mathrm{alloc}_M : \R^m \to [0,1]^m$ and $\mathrm{pay}_M : \R^m \to \R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \emph{all} nonnegative valuation vectors $v, v' \in \R_{\ge 0}^m$. Let $c^* := \inf\{c \in \R : \forall m \in \mathbb{N},\; \forall D : \mathrm{Fin}\,m \to \mathrm{FinDist},\; \REV(D) \le c \max\{\SREV(D),\BREV(D)\}\}$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{ι : Type} → [Fintype ι] → [DecidableEq ι] → (ι → Sievert26SimpleAuctions.FinDist) → ℝ
+
+value:
+fun {ι : Type} [Fintype ι] [DecidableEq ι] (D : ι → Sievert26SimpleAuctions.FinDist) =>
+  sSup (Set.range fun (M : Sievert26SimpleAuctions.Mechanism ι) => M.rev D)
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-5b39ea21863ce14e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\item \hyperlink{paper-prerequisite-b1d558d0810cbb0e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Mechanism}
+\item \hyperlink{governing-declaration-8a7d9cf1128641b7}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Mechanism.\allowbreak{}rev}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Compared cited publication:\allowbreak{}51-\allowbreak{}58 ('REV(D) :\allowbreak{}= sup\_\allowbreak{}M E\_\allowbreak{}\{X \textasciitilde{} D\}[pay\_\allowbreak{}M(X)]' over all direct IC and IR mechanisms on R\_\allowbreak{}\{>= 0\}\textasciicircum{}m) under SIEVERT26-\allowbreak{}FINITE-\allowbreak{}INDEPENDENT-\allowbreak{}MODEL-\allowbreak{}01 with the expanded target of REV and its supporting definitions Mechanism, Mechanism.\allowbreak{}rev, Profile, prob, value, and FinDist.\allowbreak{} REV D takes sSup (Set.\allowbreak{}range fun M :\allowbreak{} Mechanism ι => M.\allowbreak{}rev D) where M.\allowbreak{}rev D = ∑ ω :\allowbreak{} Profile D, prob D ω * M.\allowbreak{}pay (value D ω).\allowbreak{} The range is always nonempty (the zero mechanism achieves 0) and bounded above (since val\_\allowbreak{}nonneg, alloc\_\allowbreak{}le\_\allowbreak{}one, and ir imply M.\allowbreak{}pay (value D ω) ≤ ∑ i, value D ω i, bounding M.\allowbreak{}rev D by ∑ ω, prob D ω * ∑ i, value D ω i), so Real.\allowbreak{}sSup equals the exact real supremum (including m = 0 where REV D = 0).\allowbreak{} Parameterizing by [Fintype ι] [DecidableEq ι] specializes identically to Fin m in ValidConstants and all displayed source\_\allowbreak{}claim\_\allowbreak{}use targets and validly strengthens the first conjunct of universal\_\allowbreak{}upper\_\allowbreak{}boundSpec.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-de82ecb4c67c171b}{}
+\subsection*{\small\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}SREV}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}SREV\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 51-\allowbreak{}58\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\paragraph{Setting.}
+Let $D = (D_1, \dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\R_{\ge 0}$ (\texttt{FinDist} in \texttt{SimpleAuctions/Basic.lean}). Define:
+\begin{align*}
+  \SREV(D) &:= \sum_{i=1}^m \sup_{p \ge 0} p \Pr_{X_i \sim D_i}[X_i \ge p], &
+  \BREV(D) &:= \sup_{p \ge 0} p \Pr_{X \sim D}\!\left[\sum_{i=1}^m X_i \ge p\right],
+\end{align*}
+and $\REV(D) := \sup_{M} \E_{X \sim D}[\mathrm{pay}_M(X)]$, where $M = (\mathrm{alloc}_M, \mathrm{pay}_M)$ ranges over all direct mechanisms with $\mathrm{alloc}_M : \R^m \to [0,1]^m$ and $\mathrm{pay}_M : \R^m \to \R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \emph{all} nonnegative valuation vectors $v, v' \in \R_{\ge 0}^m$. Let $c^* := \inf\{c \in \R : \forall m \in \mathbb{N},\; \forall D : \mathrm{Fin}\,m \to \mathrm{FinDist},\; \REV(D) \le c \max\{\SREV(D),\BREV(D)\}\}$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+{ι : Type} → [Fintype ι] → (ι → Sievert26SimpleAuctions.FinDist) → ℝ
+
+value:
+fun {ι : Type} [Fintype ι] (D : ι → Sievert26SimpleAuctions.FinDist) => ∑ i : ι, (D i).rev
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-5b39ea21863ce14e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\item \hyperlink{governing-declaration-e678f8bf5214cffc}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist.\allowbreak{}rev}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Compared cited publication:\allowbreak{}51-\allowbreak{}58 ('SREV(D) :\allowbreak{}= sum\_\allowbreak{}\{i=1\}\textasciicircum{}m sup\_\allowbreak{}\{p >= 0\} p Pr\_\allowbreak{}\{X\_\allowbreak{}i \textasciitilde{} D\_\allowbreak{}i\}[X\_\allowbreak{}i >= p]') under SIEVERT26-\allowbreak{}FINITE-\allowbreak{}INDEPENDENT-\allowbreak{}MODEL-\allowbreak{}01 with the expanded target of SREV and its supporting definitions FinDist, FinDist.\allowbreak{}rev, and FinDist.\allowbreak{}tail.\allowbreak{} SREV D sums (D i).\allowbreak{}rev over i :\allowbreak{} ι, where (D i).\allowbreak{}rev = sSup (Set.\allowbreak{}range fun p :\allowbreak{} \{p :\allowbreak{} ℝ /\allowbreak{}/\allowbreak{} 0 ≤ p\} => ↑p * (D i).\allowbreak{}tail ↑p) and (D i).\allowbreak{}tail p = ∑ k, if p ≤ (D i).\allowbreak{}val k then (D i).\allowbreak{}prob k else 0.\allowbreak{} For each FinDist, the range contains 0 (at p = 0) and is bounded above by max\_\allowbreak{}k (D i).\allowbreak{}val k (since tail p ≤ 1 and vanishes for p above all support values), so Real.\allowbreak{}sSup equals the exact real supremum (and SREV = 0 for empty ι).\allowbreak{} Parameterizing over [Fintype ι] specializes identically to Fin m in ValidConstants and all displayed source\_\allowbreak{}claim\_\allowbreak{}use targets, and gives a valid strengthening in the first conjunct of universal\_\allowbreak{}upper\_\allowbreak{}boundSpec.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{paper-prerequisite-3b350509c2b8610a}{}
+\subsection*{\small\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}c\allowbreak{}Star}
+\noindent\textbf{Paper-local declaration:}\par
+{\footnotesize\ttfamily\raggedright Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}c\allowbreak{}Star\par}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 51-\allowbreak{}58\par}
+\paragraph{Verbatim paper-source connection}
+\begin{ReviewVerbatim}
+\paragraph{Setting.}
+Let $D = (D_1, \dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\R_{\ge 0}$ (\texttt{FinDist} in \texttt{SimpleAuctions/Basic.lean}). Define:
+\begin{align*}
+  \SREV(D) &:= \sum_{i=1}^m \sup_{p \ge 0} p \Pr_{X_i \sim D_i}[X_i \ge p], &
+  \BREV(D) &:= \sup_{p \ge 0} p \Pr_{X \sim D}\!\left[\sum_{i=1}^m X_i \ge p\right],
+\end{align*}
+and $\REV(D) := \sup_{M} \E_{X \sim D}[\mathrm{pay}_M(X)]$, where $M = (\mathrm{alloc}_M, \mathrm{pay}_M)$ ranges over all direct mechanisms with $\mathrm{alloc}_M : \R^m \to [0,1]^m$ and $\mathrm{pay}_M : \R^m \to \R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \emph{all} nonnegative valuation vectors $v, v' \in \R_{\ge 0}^m$. Let $c^* := \inf\{c \in \R : \forall m \in \mathbb{N},\; \forall D : \mathrm{Fin}\,m \to \mathrm{FinDist},\; \REV(D) \le c \max\{\SREV(D),\BREV(D)\}\}$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Lean-expanded paper semantic target}
+\begin{ReviewVerbatim}
+type:
+ℝ
+
+value:
+sInf Sievert26SimpleAuctions.ValidConstants
+\end{ReviewVerbatim}
+
+\paragraph{Direct retained dependencies}
+\begin{itemize}\raggedright
+\item \hyperlink{governing-declaration-1ea0fec2fbf47f09}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Valid\allowbreak{}Constants}
+\end{itemize}
+\paragraph{Recorded source-to-declaration screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Compared cited publication:\allowbreak{}51-\allowbreak{}58 ('c* :\allowbreak{}= inf \{ c in R :\allowbreak{} forall m in N, forall D :\allowbreak{} Fin m -\allowbreak{}> FinDist, REV(D) <= c max\{SREV(D), BREV(D)\} \}') under SIEVERT26-\allowbreak{}FINITE-\allowbreak{}INDEPENDENT-\allowbreak{}MODEL-\allowbreak{}01 with the expanded target of cStar, ValidConstants, all transitive definitions (FinDist, SREV, BREV, Mechanism, REV, and helpers), and its use in two\_\allowbreak{}sided\_\allowbreak{}bracketSpec.\allowbreak{} ValidConstants is literally \{c :\allowbreak{} ℝ | ∀ (m :\allowbreak{} ℕ) (D :\allowbreak{} Fin m → FinDist), REV D ≤ c * max (SREV D) (BREV D)\} and cStar :\allowbreak{}= sInf ValidConstants.\allowbreak{} Because ValidConstants is nonempty (e.\allowbreak{}g.\allowbreak{} contains 2.\allowbreak{}486) and bounded below (e.\allowbreak{}g.\allowbreak{} by 1 via the single-\allowbreak{}item unit point mass where REV = SREV = BREV = 1;\allowbreak{} while m = 0 or zero-\allowbreak{}valuation instances give 0 ≤ c * 0 trivially), Real.\allowbreak{}sInf equals the exact real infimum matching the source definition.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+
+\clearpage
+\hypertarget{source-claim-c62d7224d99f5065}{}
+\hypertarget{source-section-0c7af8265958a9ea}{}
+\section*{Main-text source claims}
+\subsection*{Review row 1}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 59-\allowbreak{}65\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{theorem}[General Lower Bound; Lean: \texttt{SimpleAuctions.lower\_bound}]\label{thm:lb}
+There exist $m \in \mathbb{N}$ and independent finitely supported distributions $D_1, \dots, D_m$ on $\R_{\ge 0}$ such that
+\[
+  \REV(D) > 2.1946 \max\{\SREV(D), \BREV(D)\}.
+\]
+The witnessing mechanism is deterministic.
+\end{theorem}
+
+[Next verbatim source excerpt]
+
+\paragraph{Setting.}
+Let $D = (D_1, \dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\R_{\ge 0}$ (\texttt{FinDist} in \texttt{SimpleAuctions/Basic.lean}). Define:
+\begin{align*}
+  \SREV(D) &:= \sum_{i=1}^m \sup_{p \ge 0} p \Pr_{X_i \sim D_i}[X_i \ge p], &
+  \BREV(D) &:= \sup_{p \ge 0} p \Pr_{X \sim D}\!\left[\sum_{i=1}^m X_i \ge p\right],
+\end{align*}
+and $\REV(D) := \sup_{M} \E_{X \sim D}[\mathrm{pay}_M(X)]$, where $M = (\mathrm{alloc}_M, \mathrm{pay}_M)$ ranges over all direct mechanisms with $\mathrm{alloc}_M : \R^m \to [0,1]^m$ and $\mathrm{pay}_M : \R^m \to \R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \emph{all} nonnegative valuation vectors $v, v' \in \R_{\ge 0}^m$. Let $c^* := \inf\{c \in \R : \forall m \in \mathbb{N},\; \forall D : \mathrm{Fin}\,m \to \mathrm{FinDist},\; \REV(D) \le c \max\{\SREV(D),\BREV(D)\}\}$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∃ (m : ℕ) (D : Fin m → Sievert26SimpleAuctions.FinDist),
+  2.1946 * max (Sievert26SimpleAuctions.SREV D) (Sievert26SimpleAuctions.BREV D) < Sievert26SimpleAuctions.REV D ∧
+    ∃ (M : Sievert26SimpleAuctions.Mechanism (Fin m)),
+      (∀ (v : Fin m → ℝ) (i : Fin m), M.alloc v i = 0 ∨ M.alloc v i = 1) ∧
+        2.1946 * max (Sievert26SimpleAuctions.SREV D) (Sievert26SimpleAuctions.BREV D) < M.rev D
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-e0c4e0f254386cff}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}BREV}
+\item \hyperlink{paper-prerequisite-5b39ea21863ce14e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\item \hyperlink{paper-prerequisite-b1d558d0810cbb0e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Mechanism}
+\item \hyperlink{governing-declaration-8a7d9cf1128641b7}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Mechanism.\allowbreak{}rev}
+\item \hyperlink{paper-prerequisite-8bbfb5082359244f}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}REV}
+\item \hyperlink{paper-prerequisite-de82ecb4c67c171b}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}SREV}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. conclusion: ∃ (m : ℕ) (D : Fin m → Sievert26SimpleAuctions.FinDist),
+  2.1946 * max (Sievert26SimpleAuctions.SREV D) (Sievert26SimpleAuctions.BREV D) < Sievert26SimpleAuctions.REV D ∧
+    ∃ (M : Sievert26SimpleAuctions.Mechanism (Fin m)),
+      (∀ (v : Fin m → ℝ) (i : Fin m), M.alloc v i = 0 ∨ M.alloc v i = 1) ∧
+        2.1946 * max (Sievert26SimpleAuctions.SREV D) (Sievert26SimpleAuctions.BREV D) < M.rev D
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+Sievert26SimpleAuctions.general_lower_bound
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Compared cited publication:\allowbreak{}59-\allowbreak{}65 (Theorem 1, General Lower Bound) and Setting (cited publication:\allowbreak{}51-\allowbreak{}58) under approved source model convention SIEVERT26-\allowbreak{}FINITE-\allowbreak{}INDEPENDENT-\allowbreak{}MODEL-\allowbreak{}01 against the expanded Lean target for general\_\allowbreak{}lower\_\allowbreak{}boundSpec and all 12 supporting declarations (FinDist, FinDist.\allowbreak{}tail, FinDist.\allowbreak{}rev, SREV, Profile, prob, value, bundleTail, BREV, Mechanism, Mechanism.\allowbreak{}rev, REV).\allowbreak{} The supporting definitions faithfully formalize finite nonnegative distributions (with prob\_\allowbreak{}sum = 1 ruling out empty support), independent product profiles, and well-\allowbreak{}bounded real suprema for SREV/\allowbreak{}BREV/\allowbreak{}REV over p >= 0 and all IC+IR direct mechanisms on nonnegative valuation vectors.\allowbreak{} The spec existentially quantifies m :\allowbreak{} Nat and D :\allowbreak{} Fin m -\allowbreak{}> FinDist and asserts both the strict inequality 2.\allowbreak{}1946 * max (SREV D) (BREV D) < REV D and a witnessing deterministic Mechanism (Fin m) (alloc v i = 0 or 1 for all v, i) satisfying 2.\allowbreak{}1946 * max (SREV D) (BREV D) < M.\allowbreak{}rev D, matching every quantifier, domain, constant, and conclusion of Theorem 1.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-ee93e38fd4716dbe}{}
+\section*{Review row 2}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 67-\allowbreak{}76\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{theorem}[Universal Upper Bound; Lean: \texttt{SimpleAuctions.upper\_bound\_two}, \texttt{upper\_bound}]\label{thm:ub}
+For every finite index set $\iota$ and every family of independent finitely supported distributions $D : \iota \to \mathrm{FinDist}$,
+\[
+  \REV(D) \le 1.1187\,\SREV(D) + 1.367299\,\BREV(D).
+\]
+In particular, for every $m \in \mathbb{N}$ and every $D : \mathrm{Fin}\,m \to \mathrm{FinDist}$,
+\[
+  \REV(D) \le 2.486 \max\{\SREV(D), \BREV(D)\}.
+\]
+\end{theorem}
+
+[Next verbatim source excerpt]
+
+\paragraph{Setting.}
+Let $D = (D_1, \dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\R_{\ge 0}$ (\texttt{FinDist} in \texttt{SimpleAuctions/Basic.lean}). Define:
+\begin{align*}
+  \SREV(D) &:= \sum_{i=1}^m \sup_{p \ge 0} p \Pr_{X_i \sim D_i}[X_i \ge p], &
+  \BREV(D) &:= \sup_{p \ge 0} p \Pr_{X \sim D}\!\left[\sum_{i=1}^m X_i \ge p\right],
+\end{align*}
+and $\REV(D) := \sup_{M} \E_{X \sim D}[\mathrm{pay}_M(X)]$, where $M = (\mathrm{alloc}_M, \mathrm{pay}_M)$ ranges over all direct mechanisms with $\mathrm{alloc}_M : \R^m \to [0,1]^m$ and $\mathrm{pay}_M : \R^m \to \R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \emph{all} nonnegative valuation vectors $v, v' \in \R_{\ge 0}^m$. Let $c^* := \inf\{c \in \R : \forall m \in \mathbb{N},\; \forall D : \mathrm{Fin}\,m \to \mathrm{FinDist},\; \REV(D) \le c \max\{\SREV(D),\BREV(D)\}\}$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+(∀ (ι : Type) [inst : Fintype ι] (D : ι → Sievert26SimpleAuctions.FinDist),
+    Sievert26SimpleAuctions.REV D ≤
+      1.1187 * Sievert26SimpleAuctions.SREV D + 1.367299 * Sievert26SimpleAuctions.BREV D) ∧
+  ∀ (m : ℕ) (D : Fin m → Sievert26SimpleAuctions.FinDist),
+    Sievert26SimpleAuctions.REV D ≤ 2.486 * max (Sievert26SimpleAuctions.SREV D) (Sievert26SimpleAuctions.BREV D)
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-e0c4e0f254386cff}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}BREV}
+\item \hyperlink{paper-prerequisite-5b39ea21863ce14e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\item \hyperlink{paper-prerequisite-8bbfb5082359244f}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}REV}
+\item \hyperlink{paper-prerequisite-de82ecb4c67c171b}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}SREV}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. conclusion: (∀ (ι : Type) [inst : Fintype ι] (D : ι → Sievert26SimpleAuctions.FinDist),
+    Sievert26SimpleAuctions.REV D ≤
+      1.1187 * Sievert26SimpleAuctions.SREV D + 1.367299 * Sievert26SimpleAuctions.BREV D) ∧
+  ∀ (m : ℕ) (D : Fin m → Sievert26SimpleAuctions.FinDist),
+    Sievert26SimpleAuctions.REV D ≤ 2.486 * max (Sievert26SimpleAuctions.SREV D) (Sievert26SimpleAuctions.BREV D)
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+Sievert26SimpleAuctions.universal_upper_bound
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Compared cited publication:\allowbreak{}67-\allowbreak{}76 (Theorem 2, Universal Upper Bound) and Setting (cited publication:\allowbreak{}51-\allowbreak{}58) under SIEVERT26-\allowbreak{}FINITE-\allowbreak{}INDEPENDENT-\allowbreak{}MODEL-\allowbreak{}01 against the expanded Lean target for universal\_\allowbreak{}upper\_\allowbreak{}boundSpec and all 12 supporting declarations.\allowbreak{} The first conjunct quantifies over every finite index type iota :\allowbreak{} Type with [Fintype iota] and every family D :\allowbreak{} iota -\allowbreak{}> FinDist, asserting REV D <= 1.\allowbreak{}1187 * SREV D + 1.\allowbreak{}367299 * BREV D (using classical DecidableEq internally, which does not alter REV or BREV because Fintype is a Subsingleton and removes any extra decidability hypothesis).\allowbreak{} The second conjunct quantifies over every m :\allowbreak{} Nat and D :\allowbreak{} Fin m -\allowbreak{}> FinDist, asserting REV D <= 2.\allowbreak{}486 * max (SREV D) (BREV D).\allowbreak{} Both bounds, constants, domains, and quantifiers (including empty-\allowbreak{}index and zero-\allowbreak{}value edge cases) match Theorem 2 exactly.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-1868c4adbd598c22}{}
+\section*{Review row 3}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 78-\allowbreak{}80\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{corollary}[Two-Sided Bracket; Lean: \texttt{SimpleAuctions.main\_bracket}, \texttt{cStar\_mem}]\label{cor:bracket}
+$2.1946 \le c^* \le 2.486$.
+\end{corollary}
+
+[Next verbatim source excerpt]
+
+\paragraph{Setting.}
+Let $D = (D_1, \dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\R_{\ge 0}$ (\texttt{FinDist} in \texttt{SimpleAuctions/Basic.lean}). Define:
+\begin{align*}
+  \SREV(D) &:= \sum_{i=1}^m \sup_{p \ge 0} p \Pr_{X_i \sim D_i}[X_i \ge p], &
+  \BREV(D) &:= \sup_{p \ge 0} p \Pr_{X \sim D}\!\left[\sum_{i=1}^m X_i \ge p\right],
+\end{align*}
+and $\REV(D) := \sup_{M} \E_{X \sim D}[\mathrm{pay}_M(X)]$, where $M = (\mathrm{alloc}_M, \mathrm{pay}_M)$ ranges over all direct mechanisms with $\mathrm{alloc}_M : \R^m \to [0,1]^m$ and $\mathrm{pay}_M : \R^m \to \R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \emph{all} nonnegative valuation vectors $v, v' \in \R_{\ge 0}^m$. Let $c^* := \inf\{c \in \R : \forall m \in \mathbb{N},\; \forall D : \mathrm{Fin}\,m \to \mathrm{FinDist},\; \REV(D) \le c \max\{\SREV(D),\BREV(D)\}\}$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+2.1946 ≤ Sievert26SimpleAuctions.cStar ∧ Sievert26SimpleAuctions.cStar ≤ 2.486
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-3b350509c2b8610a}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}c\allowbreak{}Star}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. conclusion: 2.1946 ≤ Sievert26SimpleAuctions.cStar ∧ Sievert26SimpleAuctions.cStar ≤ 2.486
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+Sievert26SimpleAuctions.two_sided_bracket
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Compared cited publication:\allowbreak{}78-\allowbreak{}80 (Corollary 3, Two-\allowbreak{}Sided Bracket) and Setting (cited publication:\allowbreak{}51-\allowbreak{}58) under SIEVERT26-\allowbreak{}FINITE-\allowbreak{}INDEPENDENT-\allowbreak{}MODEL-\allowbreak{}01 against the expanded Lean target for two\_\allowbreak{}sided\_\allowbreak{}bracketSpec and all 14 supporting declarations (including ValidConstants and cStar).\allowbreak{} ValidConstants is defined verbatim as \{c :\allowbreak{} R | forall (m :\allowbreak{} Nat) (D :\allowbreak{} Fin m -\allowbreak{}> FinDist), REV D <= c * max (SREV D) (BREV D)\}, which is nonempty and bounded below (e.\allowbreak{}g.\allowbreak{}, by 1 via a unit point mass at m = 1), so cStar :\allowbreak{}= sInf ValidConstants is the genuine real infimum matching the paper's definition of c*.\allowbreak{} The target asserts 2.\allowbreak{}1946 <= cStar and cStar <= 2.\allowbreak{}486, matching Corollary 3 exactly.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-401774aa30d66b30}{}
+\section*{Review row 4}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 82-\allowbreak{}88\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{theorem}[i.i.d.\ Lower Bound; Lean: \texttt{SimpleAuctions.iid\_lower\_bound}]\label{thm:iid}
+There exist $m \in \mathbb{N}$ and a finitely supported distribution $F$ on $\R_{\ge 0}$ (specifically $m = 40$) such that
+\[
+  \REV(F^{\otimes m}) > 1.316 \max\{\SREV(F^{\otimes m}), \BREV(F^{\otimes m})\}.
+\]
+The witnessing mechanism is a deterministic two-part tariff (entry fee $9$, item price $4$).
+\end{theorem}
+
+[Next verbatim source excerpt]
+
+\paragraph{Setting.}
+Let $D = (D_1, \dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\R_{\ge 0}$ (\texttt{FinDist} in \texttt{SimpleAuctions/Basic.lean}). Define:
+\begin{align*}
+  \SREV(D) &:= \sum_{i=1}^m \sup_{p \ge 0} p \Pr_{X_i \sim D_i}[X_i \ge p], &
+  \BREV(D) &:= \sup_{p \ge 0} p \Pr_{X \sim D}\!\left[\sum_{i=1}^m X_i \ge p\right],
+\end{align*}
+and $\REV(D) := \sup_{M} \E_{X \sim D}[\mathrm{pay}_M(X)]$, where $M = (\mathrm{alloc}_M, \mathrm{pay}_M)$ ranges over all direct mechanisms with $\mathrm{alloc}_M : \R^m \to [0,1]^m$ and $\mathrm{pay}_M : \R^m \to \R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \emph{all} nonnegative valuation vectors $v, v' \in \R_{\ge 0}^m$. Let $c^* := \inf\{c \in \R : \forall m \in \mathbb{N},\; \forall D : \mathrm{Fin}\,m \to \mathrm{FinDist},\; \REV(D) \le c \max\{\SREV(D),\BREV(D)\}\}$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∃ (F : Sievert26SimpleAuctions.FinDist),
+  (1.316 *
+        max (Sievert26SimpleAuctions.SREV fun (x : Fin 40) => F) (Sievert26SimpleAuctions.BREV fun (x : Fin 40) => F) <
+      Sievert26SimpleAuctions.REV fun (x : Fin 40) => F) ∧
+    ∃ (M : Sievert26SimpleAuctions.Mechanism (Fin 40)),
+      (∀ (v : Fin 40 → ℝ) (i : Fin 40), M.alloc v i = 0 ∨ M.alloc v i = 1) ∧
+        (∀ (v : Fin 40 → ℝ),
+            M.pay v = if 9 ≤ ∑ i : Fin 40, max (v i - 4) 0 then 9 + ∑ i : Fin 40, if 4 ≤ v i then 4 else 0 else 0) ∧
+          1.316 *
+              max (Sievert26SimpleAuctions.SREV fun (x : Fin 40) => F)
+                (Sievert26SimpleAuctions.BREV fun (x : Fin 40) => F) <
+            M.rev fun (x : Fin 40) => F
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-e0c4e0f254386cff}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}BREV}
+\item \hyperlink{paper-prerequisite-5b39ea21863ce14e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\item \hyperlink{paper-prerequisite-b1d558d0810cbb0e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Mechanism}
+\item \hyperlink{governing-declaration-8a7d9cf1128641b7}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Mechanism.\allowbreak{}rev}
+\item \hyperlink{paper-prerequisite-8bbfb5082359244f}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}REV}
+\item \hyperlink{paper-prerequisite-de82ecb4c67c171b}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}SREV}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. conclusion: ∃ (F : Sievert26SimpleAuctions.FinDist),
+  (1.316 *
+        max (Sievert26SimpleAuctions.SREV fun (x : Fin 40) => F) (Sievert26SimpleAuctions.BREV fun (x : Fin 40) => F) <
+      Sievert26SimpleAuctions.REV fun (x : Fin 40) => F) ∧
+    ∃ (M : Sievert26SimpleAuctions.Mechanism (Fin 40)),
+      (∀ (v : Fin 40 → ℝ) (i : Fin 40), M.alloc v i = 0 ∨ M.alloc v i = 1) ∧
+        (∀ (v : Fin 40 → ℝ),
+            M.pay v = if 9 ≤ ∑ i : Fin 40, max (v i - 4) 0 then 9 + ∑ i : Fin 40, if 4 ≤ v i then 4 else 0 else 0) ∧
+          1.316 *
+              max (Sievert26SimpleAuctions.SREV fun (x : Fin 40) => F)
+                (Sievert26SimpleAuctions.BREV fun (x : Fin 40) => F) <
+            M.rev fun (x : Fin 40) => F
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+Sievert26SimpleAuctions.iid_lower_bound_thm
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Compared cited publication:\allowbreak{}82-\allowbreak{}88 (Theorem 4, i.\allowbreak{}i.\allowbreak{}d.\allowbreak{} Lower Bound) and Setting (cited publication:\allowbreak{}51-\allowbreak{}58) under SIEVERT26-\allowbreak{}FINITE-\allowbreak{}INDEPENDENT-\allowbreak{}MODEL-\allowbreak{}01 against the expanded Lean target for iid\_\allowbreak{}lower\_\allowbreak{}boundSpec and all 12 supporting declarations.\allowbreak{} The spec existentially quantifies F :\allowbreak{} FinDist for m = 40 i.\allowbreak{}i.\allowbreak{}d.\allowbreak{} copies (fun \_\allowbreak{} :\allowbreak{} Fin 40 => F), asserting 1.\allowbreak{}316 * max (SREV D) (BREV D) < REV D together with a witnessing deterministic Mechanism (Fin 40) (alloc v i in \{0, 1\}) whose payment rule is the exact two-\allowbreak{}part tariff with entry fee 9 and item price 4 (9 + sum\_\allowbreak{}\{4 <= v i\} 4 when 9 <= sum max (v i -\allowbreak{} 4) 0, else 0) and whose revenue strictly exceeds 1.\allowbreak{}316 * max (SREV D) (BREV D).\allowbreak{} Combined with IC, IR, and determinism, that payment rule uniquely forces the two-\allowbreak{}part tariff allocation on all nonnegative valuation vectors.\allowbreak{} Every quantifier, constant, mechanism constraint, and inequality matches Theorem 4.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+\clearpage
+\hypertarget{source-claim-0e5826d998ecffab}{}
+\section*{Review row 5}
+\textbf{Source locator:} {\footnotesize\raggedright cited publication, lines 90-\allowbreak{}92\par}
+\paragraph{Verbatim source input}
+\begin{ReviewVerbatim}
+\begin{proposition}[100-item i.i.d.\ Exact Rational Bound; \texttt{code/iid\_lower\_bound.py}]\label{prop:iid100}
+For $n = 100$ i.i.d.\ items with $\Pr[X \ge k] = \frac{3}{25 \max(k,4)}$ for $1 \le k \le 13$ and $0$ for $k > 13$, the deterministic mechanism with entry fee $9$ and item price $4$ satisfies $\REV / \max\{\SREV, \BREV\} \ge 1.324907$ (verified in exact rational arithmetic via Python \texttt{fractions.Fraction}).
+\end{proposition}
+
+[Next verbatim source excerpt]
+
+\paragraph{Setting.}
+Let $D = (D_1, \dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\R_{\ge 0}$ (\texttt{FinDist} in \texttt{SimpleAuctions/Basic.lean}). Define:
+\begin{align*}
+  \SREV(D) &:= \sum_{i=1}^m \sup_{p \ge 0} p \Pr_{X_i \sim D_i}[X_i \ge p], &
+  \BREV(D) &:= \sup_{p \ge 0} p \Pr_{X \sim D}\!\left[\sum_{i=1}^m X_i \ge p\right],
+\end{align*}
+and $\REV(D) := \sup_{M} \E_{X \sim D}[\mathrm{pay}_M(X)]$, where $M = (\mathrm{alloc}_M, \mathrm{pay}_M)$ ranges over all direct mechanisms with $\mathrm{alloc}_M : \R^m \to [0,1]^m$ and $\mathrm{pay}_M : \R^m \to \R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \emph{all} nonnegative valuation vectors $v, v' \in \R_{\ge 0}^m$. Let $c^* := \inf\{c \in \R : \forall m \in \mathbb{N},\; \forall D : \mathrm{Fin}\,m \to \mathrm{FinDist},\; \REV(D) \le c \max\{\SREV(D),\BREV(D)\}\}$.
+\end{ReviewVerbatim}
+
+
+
+\paragraph{Expanded PaperInterface specification}
+\begin{ReviewVerbatim}
+∃ (F : Sievert26SimpleAuctions.FinDist),
+  (∀ (i : Fin F.size), ∃ (k : ℕ), F.val i = ↑k) ∧
+    (∀ (k : ℕ), 1 ≤ k → k ≤ 13 → F.tail ↑k = 3 / (25 * max (↑k) 4)) ∧
+      (∀ (k : ℕ), 13 < k → F.tail ↑k = 0) ∧
+        ∃ (M : Sievert26SimpleAuctions.Mechanism (Fin 100)),
+          (∀ (v : Fin 100 → ℝ) (i : Fin 100), M.alloc v i = 0 ∨ M.alloc v i = 1) ∧
+            (∀ (v : Fin 100 → ℝ),
+                M.pay v =
+                  if 9 ≤ ∑ i : Fin 100, max (v i - 4) 0 then 9 + ∑ i : Fin 100, if 4 ≤ v i then 4 else 0 else 0) ∧
+              0 <
+                  max (Sievert26SimpleAuctions.SREV fun (x : Fin 100) => F)
+                    (Sievert26SimpleAuctions.BREV fun (x : Fin 100) => F) ∧
+                1.324907 ≤
+                    (M.rev fun (x : Fin 100) => F) /
+                      max (Sievert26SimpleAuctions.SREV fun (x : Fin 100) => F)
+                        (Sievert26SimpleAuctions.BREV fun (x : Fin 100) => F) ∧
+                  1.324907 ≤
+                    (Sievert26SimpleAuctions.REV fun (x : Fin 100) => F) /
+                      max (Sievert26SimpleAuctions.SREV fun (x : Fin 100) => F)
+                        (Sievert26SimpleAuctions.BREV fun (x : Fin 100) => F)
+\end{ReviewVerbatim}
+
+\paragraph{Retained governing declarations}
+\begin{itemize}\raggedright
+\item \hyperlink{paper-prerequisite-e0c4e0f254386cff}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}BREV}
+\item \hyperlink{paper-prerequisite-5b39ea21863ce14e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist}
+\item \hyperlink{governing-declaration-b1b2d9866684404f}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Fin\allowbreak{}Dist.\allowbreak{}tail}
+\item \hyperlink{paper-prerequisite-b1d558d0810cbb0e}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Mechanism}
+\item \hyperlink{governing-declaration-8a7d9cf1128641b7}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}Mechanism.\allowbreak{}rev}
+\item \hyperlink{paper-prerequisite-8bbfb5082359244f}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}REV}
+\item \hyperlink{paper-prerequisite-de82ecb4c67c171b}{Sievert26\allowbreak{}Simple\allowbreak{}Auctions.\allowbreak{}SREV}
+\end{itemize}
+\paragraph{Lean-elaborated claim roles}\begin{ReviewVerbatim}
+1. conclusion: ∃ (F : Sievert26SimpleAuctions.FinDist),
+  (∀ (i : Fin F.size), ∃ (k : ℕ), F.val i = ↑k) ∧
+    (∀ (k : ℕ), 1 ≤ k → k ≤ 13 → F.tail ↑k = 3 / (25 * max (↑k) 4)) ∧
+      (∀ (k : ℕ), 13 < k → F.tail ↑k = 0) ∧
+        ∃ (M : Sievert26SimpleAuctions.Mechanism (Fin 100)),
+          (∀ (v : Fin 100 → ℝ) (i : Fin 100), M.alloc v i = 0 ∨ M.alloc v i = 1) ∧
+            (∀ (v : Fin 100 → ℝ),
+                M.pay v =
+                  if 9 ≤ ∑ i : Fin 100, max (v i - 4) 0 then 9 + ∑ i : Fin 100, if 4 ≤ v i then 4 else 0 else 0) ∧
+              0 <
+                  max (Sievert26SimpleAuctions.SREV fun (x : Fin 100) => F)
+                    (Sievert26SimpleAuctions.BREV fun (x : Fin 100) => F) ∧
+                1.324907 ≤
+                    (M.rev fun (x : Fin 100) => F) /
+                      max (Sievert26SimpleAuctions.SREV fun (x : Fin 100) => F)
+                        (Sievert26SimpleAuctions.BREV fun (x : Fin 100) => F) ∧
+                  1.324907 ≤
+                    (Sievert26SimpleAuctions.REV fun (x : Fin 100) => F) /
+                      max (Sievert26SimpleAuctions.SREV fun (x : Fin 100) => F)
+                        (Sievert26SimpleAuctions.BREV fun (x : Fin 100) => F)
+\end{ReviewVerbatim}
+
+\paragraph{Lean proof endpoint (built separately)}\begin{ReviewVerbatim}
+Sievert26SimpleAuctions.iid100_lower_bound
+\end{ReviewVerbatim}
+
+\paragraph{Recorded source-to-Spec screening}
+\textbf{Verdict:} \texttt{matches}
+\\
+{\raggedright
+\textbf{Reason:} Compared cited publication:\allowbreak{}90-\allowbreak{}92 (Proposition 5, 100-\allowbreak{}item i.\allowbreak{}i.\allowbreak{}d.\allowbreak{} Exact Rational Bound) and Setting (cited publication:\allowbreak{}51-\allowbreak{}58) under SIEVERT26-\allowbreak{}FINITE-\allowbreak{}INDEPENDENT-\allowbreak{}MODEL-\allowbreak{}01 against the expanded Lean target for iid100\_\allowbreak{}lower\_\allowbreak{}boundSpec and all 12 supporting declarations.\allowbreak{} The integer-\allowbreak{}support clause (every F.\allowbreak{}val i is a natural number) together with F.\allowbreak{}tail k = 3 /\allowbreak{} (25 * max k 4) for 1 <= k <= 13 and F.\allowbreak{}tail k = 0 for k > 13 uniquely pins down the probability law of the discrete random variable X on \{0, .\allowbreak{}.\allowbreak{}.\allowbreak{}, 13\}, and because SREV, BREV, REV, and M.\allowbreak{}rev depend only on the law of F, the existential formulation over F is equivalent to existence plus universal validity for every FinDist realizing that law.\allowbreak{} For the 100 i.\allowbreak{}i.\allowbreak{}d.\allowbreak{} copies (fun \_\allowbreak{} :\allowbreak{} Fin 100 => F), the witnessing deterministic Mechanism (Fin 100) has the exact seller-\allowbreak{}favorable two-\allowbreak{}part tariff payment rule (entry fee 9, item price 4:\allowbreak{} 9 + sum\_\allowbreak{}\{4 <= v i\} 4 when 9 <= sum max (v i -\allowbreak{} 4) 0, else 0), which together with IC, IR, and determinism uniquely determines the two-\allowbreak{}part tariff allocation on all nonnegative valuations.\allowbreak{} Positivity of max(SREV, BREV) prevents vacuous division by zero, and both M.\allowbreak{}rev /\allowbreak{} max(SREV, BREV) >= 1.\allowbreak{}324907 and REV /\allowbreak{} max(SREV, BREV) >= 1.\allowbreak{}324907 are asserted, matching Proposition 5 completely.\allowbreak{}
+\par}
+\reviewmatch{Matches source input}
+\noindent\textbf{Reviewer annotation}\par
+\reviewerbox
+
+\end{document}

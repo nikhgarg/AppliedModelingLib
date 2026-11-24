@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "paper": "Sievert26SimpleAuctions",
+  "review_material_sha256": "a2b2feeb41c3da7b9ee422f84b39d252100c0ab43d66ea590f6758b3c98eb692",
+  "required_reviewer_count": 1,
+  "ineligible_reviewer_identities": [
+    "independent-v11-spec-reviewer-dfab75d2",
+    "independent-paper-prereq-reviewer-f3012f19",
+    "independent_source_inventory_review_2026-11-24",
+    "independent_prose_definition_semantic_judge_2026-11-24"
+  ],
+  "reviews": [
+    {
+      "reviewer_identity": "independent-final-adversarial-auditor-2026-11-24",
+      "audit_artifact_path": "docs/AGENT_SOURCE_AUDIT.md",
+      "audit_artifact_sha256": "5e19e13a2c4ed2f8c08c12cdfb4e276eabaaacdef5150a26a3f5ef715da244c7",
+      "reviewed_surface_sha256": "a2b2feeb41c3da7b9ee422f84b39d252100c0ab43d66ea590f6758b3c98eb692",
+      "judgment": "PASS",
+      "scope": "complete_current_surface",
+      "reviewed_at": "2026-11-24T18:09:58Z",
+      "independence": {
+        "did_not_author_or_repair": true,
+        "did_not_issue_semantic_judgments": true
+      }
+    }
+  ]
+}

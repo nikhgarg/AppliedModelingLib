@@ -1,0 +1,131 @@
+{
+  "schema": 1,
+  "id": "Sievert26SimpleAuctions",
+  "title": "Machine-Verified Two-Sided Bounds for Simple Multi-Item Auctions: 2.1946 <= c* <= 2.486 and an i.i.d. Lower Bound above 1.316",
+  "authors": "Max Sievert",
+  "source_version": "Zenodo v1.0.1 (DOI 10.5281/zenodo.24482558, 2026-11-23)",
+  "source_inventory_review_required": true,
+  "repository_visibility": "public",
+  "build_target": "lake build Sievert26SimpleAuctions",
+  "status": "formalized",
+  "main_caveat": "None.",
+  "human_summary": "Draft summary: all five named results (Theorems 1, 2, 4, Corollary 3, and Proposition 5) and the Section 1 single-buyer independent additive auction definitions are formalized against Zenodo v1.0.1 with no additional assumptions, source corrections, or remaining proof boundaries.",
+  "human_summary_review": {
+    "status": "draft",
+    "note": "Set to human_approved only after a human has written or explicitly approved this summary; do not rewrite a human_approved summary without explicit human instruction."
+  },
+  "review_entrypoint": "papers/Sievert26SimpleAuctions/FINAL_VALIDATION_REPORT.md",
+  "human_review": {
+    "reviewed_rows": 0,
+    "total_rows": 5,
+    "stale_rows": 0,
+    "mismatch_rows": 0,
+    "uncertain_rows": 0,
+    "source": "paper-local status.json review_surface; human entries come from dashboard logs"
+  },
+  "paper_interface": {
+    "path": "papers/Sievert26SimpleAuctions/PaperInterface.lean",
+    "line_count": 139,
+    "declaration_rows": 11,
+    "review_rows": 5,
+    "oversized": false,
+    "maintainability_issue": null
+  },
+  "artifacts": {
+    "paper_interface": "papers/Sievert26SimpleAuctions/PaperInterface.lean",
+    "assumptions": "papers/Sievert26SimpleAuctions/Assumptions.lean",
+    "final_validation_report": "papers/Sievert26SimpleAuctions/FINAL_VALIDATION_REPORT.md",
+    "final_closure_receipt": "papers/Sievert26SimpleAuctions/FINAL_CLOSURE_RECEIPT.md",
+    "focused_build_receipt": "papers/Sievert26SimpleAuctions/audit/FOCUSED_BUILD_RECEIPT.json",
+    "dependency_dag_tex": "papers/Sievert26SimpleAuctions/docs/DependencyDAG.tex",
+    "dependency_dag_pdf": "papers/Sievert26SimpleAuctions/docs/DependencyDAG.pdf",
+    "human_review_packet_tex": "papers/Sievert26SimpleAuctions/docs/HUMAN_REVIEW_PACKET.tex",
+    "human_review_packet_pdf": "papers/Sievert26SimpleAuctions/docs/HUMAN_REVIEW_PACKET.pdf",
+    "source_proof_fidelity": "papers/Sievert26SimpleAuctions/audit/source_proof_fidelity.json",
+    "defect_support_match": "papers/Sievert26SimpleAuctions/audit/defect_support_match_llm.json",
+    "library_semantic_review": "papers/Sievert26SimpleAuctions/audit/library_semantic_review.json",
+    "v11_raw_source_spec_screening": "papers/Sievert26SimpleAuctions/audit/v11_raw_source_spec_screening.json"
+  },
+  "review_surface": {
+    "source_file": "papers/Sievert26SimpleAuctions/PaperInterface.lean",
+    "assumption_source_file": "papers/Sievert26SimpleAuctions/Assumptions.lean",
+    "require_v11_raw_source_spec_screening": true,
+    "require_source_spec_correspondence": true,
+    "llm_statement_review": {
+      "library_semantic_review_file": "papers/Sievert26SimpleAuctions/audit/library_semantic_review.json",
+      "v11_screening_file": "papers/Sievert26SimpleAuctions/audit/v11_raw_source_spec_screening.json",
+      "defect_support_judgment_file": "papers/Sievert26SimpleAuctions/audit/defect_support_match_llm.json",
+      "assumption_judgment_file": "papers/Sievert26SimpleAuctions/audit/assumption_match_llm.json",
+      "require_explicit_source_routes": true,
+      "require_source_claim_atoms": true,
+      "require_direct_expression_semantics_review": "v1",
+      "required_prompt_version": "statement-match-v11-verbatim-source-anchor-lean-expanded-spec-claim-atoms-supporting-declarations-v4",
+      "policy": "For every selected source claim, compare only its exact byte-pinned raw source-anchor bundle and Lean's expanded transparent `...Spec : Prop` target. The paired proof endpoint receives separate Lean-Meta proof credit; a name, paraphrase, wrapper, or prior aggregate receipt is not a semantic match. Review every retained paper-local prerequisite and every material library prerequisite before the dependent claim."
+    },
+    "llm_assumption_review": {
+      "assumption_judgment_file": "papers/Sievert26SimpleAuctions/audit/assumption_match_llm.json",
+      "policy": "Every paper-facing theorem premise not derived from prior Lean declarations must be declared in Assumptions.lean, listed in assumption_names, and judged by an independent LLM as a true paper/source model assumption rather than a proof assumption."
+    },
+    "semantic_model_review": {
+      "schema": 2,
+      "required_dimensions": [
+        "expanded_binders_and_domain",
+        "carrier_and_domain",
+        "probability_support_endpoints",
+        "joint_law_and_state_evolution",
+        "conditioning_and_calibration_semantics",
+        "expectation_definedness",
+        "null_cell_totalization_and_partition_scope",
+        "extended_rate_codomain"
+      ],
+      "policy": "For every reviewed row, preserve an alpha-normalized expanded binder/domain surface, including transparent local type aliases, record parameter domains, and model records reached only in result quantifiers."
+    },
+    "source_proof_fidelity_review": {
+      "ledger_file": "papers/Sievert26SimpleAuctions/audit/source_proof_fidelity.json",
+      "policy": "Audit source proof steps by source locator and mathematical claim, not by Lean declaration name. Completed papers use ledger schema 2."
+    },
+    "assumption_policy": "strict",
+    "assumption_names": [],
+    "source_definition_names": [],
+    "proposition_spec_proofs": {
+      "general_lower_boundSpec": "general_lower_bound",
+      "universal_upper_boundSpec": "universal_upper_bound",
+      "two_sided_bracketSpec": "two_sided_bracket",
+      "iid_lower_boundSpec": "iid_lower_bound_thm",
+      "iid100_lower_boundSpec": "iid100_lower_bound"
+    },
+    "paper_coverage_required": false,
+    "include_names": [
+      "general_lower_boundSpec",
+      "universal_upper_boundSpec",
+      "two_sided_bracketSpec",
+      "iid_lower_boundSpec",
+      "iid100_lower_boundSpec"
+    ],
+    "presentation_sections": [
+      {
+        "title": "Main-text source claims",
+        "names": [
+          "general_lower_boundSpec",
+          "universal_upper_boundSpec",
+          "two_sided_bracketSpec",
+          "iid_lower_boundSpec",
+          "iid100_lower_boundSpec"
+        ]
+      }
+    ],
+    "slices": [
+      {
+        "id": "all",
+        "title": "All source-facing review rows",
+        "names": [
+          "general_lower_boundSpec",
+          "universal_upper_boundSpec",
+          "two_sided_bracketSpec",
+          "iid_lower_boundSpec",
+          "iid100_lower_boundSpec"
+        ]
+      }
+    ]
+  }
+}

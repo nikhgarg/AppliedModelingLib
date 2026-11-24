@@ -1,0 +1,58 @@
+\documentclass[tikz,border=12pt]{standalone}
+\usepackage{amsmath,amssymb}
+\input{../../../docs/tikz/dag_preamble.tex}
+
+\begin{document}
+
+\begin{tikzpicture}[
+  x=1cm,
+  y=1cm,
+  every node/.append style={outer sep=3pt,font=\sffamily\scriptsize},
+  every path/.append style={font=\sffamily\scriptsize}
+]
+
+\node[align=left,text width=27cm,font=\sffamily\small,anchor=north west]
+  at (-1.2,0) {\textbf{Paper:} Machine-Verified Two-Sided Bounds for Simple Multi-Item Auctions: $2.1946 \le c^* \le 2.486$ and an i.i.d.\ Lower Bound above $1.316$\\
+  \textbf{Author:} Max Sievert \quad \textbf{Source:} Zenodo v1.0.1 (DOI 10.5281/zenodo.24482558, 2026-11-23)\\
+  \textbf{Scope:} Section~1 setting definitions and all five named theoretical results; every node below has a complete paper-facing Lean proof with no extra axioms or gaps.};
+
+% Row 1: Setting definitions (Section 1, lines 51-58) — compact ellipses with generous horizontal gaps
+\node[dag_model,minimum width=4.0cm,text width=3.9cm] (Dist) at (3.5,-4.0)
+  {\textbf{Setting Definition}\\Independent finitely supported\\distributions $D_1,\dots,D_m$ on $\mathbb{R}_{\ge 0}$};
+\node[dag_model,minimum width=4.0cm,text width=3.9cm] (SimpleRev) at (12.75,-4.0)
+  {\textbf{Setting Definitions}\\Separate-selling $\mathrm{SREV}(D)$\\and grand-bundle $\mathrm{BREV}(D)$};
+\node[dag_model,minimum width=4.0cm,text width=3.9cm] (OptRev) at (22.0,-4.0)
+  {\textbf{Setting Definitions}\\IC + IR direct mechanisms $M$\\and optimal revenue $\mathrm{REV}(D)$};
+
+% Row 2: Main independent results (Section 1, lines 59-92)
+\node[dag_result,text width=5.4cm,minimum height=2.1cm] (Thm1) at (1.5,-8.6)
+  {\textbf{Theorem 1 (General Lower Bound)}\\$\exists\, m, D$, deterministic IC+IR $M$:\\$\mathrm{REV}(D) > 2.1946\max\{\mathrm{SREV}(D),\mathrm{BREV}(D)\}$};
+\node[dag_result,text width=5.4cm,minimum height=2.1cm] (Thm2) at (9.0,-8.6)
+  {\textbf{Theorem 2 (Universal Upper Bound)}\\$\forall\, \iota, D$: $\mathrm{REV}(D) \le 1.1187\,\mathrm{SREV}(D) + 1.367299\,\mathrm{BREV}(D) \le 2.486\max\{\mathrm{SREV},\mathrm{BREV}\}$};
+\node[dag_result,text width=5.4cm,minimum height=2.1cm] (Thm4) at (16.5,-8.6)
+  {\textbf{Theorem 4 (i.i.d.\ Lower Bound)}\\$m=40$, deterministic two-part tariff $(9,4)$:\\$\mathrm{REV}(F^{\otimes 40}) > 1.316\max\{\mathrm{SREV},\mathrm{BREV}\}$};
+\node[dag_result,text width=5.4cm,minimum height=2.1cm] (Prop5) at (24.0,-8.6)
+  {\textbf{Proposition 5 (100-Item i.i.d.\ Bound)}\\$n=100$, explicit tail $3/(25\max(k,4))$, tariff $(9,4)$:\\$\mathrm{REV}/\max\{\mathrm{SREV},\mathrm{BREV}\} \ge 1.324907$};
+
+% Row 3: Corollary 3 and universal constant definition (clearly separated)
+\node[dag_result,text width=5.4cm,minimum height=1.8cm] (Cor3) at (5.25,-13.0)
+  {\textbf{Corollary 3 (Two-Sided Bracket)}\\$2.1946 \le c^* \le 2.486$};
+\node[dag_model,minimum width=4.2cm,text width=4.2cm] (CStar) at (14.2,-13.0)
+  {\textbf{Setting Definition}\\Universal constant $c^* := \inf\{c :$\\$\forall m, D,\;\mathrm{REV}(D) \le c\max\{\mathrm{SREV},\mathrm{BREV}\}\}$};
+
+% Compact legend stacked cleanly on the right (x=23.5, well clear of CStar)
+\node[dag_model,minimum width=2.8cm,minimum height=0.9cm,text width=2.7cm] (LegDef) at (23.8,-12.2)
+  {\textbf{Blue ellipse}\\Setting definition};
+\node[dag_result,minimum width=2.8cm,minimum height=0.9cm,text width=2.7cm] (LegRes) at (23.8,-13.8)
+  {\textbf{Green box}\\Proved named result};
+
+% Direct mathematical dependencies
+\draw[dag_arrow] (Thm1.south) -- (Cor3.north west);
+\draw[dag_arrow] (Thm2.south) -- (Cor3.north east);
+\draw[dag_arrow] (CStar.west) -- (Cor3.east);
+
+\node[align=left,text width=27cm,font=\sffamily\scriptsize,anchor=north west]
+  at (-1.2,-15.4) {\textit{Reading guide:} The top row displays the Section~1 single-buyer independent additive auction model primitives consumed by every result in Row~2 (Theorems~1, 2, 4 and Proposition~5). Solid arrows show the direct derivation of Corollary~3 ($2.1946 \le c^* \le 2.486$) from Theorem~1, Theorem~2, and the definition of $c^*$. Every node is fully verified in Lean~4 with no external assumptions, extra hypotheses, or gaps.};
+
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,72 @@
+{
+  "schema": 2,
+  "paper": "Sievert26SimpleAuctions",
+  "source_artifact_path": "papers/Sievert26SimpleAuctions/source-audited.tex",
+  "source_artifact_sha256": "97fea30c6a68dc12ea843d2c704adbd20d58d74edb528db3c71e2ee3f217073c",
+  "review_status": "reviewed_no_defects",
+  "reviewed_proof_scopes": [
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Setting definitions (FinDist, SREV, BREV, Mechanism, REV, c*) and Theorem 1 general lower bound (> 2.1946) via Group A + Group B equal-revenue construction and deterministic two-part tariff plus concentrated bundle.",
+      "source_locator": "source-audited.tex:51-65; 120-136"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Theorem 2 universal upper bound (REV <= 1.1187*SREV + 1.367299*BREV <= 2.486*max(SREV, BREV)) and Corollary 3 bracket (2.1946 <= c* <= 2.486) via finite-support duality, layer cake, step-function Jensen weights, 4-exponential Laplace bundle bound, and kernel-verified 1D certificate.",
+      "source_locator": "source-audited.tex:67-80; 138-154"
+    },
+    {
+      "outcome": "no_defect",
+      "semantic_scope": "Theorem 4 (40-item i.i.d. lower bound > 1.316) and Proposition 5 (100-item i.i.d. lower bound >= 1.324907) via truncated equal-revenue distributions, deterministic two-part tariff (entry fee 9, item price 4), and Kronecker-packed generating-function kernel verification.",
+      "source_locator": "source-audited.tex:82-92; 156-164"
+    }
+  ],
+  "model_conventions": [
+    {
+      "id": "SIEVERT26-FINITE-INDEPENDENT-MODEL-01",
+      "source_locator": "source-audited.tex:51-58",
+      "classification": "source_text_model_convention",
+      "formal_meaning": "Each item marginal is a `FinDist` (finite support indexed by `Fin size` with nonnegative `val`, nonnegative `prob` summing to 1). Joint realizations `Profile D := (i : ι) → Fin (D i).size` have independent product probability `∏ i, (D i).prob (ω i)`. A direct `Mechanism ι` maps every valuation vector `v : ι → ℝ` to allocation probabilities `alloc v i ∈ [0,1]` and payment `pay v : ℝ` satisfying IC and IR over all nonnegative valuation vectors `v, v' ≥ 0`.",
+      "why_needed": "The paper defines `FinDist`, `SREV`, `BREV`, `Mechanism`, `REV`, and `cStar` in Section 1 (Setting). Representing finite distributions via finite index tuples makes finite product expectations and suprema exact without auxiliary measure-theoretic assumptions.",
+      "checked_scope": "All five named results in `PaperInterface.lean` consume `FinDist`, `SREV`, `BREV`, `Mechanism`, `REV`, and `cStar` directly."
+    }
+  ],
+  "checked_proof_steps": [
+    {
+      "id": "SIEVERT26-THM1-LB-01",
+      "source_locator": "source-audited.tex:59-65; 120-136",
+      "source_step": "Combine 1280 Group A items (five equal-revenue types on [P_i, P_i+e]) with L^2 Group B harmonic items, verify SREV, BREV, and deterministic two-part-tariff + bundle revenue via packed generating functions and Chebyshev bounds, and take L sufficiently large.",
+      "checked_conclusion": "There exist m, D : Fin m -> FinDist, and a deterministic IC+IR mechanism M with M.rev D > 2.1946 * max(SREV D, BREV D) and REV D > 2.1946 * max(SREV D, BREV D).",
+      "scope": "`general_lower_bound` proves `general_lower_boundSpec` via `Main.lean`, `Instance.lean`, `KernelRun.lean`, `GroupAData.lean`, `RealA.lean`, `GroupB.lean`, and `Reindex.lean`."
+    },
+    {
+      "id": "SIEVERT26-THM2-UB-01",
+      "source_locator": "source-audited.tex:67-76; 138-154",
+      "source_step": "Prove finite-support master duality inequality, layer-cake representation with step-function Jensen weights, 4-exponential Laplace bundle bound via certified linear tangents, and 1846-cell directed-integer 1D analytic certificate inside the Lean kernel.",
+      "checked_conclusion": "For every finite index set ι and D : ι -> FinDist, REV D <= 1.1187 * SREV D + 1.367299 * BREV D, and for every m and D : Fin m -> FinDist, REV D <= 2.486 * max(SREV D, BREV D).",
+      "scope": "`universal_upper_bound` proves `universal_upper_boundSpec` via `Duality.lean`, `LayerCake.lean`, `Laplace.lean`, `Abstract.lean`, `AnalyticCert.lean`, `CertKernel.lean`, `CertData.lean`, `CertRun.lean`, `CertSound.lean`, `CertLoop.lean`, and `UpperBound.lean`."
+    },
+    {
+      "id": "SIEVERT26-COR3-BRACKET-01",
+      "source_locator": "source-audited.tex:78-80",
+      "source_step": "Combine Theorem 1 (lower bound > 2.1946) and Theorem 2 (upper bound <= 2.486) with the infimum definition of c*.",
+      "checked_conclusion": "2.1946 <= cStar and cStar <= 2.486.",
+      "scope": "`two_sided_bracket` proves `two_sided_bracketSpec` via `Bracket.lean`."
+    },
+    {
+      "id": "SIEVERT26-THM4-IID40-01",
+      "source_locator": "source-audited.tex:82-88; 156-163",
+      "source_step": "Construct 40 i.i.d. items on {0, 4, ..., 13} with exact equal-revenue tails 3/(10*max(k,4)), certify SREV <= 12, BREV <= 12.151 via packed generating-function shifting loop, and deterministic two-part tariff (entry fee 9, item price 4) revenue >= 16 via mod-X^9 generating-function check.",
+      "checked_conclusion": "For m = 40, the explicit distribution F and deterministic two-part tariff (entry fee 9, item price 4) satisfy REV(F^{\\otimes 40}) >= M.rev(F^{\\otimes 40}) > 1.316 * max(SREV, BREV).",
+      "scope": "`iid_lower_bound_thm` proves `iid_lower_boundSpec` via `IIDKernel.lean` and `IID.lean`."
+    },
+    {
+      "id": "SIEVERT26-PROP5-IID100-01",
+      "source_locator": "source-audited.tex:90-92; 164",
+      "source_step": "Construct 100 i.i.d. items on {0, 4, ..., 13} with exact tails 3/(25*max(k,4)) for 1 <= k <= 13 and 0 for k > 13, certify SREV = 12, BREV <= 12.065329 via 1301-step shifting loop, and deterministic two-part tariff (entry fee 9, item price 4) revenue >= 15.985442 via mod-X^9 kernel check.",
+      "checked_conclusion": "The explicit 100-item i.i.d. distribution F and deterministic two-part tariff (entry fee 9, item price 4) satisfy REV / max(SREV, BREV) >= M.rev / max(SREV, BREV) >= 1.324907.",
+      "scope": "`iid100_lower_bound` proves `iid100_lower_boundSpec` via `IID100Kernel.lean` and `IID100.lean`."
+    }
+  ],
+  "defects": []
+}

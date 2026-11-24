@@ -1,0 +1,191 @@
+{
+  "schema": 2,
+  "paper": "Sievert26SimpleAuctions",
+  "report_sha256": "ba7806f6c6b4483a85a45c115ccb698a93b1f190bd7241a593a71dc716284075",
+  "source_items_sha256": "22d54640d4f0d153b4ef0344baed42b827f08f2c20d54a879f510ad883885284",
+  "all_selected_semantic_review_sha256": "3391667619cc6fa68a9a4dc413baa22ca9d2881e195aa94e6741e7b1a353502c",
+  "report_inventory_complete": true,
+  "items": {
+    "convention/SIEVERT26-FINITE-INDEPENDENT-MODEL-01": {
+      "disposition": "not_material",
+      "reason": "Independent finitely supported marginals on the nonnegative reals, product probabilities, and direct IC+IR mechanisms over nonnegative valuation vectors are the exact Section 1 setting definitions of the paper and add no restriction beyond the source model."
+    }
+  },
+  "result_table": {
+    "schema": 1,
+    "complete": true,
+    "source_inventory": {
+      "schema": 1,
+      "source_artifact_sha256": "97fea30c6a68dc12ea843d2c704adbd20d58d74edb528db3c71e2ee3f217073c",
+      "discovered_named_result_sha256": "518f49b49ca9773033f533c69d3b13090f9c68772222ddadfb03890b5ef6c24d",
+      "source_format": "tex",
+      "results": {
+        "general_lower_bound": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 65,
+              "line_start": 59,
+              "presentation": "tex_environment",
+              "presentation_sha256": "fc6430662debd3269e624032da871098f72901784060b55398c50078fb9abfec",
+              "source_item_id": "general_lower_bound",
+              "source_label": "thm:lb"
+            }
+          ],
+          "source_item_ids": [
+            "general_lower_bound"
+          ]
+        },
+        "iid100_lower_bound": {
+          "kind": "proposition",
+          "presentations": [
+            {
+              "kind": "proposition",
+              "line_end": 92,
+              "line_start": 90,
+              "presentation": "tex_environment",
+              "presentation_sha256": "5976629769f0894d272ea6f8d7001e157573c8262d500725b68fe79109c4246f",
+              "source_item_id": "iid100_lower_bound",
+              "source_label": "prop:iid100"
+            }
+          ],
+          "source_item_ids": [
+            "iid100_lower_bound"
+          ]
+        },
+        "iid_lower_bound": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 88,
+              "line_start": 82,
+              "presentation": "tex_environment",
+              "presentation_sha256": "7fe95b0e84bf05420fddc7bd7d489c7b923f7844aad310866815f83aeb974738",
+              "source_item_id": "iid_lower_bound",
+              "source_label": "thm:iid"
+            }
+          ],
+          "source_item_ids": [
+            "iid_lower_bound"
+          ]
+        },
+        "two_sided_bracket": {
+          "kind": "corollary",
+          "presentations": [
+            {
+              "kind": "corollary",
+              "line_end": 80,
+              "line_start": 78,
+              "presentation": "tex_environment",
+              "presentation_sha256": "74c40903f024489ba103b59ef985b37e1100fba0061cbe1d604be07cb160a02d",
+              "source_item_id": "two_sided_bracket",
+              "source_label": "cor:bracket"
+            }
+          ],
+          "source_item_ids": [
+            "two_sided_bracket"
+          ]
+        },
+        "universal_upper_bound": {
+          "kind": "theorem",
+          "presentations": [
+            {
+              "kind": "theorem",
+              "line_end": 76,
+              "line_start": 67,
+              "presentation": "tex_environment",
+              "presentation_sha256": "2e768fae8e49c03c47e567762a02b704728c0e18a7c1efb6301b2e728f4699d1",
+              "source_item_id": "universal_upper_bound",
+              "source_label": "thm:ub"
+            }
+          ],
+          "source_item_ids": [
+            "universal_upper_bound"
+          ]
+        }
+      }
+    },
+    "source_inventory_sha256": "a5b26a89d63d70e7c8305d66592c0ee5d4155157399324c570c27b16fec0d9e5",
+    "results": {
+      "general_lower_bound": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 1",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 1",
+            "row_sha256": "e9a9f3f4513672c851dc9149c4ea58027b936b10c2106e094669738156be29be"
+          }
+        ]
+      },
+      "iid100_lower_bound": {
+        "numbering": "numbered",
+        "printed_label": "Proposition 5",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Proposition 5",
+            "row_sha256": "1462f3336f08ef73f3e282932001d74eb904e8526ffa8ad72296925e5d086cae"
+          }
+        ]
+      },
+      "iid_lower_bound": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 4",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 4",
+            "row_sha256": "d54d170955ca2db6dc159553b26bb4daa6a0fd61a89f0f0c5447365b3f0cec1e"
+          }
+        ]
+      },
+      "two_sided_bracket": {
+        "numbering": "numbered",
+        "printed_label": "Corollary 3",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Corollary 3",
+            "row_sha256": "5ae763b415df3c9f6ae964d83d651e5ba414a5837171f9b2bdb03b3f6262836c"
+          }
+        ]
+      },
+      "universal_upper_bound": {
+        "numbering": "numbered",
+        "printed_label": "Theorem 2",
+        "printed_label_basis": "reviewed_rendered_source",
+        "row_mappings": [
+          {
+            "report_label": "Theorem 2",
+            "row_sha256": "996056617597900df82b7d432d1d3010d32a491d9e8672952f79bdb487f04c35"
+          }
+        ]
+      }
+    },
+    "rows": {
+      "e9a9f3f4513672c851dc9149c4ea58027b936b10c2106e094669738156be29be": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "996056617597900df82b7d432d1d3010d32a491d9e8672952f79bdb487f04c35": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "5ae763b415df3c9f6ae964d83d651e5ba414a5837171f9b2bdb03b3f6262836c": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "d54d170955ca2db6dc159553b26bb4daa6a0fd61a89f0f0c5447365b3f0cec1e": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      },
+      "1462f3336f08ef73f3e282932001d74eb904e8526ffa8ad72296925e5d086cae": {
+        "explanation_keys": [],
+        "supplemental_reason": ""
+      }
+    }
+  }
+}

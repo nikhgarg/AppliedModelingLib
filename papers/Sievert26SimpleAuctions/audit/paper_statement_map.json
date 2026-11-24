@@ -1,0 +1,517 @@
+{
+  "schema": 1,
+  "paper": "Sievert26SimpleAuctions",
+  "title": "Machine-Verified Two-Sided Bounds for Simple Multi-Item Auctions: 2.1946 <= c* <= 2.486 and an i.i.d. Lower Bound above 1.316",
+  "authors": "Max Sievert",
+  "source_url": "https://doi.org/10.5281/zenodo.24482558",
+  "source_version": "Zenodo v1.0.1 (DOI 10.5281/zenodo.24482558, 2026-11-23)",
+  "source_artifact_path": "source-audited.tex",
+  "source_artifact_sha256": "97fea30c6a68dc12ea843d2c704adbd20d58d74edb528db3c71e2ee3f217073c",
+  "source_coverage_mode": "named_theoretical_statements",
+  "source_inventory_policy": "Normal scope covers the setting definitions and all five named results (Theorems 1, 2, 4, Corollary 3, Proposition 5) in Section 1 of the pinned Zenodo v1.0.1 LaTeX source. Canonical v11 review binds one transparent PaperInterface Spec to each selected source claim; retained source claims without a current Spec route remain explicit audit work rather than disappearing from the inventory.",
+  "declared_scope_exclusions": [
+    "Literature review, numerical limits exploration (Section 5 non-rigorous floats), stylised financial auction illustration, table captions, and narrative prose are outside normal named-theory coverage.",
+    "Section 2-4 proof-overview displays and computational kernel descriptions are proof support for Theorems 1, 2, 4, Corollary 3, and Proposition 5 rather than independent normal-scope claim rows."
+  ],
+  "items": {
+    "setting_definitions": {
+      "source_item": "Setting definitions (FinDist, SREV, BREV, Mechanism, REV, c*)",
+      "source_kind": "definition",
+      "source_location": "source-audited.tex:51-58",
+      "source_url": "https://doi.org/10.5281/zenodo.24482558",
+      "statement": "Finite independent product model on nonnegative reals: FinDist marginals, SREV, BREV, IC+IR direct mechanisms, REV, and universal approximation constant c*.",
+      "claim_bearing": true,
+      "source_status": "source-first audit completed",
+      "source_anchor_evidence": [
+        {
+          "path": "source-audited.tex",
+          "line_start": 51,
+          "line_end": 58,
+          "quoted_text": "\\paragraph{Setting.}\nLet $D = (D_1, \\dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\\R_{\\ge 0}$ (\\texttt{FinDist} in \\texttt{SimpleAuctions/Basic.lean}). Define:\n\\begin{align*}\n  \\SREV(D) &:= \\sum_{i=1}^m \\sup_{p \\ge 0} p \\Pr_{X_i \\sim D_i}[X_i \\ge p], &\n  \\BREV(D) &:= \\sup_{p \\ge 0} p \\Pr_{X \\sim D}\\!\\left[\\sum_{i=1}^m X_i \\ge p\\right],\n\\end{align*}\nand $\\REV(D) := \\sup_{M} \\E_{X \\sim D}[\\mathrm{pay}_M(X)]$, where $M = (\\mathrm{alloc}_M, \\mathrm{pay}_M)$ ranges over all direct mechanisms with $\\mathrm{alloc}_M : \\R^m \\to [0,1]^m$ and $\\mathrm{pay}_M : \\R^m \\to \\R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \\emph{all} nonnegative valuation vectors $v, v' \\in \\R_{\\ge 0}^m$. Let $c^* := \\inf\\{c \\in \\R : \\forall m \\in \\mathbb{N},\\; \\forall D : \\mathrm{Fin}\\,m \\to \\mathrm{FinDist},\\; \\REV(D) \\le c \\max\\{\\SREV(D),\\BREV(D)\\}\\}$.\n",
+          "quoted_text_sha256": "044f4092288060a1e7a49772065876778ce881e5a58ac38a789ba5f3759f91ef"
+        }
+      ],
+      "source_prose_definition_reconciliation": {
+        "schema": 2,
+        "relation": "source_item_represents_prose_definition",
+        "judgment": "semantically_equivalent",
+        "presentation_sha256": "4f613b5d219540570445a3ea841b589f40b776675c1bcfcaaf03cb4b3749362c",
+        "source_item_statement_sha256": "73293b9e63ca46d6cf7afbf158ae49245b4051ae77988dd60721673160751964",
+        "semantic_basis": "The pinned Section 1 Setting paragraph and the mapped setting_definitions item describe the exact same finite independent product model, SREV, BREV, Mechanism, REV, and c* definitions.",
+        "validator": "independent_prose_definition_semantic_judge_2026-11-24",
+        "validator_type": "agent",
+        "validated_at": "2026-11-24T15:00:00Z"
+      },
+      "inventory_role": "source_semantic_declaration",
+      "lean_declarations": [
+        "Sievert26SimpleAuctions.FinDist",
+        "Sievert26SimpleAuctions.SREV",
+        "Sievert26SimpleAuctions.BREV",
+        "Sievert26SimpleAuctions.Mechanism",
+        "Sievert26SimpleAuctions.REV",
+        "Sievert26SimpleAuctions.cStar"
+      ],
+      "model_convention_ids": [
+        "SIEVERT26-FINITE-INDEPENDENT-MODEL-01"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "protocol": "approved-source-review-context-v1",
+          "id": "SIEVERT26-FINITE-INDEPENDENT-MODEL-01",
+          "kind": "source_model_convention",
+          "source_locator": "source-audited.tex:51-58",
+          "classification": "source_text_model_convention",
+          "formal_meaning": "Each item marginal is a `FinDist` (finite support indexed by `Fin size` with nonnegative `val`, nonnegative `prob` summing to 1). Joint realizations `Profile D := (i : ι) → Fin (D i).size` have independent product probability `∏ i, (D i).prob (ω i)`. A direct `Mechanism ι` maps every valuation vector `v : ι → ℝ` to allocation probabilities `alloc v i ∈ [0,1]` and payment `pay v : ℝ` satisfying IC and IR over all nonnegative valuation vectors `v, v' ≥ 0`.",
+          "why_needed": "The paper defines `FinDist`, `SREV`, `BREV`, `Mechanism`, `REV`, and `cStar` in Section 1 (Setting). Representing finite distributions via finite index tuples makes finite product expectations and suprema exact without auxiliary measure-theoretic assumptions.",
+          "checked_scope": "All five named results in `PaperInterface.lean` consume `FinDist`, `SREV`, `BREV`, `Mechanism`, `REV`, and `cStar` directly.",
+          "record_sha256": "9e1b10f6ace6021bd775a5bbfa88552ef9fb59bc02c10ea33300bfa7cbdb458d"
+        }
+      ]
+    },
+    "general_lower_bound": {
+      "source_item": "Theorem 1 (General Lower Bound)",
+      "source_kind": "theorem",
+      "source_location": "source-audited.tex:59-65",
+      "source_url": "https://doi.org/10.5281/zenodo.24482558",
+      "statement": "There exist m and independent finitely supported distributions D_1, ..., D_m on R_{>=0} such that REV(D) > 2.1946 * max(SREV(D), BREV(D)), witnessed by a deterministic mechanism.",
+      "claim_bearing": true,
+      "source_status": "source-first audit completed",
+      "source_anchor_evidence": [
+        {
+          "path": "source-audited.tex",
+          "line_start": 59,
+          "line_end": 65,
+          "quoted_text": "\\begin{theorem}[General Lower Bound; Lean: \\texttt{SimpleAuctions.lower\\_bound}]\\label{thm:lb}\nThere exist $m \\in \\mathbb{N}$ and independent finitely supported distributions $D_1, \\dots, D_m$ on $\\R_{\\ge 0}$ such that\n\\[\n  \\REV(D) > 2.1946 \\max\\{\\SREV(D), \\BREV(D)\\}.\n\\]\nThe witnessing mechanism is deterministic.\n\\end{theorem}",
+          "quoted_text_sha256": "d4fa43fd1aca185f8aa06f3b116a7167782042ec64ca52003c42d0e58ab34512"
+        }
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "path": "source-audited.tex",
+              "line_start": 51,
+              "line_end": 58,
+              "quoted_text": "\\paragraph{Setting.}\nLet $D = (D_1, \\dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\\R_{\\ge 0}$ (\\texttt{FinDist} in \\texttt{SimpleAuctions/Basic.lean}). Define:\n\\begin{align*}\n  \\SREV(D) &:= \\sum_{i=1}^m \\sup_{p \\ge 0} p \\Pr_{X_i \\sim D_i}[X_i \\ge p], &\n  \\BREV(D) &:= \\sup_{p \\ge 0} p \\Pr_{X \\sim D}\\!\\left[\\sum_{i=1}^m X_i \\ge p\\right],\n\\end{align*}\nand $\\REV(D) := \\sup_{M} \\E_{X \\sim D}[\\mathrm{pay}_M(X)]$, where $M = (\\mathrm{alloc}_M, \\mathrm{pay}_M)$ ranges over all direct mechanisms with $\\mathrm{alloc}_M : \\R^m \\to [0,1]^m$ and $\\mathrm{pay}_M : \\R^m \\to \\R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \\emph{all} nonnegative valuation vectors $v, v' \\in \\R_{\\ge 0}^m$. Let $c^* := \\inf\\{c \\in \\R : \\forall m \\in \\mathbb{N},\\; \\forall D : \\mathrm{Fin}\\,m \\to \\mathrm{FinDist},\\; \\REV(D) \\le c \\max\\{\\SREV(D),\\BREV(D)\\}\\}$.\n",
+              "quoted_text_sha256": "044f4092288060a1e7a49772065876778ce881e5a58ac38a789ba5f3759f91ef"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "spec_declaration": "Sievert26SimpleAuctions.general_lower_boundSpec",
+        "evidence_declaration": "Sievert26SimpleAuctions.general_lower_bound",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain"
+      },
+      "lean_declarations": [
+        "Sievert26SimpleAuctions.general_lower_bound"
+      ],
+      "support_lean_declarations": [
+        "Sievert26SimpleAuctions.general_lower_boundSpec"
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "general.lower.bound",
+          "source_locator": "source-audited.tex:59-65",
+          "semantic_claim": "There exist m and independent finitely supported distributions D_1, ..., D_m on R_{>=0} such that REV(D) > 2.1946 * max(SREV(D), BREV(D)), witnessed by a deterministic mechanism.",
+          "reviewed_lean_route": "Sievert26SimpleAuctions.general_lower_bound",
+          "source_quote_sha256": "d4fa43fd1aca185f8aa06f3b116a7167782042ec64ca52003c42d0e58ab34512",
+          "identity_schema": 2
+        }
+      ],
+      "model_convention_ids": [
+        "SIEVERT26-FINITE-INDEPENDENT-MODEL-01"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "protocol": "approved-source-review-context-v1",
+          "id": "SIEVERT26-FINITE-INDEPENDENT-MODEL-01",
+          "kind": "source_model_convention",
+          "source_locator": "source-audited.tex:51-58",
+          "classification": "source_text_model_convention",
+          "formal_meaning": "Each item marginal is a `FinDist` (finite support indexed by `Fin size` with nonnegative `val`, nonnegative `prob` summing to 1). Joint realizations `Profile D := (i : ι) → Fin (D i).size` have independent product probability `∏ i, (D i).prob (ω i)`. A direct `Mechanism ι` maps every valuation vector `v : ι → ℝ` to allocation probabilities `alloc v i ∈ [0,1]` and payment `pay v : ℝ` satisfying IC and IR over all nonnegative valuation vectors `v, v' ≥ 0`.",
+          "why_needed": "The paper defines `FinDist`, `SREV`, `BREV`, `Mechanism`, `REV`, and `cStar` in Section 1 (Setting). Representing finite distributions via finite index tuples makes finite product expectations and suprema exact without auxiliary measure-theoretic assumptions.",
+          "checked_scope": "All five named results in `PaperInterface.lean` consume `FinDist`, `SREV`, `BREV`, `Mechanism`, `REV`, and `cStar` directly.",
+          "record_sha256": "9e1b10f6ace6021bd775a5bbfa88552ef9fb59bc02c10ea33300bfa7cbdb458d"
+        }
+      ]
+    },
+    "universal_upper_bound": {
+      "source_item": "Theorem 2 (Universal Upper Bound)",
+      "source_kind": "theorem",
+      "source_location": "source-audited.tex:67-76",
+      "source_url": "https://doi.org/10.5281/zenodo.24482558",
+      "statement": "For every finite index set and family of independent finitely supported distributions D, REV(D) <= 1.1187 * SREV(D) + 1.367299 * BREV(D), and in particular for every m and D : Fin m -> FinDist, REV(D) <= 2.486 * max(SREV(D), BREV(D)).",
+      "claim_bearing": true,
+      "source_status": "source-first audit completed",
+      "source_anchor_evidence": [
+        {
+          "path": "source-audited.tex",
+          "line_start": 67,
+          "line_end": 76,
+          "quoted_text": "\\begin{theorem}[Universal Upper Bound; Lean: \\texttt{SimpleAuctions.upper\\_bound\\_two}, \\texttt{upper\\_bound}]\\label{thm:ub}\nFor every finite index set $\\iota$ and every family of independent finitely supported distributions $D : \\iota \\to \\mathrm{FinDist}$,\n\\[\n  \\REV(D) \\le 1.1187\\,\\SREV(D) + 1.367299\\,\\BREV(D).\n\\]\nIn particular, for every $m \\in \\mathbb{N}$ and every $D : \\mathrm{Fin}\\,m \\to \\mathrm{FinDist}$,\n\\[\n  \\REV(D) \\le 2.486 \\max\\{\\SREV(D), \\BREV(D)\\}.\n\\]\n\\end{theorem}",
+          "quoted_text_sha256": "579406f312743a9bdfa25c32374845c839074984d9d7e057105b90ddfd223971"
+        }
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "path": "source-audited.tex",
+              "line_start": 51,
+              "line_end": 58,
+              "quoted_text": "\\paragraph{Setting.}\nLet $D = (D_1, \\dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\\R_{\\ge 0}$ (\\texttt{FinDist} in \\texttt{SimpleAuctions/Basic.lean}). Define:\n\\begin{align*}\n  \\SREV(D) &:= \\sum_{i=1}^m \\sup_{p \\ge 0} p \\Pr_{X_i \\sim D_i}[X_i \\ge p], &\n  \\BREV(D) &:= \\sup_{p \\ge 0} p \\Pr_{X \\sim D}\\!\\left[\\sum_{i=1}^m X_i \\ge p\\right],\n\\end{align*}\nand $\\REV(D) := \\sup_{M} \\E_{X \\sim D}[\\mathrm{pay}_M(X)]$, where $M = (\\mathrm{alloc}_M, \\mathrm{pay}_M)$ ranges over all direct mechanisms with $\\mathrm{alloc}_M : \\R^m \\to [0,1]^m$ and $\\mathrm{pay}_M : \\R^m \\to \\R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \\emph{all} nonnegative valuation vectors $v, v' \\in \\R_{\\ge 0}^m$. Let $c^* := \\inf\\{c \\in \\R : \\forall m \\in \\mathbb{N},\\; \\forall D : \\mathrm{Fin}\\,m \\to \\mathrm{FinDist},\\; \\REV(D) \\le c \\max\\{\\SREV(D),\\BREV(D)\\}\\}$.\n",
+              "quoted_text_sha256": "044f4092288060a1e7a49772065876778ce881e5a58ac38a789ba5f3759f91ef"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "spec_declaration": "Sievert26SimpleAuctions.universal_upper_boundSpec",
+        "evidence_declaration": "Sievert26SimpleAuctions.universal_upper_bound",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain"
+      },
+      "lean_declarations": [
+        "Sievert26SimpleAuctions.universal_upper_bound"
+      ],
+      "support_lean_declarations": [
+        "Sievert26SimpleAuctions.universal_upper_boundSpec"
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "universal.upper.bound",
+          "source_locator": "source-audited.tex:67-76",
+          "semantic_claim": "For every finite index set and family of independent finitely supported distributions D, REV(D) <= 1.1187 * SREV(D) + 1.367299 * BREV(D), and in particular for every m and D : Fin m -> FinDist, REV(D) <= 2.486 * max(SREV(D), BREV(D)).",
+          "reviewed_lean_route": "Sievert26SimpleAuctions.universal_upper_bound",
+          "source_quote_sha256": "579406f312743a9bdfa25c32374845c839074984d9d7e057105b90ddfd223971",
+          "identity_schema": 2
+        }
+      ],
+      "model_convention_ids": [
+        "SIEVERT26-FINITE-INDEPENDENT-MODEL-01"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "protocol": "approved-source-review-context-v1",
+          "id": "SIEVERT26-FINITE-INDEPENDENT-MODEL-01",
+          "kind": "source_model_convention",
+          "source_locator": "source-audited.tex:51-58",
+          "classification": "source_text_model_convention",
+          "formal_meaning": "Each item marginal is a `FinDist` (finite support indexed by `Fin size` with nonnegative `val`, nonnegative `prob` summing to 1). Joint realizations `Profile D := (i : ι) → Fin (D i).size` have independent product probability `∏ i, (D i).prob (ω i)`. A direct `Mechanism ι` maps every valuation vector `v : ι → ℝ` to allocation probabilities `alloc v i ∈ [0,1]` and payment `pay v : ℝ` satisfying IC and IR over all nonnegative valuation vectors `v, v' ≥ 0`.",
+          "why_needed": "The paper defines `FinDist`, `SREV`, `BREV`, `Mechanism`, `REV`, and `cStar` in Section 1 (Setting). Representing finite distributions via finite index tuples makes finite product expectations and suprema exact without auxiliary measure-theoretic assumptions.",
+          "checked_scope": "All five named results in `PaperInterface.lean` consume `FinDist`, `SREV`, `BREV`, `Mechanism`, `REV`, and `cStar` directly.",
+          "record_sha256": "9e1b10f6ace6021bd775a5bbfa88552ef9fb59bc02c10ea33300bfa7cbdb458d"
+        }
+      ]
+    },
+    "two_sided_bracket": {
+      "source_item": "Corollary 3 (Two-Sided Bracket)",
+      "source_kind": "corollary",
+      "source_location": "source-audited.tex:78-80",
+      "source_url": "https://doi.org/10.5281/zenodo.24482558",
+      "statement": "2.1946 <= c* <= 2.486.",
+      "claim_bearing": true,
+      "source_status": "source-first audit completed",
+      "source_anchor_evidence": [
+        {
+          "path": "source-audited.tex",
+          "line_start": 78,
+          "line_end": 80,
+          "quoted_text": "\\begin{corollary}[Two-Sided Bracket; Lean: \\texttt{SimpleAuctions.main\\_bracket}, \\texttt{cStar\\_mem}]\\label{cor:bracket}\n$2.1946 \\le c^* \\le 2.486$.\n\\end{corollary}",
+          "quoted_text_sha256": "34bc526f11b465a23d1f90e3aa2fe36f2f2a966a0fa3a4f31a0721394c230134"
+        }
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "path": "source-audited.tex",
+              "line_start": 51,
+              "line_end": 58,
+              "quoted_text": "\\paragraph{Setting.}\nLet $D = (D_1, \\dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\\R_{\\ge 0}$ (\\texttt{FinDist} in \\texttt{SimpleAuctions/Basic.lean}). Define:\n\\begin{align*}\n  \\SREV(D) &:= \\sum_{i=1}^m \\sup_{p \\ge 0} p \\Pr_{X_i \\sim D_i}[X_i \\ge p], &\n  \\BREV(D) &:= \\sup_{p \\ge 0} p \\Pr_{X \\sim D}\\!\\left[\\sum_{i=1}^m X_i \\ge p\\right],\n\\end{align*}\nand $\\REV(D) := \\sup_{M} \\E_{X \\sim D}[\\mathrm{pay}_M(X)]$, where $M = (\\mathrm{alloc}_M, \\mathrm{pay}_M)$ ranges over all direct mechanisms with $\\mathrm{alloc}_M : \\R^m \\to [0,1]^m$ and $\\mathrm{pay}_M : \\R^m \\to \\R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \\emph{all} nonnegative valuation vectors $v, v' \\in \\R_{\\ge 0}^m$. Let $c^* := \\inf\\{c \\in \\R : \\forall m \\in \\mathbb{N},\\; \\forall D : \\mathrm{Fin}\\,m \\to \\mathrm{FinDist},\\; \\REV(D) \\le c \\max\\{\\SREV(D),\\BREV(D)\\}\\}$.\n",
+              "quoted_text_sha256": "044f4092288060a1e7a49772065876778ce881e5a58ac38a789ba5f3759f91ef"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "spec_declaration": "Sievert26SimpleAuctions.two_sided_bracketSpec",
+        "evidence_declaration": "Sievert26SimpleAuctions.two_sided_bracket",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain"
+      },
+      "lean_declarations": [
+        "Sievert26SimpleAuctions.two_sided_bracket"
+      ],
+      "support_lean_declarations": [
+        "Sievert26SimpleAuctions.two_sided_bracketSpec"
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "two.sided.bracket",
+          "source_locator": "source-audited.tex:78-80",
+          "semantic_claim": "2.1946 <= c* <= 2.486.",
+          "reviewed_lean_route": "Sievert26SimpleAuctions.two_sided_bracket",
+          "source_quote_sha256": "34bc526f11b465a23d1f90e3aa2fe36f2f2a966a0fa3a4f31a0721394c230134",
+          "identity_schema": 2
+        }
+      ],
+      "model_convention_ids": [
+        "SIEVERT26-FINITE-INDEPENDENT-MODEL-01"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "protocol": "approved-source-review-context-v1",
+          "id": "SIEVERT26-FINITE-INDEPENDENT-MODEL-01",
+          "kind": "source_model_convention",
+          "source_locator": "source-audited.tex:51-58",
+          "classification": "source_text_model_convention",
+          "formal_meaning": "Each item marginal is a `FinDist` (finite support indexed by `Fin size` with nonnegative `val`, nonnegative `prob` summing to 1). Joint realizations `Profile D := (i : ι) → Fin (D i).size` have independent product probability `∏ i, (D i).prob (ω i)`. A direct `Mechanism ι` maps every valuation vector `v : ι → ℝ` to allocation probabilities `alloc v i ∈ [0,1]` and payment `pay v : ℝ` satisfying IC and IR over all nonnegative valuation vectors `v, v' ≥ 0`.",
+          "why_needed": "The paper defines `FinDist`, `SREV`, `BREV`, `Mechanism`, `REV`, and `cStar` in Section 1 (Setting). Representing finite distributions via finite index tuples makes finite product expectations and suprema exact without auxiliary measure-theoretic assumptions.",
+          "checked_scope": "All five named results in `PaperInterface.lean` consume `FinDist`, `SREV`, `BREV`, `Mechanism`, `REV`, and `cStar` directly.",
+          "record_sha256": "9e1b10f6ace6021bd775a5bbfa88552ef9fb59bc02c10ea33300bfa7cbdb458d"
+        }
+      ]
+    },
+    "iid_lower_bound": {
+      "source_item": "Theorem 4 (i.i.d. Lower Bound)",
+      "source_kind": "theorem",
+      "source_location": "source-audited.tex:82-88",
+      "source_url": "https://doi.org/10.5281/zenodo.24482558",
+      "statement": "There exist m (specifically m = 40) and a finitely supported distribution F on R_{>=0} such that REV(F^{otimes m}) > 1.316 * max(SREV(F^{otimes m}), BREV(F^{otimes m})), witnessed by a deterministic two-part tariff with entry fee 9 and item price 4.",
+      "claim_bearing": true,
+      "source_status": "source-first audit completed",
+      "source_anchor_evidence": [
+        {
+          "path": "source-audited.tex",
+          "line_start": 82,
+          "line_end": 88,
+          "quoted_text": "\\begin{theorem}[i.i.d.\\ Lower Bound; Lean: \\texttt{SimpleAuctions.iid\\_lower\\_bound}]\\label{thm:iid}\nThere exist $m \\in \\mathbb{N}$ and a finitely supported distribution $F$ on $\\R_{\\ge 0}$ (specifically $m = 40$) such that\n\\[\n  \\REV(F^{\\otimes m}) > 1.316 \\max\\{\\SREV(F^{\\otimes m}), \\BREV(F^{\\otimes m})\\}.\n\\]\nThe witnessing mechanism is a deterministic two-part tariff (entry fee $9$, item price $4$).\n\\end{theorem}",
+          "quoted_text_sha256": "d1659d3b5e405daf0c633baa175d0f0811311d1a74e6e15daed5ea4788435048"
+        }
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "path": "source-audited.tex",
+              "line_start": 51,
+              "line_end": 58,
+              "quoted_text": "\\paragraph{Setting.}\nLet $D = (D_1, \\dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\\R_{\\ge 0}$ (\\texttt{FinDist} in \\texttt{SimpleAuctions/Basic.lean}). Define:\n\\begin{align*}\n  \\SREV(D) &:= \\sum_{i=1}^m \\sup_{p \\ge 0} p \\Pr_{X_i \\sim D_i}[X_i \\ge p], &\n  \\BREV(D) &:= \\sup_{p \\ge 0} p \\Pr_{X \\sim D}\\!\\left[\\sum_{i=1}^m X_i \\ge p\\right],\n\\end{align*}\nand $\\REV(D) := \\sup_{M} \\E_{X \\sim D}[\\mathrm{pay}_M(X)]$, where $M = (\\mathrm{alloc}_M, \\mathrm{pay}_M)$ ranges over all direct mechanisms with $\\mathrm{alloc}_M : \\R^m \\to [0,1]^m$ and $\\mathrm{pay}_M : \\R^m \\to \\R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \\emph{all} nonnegative valuation vectors $v, v' \\in \\R_{\\ge 0}^m$. Let $c^* := \\inf\\{c \\in \\R : \\forall m \\in \\mathbb{N},\\; \\forall D : \\mathrm{Fin}\\,m \\to \\mathrm{FinDist},\\; \\REV(D) \\le c \\max\\{\\SREV(D),\\BREV(D)\\}\\}$.\n",
+              "quoted_text_sha256": "044f4092288060a1e7a49772065876778ce881e5a58ac38a789ba5f3759f91ef"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "spec_declaration": "Sievert26SimpleAuctions.iid_lower_boundSpec",
+        "evidence_declaration": "Sievert26SimpleAuctions.iid_lower_bound_thm",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain"
+      },
+      "lean_declarations": [
+        "Sievert26SimpleAuctions.iid_lower_bound_thm"
+      ],
+      "support_lean_declarations": [
+        "Sievert26SimpleAuctions.iid_lower_boundSpec"
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "iid.lower.bound",
+          "source_locator": "source-audited.tex:82-88",
+          "semantic_claim": "There exist m (specifically m = 40) and a finitely supported distribution F on R_{>=0} such that REV(F^{otimes m}) > 1.316 * max(SREV(F^{otimes m}), BREV(F^{otimes m})), witnessed by a deterministic two-part tariff with entry fee 9 and item price 4.",
+          "reviewed_lean_route": "Sievert26SimpleAuctions.iid_lower_bound_thm",
+          "source_quote_sha256": "d1659d3b5e405daf0c633baa175d0f0811311d1a74e6e15daed5ea4788435048",
+          "identity_schema": 2
+        }
+      ],
+      "model_convention_ids": [
+        "SIEVERT26-FINITE-INDEPENDENT-MODEL-01"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "protocol": "approved-source-review-context-v1",
+          "id": "SIEVERT26-FINITE-INDEPENDENT-MODEL-01",
+          "kind": "source_model_convention",
+          "source_locator": "source-audited.tex:51-58",
+          "classification": "source_text_model_convention",
+          "formal_meaning": "Each item marginal is a `FinDist` (finite support indexed by `Fin size` with nonnegative `val`, nonnegative `prob` summing to 1). Joint realizations `Profile D := (i : ι) → Fin (D i).size` have independent product probability `∏ i, (D i).prob (ω i)`. A direct `Mechanism ι` maps every valuation vector `v : ι → ℝ` to allocation probabilities `alloc v i ∈ [0,1]` and payment `pay v : ℝ` satisfying IC and IR over all nonnegative valuation vectors `v, v' ≥ 0`.",
+          "why_needed": "The paper defines `FinDist`, `SREV`, `BREV`, `Mechanism`, `REV`, and `cStar` in Section 1 (Setting). Representing finite distributions via finite index tuples makes finite product expectations and suprema exact without auxiliary measure-theoretic assumptions.",
+          "checked_scope": "All five named results in `PaperInterface.lean` consume `FinDist`, `SREV`, `BREV`, `Mechanism`, `REV`, and `cStar` directly.",
+          "record_sha256": "9e1b10f6ace6021bd775a5bbfa88552ef9fb59bc02c10ea33300bfa7cbdb458d"
+        }
+      ]
+    },
+    "iid100_lower_bound": {
+      "source_item": "Proposition 5 (100-item i.i.d. Exact Rational Bound)",
+      "source_kind": "proposition",
+      "source_location": "source-audited.tex:90-92",
+      "source_url": "https://doi.org/10.5281/zenodo.24482558",
+      "statement": "For n = 100 i.i.d. items with Pr[X >= k] = 3 / (25 * max(k, 4)) for 1 <= k <= 13 and 0 for k > 13, the deterministic mechanism with entry fee 9 and item price 4 satisfies REV / max(SREV, BREV) >= 1.324907.",
+      "claim_bearing": true,
+      "source_status": "source-first audit completed",
+      "source_anchor_evidence": [
+        {
+          "path": "source-audited.tex",
+          "line_start": 90,
+          "line_end": 92,
+          "quoted_text": "\\begin{proposition}[100-item i.i.d.\\ Exact Rational Bound; \\texttt{code/iid\\_lower\\_bound.py}]\\label{prop:iid100}\nFor $n = 100$ i.i.d.\\ items with $\\Pr[X \\ge k] = \\frac{3}{25 \\max(k,4)}$ for $1 \\le k \\le 13$ and $0$ for $k > 13$, the deterministic mechanism with entry fee $9$ and item price $4$ satisfies $\\REV / \\max\\{\\SREV, \\BREV\\} \\ge 1.324907$ (verified in exact rational arithmetic via Python \\texttt{fractions.Fraction}).\n\\end{proposition}",
+          "quoted_text_sha256": "ea2542dc4c5d7c4a6fd42160309795549913f37be88899724fb18c8ac364cf23"
+        }
+      ],
+      "semantic_context_requirements": [
+        {
+          "semantic_role": "definition",
+          "source_anchor_evidence": [
+            {
+              "path": "source-audited.tex",
+              "line_start": 51,
+              "line_end": 58,
+              "quoted_text": "\\paragraph{Setting.}\nLet $D = (D_1, \\dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\\R_{\\ge 0}$ (\\texttt{FinDist} in \\texttt{SimpleAuctions/Basic.lean}). Define:\n\\begin{align*}\n  \\SREV(D) &:= \\sum_{i=1}^m \\sup_{p \\ge 0} p \\Pr_{X_i \\sim D_i}[X_i \\ge p], &\n  \\BREV(D) &:= \\sup_{p \\ge 0} p \\Pr_{X \\sim D}\\!\\left[\\sum_{i=1}^m X_i \\ge p\\right],\n\\end{align*}\nand $\\REV(D) := \\sup_{M} \\E_{X \\sim D}[\\mathrm{pay}_M(X)]$, where $M = (\\mathrm{alloc}_M, \\mathrm{pay}_M)$ ranges over all direct mechanisms with $\\mathrm{alloc}_M : \\R^m \\to [0,1]^m$ and $\\mathrm{pay}_M : \\R^m \\to \\R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \\emph{all} nonnegative valuation vectors $v, v' \\in \\R_{\\ge 0}^m$. Let $c^* := \\inf\\{c \\in \\R : \\forall m \\in \\mathbb{N},\\; \\forall D : \\mathrm{Fin}\\,m \\to \\mathrm{FinDist},\\; \\REV(D) \\le c \\max\\{\\SREV(D),\\BREV(D)\\}\\}$.\n",
+              "quoted_text_sha256": "044f4092288060a1e7a49772065876778ce881e5a58ac38a789ba5f3759f91ef"
+            }
+          ]
+        }
+      ],
+      "semantic_contract": {
+        "spec_declaration": "Sievert26SimpleAuctions.iid100_lower_boundSpec",
+        "evidence_declaration": "Sievert26SimpleAuctions.iid100_lower_bound",
+        "evidence_mode": "proves",
+        "semantic_shape": "plain"
+      },
+      "lean_declarations": [
+        "Sievert26SimpleAuctions.iid100_lower_bound"
+      ],
+      "support_lean_declarations": [
+        "Sievert26SimpleAuctions.iid100_lower_boundSpec"
+      ],
+      "source_claim_atoms": [
+        {
+          "id": "iid100.lower.bound",
+          "source_locator": "source-audited.tex:90-92",
+          "semantic_claim": "For n = 100 i.i.d. items with Pr[X >= k] = 3 / (25 * max(k, 4)) for 1 <= k <= 13 and 0 for k > 13, the deterministic mechanism with entry fee 9 and item price 4 satisfies REV / max(SREV, BREV) >= 1.324907.",
+          "reviewed_lean_route": "Sievert26SimpleAuctions.iid100_lower_bound",
+          "source_quote_sha256": "ea2542dc4c5d7c4a6fd42160309795549913f37be88899724fb18c8ac364cf23",
+          "identity_schema": 2
+        }
+      ],
+      "model_convention_ids": [
+        "SIEVERT26-FINITE-INDEPENDENT-MODEL-01"
+      ],
+      "approved_review_context_schema": 1,
+      "approved_review_contexts": [
+        {
+          "protocol": "approved-source-review-context-v1",
+          "id": "SIEVERT26-FINITE-INDEPENDENT-MODEL-01",
+          "kind": "source_model_convention",
+          "source_locator": "source-audited.tex:51-58",
+          "classification": "source_text_model_convention",
+          "formal_meaning": "Each item marginal is a `FinDist` (finite support indexed by `Fin size` with nonnegative `val`, nonnegative `prob` summing to 1). Joint realizations `Profile D := (i : ι) → Fin (D i).size` have independent product probability `∏ i, (D i).prob (ω i)`. A direct `Mechanism ι` maps every valuation vector `v : ι → ℝ` to allocation probabilities `alloc v i ∈ [0,1]` and payment `pay v : ℝ` satisfying IC and IR over all nonnegative valuation vectors `v, v' ≥ 0`.",
+          "why_needed": "The paper defines `FinDist`, `SREV`, `BREV`, `Mechanism`, `REV`, and `cStar` in Section 1 (Setting). Representing finite distributions via finite index tuples makes finite product expectations and suprema exact without auxiliary measure-theoretic assumptions.",
+          "checked_scope": "All five named results in `PaperInterface.lean` consume `FinDist`, `SREV`, `BREV`, `Mechanism`, `REV`, and `cStar` directly.",
+          "record_sha256": "9e1b10f6ace6021bd775a5bbfa88552ef9fb59bc02c10ea33300bfa7cbdb458d"
+        }
+      ]
+    }
+  },
+  "approved_review_context_schema": 1,
+  "semantic_contract_schema": 1,
+  "semantic_route_schema": 2,
+  "source_anchor_evidence_required": true,
+  "paper_semantic_prerequisite_sources": {
+    "Sievert26SimpleAuctions.BREV": "setting_definitions",
+    "Sievert26SimpleAuctions.FinDist": "setting_definitions",
+    "Sievert26SimpleAuctions.Mechanism": "setting_definitions",
+    "Sievert26SimpleAuctions.REV": "setting_definitions",
+    "Sievert26SimpleAuctions.SREV": "setting_definitions",
+    "Sievert26SimpleAuctions.cStar": "setting_definitions"
+  },
+  "source_spec_correspondence_schema": 1,
+  "paper_interface_namespace": "Sievert26SimpleAuctions",
+  "source_claim_atoms_schema": 1,
+  "closeout_review_policy": {
+    "schema": 1,
+    "source_scope": "all_named_theory",
+    "repeat_final_scope": "main_primary",
+    "required_final_adversary_count": 1,
+    "scheduling": {
+      "initial_semantic_review": [],
+      "final_adversarial_review": []
+    }
+  },
+  "source_named_result_inventory_review": {
+    "schema": 1,
+    "complete": true,
+    "validator": "independent_source_inventory_review_2026-11-24",
+    "method": "Read the complete 233-line byte-pinned Zenodo v1.0.1 LaTeX source independently of Lean declarations; verified all five theorem/corollary/proposition environments and the Section 1 Setting definitions block; confirmed no unlabelled standalone claims or appendix environments exist.",
+    "validated_at": "2026-11-24T15:00:00Z",
+    "prose_definition_presentations": [
+      {
+        "schema": 1,
+        "presentation_kind": "definition",
+        "defined_entity_kind": "object",
+        "defined_object": "FinDist",
+        "definitional_clause": "\\paragraph{Setting.}\nLet $D = (D_1, \\dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\\R_{\\ge 0}$ (\\texttt{FinDist} in \\texttt{SimpleAuctions/Basic.lean}). Define:\n\\begin{align*}\n  \\SREV(D) &:= \\sum_{i=1}^m \\sup_{p \\ge 0} p \\Pr_{X_i \\sim D_i}[X_i \\ge p], &\n  \\BREV(D) &:= \\sup_{p \\ge 0} p \\Pr_{X \\sim D}\\!\\left[\\sum_{i=1}^m X_i \\ge p\\right],\n\\end{align*}\nand $\\REV(D) := \\sup_{M} \\E_{X \\sim D}[\\mathrm{pay}_M(X)]$, where $M = (\\mathrm{alloc}_M, \\mathrm{pay}_M)$ ranges over all direct mechanisms with $\\mathrm{alloc}_M : \\R^m \\to [0,1]^m$ and $\\mathrm{pay}_M : \\R^m \\to \\R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \\emph{all} nonnegative valuation vectors $v, v' \\in \\R_{\\ge 0}^m$. Let $c^* := \\inf\\{c \\in \\R : \\forall m \\in \\mathbb{N},\\; \\forall D : \\mathrm{Fin}\\,m \\to \\mathrm{FinDist},\\; \\REV(D) \\le c \\max\\{\\SREV(D),\\BREV(D)\\}\\}$.",
+        "scope_disposition": "normal_named_theory_definition",
+        "source_anchor": {
+          "path": "source-audited.tex",
+          "line_start": 51,
+          "line_end": 58,
+          "quoted_text": "\\paragraph{Setting.}\nLet $D = (D_1, \\dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\\R_{\\ge 0}$ (\\texttt{FinDist} in \\texttt{SimpleAuctions/Basic.lean}). Define:\n\\begin{align*}\n  \\SREV(D) &:= \\sum_{i=1}^m \\sup_{p \\ge 0} p \\Pr_{X_i \\sim D_i}[X_i \\ge p], &\n  \\BREV(D) &:= \\sup_{p \\ge 0} p \\Pr_{X \\sim D}\\!\\left[\\sum_{i=1}^m X_i \\ge p\\right],\n\\end{align*}\nand $\\REV(D) := \\sup_{M} \\E_{X \\sim D}[\\mathrm{pay}_M(X)]$, where $M = (\\mathrm{alloc}_M, \\mathrm{pay}_M)$ ranges over all direct mechanisms with $\\mathrm{alloc}_M : \\R^m \\to [0,1]^m$ and $\\mathrm{pay}_M : \\R^m \\to \\R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \\emph{all} nonnegative valuation vectors $v, v' \\in \\R_{\\ge 0}^m$. Let $c^* := \\inf\\{c \\in \\R : \\forall m \\in \\mathbb{N},\\; \\forall D : \\mathrm{Fin}\\,m \\to \\mathrm{FinDist},\\; \\REV(D) \\le c \\max\\{\\SREV(D),\\BREV(D)\\}\\}$.\n",
+          "quoted_text_sha256": "044f4092288060a1e7a49772065876778ce881e5a58ac38a789ba5f3759f91ef"
+        }
+      }
+    ],
+    "discovered_prose_definition_sha256": "d6eea59fc5ac1df66283b6c61c81ccd73f5df511103c9f2666257312255660cf",
+    "source_artifact_sha256": "97fea30c6a68dc12ea843d2c704adbd20d58d74edb528db3c71e2ee3f217073c",
+    "candidate_presentations": [],
+    "discovered_candidate_presentation_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "discovered_named_result_sha256": "518f49b49ca9773033f533c69d3b13090f9c68772222ddadfb03890b5ef6c24d",
+    "source_region_partition": {
+      "schema": 1,
+      "complete": true,
+      "validator": "independent_source_inventory_review_2026-11-24",
+      "method": "Partitioned the complete 233-line single-section/main-text paper into one exhaustive main_text region (no appendix or supplement exists).",
+      "validated_at": "2026-11-24T15:00:00Z",
+      "source_artifact_sha256": "97fea30c6a68dc12ea843d2c704adbd20d58d74edb528db3c71e2ee3f217073c",
+      "canonical_source_path": "source-audited.tex",
+      "regions": [
+        {
+          "id": "main_text",
+          "kind": "main_text",
+          "source_anchor": {
+            "path": "source-audited.tex",
+            "line_start": 1,
+            "line_end": 233,
+            "quoted_text": "\\documentclass[11pt]{article}\n\n\\usepackage[margin=1in]{geometry}\n\\usepackage{amsmath,amssymb,amsthm}\n\\usepackage{booktabs}\n\\usepackage{hyperref}\n\\usepackage{microtype}\n\n\\newtheorem{theorem}{Theorem}\n\\newtheorem{corollary}[theorem]{Corollary}\n\\newtheorem{proposition}[theorem]{Proposition}\n\\newtheorem{remark}{Remark}\n\n\\newcommand{\\REV}{\\mathrm{REV}}\n\\newcommand{\\SREV}{\\mathrm{SREV}}\n\\newcommand{\\BREV}{\\mathrm{BREV}}\n\\newcommand{\\E}{\\mathbb{E}}\n\\newcommand{\\R}{\\mathbb{R}}\n\n\\title{Machine-Verified Two-Sided Bounds for Simple Multi-Item Auctions:\\\\\n$2.1946 \\le c^* \\le 2.486$ and an i.i.d.\\ Lower Bound above $1.316$}\n\n\\author{Max Sievert\\\\\n\\small Independent Research \\quad\\texttt{sievert-max@gmx.de}\\\\\n\\small Code \\& Lean~4 Proofs: \\url{https://github.com/Maxkxkxk/simple-auctions-lean4}\\\\\n\\small Permanent Archive (Zenodo DOI): \\url{https://doi.org/10.5281/zenodo.24482558}}\n\n\\date{November 23, 2026}\n\n\\begin{document}\n\\maketitle\n\n\\begin{abstract}\nWe study revenue maximization for a single additive buyer with $m$ independently valued items whose marginal distributions have finite support on $\\R_{\\ge 0}$. Let $\\REV(D)$ denote the supremum expected revenue over all incentive-compatible and individually rational (possibly randomized) mechanisms, $\\SREV(D)$ the optimal separate-selling revenue, $\\BREV(D)$ the optimal grand-bundle revenue, and $c^* := \\inf\\{c : \\forall m, D,\\; \\REV(D) \\le c \\max\\{\\SREV(D), \\BREV(D)\\}\\}$.\n\nWe prove and completely machine-verify in Lean~4 (zero \\texttt{sorry}, zero \\texttt{native\\_decide}, standard axioms only) three theorems tightening both sides of the recently narrowed $[2.19, 2.50]$ bracket of Giannakopoulos and Hahn (\\texttt{arXiv:2609.35711v3}):\n\\begin{enumerate}\n  \\item \\textbf{General lower bound} (\\texttt{SimpleAuctions.lower\\_bound}): there exists a finite independent product distribution $D$ with $\\REV(D) > 2.1946 \\max\\{\\SREV(D), \\BREV(D)\\}$, witnessed by a deterministic two-part tariff plus a concentrated bundle (improving the published $2.19027$).\n  \\item \\textbf{Universal upper bound} (\\texttt{SimpleAuctions.upper\\_bound\\_two}, \\texttt{SimpleAuctions.upper\\_bound}): for every finite independent product distribution $D$, $\\REV(D) \\le 1.1187\\,\\SREV(D) + 1.367299\\,\\BREV(D) \\le 2.486 \\max\\{\\SREV(D), \\BREV(D)\\}$ (improving the published $2.50$). Combined with Theorem~1, $2.1946 \\le c^* \\le 2.486$ (\\texttt{SimpleAuctions.cStar\\_mem}).\n  \\item \\textbf{i.i.d.\\ lower bound} (\\texttt{SimpleAuctions.iid\\_lower\\_bound}): for $40$ i.i.d.\\ items with a truncated equal-revenue distribution and a deterministic entry-fee mechanism, $\\REV(F^{\\otimes 40}) > 1.316 \\max\\{\\SREV, \\BREV\\}$ (and an exact rational verification gives $\\ge 1.324907$ for $100$ i.i.d.\\ items), substantially improving the $1.1877$ lower bound of Ma and Simchi-Levi cited as the best known in \\texttt{arXiv:2609.35711v3}.\n\\end{enumerate}\nAll Lean~4 proof modules compile cleanly under Lean~v4.36.0 and pass full \\texttt{leanchecker} kernel replay. We also map the numerical limits of the underlying relaxation family and include a brief stylised illustration for multi-tranche financial auctions.\n\\end{abstract}\n\n\\section{Introduction and Main Results}\n\nWhile Myerson~\\cite{myerson1981} characterized revenue-optimal single-item auctions in closed form, optimal multidimensional mechanisms for an additive buyer with $m \\ge 2$ independently valued items can require complex randomized lotteries and unbounded menu complexity~\\cite{hartnisan2017,daskalakis2017}. A landmark result of Babaioff, Immorlica, Lucier, and Weinberg~\\cite{bilw2020} established that the better of two elementary deterministic formats---selling items separately ($\\SREV$) and selling the grand bundle ($\\BREV$)---achieves a constant-factor approximation to $\\REV$, initially with factor $6$, later improved to $5.2$ by Ma and Simchi-Levi~\\cite{masimchilevi2021}.\n\nIn autumn 2026, this constant underwent rapid tightening: Cai et al.~\\cite{cai2026} proved $3.52$, Huang~\\cite{huang2026} proved $\\REV \\le \\SREV + \\frac{\\pi^2}{6}\\BREV \\le 2.645 \\max\\{\\SREV,\\BREV\\}$ alongside a lower bound above $2.11$, and Giannakopoulos and Hahn~\\cite{gh2026} proved $\\REV \\le \\frac{7}{6}\\SREV + \\frac{4}{3}\\BREV \\le 2.50 \\max\\{\\SREV,\\BREV\\}$ together with a published lower bound of $2 + 0.88/4.625 \\approx 2.19027$ (improving Rubinstein's classical bound of $2$~\\cite{rubinstein2016}). For identically distributed (i.i.d.) items, Giannakopoulos and Hahn~\\cite{gh2026} prove an upper bound of $2.15$ and cite $1.1877$ (Ma and Simchi-Levi~\\cite{masimchilevi2021}, two items) as the best known lower bound.\n\n\\paragraph{Setting.}\nLet $D = (D_1, \\dots, D_m)$ be a tuple of independent, finitely supported probability distributions on $\\R_{\\ge 0}$ (\\texttt{FinDist} in \\texttt{SimpleAuctions/Basic.lean}). Define:\n\\begin{align*}\n  \\SREV(D) &:= \\sum_{i=1}^m \\sup_{p \\ge 0} p \\Pr_{X_i \\sim D_i}[X_i \\ge p], &\n  \\BREV(D) &:= \\sup_{p \\ge 0} p \\Pr_{X \\sim D}\\!\\left[\\sum_{i=1}^m X_i \\ge p\\right],\n\\end{align*}\nand $\\REV(D) := \\sup_{M} \\E_{X \\sim D}[\\mathrm{pay}_M(X)]$, where $M = (\\mathrm{alloc}_M, \\mathrm{pay}_M)$ ranges over all direct mechanisms with $\\mathrm{alloc}_M : \\R^m \\to [0,1]^m$ and $\\mathrm{pay}_M : \\R^m \\to \\R$ satisfying incentive compatibility (IC) and individual rationality (IR) for \\emph{all} nonnegative valuation vectors $v, v' \\in \\R_{\\ge 0}^m$. Let $c^* := \\inf\\{c \\in \\R : \\forall m \\in \\mathbb{N},\\; \\forall D : \\mathrm{Fin}\\,m \\to \\mathrm{FinDist},\\; \\REV(D) \\le c \\max\\{\\SREV(D),\\BREV(D)\\}\\}$.\n\n\\begin{theorem}[General Lower Bound; Lean: \\texttt{SimpleAuctions.lower\\_bound}]\\label{thm:lb}\nThere exist $m \\in \\mathbb{N}$ and independent finitely supported distributions $D_1, \\dots, D_m$ on $\\R_{\\ge 0}$ such that\n\\[\n  \\REV(D) > 2.1946 \\max\\{\\SREV(D), \\BREV(D)\\}.\n\\]\nThe witnessing mechanism is deterministic.\n\\end{theorem}\n\n\\begin{theorem}[Universal Upper Bound; Lean: \\texttt{SimpleAuctions.upper\\_bound\\_two}, \\texttt{upper\\_bound}]\\label{thm:ub}\nFor every finite index set $\\iota$ and every family of independent finitely supported distributions $D : \\iota \\to \\mathrm{FinDist}$,\n\\[\n  \\REV(D) \\le 1.1187\\,\\SREV(D) + 1.367299\\,\\BREV(D).\n\\]\nIn particular, for every $m \\in \\mathbb{N}$ and every $D : \\mathrm{Fin}\\,m \\to \\mathrm{FinDist}$,\n\\[\n  \\REV(D) \\le 2.486 \\max\\{\\SREV(D), \\BREV(D)\\}.\n\\]\n\\end{theorem}\n\n\\begin{corollary}[Two-Sided Bracket; Lean: \\texttt{SimpleAuctions.main\\_bracket}, \\texttt{cStar\\_mem}]\\label{cor:bracket}\n$2.1946 \\le c^* \\le 2.486$.\n\\end{corollary}\n\n\\begin{theorem}[i.i.d.\\ Lower Bound; Lean: \\texttt{SimpleAuctions.iid\\_lower\\_bound}]\\label{thm:iid}\nThere exist $m \\in \\mathbb{N}$ and a finitely supported distribution $F$ on $\\R_{\\ge 0}$ (specifically $m = 40$) such that\n\\[\n  \\REV(F^{\\otimes m}) > 1.316 \\max\\{\\SREV(F^{\\otimes m}), \\BREV(F^{\\otimes m})\\}.\n\\]\nThe witnessing mechanism is a deterministic two-part tariff (entry fee $9$, item price $4$).\n\\end{theorem}\n\n\\begin{proposition}[100-item i.i.d.\\ Exact Rational Bound; \\texttt{code/iid\\_lower\\_bound.py}]\\label{prop:iid100}\nFor $n = 100$ i.i.d.\\ items with $\\Pr[X \\ge k] = \\frac{3}{25 \\max(k,4)}$ for $1 \\le k \\le 13$ and $0$ for $k > 13$, the deterministic mechanism with entry fee $9$ and item price $4$ satisfies $\\REV / \\max\\{\\SREV, \\BREV\\} \\ge 1.324907$ (verified in exact rational arithmetic via Python \\texttt{fractions.Fraction}).\n\\end{proposition}\n\n\\begin{table}[t]\n\\centering\n\\footnotesize\n\\setlength{\\tabcolsep}{4.5pt}\n\\begin{tabular}{@{}llll@{}}\n\\toprule\nQuantity & Prior Published SOTA & This Work & Verification \\\\\n\\midrule\nGeneral lower bound & $2.19027$ (\\cite{gh2026}, Thm~D.1) & $> 2.1946$ ($2.1946499\\ldots$) & Lean~4 + Python \\\\\nGeneral upper bound & $2.500$ (\\cite{gh2026}, Prop~4.6) & $\\le 2.486$ ($2.485776\\ldots$) & Lean~4 + Python \\\\\nTwo-param.\\ upper & $\\frac{7}{6}\\SREV + \\frac{4}{3}\\BREV$ (\\cite{gh2026}) & $1.1187\\,\\SREV + 1.367299\\,\\BREV$ & Lean~4 + Python \\\\\ni.i.d.\\ lower bound & $1.1877$ (\\cite{masimchilevi2021}, cited in \\cite{gh2026}) & $> 1.316$ ($n=40$); $\\ge 1.3249$ ($n=100$) & Lean~4 ($n=40$), Python \\\\\n\\bottomrule\n\\end{tabular}\n\\caption{Summary of verified bounds compared to published benchmarks as of November 2026.}\n\\label{tab:summary}\n\\end{table}\n\n\\paragraph{Attribution and Scope.}\nThe overall analytical architecture builds directly on prior breakthroughs: the master inequality, cap decomposition, Jensen weighting, Laplace bundle argument, and two-part-tariff lower-bound framework are due to Giannakopoulos and Hahn~\\cite{gh2026}; core--tail duality originates with Cai, Devanur, and Weinberg~\\cite{cdw2016}; the seed-completion viewpoint is due to Huang~\\cite{huang2026}; and the concentrated-bundle trick goes back to Rubinstein~\\cite{rubinstein2016}. Giannakopoulos and Hahn note in~\\cite{gh2026} that slightly sharper constants than $2.19$ and $2.50$ were found in unpublished AI-assisted exploration. Our contributions are: (i)~the equal-revenue-on-$[p_i, p_i+e]$ structural parameterization and improved general lower bound $2.1946$; (ii)~the 4-exponential kernel, step-function Jensen weights, and improved universal upper bound $2.486$; (iii)~the substantial i.i.d.\\ lower-bound jump from $1.1877$ to $> 1.316$ (Lean~4) / $1.3249$ (exact rational); and (iv)~a complete, self-contained Lean~4 formalization of all three results with zero \\texttt{sorry} and zero \\texttt{native\\_decide}.\n\nAll formal theorems apply to finitely supported distributions; extending Theorem~\\ref{thm:ub} to arbitrary nonnegative random variables follows by standard discretization/truncation (not formalized here).\n\n\\paragraph{Methodology Disclosure.}\nThe computational search, certificate design, and Lean~4 proof engineering were produced via a human-directed, multi-run autonomous AI-agent workflow strictly gated by exact rational verification and the Lean~4 kernel. Every mathematical claim in Theorems~\\ref{thm:lb}--\\ref{thm:iid} rests solely on the Lean~4 kernel (\\texttt{v4.36.0}) and its three standard axioms (\\texttt{propext}, \\texttt{Classical.choice}, \\texttt{Quot.sound}), with full \\texttt{leanchecker} replay.\n\n\\section{Proof Overview of Theorem~\\ref{thm:lb} (General Lower Bound)}\n\nFix lattice unit $N = 400$ and entry fee $e = 580$. The instance is the disjoint union $D = D_A \\times D_B$ of two independent item groups:\n\\begin{itemize}\n  \\item \\textbf{Group $A$ ($1280$ items):} Five item types $i \\in \\{0,\\dots,4\\}$, each with $256$ i.i.d.\\ copies. With posted prices $P = (8, 21, 65, 132, 1280)$ and integer parameters $R = (1067039, 1128540, 2129082, 2782033, 19107703)$, an item of type $i$ has tail $\\Pr[X \\ge k] = \\lfloor R_i / \\max(k, P_i) \\rfloor / 2^{24}$ for $1 \\le k \\le P_i + e$ and $0$ for $k > P_i + e$. Thus every type is (up to rounding) equal-revenue on $[P_i, P_i + e]$.\n  \\item \\textbf{Group $B$ ($L^2$ items):} $L^2$ i.i.d.\\ items supported on $\\{j\\delta : 1 \\le j \\le L\\}$ with $\\Pr[Y \\ge j\\delta] = 1/j$ and $\\delta = N / (L^2 H_L)$, where $H_L = \\sum_{j=1}^L 1/j$.\n\\end{itemize}\n\n\\paragraph{Mechanism.}\nSell Group~$B$ as a single bundle at price $N(1 - 10^{-6})$, and independently offer Group~$A$ via a two-part tariff with entry fee $e = 580$ and item prices $P_i$. In \\texttt{Main.lean} (\\texttt{menuMech}), IC and IR are proved globally over all $v, v' \\in \\R_{\\ge 0}^m$.\n\n\\noindent\\textbf{Verification steps.}\\nopagebreak[4]\n\\begin{enumerate}\n  \\item \\emph{Separate revenue:} $k \\Pr[X_i \\ge k] \\le R_i / 2^{24}$ for all $k$ and $256 \\sum_i R_i = 256 \\cdot 26{,}214{,}397 < 400 \\cdot 2^{24}$, giving $\\SREV(D_A) \\le N$ and $\\SREV(D_B) \\le N/H_L$.\n  \\item \\emph{Grand-bundle revenue:} We prove $(N+t)\\Pr[Z_A \\ge t] \\le N$ for all $t \\in \\mathbb{N}$: for $1 \\le t \\le 2000$ by Kronecker-packed generating polynomials (base $X = 2^{30744}$) checked directly via \\texttt{decide +kernel} (\\texttt{KernelRun.lean}); for $t > 2000$ by the tail expectation bound $(N+t)\\Pr[Z_A \\ge t] \\le \\E[(N+Z_A)\\mathbf{1}_{Z_A \\ge 2000}] \\le N$ (\\texttt{GroupAData.lean}). Conditioning on $Z_B = y$ yields $p\\Pr[Z_A + y \\ge p] \\le \\max(N, y)$ for all $p \\ge 0$ (\\texttt{RealA.lean}), whence $\\BREV(D) \\le \\E[\\max(N, Z_B)] \\le N + \\tau + \\mathrm{Var}(Z_B)/(4\\tau)$.\n  \\item \\emph{Mechanism revenue and limit:} A second Kronecker-packed generating-function computation truncated at $e = 580$ certifies $\\E[\\text{pay}_A] \\ge 1.19464\\,N$. Chebyshev's inequality with $\\mathrm{Var}(Z_B) \\le 2N^2/L$ (\\texttt{GroupB.lean}) yields revenue $\\ge (1 - o(1))N$ from $B$. Taking $L$ sufficiently large (\\texttt{exists\\_L}) gives a finite instance strictly exceeding $2.1946 \\max\\{\\SREV, \\BREV\\}$.\n\\end{enumerate}\n\n\\section{Proof Overview of Theorem~\\ref{thm:ub} (Universal Upper Bound)}\n\nThe formal proof spans 13 Lean~4 modules (\\texttt{Expect}, \\texttt{Duality}, \\texttt{LayerCake}, \\texttt{Laplace}, \\texttt{Abstract}, \\texttt{AnalyticCert}, \\texttt{CertKernel}, \\texttt{CertData}, \\texttt{CertRun}, \\texttt{CertSound}, \\texttt{CertLoop}, \\texttt{UpperBound}, \\texttt{Bracket}):\n\n\\begin{enumerate}\n  \\item \\textbf{Elementary finite-support master inequality (\\texttt{Duality.lean}).} For any caps $c_j \\ge 0$ satisfying $\\E[\\min(X_j, c_j)] \\le r_j := \\REV(X_j)$ and excess $Y_j := (X_j - c_j)^+$, routing the buyer's utility to $j^*(\\omega) \\in \\arg\\max_j Y_j(\\omega)$ and applying a one-dimensional threshold induction (\\texttt{line\\_bound}) on each coordinate yields\n  \\[\n    \\mathrm{Rev}(M, D) \\le \\SREV(D) + \\E\\!\\left[\\sum_j Y_j - \\max_j Y_j\\right].\n  \\]\n  \\item \\textbf{Layer cake, Jensen, and step-function weights (\\texttt{LayerCake.lean}, \\texttt{Abstract.lean}).} Expressing $\\E[\\sum_j Y_j - \\max_j Y_j] = \\int_0^\\infty (\\sum_j x_j(t) - 1 + \\prod_j (1 - x_j(t)))\\,dt$ with $x_j(t) = \\Pr[X_j \\ge c_j + t]$ and applying Jensen's inequality with weights $r_j / (\\ell \\alpha(c_j/\\ell))$ reduces the excess to single-item integrals involving $\\psi(z) := 1 - (1 - e^{-z})/z$. Using a monotone \\emph{step function} $\\alpha$ guarantees existence of the normalizing scale $\\ell$ with $\\sum_j r_j/\\alpha(c_j/\\ell) = \\ell$ via an elementary monotone fixed-point argument without continuity assumptions.\n  \\item \\textbf{Laplace bundle bound (\\texttt{Laplace.lean}).} For a $4$-exponential kernel $w(v) = \\sum_{i=1}^4 a_i e^{-v/s_i}$ with $a = (0.266, 0.509, 0.203, 0.022)$ and $s = (0.5, 1.4, 22, 209.3)$, independence and $\\Pr[\\sum_j X_j \\ge u] \\le \\min(1, \\BREV/u)$ imply $\\E[e^{-\\sum_j X_j/\\sigma}] \\ge \\int_1^\\infty e^{-yx} x^{-2}\\,dx$ ($y = \\BREV/\\sigma$), bounded by certified linear tangents to obtain $\\sum_j \\E[1 - e^{-X_j/\\sigma}] \\le \\kappa_i + b_i \\BREV/\\sigma$.\n  \\item \\textbf{Kernel-verified 1D analytic certificate (\\texttt{AnalyticCert.lean}--\\texttt{CertLoop.lean}).} The remaining one-variable inequality\n  \\[\n    \\frac{\\kappa}{\\alpha(t)} + \\int_t^\\infty \\left(\\psi\\!\\left(\\frac{\\alpha(t)}{v}\\right) - w(v)\\right)^+ \\frac{dv}{v} - \\frac{1}{t}\\int_0^t w(u)\\,du \\le g\n  \\]\n  is certified for all $t > 0$ via directed integer arithmetic over $1846$ grid cells and $35$ steps of $\\alpha$, checked inside the Lean~4 kernel (\\texttt{CertRun.lean}, $\\approx 35\\text{s}$), yielding $g \\le 0.1187$ and $b = 1.367299$ (exact Python certificate: $g = 0.118477\\ldots$, sum $2.485776\\ldots$), hence $\\REV(D) \\le 1.1187\\,\\SREV(D) + 1.367299\\,\\BREV(D) \\le 2.486 \\max\\{\\SREV(D), \\BREV(D)\\}$.\n\\end{enumerate}\n\n\\section{Proof Overview of Theorem~\\ref{thm:iid} (i.i.d.\\ Lower Bound)}\n\nTake $m = 40$ i.i.d.\\ items supported on $\\{0, 4, 5, \\dots, 13\\}$ with integer probability weights $c_N / W$ ($W = 3{,}603{,}600$) satisfying $\\Pr[X \\ge k] = \\frac{3}{10\\max(k, 4)}$ for $1 \\le k \\le 13$ (exact equal-revenue on $[4,13]$).\n\\begin{itemize}\n  \\item \\textbf{SREV:} For every $p \\ge 0$, $p \\Pr[X \\ge p] \\le 3/10$, hence $\\SREV(F^{\\otimes 40}) \\le 40 \\cdot \\frac{3}{10} = 12$.\n  \\item \\textbf{BREV:} Packing $g_z(X) = \\sum_{k=0}^{13} c_N(k) X^k$ at base $X = 2^{900}$, repeated squaring $F_z = g_z^{40}$ and a shifting loop over all $t \\in \\{0,\\dots,520\\}$ (\\texttt{IIDKernel.lean}, $\\approx 1.2\\text{s}$ in \\texttt{decide +kernel}) prove $t\\Pr[\\sum_i X_i \\ge t] \\le 12.151$ for all $t \\in \\mathbb{N}$, hence $\\BREV(F^{\\otimes 40}) \\le 12.151$.\n  \\item \\textbf{Mechanism revenue:} Offering an entry fee of $9$ followed by posted price $4$ per item is IC and IR (\\texttt{menuMech} with empty Group~$B$). A modular generating-function calculation modulo $X^9$ certifies expected revenue $\\ge 16$, yielding $\\REV / \\max\\{\\SREV, \\BREV\\} \\ge 16 / 12.151 > 1.3167 > 1.316$.\n\\end{itemize}\nScaling the same construction to $n = 100$ i.i.d.\\ items gives exact rational ratio $\\ge 1.324907$ (\\texttt{code/iid\\_lower\\_bound.py}), approaching $\\approx 1.33$ numerically in the Poisson limit.\n\n\\section{Numerical Limits and Stylised Financial Illustration}\n\n\\paragraph{Numerical limits of the proof family (non-rigorous floats).}\nExploratory experiments (\\texttt{EXPERIMENTS.md}, \\texttt{DEAD\\_ENDS.md}) indicate:\n(i)~the equal-revenue two-part-tariff lower-bound family approaches $\\approx 2.1957$;\n(ii)~the Giannakopoulos--Hahn master inequality itself admits an adversarial lower estimate of $\\approx 2.325$, so it cannot yield a bound below $\\approx 2.33$--$2.35$;\n(iii)~within the one-parameter Laplace/Lagrangian scheme, optimizing arbitrarily many exponentials plateaus around $2.482$--$2.484$; a two-normalisation 2D variant reaches $\\approx 2.461$, while a fully profile-adapted kernel plateaus near $\\approx 2.43$. Breaking below $2.43$ therefore requires a genuinely stronger treatment of the bundle constraint.\n\n\\paragraph{Stylised illustration for multi-tranche financial auctions.}\nConsider a stylised primary-dealer setting with a single strategic bidder having additive, independent private surplus over multiple tranches of a debt or liquidity issuance (\\texttt{code/financial\\_illustration.py}; stylised parameters, not empirical market data). Theorem~\\ref{thm:ub} guarantees that choosing the better of tranche-by-tranche pricing and all-or-nothing package pricing always captures at least $1/2.486 \\approx 40.2\\%$ of the optimal mechanism's revenue, while Theorem~\\ref{thm:lb} shows this worst-case guarantee cannot exceed $1/2.1946 \\approx 45.6\\%$. For $40$ identical lots with the distribution of Theorem~\\ref{thm:iid} (surplus in basis points), separate pricing yields $12.00$, grand bundling yields $12.1509$, and adding a participation fee of $9$ with price $4$ per lot yields $16.0014$ ($+31.7\\%$ over the better simple format). In a $4$-tranche heterogeneous illustration ($2\\text{y}, 5\\text{y}, 10\\text{y}, 30\\text{y}$), separate pricing ($7.50$) already outperforms grand bundling ($4.50$) and all tested entry-fee menus, while Theorem~\\ref{thm:ub} gives a tight revenue envelope of $14.5431$. Key caveats for real bond markets: actual Treasury and central-bank auctions involve multiple competing bidders, common-value components, and strong cross-maturity correlations.\n\n\\section{Formal Verification and Reproducibility}\n\nThe Lean~4 project (\\texttt{lean/}, Lean~v4.36.0, Mathlib~v4.36.0) builds via \\texttt{lake build} and audits all main theorems via \\texttt{lake env lean Audit.lean}. Every theorem (\\texttt{lower\\_bound}, \\texttt{upper\\_bound}, \\texttt{upper\\_bound\\_two}, \\texttt{main\\_bracket}, \\texttt{cStar\\_mem}, \\texttt{iid\\_lower\\_bound}) depends exclusively on \\texttt{[propext, Classical.choice, Quot.sound]} with zero \\texttt{sorry}, zero \\texttt{admit}, zero custom axioms, and zero \\texttt{native\\_decide}. All modules pass \\texttt{lake env leanchecker} replay. Full code, Lean~4 proofs, data, and audit records are publicly available at \\url{https://github.com/Maxkxkxk/simple-auctions-lean4} and permanently archived under Zenodo DOI \\url{https://doi.org/10.5281/zenodo.24482558}.\n\n\\begin{thebibliography}{9}\n\\bibitem{bilw2020}\nM.~Babaioff, N.~Immorlica, B.~Lucier, and S.~M.~Weinberg.\nA simple and approximately optimal mechanism for an additive buyer.\n\\emph{Journal of the ACM}, 67(4):1--40, 2020.\n\n\\bibitem{cdw2016}\nY.~Cai, N.~R.~Devanur, and S.~M.~Weinberg.\nA duality based unified approach to Bayesian mechanism design.\nIn \\emph{STOC}, 2016.\n\n\\bibitem{cai2026}\nY.~Cai, V.~Gupta, Y.~Jiang, C.~Liaw, A.~Mehta, G.~Velegkas, and D.~Wang.\nImproved revenue guarantees for selling separately and bundling.\n\\texttt{arXiv:2609.28873}, September 2026.\n\n\\bibitem{daskalakis2017}\nC.~Daskalakis, A.~Deckelbaum, and C.~Tzamos.\nStrong duality for a multiple-good monopolist.\n\\emph{Econometrica}, 85(3):735--767, 2017.\n\n\\bibitem{gh2026}\nY.~Giannakopoulos and J.~Hahn.\nOn the power of determinism in multi-item auctions.\n\\texttt{arXiv:2609.35711v3}, November 2026.\n\n\\bibitem{hartnisan2017}\nS.~Hart and N.~Nisan.\nApproximate revenue maximization with multiple items.\n\\emph{Journal of Economic Theory}, 172:313--347, 2017.\n\n\\bibitem{huang2026}\nY.~Huang.\nImproved approximation and tight competition for simple auctions.\n\\texttt{arXiv:2610.24973v2}, November 2026.\n\n\\bibitem{masimchilevi2021}\nW.~Ma and D.~Simchi-Levi.\nReaping the benefits of bundling under high production costs.\nIn \\emph{AISTATS}, PMLR~130, 2021.\n\n\\bibitem{myerson1981}\nR.~B.~Myerson.\nOptimal auction design.\n\\emph{Mathematics of Operations Research}, 6(1):58--73, 1981.\n\n\\bibitem{rubinstein2016}\nA.~Rubinstein.\nOn the computational complexity of optimal simple mechanisms.\nIn \\emph{ITCS}, 2016.\n\\end{thebibliography}\n\n\\end{document}",
+            "quoted_text_sha256": "084a0f7680b5562c681b9415017f15fe7df273c5472b5ea18eccfbf05e446471"
+          }
+        }
+      ],
+      "source_item_regions": {
+        "general_lower_bound": "main_text",
+        "iid100_lower_bound": "main_text",
+        "iid_lower_bound": "main_text",
+        "setting_definitions": "main_text",
+        "two_sided_bracket": "main_text",
+        "universal_upper_bound": "main_text"
+      },
+      "candidate_presentation_regions": {},
+      "prose_definition_presentation_regions": {
+        "4f613b5d219540570445a3ea841b589f40b776675c1bcfcaaf03cb4b3749362c": "main_text"
+      },
+      "promoted_source_items": []
+    }
+  }
+}

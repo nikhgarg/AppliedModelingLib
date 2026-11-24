@@ -1,0 +1,10 @@
+{
+  "command": "lake build Sievert26SimpleAuctions",
+  "commit": "e2c9c9d766b42738079f3c6e15dd25ffc7c31c05",
+  "lean_entrypoint": "papers/Sievert26SimpleAuctions.lean",
+  "lean_import_closure_sha256": "0ac8b9cac636416e691b517547a7b8d27f9e28cc75a8c1be8e0a636d7af3f757",
+  "paper": "Sievert26SimpleAuctions",
+  "result": "passed",
+  "schema": 3,
+  "target": "Sievert26SimpleAuctions"
+}
